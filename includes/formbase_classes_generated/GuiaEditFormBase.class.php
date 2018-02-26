@@ -149,6 +149,7 @@ abstract class GuiaEditFormBase extends QForm {
 	// Other ListBoxes (if applicable) via Unique ReverseReferences and ManyToMany References
 	protected $lstAduana;
 	protected $lstCobroCod;
+	protected $lstEstadisticaDeGuias;
 	protected $lstGuiaAduana;
 	protected $lstGuiaCheckpoints;
 	protected $lstGuiaModificada;
@@ -313,6 +314,7 @@ abstract class GuiaEditFormBase extends QForm {
 		$this->chkEnEfectivo = $this->mctGuia->chkEnEfectivo_Create();
 			$this->lstAduana = $this->mctGuia->lstAduana_Create();
 			$this->lstCobroCod = $this->mctGuia->lstCobroCod_Create();
+			$this->lstEstadisticaDeGuias = $this->mctGuia->lstEstadisticaDeGuias_Create();
 			$this->lstGuiaAduana = $this->mctGuia->lstGuiaAduana_Create();
 			$this->lstGuiaCheckpoints = $this->mctGuia->lstGuiaCheckpoints_Create();
 			$this->lstGuiaModificada = $this->mctGuia->lstGuiaModificada_Create();

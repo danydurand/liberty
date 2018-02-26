@@ -27,7 +27,24 @@
 			return sprintf('%s',  $this->strNumeGuia);
 		}
 
-		public function UltimaRuta() {
+        /**
+         * Gets associated EstadisticaDeGuias record
+         * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
+         * @return EstadisticaDeGuias
+         */
+        public function GetEstadisticaDeGuias($objOptionalClauses = null) {
+            if ((is_null($this->strNumeGuia)))
+                return null;
+
+            try {
+                return EstadisticaDeGuias::LoadByGuiaId($this->strNumeGuia, $objOptionalClauses);
+            } catch (QCallerException $objExc) {
+                $objExc->IncrementOffset();
+                throw $objExc;
+            }
+        }
+
+        public function UltimaRuta() {
             $strCadeSqlx  = "select codi_ruta as CodiRuta ";
             $strCadeSqlx .= "  from guia_ckpt ";
             $strCadeSqlx .= " where guia_ckpt.nume_guia = '".$this->NumeGuia."'";

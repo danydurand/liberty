@@ -37,6 +37,7 @@ class GuiaSearchForm extends FormularioBaseKaizen {
     protected $lstCodiCkpt;
     protected $chkMostQuer;
     protected $btnExpoExce;
+    protected $btnExpoEsta;
     protected $txtSepaColu;
     protected $lstReceOrig;
 
@@ -82,6 +83,7 @@ class GuiaSearchForm extends FormularioBaseKaizen {
         $this->btnSave->Text = TextoIcono('search fa-lg','Buscar');
         $this->btnSave->ActionParameter = "B";
         $this->btnExpoExce_Create();
+        $this->btnExpoEsta_Create();
         $this->txtSepaColu_Create();
     }
 
@@ -299,7 +301,7 @@ class GuiaSearchForm extends FormularioBaseKaizen {
         $this->chkMostQuer = new QCheckBox($this);
         $this->chkMostQuer->Name = QApplication::Translate('Mostrar Query ?');
         $this->chkMostQuer->Checked = false;
-        if (in_array($this->objUsuario->LogiUsua,array("ddurand","ianzola"))) {
+        if (in_array($this->objUsuario->LogiUsua,array("ddurand"))) {
             $this->chkMostQuer->Visible = true;
         } else {
             $this->chkMostQuer->Visible = false;
@@ -313,6 +315,14 @@ class GuiaSearchForm extends FormularioBaseKaizen {
         $this->btnExpoExce->HtmlEntities = false;
         $this->btnExpoExce->CssClass = 'btn btn-info btn-sm';
         $this->btnExpoExce->AddAction(new QClickEvent(), new QServerAction('btnSave_Click'));
+    }
+
+    protected function btnExpoEsta_Create() {
+        $this->btnExpoEsta = new QButtonP($this);
+        $this->btnExpoEsta->Text = '<i class="fa fa-file-excel-o fa-lg"></i> Estadis. Guias';
+        $this->btnExpoEsta->ActionParameter = "E";
+        $this->btnExpoEsta->HtmlEntities = false;
+        $this->btnExpoEsta->AddAction(new QClickEvent(), new QServerAction('btnSave_Click'));
     }
 
     protected function txtSepaColu_Create() {
@@ -435,60 +445,60 @@ class GuiaSearchForm extends FormularioBaseKaizen {
         $objUsuaCrea = null;
         $strMensMost = '';
         $strCadeSqlx = "
-            select  g.nume_guia,
-                    g.guia_externa,
-                    g.cliente_id,
-                    m.codigo_interno,
-                    date_format(g.fech_guia, '%d/%m/%Y') fech_guia,
-                    g.esta_orig,
-                    g.receptoria_origen,
-                    g.esta_dest,
-                    g.receptoria_destino,
-                    substring(t.descripcion,1,3) modalidad_pago,
-                    if (g.sistema_id = 'int', g.dire_remi, g.nomb_remi) remitente,
-                    g.nomb_dest,
-                    g.peso_guia,
-                    g.cant_ayudantes peso_volum,
-                    g.cant_piez,
-                    g.valor_declarado,
-                    g.entregado_a,
-                    date_format(g.fecha_entrega, '%d/%m/%Y') fecha_entrega,
-                    g.hora_entrega,
-                    g.codi_ckpt,
-                    g.esta_ckpt,
-                    date_format(g.fech_ckpt, '%d/%m/%Y') fech_ckpt,
-                    g.hora_ckpt,
-                    u.logi_usua usua_ckpt,
-                    (select codi_ruta
-                       from guia_ckpt 
-                      where guia_ckpt.nume_guia = g.nume_guia
-                        and length(codi_ruta) > 0  
-                      order by fech_ckpt desc,
-                               hora_ckpt desc 
-                      limit 1) as codi_ruta,
-                    if (g.flete_directo, 'X', '') flete_directo,
-                    g.guia_retorno,
-                    g.porcentaje_iva,
-                    g.monto_iva,
-                    g.porcentaje_seguro,
-                    g.monto_seguro,
-                    g.monto_base,
-                    g.total_int_local,
-                    g.monto_franqueo,
-                    g.monto_total,
-                    g.sistema_id,
-                    c.email,
-                    g.desc_cont,
-                    g.observacion
-             from   guia g left join cliente_i c
-               on   g.cliente_id = c.id
-                    left join master_cliente m
-               on   m.codi_clie = g.codi_clie
-                    inner join tipo_guia_type t
-               on   g.tipo_guia = t.id
-                    left join usuario u
-               on   g.usua_ckpt = u.codi_usua
-            where   1 = 1
+            select g.nume_guia,
+                   g.guia_externa,
+                   g.cliente_id,
+                   m.codigo_interno,
+                   date_format(g.fech_guia, '%d/%m/%Y') fech_guia,
+                   g.esta_orig,
+                   g.receptoria_origen,
+                   g.esta_dest,
+                   g.receptoria_destino,
+                   substring(t.descripcion,1,3) modalidad_pago,
+                   if (g.sistema_id = 'int', g.dire_remi, g.nomb_remi) remitente,
+                   g.nomb_dest,
+                   g.peso_guia,
+                   g.cant_ayudantes peso_volum,
+                   g.cant_piez,
+                   g.valor_declarado,
+                   g.entregado_a,
+                   date_format(g.fecha_entrega, '%d/%m/%Y') fecha_entrega,
+                   g.hora_entrega,
+                   g.codi_ckpt,
+                   g.esta_ckpt,
+                   date_format(g.fech_ckpt, '%d/%m/%Y') fech_ckpt,
+                   g.hora_ckpt,
+                   u.logi_usua usua_ckpt,
+                   (select codi_ruta
+                      from guia_ckpt 
+                     where guia_ckpt.nume_guia = g.nume_guia
+                       and length(codi_ruta) > 0  
+                     order by fech_ckpt desc,
+                              hora_ckpt desc 
+                     limit 1) as codi_ruta,
+                   if (g.flete_directo, 'X', '') flete_directo,
+                   g.guia_retorno,
+                   g.porcentaje_iva,
+                   g.monto_iva,
+                   g.porcentaje_seguro,
+                   g.monto_seguro,
+                   g.monto_base,
+                   g.total_int_local,
+                   g.monto_franqueo,
+                   g.monto_total,
+                   g.sistema_id,
+                   c.email,
+                   g.desc_cont,
+                   g.observacion
+              from guia g left join cliente_i c
+                on g.cliente_id = c.id
+                   left join master_cliente m
+                on m.codi_clie = g.codi_clie
+                   inner join tipo_guia_type t
+                on g.tipo_guia = t.id
+                   left join usuario u
+                on g.usua_ckpt = u.codi_usua
+             where 1 = 1
         ";
         $objClausula = QQ::Clause();
         //------------------------------------------------------------------------------
@@ -617,10 +627,10 @@ class GuiaSearchForm extends FormularioBaseKaizen {
                         $objReceptoria = $this->lstCodiRece->SelectedValue;
                         $strComeRece = "ENTREGADO POR TAQUILLA (".$objReceptoria->Siglas.")";
                         $strCadeSqlx .= " and exists (select null 
-                                                  from guia_ckpt k
-                                                 where k.nume_guia = g.nume_guia 
-                                                   and k.codi_ckpt = 'OK'
-                                                   and k.text_obse = '$strComeRece') ";
+                                                        from guia_ckpt k
+                                                       where k.nume_guia = g.nume_guia 
+                                                         and k.codi_ckpt = 'OK'
+                                                         and k.text_obse = '$strComeRece') ";
                     }
                 } else {
                     $objClausula[] = QQ::NotEqual(QQN::Guia()->CodiCkpt,'OK');
@@ -646,10 +656,10 @@ class GuiaSearchForm extends FormularioBaseKaizen {
                 $objClausula[] = QQ::Equal(QQN::Guia()->GuiaCkptAsNume->CodiCkpt,'TR');
                 $objClausula[] = QQ::Between(QQN::Guia()->GuiaCkptAsNume->FechCkpt,$dttFechInic,$dttFechFina);
                 $strCadeSqlx  .= " and exists (select null 
-                                             from guia_ckpt k
-                                            where k.nume_guia = g.nume_guia 
-                                              and k.codi_ckpt = 'TR'
-                                              and k.fech_ckpt between '$dttFechInic' and '$dttFechFina') ";
+                                                 from guia_ckpt k
+                                                where k.nume_guia = g.nume_guia 
+                                                  and k.codi_ckpt = 'TR'
+                                                  and k.fech_ckpt between '$dttFechInic' and '$dttFechFina') ";
             }
             if (strlen($this->txtUsuaPodx->Text)) {
                 $objClausula[] = QQ::Like(QQN::Guia()->UsuarioPod,$objUsuaPodx->CodiUsua);
@@ -673,7 +683,7 @@ class GuiaSearchForm extends FormularioBaseKaizen {
                 echo $strCadeSqlx;
                 return;
             }
-            if (count($objClausula)){
+            if (count($objClausula) > 1){
                 $intHayxRegi = Guia::QueryCount(QQ::AndCondition($objClausula));
                 if ($intHayxRegi > 0) {
                     if ($intHayxRegi > 3500 && $strParameter != 'K') {
@@ -701,11 +711,7 @@ class GuiaSearchForm extends FormularioBaseKaizen {
                                 }
                                 $_SESSION['CondWher'] = serialize($objClausula);
                                 $_SESSION['CritSqlx'] = serialize($strCadeSqlx);
-                                if ($intHayxRegi <= 5000) {
-                                    QApplication::Redirect('repo_guias_newxls_sql.php');
-                                } else {
-                                    QApplication::Redirect('repo_guias_xls_sql.php');
-                                }
+                                QApplication::Redirect('repo_guias_xls_sql.php');
                                 break;
                             default:
                                 $strMensMost = 'No se ha definido el Formato del Reporte!';

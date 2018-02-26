@@ -293,6 +293,13 @@
 		QApplicationBase::$ClassFile['estadisticadeclientesmetacontrol'] = __META_CONTROLS__ . '/EstadisticaDeClientesMetaControl.class.php';
 		QApplicationBase::$ClassFile['estadisticadeclientesdatagrid'] = __META_CONTROLS__ . '/EstadisticaDeClientesDataGrid.class.php';
 
+	// ClassPaths for the EstadisticaDeGuias class
+		QApplicationBase::$ClassFile['estadisticadeguias'] = __MODEL__ . '/EstadisticaDeGuias.class.php';
+		QApplicationBase::$ClassFile['qqnodeestadisticadeguias'] = __MODEL__ . '/EstadisticaDeGuias.class.php';
+		QApplicationBase::$ClassFile['qqreversereferencenodeestadisticadeguias'] = __MODEL__ . '/EstadisticaDeGuias.class.php';
+		QApplicationBase::$ClassFile['estadisticadeguiasmetacontrol'] = __META_CONTROLS__ . '/EstadisticaDeGuiasMetaControl.class.php';
+		QApplicationBase::$ClassFile['estadisticadeguiasdatagrid'] = __META_CONTROLS__ . '/EstadisticaDeGuiasDataGrid.class.php';
+
 	// ClassPaths for the Estado class
 		QApplicationBase::$ClassFile['estado'] = __MODEL__ . '/Estado.class.php';
 		QApplicationBase::$ClassFile['qqnodeestado'] = __MODEL__ . '/Estado.class.php';

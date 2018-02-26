@@ -1,19 +1,17 @@
 <?php
 #------------------------------------------------------------
-# Programa      : repo_guias_xls_sql.php
-# Realizado por : Irán Anzola
-# Fecha Elab.   : 27/06/2017
-# Descripcion   : Reporte de Guias en Excel con criterio SQL
+# Programa      : repo_estadistica_de_guias.php
+# Realizado por : Daniel Durand
+# Fecha Elab.   : 26/02/2018
+# Descripcion   : Reporte Estadistico de Guias
 #------------------------------------------------------------
 require_once('qcubed.inc.php');
 require_once(__APP_INCLUDES__.'/protected.inc.php');
 require_once(__APP_INCLUDES__.'/FormularioBaseKaizen.class.php');
-// echo "1<br>";
-//------------------------------------------------------------------
-// La variable de Sesion llamada 'CritImpr' contiene los valores
-// que definen el conjunto de registros que debe salir en el
-// Reporte
-//------------------------------------------------------------------
+//-----------------------------------------------------------------------------------------------------
+// La variable de Sesion llamada 'CritImpr' contiene los valores que definen el conjunto de registros
+// que debe salir en el Reporte
+//-----------------------------------------------------------------------------------------------------
 $strSepaColu = ';';
 if (isset($_SESSION['SepaColu'])) {
     $strSepaColu = $_SESSION['SepaColu'];
@@ -71,21 +69,7 @@ $arrEnca2XLS = array(
     'F.Pago',
     'T. Documento',
     'Nro Documento',
-    'Contenido',
-    'F. PickUp',
-    'F. Traslado',
-    'F. Arribo',
-    'F. En Ruta',
-    'F. Entrega',
-    'D. PickUp',
-    'D. Traslado',
-    'D. Arribo',
-    'D. En Ruta',
-    'D. Entrega',
-    'Total Dias',
-    'D. Sin Entrega',
-    'D. Sin Actualizar'
-    );
+    'Contenido');
 // echo "4<br>";
 //----------------------------------------------------------------------
 // El vector de encabezados, se lleva al archivo plano
@@ -113,7 +97,6 @@ while ($intCantRepe <= $intCantCicl) {
     // Recorro la lista de registros, armando el vector de datos
     //--------------------------------------------------------------
     foreach ($arrDatoRepo as $objTabla) {
-        $objEstaGuia = $objTabla->GetEstadisticaDeGuias();
         // echo"Guia: ".$objTabla->NumeGuia."<br>";
         $strNumeGuia = " ".quitaCaracter($strSepaColu,$objTabla->NumeGuia);
         $strNumeTrac = QuitarCaracteresEspeciales2(utf8_decode(quitaCaracter($strSepaColu,$objTabla->GuiaExterna)));
@@ -187,20 +170,6 @@ while ($intCantRepe <= $intCantCicl) {
             $strNumeDocu = 0;
         }
         $strDescCont = QuitarCaracteresEspeciales2(utf8_decode(quitaCaracter($strSepaColu,$objTabla->DescCont)));
-        // Estadistica de la guia
-        $strFechPick = $objEstaGuia->FechaPickup ? $objEstaGuia->FechaPickup->__toString("DD/MM/YYYY") : null;
-        $strFechTras = $objEstaGuia->FechaTraslado ? $objEstaGuia->FechaTraslado->__toString("DD/MM/YYYY") : null;
-        $strFechArri = $objEstaGuia->FechaArribo ? $objEstaGuia->FechaArribo->__toString("DD/MM/YYYY") : null;
-        $strFechRuta = $objEstaGuia->FechaRuta ? $objEstaGuia->FechaRuta->__toString("DD/MM/YYYY") : null;
-        $strFechEntr = $objEstaGuia->FechaEntrega ? $objEstaGuia->FechaEntrega->__toString("DD/MM/YYYY") : null;
-        $intDiasPick = $objEstaGuia->DiasPickup;
-        $intDiasTras = $objEstaGuia->DiasTraslado;
-        $intDiasArri = $objEstaGuia->DiasArribo;
-        $intDiasRuta = $objEstaGuia->DiasRuta;
-        $intDiasEntr = $objEstaGuia->DiasEntrega;
-        $intAcumEntr = $objEstaGuia->AcumuladoEntrega;
-        $intSinxEntr = $objEstaGuia->AcumuladoSinEntrega;
-        $intDiasSina = $objEstaGuia->DiasSinActualizar;
 
         // echo5;
         $arrLineArch = array(
@@ -243,20 +212,7 @@ while ($intCantRepe <= $intCantCicl) {
             $strFechPago,
             $strTipoDocu,
             $strNumeDocu,
-            $strDescCont,
-            $strFechPick,
-            $strFechTras,
-            $strFechArri,
-            $strFechRuta,
-            $strFechEntr,
-            $intDiasPick,
-            $intDiasTras,
-            $intDiasArri,
-            $intDiasRuta,
-            $intDiasEntr,
-            $intAcumEntr,
-            $intSinxEntr,
-            $intDiasSina
+            $strDescCont
         );
         // echo6;
         //----------------------------------------------------------------------

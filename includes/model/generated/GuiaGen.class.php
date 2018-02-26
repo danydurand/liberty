@@ -7383,11 +7383,7 @@
 		// Related Objects' Methods for GuiaCkptAsNume
 		//-------------------------------------------------------------------
 
-		/**
-		 * Gets all associated GuiaCkptsAsNume as an array of GuiaCkpt objects
-		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
-		 * @return GuiaCkpt[]
-		*/
+
 		public function GetGuiaCkptAsNumeArray($objOptionalClauses = null) {
 			if ((is_null($this->strNumeGuia)))
 				return array();

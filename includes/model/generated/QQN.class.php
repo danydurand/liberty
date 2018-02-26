@@ -253,6 +253,12 @@
 			return new QQNodeEstadisticaDeClientes('estadistica_de_clientes', null, null);
 		}
 		/**
+		 * @return QQNodeEstadisticaDeGuias
+		 */
+		static public function EstadisticaDeGuias() {
+			return new QQNodeEstadisticaDeGuias('estadistica_de_guias', null, null);
+		}
+		/**
 		 * @return QQNodeEstado
 		 */
 		static public function Estado() {
