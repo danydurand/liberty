@@ -95,18 +95,22 @@ if ($blnTodoOkey) {
 
 		$intY += 4;
 		$pdf->SetXY($intX,$intY);
-		$pdf->Cell(30,5,substr($objGuia->DireDest,66,120),0);
+		$pdf->Cell(30,5,substr($objGuia->DireDest,60,60),0);
 
 		$intY += 4;
 		$pdf->SetXY($intX,$intY);
-		$pdf->Cell(30,5,substr($objGuia->DireDest,120,180),0);
+		$pdf->Cell(30,5,substr($objGuia->DireDest,120,60),0);
+
+		$intY += 4;
+		$pdf->SetXY($intX,$intY);
+		$pdf->Cell(30,5,substr($objGuia->DireDest,180,60),0);
 
 		$intY += 4;
 		$pdf->SetXY($intX,$intY);
 		$pdf->Cell(30,5,'Telefonos: '.$objGuia->TeleDest,0);
 
 		$pdf->SetFont('Times','B',10);
-		$intY += 8;
+		$intY += 4;
 		$pdf->SetXY($intX+45,$intY);
 		$pdf->Cell(30,5,'Guia #'.$objGuia->NumeGuia.' '.$objGuia->EstaOrig.' - '.$objGuia->EstaDest,0);
 
