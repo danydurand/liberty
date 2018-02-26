@@ -188,19 +188,35 @@ while ($intCantRepe <= $intCantCicl) {
         }
         $strDescCont = QuitarCaracteresEspeciales2(utf8_decode(quitaCaracter($strSepaColu,$objTabla->DescCont)));
         // Estadistica de la guia
-        $strFechPick = $objEstaGuia->FechaPickup ? $objEstaGuia->FechaPickup->__toString("DD/MM/YYYY") : null;
-        $strFechTras = $objEstaGuia->FechaTraslado ? $objEstaGuia->FechaTraslado->__toString("DD/MM/YYYY") : null;
-        $strFechArri = $objEstaGuia->FechaArribo ? $objEstaGuia->FechaArribo->__toString("DD/MM/YYYY") : null;
-        $strFechRuta = $objEstaGuia->FechaRuta ? $objEstaGuia->FechaRuta->__toString("DD/MM/YYYY") : null;
-        $strFechEntr = $objEstaGuia->FechaEntrega ? $objEstaGuia->FechaEntrega->__toString("DD/MM/YYYY") : null;
-        $intDiasPick = $objEstaGuia->DiasPickup;
-        $intDiasTras = $objEstaGuia->DiasTraslado;
-        $intDiasArri = $objEstaGuia->DiasArribo;
-        $intDiasRuta = $objEstaGuia->DiasRuta;
-        $intDiasEntr = $objEstaGuia->DiasEntrega;
-        $intAcumEntr = $objEstaGuia->AcumuladoEntrega;
-        $intSinxEntr = $objEstaGuia->AcumuladoSinEntrega;
-        $intDiasSina = $objEstaGuia->DiasSinActualizar;
+        if ($objEstaGuia) {
+            $strFechPick = $objEstaGuia->FechaPickup ? $objEstaGuia->FechaPickup->__toString("DD/MM/YYYY") : null;
+            $strFechTras = $objEstaGuia->FechaTraslado ? $objEstaGuia->FechaTraslado->__toString("DD/MM/YYYY") : null;
+            $strFechArri = $objEstaGuia->FechaArribo ? $objEstaGuia->FechaArribo->__toString("DD/MM/YYYY") : null;
+            $strFechRuta = $objEstaGuia->FechaRuta ? $objEstaGuia->FechaRuta->__toString("DD/MM/YYYY") : null;
+            $strFechEntr = $objEstaGuia->FechaEntrega ? $objEstaGuia->FechaEntrega->__toString("DD/MM/YYYY") : null;
+            $intDiasPick = $objEstaGuia->DiasPickup;
+            $intDiasTras = $objEstaGuia->DiasTraslado;
+            $intDiasArri = $objEstaGuia->DiasArribo;
+            $intDiasRuta = $objEstaGuia->DiasRuta;
+            $intDiasEntr = $objEstaGuia->DiasEntrega;
+            $intAcumEntr = $objEstaGuia->AcumuladoEntrega;
+            $intSinxEntr = $objEstaGuia->AcumuladoSinEntrega;
+            $intDiasSina = $objEstaGuia->DiasSinActualizar;
+        } else {
+            $strFechPick = null;
+            $strFechTras = null;
+            $strFechArri = null;
+            $strFechRuta = null;
+            $strFechEntr = null;
+            $intDiasPick = null;
+            $intDiasTras = null;
+            $intDiasArri = null;
+            $intDiasRuta = null;
+            $intDiasEntr = null;
+            $intAcumEntr = null;
+            $intSinxEntr = null;
+            $intDiasSina = null;
+        }
 
         // echo5;
         $arrLineArch = array(
