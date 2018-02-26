@@ -1,0 +1,157 @@
+<?php
+//----------------------------------------------------------------------------------
+// Programa      : copiar_tarifa.php
+// Realizado por : Daniel Durand
+// Fecha Elab.   : 29/01/2018
+// Descripcion   : Este programa copia la estructura de una Tarifa en otra.
+//                 Fue diseñado para ahorrar tiempo digitando los rangos de peso
+//                 que usualmente constituyen una Tarifa.
+//----------------------------------------------------------------------------------
+require_once('qcubed.inc.php');
+require_once(__APP_INCLUDES__.'/protected.inc.php');
+require_once(__APP_INCLUDES__.'/FormularioBaseKaizen.class.php');
+
+class CopiarTarifa extends FormularioBaseKaizen {
+    /**
+     * @var $objTariOrig FacTarifa
+     */
+    protected $objTariOrig;
+    protected $txtNombOrig;
+    protected $txtNombNuev;
+
+    protected function SetupValores() {
+        $intTariOrig = QApplication::PathInfo(0);
+        $this->objTariOrig = FacTarifa::Load($intTariOrig);
+        if (!$this->objTariOrig) {
+            $this->mensaje('La tarifa original no existe','m','d','',__iHAND__);
+            $this->btnSave->Visible = false;
+        } else {
+            $this->mensaje();
+            $this->btnSave->Visible = true;
+        }
+    }
+
+    protected function Form_Create() {
+
+        parent::Form_Create();
+
+        $this->lblTituForm->Text = 'Copiar Tarifa';
+
+        $this->SetupValores();
+
+        $this->txtNombOrig_Create();
+        $this->txtNombNuev_Create();
+
+        $this->btnSave->Text = TextoIcono('clone','Copiar');
+    }
+
+    //------------------------------------
+    // Creando los objetos del Formulario
+    //------------------------------------
+
+    protected function txtNombOrig_Create() {
+        $this->txtNombOrig = new QTextBox($this);
+        $this->txtNombOrig->Name = 'Tarifa Original';
+        $this->txtNombOrig->Text = $this->objTariOrig ? $this->objTariOrig->Descripcion : 'N/A';
+        $this->txtNombOrig->Required = true;
+        $this->txtNombOrig->Enabled = false;
+        $this->txtNombOrig->ForeColor = 'blue';
+    }
+
+    protected function txtNombNuev_Create() {
+        $this->txtNombNuev = new QTextBox($this);
+        $this->txtNombNuev->Name = 'Nombre de la nueva Tarifa';
+        $this->txtNombNuev->Required = true;
+        $this->txtNombNuev->SetCustomAttribute('onblur',"this.value=this.value.toUpperCase()");
+    }
+
+    //-------------------------------------
+    // Acciones relacionadas a los objetos
+    //-------------------------------------
+
+    protected function btnCancel_Click() {
+        $objUltiAcce = PilaAcceso::Pop('D');
+        QApplication::Redirect(__SIST__."/".$objUltiAcce->__toString());
+    }
+
+    protected function btnSave_Click($strFormId, $strControlId, $strParameter) {
+        //----------------------------------------------------------------
+        // El nombre de la tarifa que se pretende crear, no debe existir
+        //----------------------------------------------------------------
+        $this->mensaje();
+        $blnTodoOkey   = true;
+        $objClauWher   = QQ::Clause();
+        $objClauWher[] = QQ::Equal(QQN::FacTarifa()->Descripcion,$this->txtNombNuev->Text);
+        $blnTariExis   = FacTarifa::QueryCount(QQ::AndCondition($objClauWher));
+        if ($blnTariExis) {
+            $blnTodoOkey = false;
+            $this->mensaje('Ya existe una Tarifa con ese Nombre, elija otro !!!','m','d','',__iHAND__);
+        }
+        if ($blnTodoOkey) {
+            //------------------------------------------------
+            // Se copian los datos de cabezera de la tarifa
+            //------------------------------------------------
+            $objNuevTari = new FacTarifa();
+            $objNuevTari->Descripcion          = $this->txtNombNuev->Text;
+            $objNuevTari->TipoTarifa           = $this->objTariOrig->TipoTarifa;
+            $objNuevTari->PesoInicial          = $this->objTariOrig->PesoInicial;
+            $objNuevTari->ValorIncremento      = $this->objTariOrig->ValorIncremento;
+            $objNuevTari->MedidaIncremento     = $this->objTariOrig->MedidaIncremento;
+            $objNuevTari->PorcentajeSobreValor = $this->objTariOrig->PorcentajeSobreValor;
+            $objNuevTari->VolumenParaDscto     = $this->objTariOrig->VolumenParaDscto;
+            $objNuevTari->DsctoPorVolumen      = $this->objTariOrig->DsctoPorVolumen;
+            $objNuevTari->PesoParaDscto        = $this->objTariOrig->PesoParaDscto;
+            $objNuevTari->DsctoPorPeso         = $this->objTariOrig->DsctoPorPeso;
+            $objNuevTari->MontoMinimo          = $this->objTariOrig->MontoMinimo;
+            $objNuevTari->CostoParadaAdicional = $this->objTariOrig->CostoParadaAdicional;
+            $objNuevTari->CostoAyudante        = $this->objTariOrig->CostoAyudante;
+            $objNuevTari->IncrementoUrbano     = $this->objTariOrig->IncrementoUrbano;
+            $objNuevTari->PesoInicialUrbano    = $this->objTariOrig->PesoInicialUrbano;
+            $objNuevTari->Save();
+            //----------------------------------------------------------------
+            // Se arma un vector con todos los registros de la Tarifa Origen
+            //----------------------------------------------------------------
+            $arrTariOrig = TarifaPeso::LoadArrayByTarifaId($this->objTariOrig->Id);
+            //-----------------------------------------------------
+            // Se borran todos los registros de la Tarifa Destino
+            //-----------------------------------------------------
+            // TarifaPeso::BorrarContenidoTarifaPeso($this->lstTariDest->SelectedValue);
+            //------------------------------------------------------------------
+            // Se copian los registro de la Tarifa Origen en la Tarifa Destino
+            //------------------------------------------------------------------
+            $intCantRegi = 0;
+            foreach ($arrTariOrig as $objTariOrig) {
+                $objTariDest = new TarifaPeso();
+                $objTariDest->TarifaId       = $objNuevTari->Id;
+                $objTariDest->TipoId         = $objTariOrig->TipoId;
+                $objTariDest->PesoInicial    = $objTariOrig->PesoInicial;
+                $objTariDest->PesoFinal      = $objTariOrig->PesoFinal;
+                $objTariDest->MontoTarifa    = $objTariOrig->MontoTarifa;
+                $objTariDest->FranqueoPostal = $objTariOrig->FranqueoPostal;
+                $objTariDest->MontoBase      = $objTariOrig->MontoBase;
+                $objTariDest->PorcentajeFp   = $objTariOrig->PorcentajeFp;
+                $objTariDest->Save();
+                $intCantRegi++;
+            }
+            //------------------------------------------------------
+            // Nombre de la Tarifa Origen y el de la Tarifa Destino
+            //------------------------------------------------------
+            $strTariOrig = $this->txtNombOrig->Text;
+            $strTariDest = $this->txtNombNuev->Text;
+            //----------------------------------------------------
+            // Se guarda la acción ejecutada en el log de cambios
+            //----------------------------------------------------
+            $arrLogxCamb['strNombTabl'] = 'FacTarifa';
+            $arrLogxCamb['intRefeRegi'] = $this->objTariOrig->Id;
+            $arrLogxCamb['strNombRegi'] = "Tarifa Peso de $strTariOrig a $strTariDest";
+            $arrLogxCamb['strDescCamb'] = "Copiada";
+            $arrLogxCamb['strEnlaEnti'] = __SIST__.'/copiar_tarifa.php';
+            LogDeCambios($arrLogxCamb);
+            // $this->mensaje("Transacción Exitosa. Se copiaron $intCantRegi registro(s)",'','','',__iCHEC__);
+            $strEditNuev = __SIST__.'/fac_tarifa_edit.php/'.$objNuevTari->Id;
+            QApplication::Redirect($strEditNuev);
+        }
+    }
+}
+
+CopiarTarifa::Run('CopiarTarifa');
