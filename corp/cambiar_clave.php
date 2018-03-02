@@ -79,7 +79,7 @@ class CambiarClave extends FormularioBaseKaizen {
         //--------------------------------------
         // Se deja constancia en el Historico
         //--------------------------------------
-        $arrLogxCamb['strNombTabl'] = 'Usuario Connect';
+        $arrLogxCamb['strNombTabl'] = 'Usuario CORP';
         $arrLogxCamb['intRefeRegi'] = $this->objUsuario->Id;
         $arrLogxCamb['strNombRegi'] = $this->objUsuario->LogiUsua;
         $arrLogxCamb['strDescCamb'] = "Cambio de Clave";

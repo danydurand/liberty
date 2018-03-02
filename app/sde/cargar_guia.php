@@ -1471,6 +1471,8 @@ class CargarGuia extends FormularioBaseKaizen {
 
                 $this->btnImprGuia_Create();
                 $this->btnImprGuia->Visible = true;
+                $this->btnImprPodx->Visible = true;
+                $this->btnImprEtiq->Visible = true;
 
                 if ($this->objGuia->SistemaId == 'int') {
                     $this->btnSave->Visible = false;
@@ -1542,6 +1544,8 @@ class CargarGuia extends FormularioBaseKaizen {
                     $this->CargarVehiculos();
                 }
                 $this->btnImprGuia->Visible = false;
+                $this->btnImprPodx->Visible = false;
+                $this->btnImprEtiq->Visible = false;
             }
             $this->txtCodiInte->SetFocus();
         } else {
@@ -1596,9 +1600,17 @@ class CargarGuia extends FormularioBaseKaizen {
                 $this->CargarVehiculos();
             }
             $this->btnImprGuia->Visible = false;
+            $this->btnImprPodx->Visible = false;
+            $this->btnImprEtiq->Visible = false;
         }
         // $this->txtCodiInte->SetFocus();
         // t('Enabled del Peso: '.$this->txtPesoGuia->Enabled);
+        if ($this->blnEditMode) {
+            $this->lblTituForm->Text = 'Cargar Guia (Editar)';
+        } else {
+            $this->lblTituForm->Text = 'Cargar Guia (Crear)';
+        }
+
     }
 
     protected function txtCodiInte_Blur() {

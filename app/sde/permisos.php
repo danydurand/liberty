@@ -240,7 +240,7 @@ class Permisos extends FormularioBaseKaizen {
             $strCadeSqlx .= "values (default,$intGrupSele,$intOpciSele)";
             $objDbResult  = $objDatabase->NonQuery($strCadeSqlx);
         }
-        $this->mensaje('Transaccion Exitosa','m','s','check');
+        $this->mensaje('Transaccion Exitosa !','m','s','',__iCHEC__);
     }
 
     protected function btnCancel_Click() {

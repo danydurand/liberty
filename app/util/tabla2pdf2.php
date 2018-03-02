@@ -12,9 +12,9 @@ session_start();
 //----------------------
 //require_once('/appl/custom/setrex_dsp/includes/config.php');
 //echo 1;
-$dbhost = 'localhost';
+$dbhost = 'srvlufemandb';
 $dbuser = 'root';
-$dbpasswd = 'g@lileo1303';
+$dbpasswd = 'hiroshima71';
 $dbname ='liberty';
 require_once('/appl/lib/db.php');
 require_once('/appl/lib/repo_totales_pdflib.php');

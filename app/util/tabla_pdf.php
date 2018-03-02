@@ -10,7 +10,7 @@ session_start();
 //--------------------------
 // Se Cargan las Librerias
 //--------------------------
-$dbhost = 'localhost';
+$dbhost = 'rvlufemandb;
 $dbuser = 'root';
 $dbpasswd = 'hiroshima71';
 $dbname ='liberty';
