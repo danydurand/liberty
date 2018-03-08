@@ -142,12 +142,12 @@ if ($intCantProc > 0) {
 	//--------------------------------
 	// Envio el reporte por e-mail
 	//--------------------------------
-	$to = array('aalvarado@libertyexpress.com','danydurand@gmail.com');
+	$to = array('aalvarado@libertyexpress.com','incidencias@libertyexpress.com','danydurand@gmail.com');
 	$attach = 'borrar_guias_no_recibidas_72Hrs.txt';
 	$strBodyMail = redactarCorreoCliente($intCantProc);
 	$mimemail = new MIMEMAIL('HTML');
 	$mimemail->senderName = 'Liberty Express';
-	$mimemail->senderMail = 'localhost@app-libertyexpress.com';
+	$mimemail->senderMail = 'notificaciones@app-libertyexpress.com';
 	$mimemail->subject = 'Control de Guias NR/RP/VR';
 	$mimemail->body = $strBodyMail;
 	$mimemail->attachments[] = $attach;
@@ -187,18 +187,16 @@ function redactarCorreoCliente($intCantProc) {
 				<p>Por favor, revise(n) el archivo plano adjunto para más información.</p>
 				<br><hr>
 				<span style="font-style: italic; color:#555; margin-top: 2em;">
-					: : : El Equipo de LibertyExpress : : :
+					: : : Lufeman Software, C.A. : : :
 				</span><br>
                 <span style="font-style: italic; color:#555;">
                      Por favor, no responda a este mensaje, fue enviado desde una dirección
-                     de correo electrónico no monitorizada. Este mensaje es un servicio de
-                     correo electrónico relacionado con su cuenta en LibertyExpress.
-                     Para información general o para solicitar ayuda con su
-                     cuenta de LibertyExpress, por favor contacte a nuestro departamento de
-                     Servicio al Cliente.
+                     de correo electrónico no monitorizada. 
+                     Para información general o para solicitar ayuda, por favor contáctenos enviando un correo
+                     a soportelufeman@gmail.com.
                 </span><br><br>
                 <span style="font-style: italic; color:#555;">Copyright©
-                    2017 LibertyExpress©, Todos los Derechos Reservados.
+                    2017 Lufeman Software, C.A.©, Todos los Derechos Reservados.
                 </span>
             </body>
         </html>

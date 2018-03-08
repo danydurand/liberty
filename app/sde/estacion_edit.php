@@ -259,6 +259,13 @@ class EstacionEditForm extends EstacionEditFormBase {
 	// Acciones relativas a los objetos 
 	//-----------------------------------
 
+    protected function btnLogxCamb_Click() {
+        $_SESSION['RegiRefe'] = $this->mctEstacion->Estacion->CodiEsta;
+        $_SESSION['TablRefe'] = 'Estacion';
+        $_SESSION['RegiReto'] = 'estacion_edit.php/'.$this->mctEstacion->Estacion->CodiEsta;
+        QApplication::Redirect(__SIST__.'/log_list.php');
+    }
+
     protected function validarCuenta($strFormId, $strControlId, $strParameter) {
         $strMensUsua = "<font color='red'> NO EXISTE CLIENTE CON ESTE CODIGO</font>";
         switch ($strParameter) {

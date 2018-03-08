@@ -49,24 +49,6 @@ $cabeceras .= 'Cc: magap2117@gmail.com' . "\r\n";
 // Enviarlo
 mail($para, $título, $mensaje, $cabeceras);
 
-/*
-// El mensaje
-$mensaje = "Línea Uno\r\nLínea Dos\r\nLínea Tres";
-// Si cualquier línea es más larga de 70 caracteres, se debería usar wordwrap()
-$mensaje = wordwrap($mensaje, 70, "\r\n");
-$cabeceras = 'From: notificaciones@libertyexpress.com';
-// Enviarlo
-mail('danydurand@gmail.com', 'Test desde el 244', $mensaje, $cabeceras);
-*/
-
-// $to                   = array('danydurand@gmail.com');
-// $mimemail             = new MIMEMAIL('plain/text');
-// $mimemail->senderName = 'Notificaciones Liberty';
-// $mimemail->senderMail = 'localhost@libertyexpress.com';
-// $mimemail->subject    = 'Purge de Datos';
-// $mimemail->body       = 'Esto es una prueba de envio de correos';
-// $mimemail->create();
-// $mimemail->send($to);
 
 echo "\nListo, ya mande el correo\n";
 ?>

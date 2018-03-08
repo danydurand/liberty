@@ -755,10 +755,9 @@ class CargarGuia extends FormularioBaseKaizen {
             $strMensUsua  = 'El Valor Declarado debe estar comprendido entre Bs. '.nf($decValoMini).' - Bs. '.nf($decValoMaxi);
             $strMensUsua .= '. Se le recuerda también que no se aseguran líquidos ni artículos de vidrio.';
             $this->mensaje($strMensUsua,'m','w','',__iEXCL__);
-            //---------------------------------------------------------------
-            // Si el Valor Declarado es Mayor al Valor Máximo Reglamentario,
-            // entonces se advierte la situación al usuario.
-            //---------------------------------------------------------------
+            //--------------------------------------------------------------------------------------------
+            // Si el V. Declarado es Mayor al Valor Máximo establecido entonces se advierte la situación.
+            //--------------------------------------------------------------------------------------------
             if ($this->decValoDecl > $decValoMaxi) {
                 $blnExceMaxi = true;
                 $this->decValoDecl = $decValoMaxi;
@@ -771,10 +770,9 @@ class CargarGuia extends FormularioBaseKaizen {
                     $this->txtValoDecl->Text = $decValoMaxi;
                 }
             } elseif ($this->decValoDecl < $decValoMini) {
-                //---------------------------------------------------------------
-                // Si el Valor Declarado es Menor al Valor Mínimo Reglamentario,
-                // entonces se advierte la situación al usuario.
-                //---------------------------------------------------------------
+                //-------------------------------------------------------------------------------------------
+                // Si el V.Declarado es Menor al Valor Mínimo establecido entonces se advierte la situación
+                //-------------------------------------------------------------------------------------------
                 $blnExceMini = true;
                 $strMensAdve = 'El Monto Mínimo asegurable es de Bs. '.$decValoMini;
             }

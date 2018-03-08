@@ -10,8 +10,6 @@ session_start();
 //----------------------
 // Cargo las Librerias
 //----------------------
-//require_once('/appl/custom/setrex_dsp/includes/config.php');
-//echo 1;
 $dbhost = 'srvlufemandb';
 $dbuser = 'root';
 $dbpasswd = 'hiroshima71';

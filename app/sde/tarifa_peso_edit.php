@@ -76,17 +76,17 @@ class TarifaPesoEditForm extends TarifaPesoEditFormBase {
         $this->txtPorcentajeFp = $this->mctTarifaPeso->txtPorcentajeFp_Create();
         $this->txtPorcentajeFp->Name = '% de Franqueo Postal';
         $this->txtPorcentajeFp->HtmlAfter = ' %';
-        $this->txtPorcentajeFp->Width = 100;
-        $this->txtPorcentajeFp->Enabled = false;
-        $this->txtPorcentajeFp->ForeColor = 'blue';
+        $this->txtPorcentajeFp->Width = 30;
+//        $this->txtPorcentajeFp->Enabled = false;
+//        $this->txtPorcentajeFp->ForeColor = 'blue';
 
         $this->txtFranqueoPostal = $this->mctTarifaPeso->txtFranqueoPostal_Create();
         $this->txtFranqueoPostal->AddAction(new QBlurEvent(), new QAjaxAction('txtFranqueoPostal_Blur'));
         $this->txtFranqueoPostal->HtmlAfter = ' Bs';
         $this->txtFranqueoPostal->Width = 100;
-        if (!$this->mctTarifaPeso->EditMode) {
-            $this->txtFranqueoPostal->Text = 0;
-        }
+//        if (!$this->mctTarifaPeso->EditMode) {
+//            $this->txtFranqueoPostal->Text = 0;
+//        }
 
         $this->txtMontoBase = $this->mctTarifaPeso->txtMontoBase_Create();
         $this->txtMontoBase->Enabled = false;
@@ -213,9 +213,9 @@ class TarifaPesoEditForm extends TarifaPesoEditFormBase {
         //-----------------------------------------------------------------------------------------------------------
         // Si se supera la Validación de los campos, se procede a asignar el porcentaje de Franqueo correspondiente.
         //-----------------------------------------------------------------------------------------------------------
-        if ($blnTodoOkey) {
-            $this->txtPorcentajeFp->Text = asignarPorcFranqueo($this->txtPesoInicial->Text);
-        }
+//        if ($blnTodoOkey) {
+//            $this->txtPorcentajeFp->Text = asignarPorcFranqueo($this->txtPesoInicial->Text);
+//        }
     }
 
     protected function txtFranqueoPostal_Blur() {

@@ -1619,6 +1619,21 @@ function nombreDelDia() {
     return $mixRegiFech['NombDiax'];
 }
 
+function contarFeriadosSabadosDomingos($dttFechMayo,$dttFechMeno) {
+    $strCadeSqlx  = "select (fn_cantsados('$dttFechMeno','$dttFechMayo') ";
+    $strCadeSqlx .= "       + fn_cantferiados('$dttFechMeno','$dttFechMayo')) as  feri_sado";
+    $strCadeSqlx .= "  from t1 ";
+    $objDatabase = QApplication::$Database[1];
+    $objDbResult = $objDatabase->Query($strCadeSqlx);
+    $mixRegiFech = $objDbResult->FetchArray();
+    return $mixRegiFech['feri_sado'];
+}
+
+function diasHabilesTranscurridos($dttFechMayo,$dttFechMeno) {
+    return diasTranscurridos($dttFechMayo,$dttFechMeno) - contarFeriadosSabadosDomingos($dttFechMayo,$dttFechMeno);
+}
+
+/*
 function diasHabilesTranscurridos($dttFechMayo,$dttFechMeno) {
     //-------------------------------------------------------------
     // Se cuentan los dias, excluyendo los sabados y los domingos
@@ -1646,6 +1661,7 @@ function diasHabilesTranscurridos($dttFechMayo,$dttFechMeno) {
     }
     return $intDifeDias;
 }
+*/
 
 /**
  * Esta rutina devuelve el registro cuya clave coincida con los 2 primeros valores
@@ -1741,10 +1757,7 @@ function SumaRestaDiasAFecha($dttFechInic,$intCantDias,$strOperFech) {
 
 function DiasTranscurridos($dttFechFina,$dttFechInci) {
     $strCadeSqlx  = 'select datediff("'.$dttFechFina.'","'.$dttFechInci.'") as DiasTran';
-    $strCadeSqlx .= '  from sistema ';
-    $strCadeSqlx .= ' where 1 ';
-    $strCadeSqlx .= ' limit 1 ';
-    //   echo $strCadeSqlx."<br>\n";
+    $strCadeSqlx .= '  from t1 ';
     $objDatabase = QApplication::$Database[1];
     $objDbResult = $objDatabase->Query($strCadeSqlx);
     $mixRegiFech = $objDbResult->FetchArray();

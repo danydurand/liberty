@@ -27,11 +27,21 @@
 			return sprintf('%s',  $this->strNumeGuia);
 		}
 
-        /**
-         * Gets associated EstadisticaDeGuias record
-         * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
-         * @return EstadisticaDeGuias
-         */
+        public static function RecolectasPendientes($strCodiOrig, $objOptionalClauses = null) {
+            $strCadeSqlx  = "select distinct g.*,(fn_diastrans( now(), fech_guia ) - (fn_cantsados(fech_guia, now()) + fn_cantferiados(fech_guia, now()))) as dias_tran ";
+            $strCadeSqlx .= "  from guia g ";
+            $strCadeSqlx .= " where (fn_diastrans( now(), fech_guia ) - (fn_cantsados(fech_guia, now()) + fn_cantferiados(fech_guia, now()))) > 1  ";
+            $strCadeSqlx .= "   and g.esta_orig  = '$strCodiOrig'";
+            $strCadeSqlx .= "   and g.esta_ckpt  = g.esta_orig";
+            $strCadeSqlx .= "   and g.codi_ckpt  = 'RP'";
+            $strCadeSqlx .= " order by fech_ckpt desc, ";
+            $strCadeSqlx .= "          hora_ckpt desc ";
+//            echo "\n".$strCadeSqlx,"\n";
+            $objDatabase  = Guia::GetDatabase();
+            $objDbResult = $objDatabase->Query($strCadeSqlx);
+            return Guia::InstantiateDbResult($objDbResult);
+        }
+
         public function GetEstadisticaDeGuias($objOptionalClauses = null) {
             if ((is_null($this->strNumeGuia)))
                 return null;

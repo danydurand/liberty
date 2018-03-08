@@ -107,12 +107,12 @@ class RecepcionCarga extends FormularioBaseKaizen {
     }
 
     protected function obtenerGuiasDeLaMaster($strNumeVali){
-        $strCadeSqlx = "select nume_guia
-                        from sde_contenedor_guia_assn
-                       where nume_cont = '".$strNumeVali."'";
-        $objDatabase = SdeContenedor::GetDatabase();
-        $objDbResult = $objDatabase->Query($strCadeSqlx);
-        $arrGuiaMast = array();
+        $strCadeSqlx  = "select nume_guia ";
+        $strCadeSqlx .= "  from sde_contenedor_guia_assn ";
+        $strCadeSqlx .= " where nume_cont = '".$strNumeVali."'";
+        $objDatabase  = SdeContenedor::GetDatabase();
+        $objDbResult  = $objDatabase->Query($strCadeSqlx);
+        $arrGuiaMast  = array();
         while ($mixRegistro = $objDbResult->FetchArray()) {
             $arrGuiaMast[] = $mixRegistro['nume_guia'];
         }
@@ -167,7 +167,6 @@ class RecepcionCarga extends FormularioBaseKaizen {
                 // Se identifican y procesan las Guias asociadas a la Valija
                 //--------------------------------------------------------------
                 $blnTodoOkey = true;
-                // $arrGuiaVali = $this->obtenerGuiasDeLaMaster($this->lstNumeCont->SelectedValue);
                 $arrGuiaVali = $this->obtenerGuiasDeLaMaster($objValija->NumeCont);
                 $strDescCkpt = $objCkptRece->DescCkpt . " (" . $objValija->NumeCont . ")";
                 if ($arrGuiaVali) {
@@ -231,7 +230,6 @@ class RecepcionCarga extends FormularioBaseKaizen {
             // Ahora se procesan las Guias asociadas al Precinto en forma individual
             // es decir, aquellas que no estan asociadas a una Valija
             //---------------------------------------------------------------------------
-            // $this->arrMotiDisc = array();
             $arrGuiaVali = $this->obtenerGuiasDeLaMaster($this->lstNumeCont->SelectedValue);
             if ($arrGuiaVali) {
                 foreach ($arrGuiaVali as $strNumeGuia) {
@@ -271,7 +269,7 @@ class RecepcionCarga extends FormularioBaseKaizen {
             // Se graba un checkpoint para la Valija misma
             //-----------------------------------------------
             $strDescCkpt = $objCkptRece->DescCkpt . " (" .$strNumeVali. ")";
-            $arrDatoCkpt             = array();
+            $arrDatoCkpt = array();
             $arrDatoCkpt['NumeCont'] = $objContenedor->NumeCont;
             $arrDatoCkpt['CodiCkpt'] = $objCkptRece->CodiCkpt;
             $arrDatoCkpt['TextObse'] = $strDescCkpt;

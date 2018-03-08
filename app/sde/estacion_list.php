@@ -63,8 +63,10 @@ class EstacionListForm extends EstacionListFormBase {
 
 		// Create the Other Columns (note that you can use strings for estacion's properties, or you
 		// can traverse down QQN::estacion() to display fields that are down the hierarchy)
+
 		$colCodiEsta = $this->dtgEstacions->MetaAddColumn('CodiEsta');
-		$colCodiEsta->Name = 'Sucursal';
+		$colCodiEsta->Name = 'SUC';
+		$colCodiEsta->FilterBoxSize = 4;
 
 		$this->dtgEstacions->MetaAddTypeColumn('CodiStat', 'StatusType');
 
