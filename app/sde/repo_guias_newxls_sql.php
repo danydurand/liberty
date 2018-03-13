@@ -183,7 +183,7 @@ if ($intCantRepe > 0) {
     $objValoRepo->strTituRepo = $strTituRepo;
     $objValoRepo->blnConxBord = true;
     $objExpoDato = new ExportarDatos($objValoRepo);
-    $objExpoDato->Exportar();
+    echo $objExpoDato->Exportar();
 } else {
     echo '<h3>No hay registros que satisfagan las condiciones</h3>';
 }

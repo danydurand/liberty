@@ -1,180 +1,112 @@
 <?php
-//----------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------
 // Programa      : repo_pu_sin_tr.php
 // Realizado por : Daniel Durand
-// Fecha Elab.   : 06/03/2018
-//----------------------------------------------------------------------------------
+// Fecha Elab.   : 10/03/2018
+// Descripcion   : Este programa muestra las guias que debieron trasladarse y no lo hicieron.
+//----------------------------------------------------------------------------------------------
 require_once('qcubed.inc.php');
-require_once(__APP_INCLUDES__ . '/mimemail.inc.php');
-require_once(__APP_INCLUDES__ . '/mygrafclasspdf.php');
-require_once(__APP_INCLUDES__ . '/colores.php');
+use PHPMailer\PHPMailer\PHPMailer;
 
-//------------------------------------------------------------------
-// Criterios de seleccion de registros
-//------------------------------------------------------------------
-if (isset($_SESSION['SucuSele'])) {
-	$arrSucuSele[] = Estacion::LoadByCodiEsta(unserialize($_SESSION['SucuSele']));
-	$strModoEjec   = 'MENU';
-}  else {
-	//----------------------------------------------------------------
-	// El reporte se esta invocando desde cron (ejecucion en batch)
-	//----------------------------------------------------------------
-	$dttFechDhoy = date('Y-m-d');
-	$arrSucuSele = Estacion::LoadSucursalesActivasToClients(); //LoadArrayByCodiStat(1);
-	$strModoEjec = 'CRON';
-}
-echo 3;
-//-------------------------------
-// String de Sucursales activas
-//-------------------------------
-$strSucuActi = Estacion::StringDeSucursalesActivasToClients();
+$dttFechDhoy = date('Y-m-d');
+$arrSucuSele = Estacion::LoadSucursalesActivasToClients();
 foreach ($arrSucuSele as $objSucursal) {
-    echo 'Procesando: '.$objSucursal->CodiEsta."\n";
-    $strNombArch = 'guias_pu_sin_tr_'.$objSucursal->CodiEsta.'.pdf';
-    $strTituRepo = 'Guias con PU sin TR +24hrs '.$objSucursal->CodiEsta;
+    if (!in_array($objSucursal->CodiEsta, array('CCS','VLN','MAR'))) {
+        continue;
+    }
     //--------------------------------------------------------
     // Selecciono los registros que satisfagan la condicion
     //--------------------------------------------------------
-    $strCadeSqlx  = "select distinct g.*";
+    $strCadeSqlx  = "select distinct g.*,(fn_diastrans( now(), e.fecha_pickup ) - (fn_cantsados(e.fecha_pickup, now()) + fn_cantferiados(e.fecha_pickup, now()))) as dias_tran ";
     $strCadeSqlx .= "  from guia g inner join estadistica_de_guias e";
-    $strCadeSqlx .= " where e.fecha_pick";
-    $strCadeSqlx .= "   and k.fech_ckpt >= date_sub( now( ), INTERVAL 62 DAY ) ";
-    $strCadeSqlx .= "   and k.fech_ckpt < date_sub( now( ), INTERVAL 2 DAY ) ";
-    $strCadeSqlx .= "   and g.esta_dest = '".$objSucursal->CodiEsta."'";
-    $strCadeSqlx .= "   and k.codi_esta = g.esta_dest ";
-    $strCadeSqlx .= "   and g.esta_ckpt = g.esta_dest ";
-    $strCadeSqlx .= "   and g.esta_dest in (".$strSucuActi.") ";
-    $strCadeSqlx .= "   and m.codigo_interno not in (".$strCodiExcl.")";
-    $strCadeSqlx .= "   and not exists (select *";
-    $strCadeSqlx .= "                     from sde_checkpoint";
-    $strCadeSqlx .= "                    where sde_checkpoint.codi_ckpt = g.codi_ckpt ";
-    $strCadeSqlx .= "                      and sde_checkpoint.tipo_term = 1)";
-    $strCadeSqlx .= "union ";
-    $strCadeSqlx .= "select distinct g.*, k.fech_ckpt FechArri";
-    $strCadeSqlx .= "  from guia g, guia_ckpt k, master_cliente m";
-    $strCadeSqlx .= " where g.nume_guia = k.nume_guia";
-    $strCadeSqlx .= "   and g.codi_clie = m.codi_clie";
-    $strCadeSqlx .= "   and k.codi_ckpt = 'AR'";
-    $strCadeSqlx .= "   and k.fech_ckpt >= date_sub( now( ), INTERVAL 62 DAY ) ";
-    $strCadeSqlx .= "   and k.fech_ckpt < date_sub( now( ), INTERVAL 2 DAY ) ";
-    $strCadeSqlx .= "   and g.esta_dest = '".$objSucursal->CodiEsta."'";
-    $strCadeSqlx .= "   and k.codi_esta = g.esta_dest ";
-    $strCadeSqlx .= "   and g.esta_ckpt = g.esta_dest ";
-    $strCadeSqlx .= "   and g.esta_dest in (".$strSucuActi.") ";
-    $strCadeSqlx .= "   and m.codigo_interno not in (".$strCodiExcl.")";
-    $strCadeSqlx .= "   and not exists (select *";
-    $strCadeSqlx .= "                     from sde_checkpoint";
-    $strCadeSqlx .= "                    where sde_checkpoint.codi_ckpt = g.codi_ckpt ";
-    $strCadeSqlx .= "                      and sde_checkpoint.tipo_term = 1)";
-    $strCadeSqlx .= "   and exists (select *";
-    $strCadeSqlx .= "                 from guia_ckpt k ";
-    $strCadeSqlx .= "                where k.nume_guia = g.nume_guia ";
-    $strCadeSqlx .= "                  and k.codi_ckpt = 'TR')";
-    $strCadeSqlx .= "   and exists (select *";
-    $strCadeSqlx .= "                 from guia_ckpt k ";
-    $strCadeSqlx .= "                where k.nume_guia = g.nume_guia ";
-    $strCadeSqlx .= "                  and k.codi_ckpt = 'PP')";
-    // if (in_array($objSucursal->CodiEsta,array('CCS','BLA','MAR','PZO'))) {
-    // if (in_array($objSucursal->CodiEsta,array('PZO'))) {
-     //    echo $strCadeSqlx."\n";
-    // }
-    $objDatabase = Guia::GetDatabase();
-    $objDbResult  = $objDatabase->Query($strCadeSqlx);
-    //------------------------------------------
-    // Proceso los Documentos seleccionados
-    //------------------------------------------
-    $arrDatoRepo = array();
-    while ($mixRegi = $objDbResult->FetchArray()) {
-        echo "Procesando Guia Nro: ".$mixRegi['nume_guia']."\n";
-        //-----------------------------------------------------
-        // Se excluyen los Sabados, Domingos y Feriados
-        //-----------------------------------------------------
-        $intDiasHabi = diasHabilesTranscurridos(FechaDeHoy(),$mixRegi['FechArri']);
-        if ($intDiasHabi > 2) {
-            //-----------------------------
-            // Datos que van al reporte
-            //-----------------------------
-            $arrDatoRepo[] = array(
-            $mixRegi['nume_guia'],
-            $mixRegi['esta_orig'].'-'.$mixRegi['esta_dest'],
-            $mixRegi['fech_guia'],
-            substr($mixRegi['nomb_remi'],0,22),
-            substr($mixRegi['nomb_dest'],0,22),
-            substr($mixRegi['obse_ckpt'],0,28),
-            $mixRegi['fech_ckpt'],
-            $mixRegi['hora_ckpt'],
-            $mixRegi['esta_ckpt'],
-            $intDiasHabi);
-        }
-    }
-    if (count($arrDatoRepo)) {
-        echo "Voy a enviar el reporte...\n";
-        //------------------------------------------------------------------
-        $intCantRepo = count($arrDatoRepo);
-        if ($strModoEjec == 'CRON') {
-            GrabarMedicion($objSucursal->CodiEsta,"AR_SIN_OK_48",$intCantRepo);
-        }
-        //---------------------------------------------------------
-        // Armo los otros vectores que requiere la rutina PDF
-        //---------------------------------------------------------
-        $arrEncaReco = array('Guia','Ori-Des','Fecha','Remitente','Destinatario','Ult Ckpt','Fec Ckpt','Hora Ckpt','SUC','Dias');
-        $arrJustColu = array('C','C','C','L','L','L','C','C','C','C');
-        $arrAnchColu = array(15,18,18,48,48,58,20,15,12,10);
-        //---------------------------------------------------------
-        // Genero el tipo de reporte solicitado por el Usuario
-        //---------------------------------------------------------
-        $arrDatoRepo = ordenar_array($arrDatoRepo,'9',SORT_DESC);
-        //-----------------------------
-        // Genero el reporte solicitado
-        //-----------------------------
-        $pdf=new PDF('L','mm','Letter');
-        $pdf->setVariables($arrEncaReco,$arrJustColu,$arrAnchColu,02,$strLogoComp);
-        $pdf->setEmpresa($strNombEmpr,$strDireEmpr,$strTituRepo);
-        $pdf->SetTitle('Guias con AR sin Ok +48 Hrs');
-        $pdf->AliasNbPages();
-        $pdf->AddPage();
-        $pdf->FancyTable($arrEncaReco,$arrDatoRepo,$arrAnchColu,$arrJustColu);
-        if ($strModoEjec == 'MENU') {
-            $pdf->Output();
-        } else {
-            $pdf->Output($strNombArch);
-            //----------------------------------------------------------------
-            // La maquina del laboratorio no tiene habilitado el Sendmail
-            // por lo tanto se creo un parametro que le dice al programa
-            // si debe o no enviar el e-mail
-            //----------------------------------------------------------------
-            $strEnviMail = BuscarParametro('EnviMail','MailSino',"Txt1","S");
-            //--------------------------------
-            // Envio el reporte por e-mail
-            //--------------------------------
-            $arrDestCorr = array();
-            $arrDireMail = explode(',',$objSucursal->DireMail);
-            foreach ($arrDireMail as $strDireMail) {
-                array_push($arrDestCorr,$strDireMail);
-            }
-            $to = $arrDestCorr;
-            $to = 'danydurand@gmail.com';
+    $strCadeSqlx .= "    on g.nume_guia = e.guia_id";
+    $strCadeSqlx .= " where (fn_diastrans( now(), e.fecha_pickup ) - (fn_cantsados(e.fecha_pickup, now()) + fn_cantferiados(e.fecha_pickup, now()))) > 1  ";
+    $strCadeSqlx .= "   and g.esta_orig  = '".$objSucursal->CodiEsta."'";
+    $strCadeSqlx .= "   and g.esta_dest != '".$objSucursal->CodiEsta."'";
+    $strCadeSqlx .= "   and g.esta_ckpt  = g.esta_orig";
+    $strCadeSqlx .= "   and e.fecha_pickup IS NOT NULL";
+    $strCadeSqlx .= "   and e.fecha_traslado IS NULL";
+    $strCadeSqlx .= "   and e.fecha_entrega IS NULL";
+    $strCadeSqlx .= " order by fecha_pickup desc ";
 
-            $attach = $strNombArch;
-            $mimemail = new MIMEMAIL('plain/text');
-            $mimemail->senderName = 'LibertyExpress';
-            $mimemail->senderMail = 'localhost@app-libertyexpress.com';
-            $mimemail->subject = $strTituRepo;
-            $mimemail->body = '';
-            $mimemail->attachments[] = $attach;
-            $mimemail->create();
-            if ($strEnviMail == 'S') {
-                $mimemail->send($to);
-                echo "Reporte enviado...\n";
-            }
+    $objDatabase  = Guia::GetDatabase();
+    $objDbResult = $objDatabase->Query($strCadeSqlx);
+
+    $arrDatoRepo = array();
+    while ($mixRegiProc = $objDbResult->FetchArray()) {
+        $arrDatoRepo[] = array(
+            $mixRegiProc['nume_guia'],
+            $mixRegiProc['fech_guia'],
+            $mixRegiProc['usuario_creacion'],
+            $mixRegiProc['esta_orig'].'-'.$mixRegiProc['esta_dest'],
+            $mixRegiProc['receptoria_origen'],
+            $mixRegiProc['peso_guia'],
+            $mixRegiProc['codi_ckpt'],
+            $mixRegiProc['fech_ckpt'],
+            $mixRegiProc['hora_ckpt'],
+            $mixRegiProc['esta_ckpt'],
+            $mixRegiProc['dias_tran']
+        );
+    }
+
+    $intCantRepo = count($arrDatoRepo);
+    if ($intCantRepo) {
+        $arrDatoRepo = ordenar_array($arrDatoRepo,'10',SORT_DESC);
+        $strNombArch = 'guias_pu_sin_tr_'.$objSucursal->CodiEsta.'.xls';
+        $mixManeArch = fopen($strNombArch,'w');
+        $strTituRepo = 'Guias con PU sin TR +24hrs ('.$objSucursal->CodiEsta.')';
+        $arrEncaDato = array(
+            'Nro Guia',
+            'Fecha',
+            'Creada Por',
+            'Orig-Dest',
+            'R. Origen',
+            'Peso',
+            'Ult. Ckpt',
+            'F. Ckpt',
+            'H. Ckpt',
+            'S. Ckpt',
+            'D. Tran'
+        );
+
+        $objValoRepo = new stdClass();
+        $objValoRepo->arrEncaDato = $arrEncaDato;
+        $objValoRepo->arrDatoExpo = $arrDatoRepo;
+        $objValoRepo->strTituRepo = $strTituRepo;
+        $objValoRepo->blnConxBord = false;
+        $objValoRepo->strFormExpo = 'XLS';
+        $objExpoDato = new ExportarDatos($objValoRepo);
+        $strTextMens = $objExpoDato->Exportar();
+
+        fputs($mixManeArch,$strTextMens);
+        fclose($mixManeArch);
+        //--------------------------------
+        // Envio el reporte por e-mail
+        //--------------------------------
+        $arrDestCorr = array();
+        $arrDireMail = explode(',',$objSucursal->DireMail);
+        foreach ($arrDireMail as $strDireMail) {
+            array_push($arrDestCorr,$strDireMail);
         }
-    } else {
-        if ($strModoEjec == 'MENU') {
-            echo "<h1> No existen Datos para la Sucursal: ".$objSucursal->CodiEsta."</h1>";
-        } else {
-            GrabarMedicion($objSucursal->CodiEsta,"AR_SIN_OK_48",0);
+        $strDireMail = $arrDestCorr;
+
+        $mail = new PHPMailer();
+        $mail->setFrom('SisCO@libertyexpress.com', 'Medicion y Control');
+        $mail->addAddress('soportelufeman@gmail.com');
+        $mail->addAddress('jhernandez@libertyexpress.com');
+        $mail->addAddress('aalvarado@libertyexpress.com');
+        $mail->addAddress('operacionesurbanas@libertyexpress.com');
+        $mail->addAddress('emontilla@libertyexpress.com');
+        $mail->addAddress('rortega@libertyexpress.com');
+        $mail->addAddress('jmartini@libertyexpress.com');
+        $mail->Subject  = $strTituRepo;
+        $mail->Body     = 'Estimado Usuario, sírvase revisar el documento anexo...';
+        $mail->addAttachment($strNombArch);
+        if(!$mail->send()) {
+            echo "Message was not sent.\n";
+            echo "Mailer error: " . $mail->ErrorInfo."\n";
         }
     }
+    GrabarMedicion($objSucursal->CodiEsta,"PU_SIN_TR_24",$intCantRepo);
 }
-echo "Termine.\n";
 ?>

@@ -190,14 +190,14 @@ class CargarGuia extends FormularioBaseKaizen {
         $this->btnImprGuia_Create();
         $this->btnIntercam_Create();
         $this->btnNuevRegi_Create();
+        $this->btnImprPodx_Create();
+        $this->btnImprEtiq_Create();
         //---------------------
         // Acciones regulares
         //---------------------
         $this->SetupGuia();
         $this->SetupValues();
 
-        $this->btnImprPodx_Create();
-        $this->btnImprEtiq_Create();
     }
 
     //----------------------------
@@ -1071,44 +1071,45 @@ class CargarGuia extends FormularioBaseKaizen {
         $this->objGuia->HoraCreacion       = $this->lblHoraCrea->Text;
         $this->objGuia->CobroCod           = CobroCod::Load($this->txtNumeGuia->Text);
         $this->objGuia->VendedorId         = $this->objCliente->VendedorId;
+        $this->objGuia->TarifaId           = $this->objCliente->TarifaId;
 
         if (!$this->blnEditMode) {
             //------------------------------------------------------------------------
             // En caso de Insercion, se asignan valores por defecto a ciertos campos
             //------------------------------------------------------------------------
-            $this->objGuia->Alto = '';
-            $this->objGuia->Ancho = '';
-            $this->objGuia->Largo = '';
-            $this->objGuia->RecolectaId = '';
+            $this->objGuia->Alto            = '';
+            $this->objGuia->Ancho           = '';
+            $this->objGuia->Largo           = '';
+            $this->objGuia->RecolectaId     = '';
             $this->objGuia->TipoDocumentoId = 'J';
-            $this->objGuia->CedulaRif = '';
-            $this->objGuia->CierreCaja = '';
-            $this->objGuia->CajaId = '';
-            $this->objGuia->MontoTotalInt = 0;
+            $this->objGuia->CedulaRif       = '';
+            $this->objGuia->CierreCaja      = '';
+            $this->objGuia->CajaId          = '';
+            $this->objGuia->MontoTotalInt   = 0;
             $this->objGuia->PesoVolumetrico = '';
-            $this->objGuia->PesoLibras = '';
-            $this->objGuia->HojaEntrega = '';
-            $this->objGuia->MontoOtros = 0;
-            $this->objGuia->EntregadoA = '';
-            $this->objGuia->FechaEntrega = null;
-            $this->objGuia->HoraEntrega = '';
-            $this->objGuia->CodiCkpt = '';
-            $this->objGuia->EstaCkpt = '';
-            $this->objGuia->FechCkpt = null;
-            $this->objGuia->HoraCkpt = '';
-            $this->objGuia->ObseCkpt = '';
-            $this->objGuia->UsuaCkpt = '';
-            $this->objGuia->FechaPod = null;
-            $this->objGuia->HoraPod = '';
-            $this->objGuia->UsuarioPod = '';
-            $this->objGuia->TransFac = 0;
-            $this->objGuia->CourierId = 1;
+            $this->objGuia->PesoLibras      = '';
+            $this->objGuia->HojaEntrega     = '';
+            $this->objGuia->MontoOtros      = 0;
+            $this->objGuia->EntregadoA      = '';
+            $this->objGuia->FechaEntrega    = null;
+            $this->objGuia->HoraEntrega     = '';
+            $this->objGuia->CodiCkpt        = '';
+            $this->objGuia->EstaCkpt        = '';
+            $this->objGuia->FechCkpt        = null;
+            $this->objGuia->HoraCkpt        = '';
+            $this->objGuia->ObseCkpt        = '';
+            $this->objGuia->UsuaCkpt        = '';
+            $this->objGuia->FechaPod        = null;
+            $this->objGuia->HoraPod         = '';
+            $this->objGuia->UsuarioPod      = '';
+            $this->objGuia->TransFac        = 0;
+            $this->objGuia->CourierId       = 1;
             $this->objGuia->UsuarioCreacion = $this->objUsuario->LogiUsua;
-            $this->objGuia->FechaCreacion = new QDateTime(QDateTime::Now);
-            $this->objGuia->HoraCreacion = date("H:i");
-            $this->objGuia->SistemaId = 'sde';
-            $this->objGuia->Anulada = 0;
-            $this->objGuia->EnEfectivo = 0;
+            $this->objGuia->FechaCreacion   = new QDateTime(QDateTime::Now);
+            $this->objGuia->HoraCreacion    = date("H:i");
+            $this->objGuia->SistemaId       = 'sde';
+            $this->objGuia->Anulada         = 0;
+            $this->objGuia->EnEfectivo      = 0;
         }
         //--------------------------------------------------------------------
         // Se compara el objeto que se esta guardando con el objeto original
@@ -1298,6 +1299,9 @@ class CargarGuia extends FormularioBaseKaizen {
         // Se verifica la existencia previa de la Guia
         //-----------------------------------------------
         if (strlen($this->txtNumeGuia->Text) > 0) {
+            if ($this->objUsuario->LogiUsua == 'ddurand') {
+//                echo "Blur de la Guia<br>";
+            }
             $this->chkPesoVolu->Enabled = true;
             $this->chkFletDire->Enabled = true;
             $this->lstModaPago->Enabled = true;
@@ -1329,6 +1333,9 @@ class CargarGuia extends FormularioBaseKaizen {
                 $this->objGuia = Guia::Load($this->txtNumeGuia->Text);
             }
             if ($this->objGuia) {
+                if ($this->objUsuario->LogiUsua == 'ddurand') {
+//                    echo "La Guia si Existe<br>";
+                }
                 //---------------------------------------------
                 // Si la Guia, ya existe, se cargan sus datos
                 //---------------------------------------------
@@ -1430,9 +1437,14 @@ class CargarGuia extends FormularioBaseKaizen {
                 $this->txtNombRemi->Text = $this->objGuia->NombRemi;
                 $this->txtTeleRemi->Text = $this->objGuia->TeleRemi;
                 $this->txtDireRemi->Text = $this->objGuia->DireRemi;
+                if ($this->objUsuario->LogiUsua == 'ddurand') {
+//                    echo "Voy a cargar el Cliente: ".$this->objGuia->CodiClie."<br>";
+                }
                 $this->lstCodiClie->RemoveAllItems();
-                $this->lstCodiClie->AddItem($this->objGuia->CodiClieObject->__toString(),$this->objGuia->CodiClie);
-                $this->lstCodiOrig->RemoveAllItems();
+                $this->lstCodiClie->AddItem($this->objGuia->CodiClieObject->__toString(),$this->objGuia->CodiClie,true);
+                if ($this->objUsuario->LogiUsua == 'ddurand') {
+//                    echo "Cliente cargado: ".$this->lstCodiClie->SelectedValue."<br>";
+                }
                 $this->CargarOrigenes();
                 $this->lstCodiDest->RemoveAllItems();
                 $this->CargarDestinos();
@@ -2118,10 +2130,9 @@ class CargarGuia extends FormularioBaseKaizen {
                     $objGuiaModi->Save();
                 }
             }
-            //-------------------------------------------------------------
-            // Si se trata de una Guia COD (Cobro En Destino), se crea un
-            // registro en la tabla en la cual se registrara el cobro.
-            //-------------------------------------------------------------
+            //--------------------------------------------------------------------------------------------------
+            // Si se trata de una Guia COD, se crea un registro en la tabla en la cual se registrara el cobro.
+            //--------------------------------------------------------------------------------------------------
             if ($this->objGuia->TipoGuia == TipoGuiaType::CODCOBROENDESTINO) {
                 $objCobrCodx = CobroCod::Load($this->objGuia);
                 if (!$objCobrCodx) {
@@ -2145,10 +2156,6 @@ class CargarGuia extends FormularioBaseKaizen {
                     // Se busca la operación asignada a la Guía
                     //-------------------------------------------
                     $objOperacion = SdeOperacion::Load($this->objGuia->OperacionId);
-                    //----------------------------------------------------------------------------
-                    // Si se encuentra la operación buscada, se agarra para ser pasada al vector
-                    // a armar para grabar el Checkpoint.
-                    //----------------------------------------------------------------------------
                     if ($objOperacion) {
                         $strCodiRuta = $objOperacion->CodiRuta;
                     } else {
@@ -2266,6 +2273,8 @@ class CargarGuia extends FormularioBaseKaizen {
                 $this->SetupGuia();
                 $this->SetupValues();
                 $this->btnImprGuia->Visible = true;
+                $this->btnImprPodx->Visible = true;
+                $this->btnImprEtiq->Visible = true;
                 $this->btnNuevRegi->Visible = true;
             }
         }

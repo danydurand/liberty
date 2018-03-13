@@ -112,7 +112,6 @@
 			$this->dtgGuias->MetaAddColumn('EstaCkpt');
 			$this->dtgGuias->MetaAddColumn('FechCkpt');
 			$this->dtgGuias->MetaAddColumn('HoraCkpt');
-			// echo "E";
 			$this->dtgGuias->MetaAddColumn('ObseCkpt');
 			$this->dtgGuias->MetaAddColumn('UsuaCkpt');
 			$this->dtgGuias->MetaAddColumn('FechaPod');
@@ -173,6 +172,7 @@
 			$this->dtgGuias->MetaAddColumn('EnEfectivo');
 			$this->dtgGuias->MetaAddColumn(QQN::Guia()->Aduana);
 			$this->dtgGuias->MetaAddColumn(QQN::Guia()->CobroCod);
+			$this->dtgGuias->MetaAddColumn(QQN::Guia()->EstadisticaDeGuias);
 			$this->dtgGuias->MetaAddColumn(QQN::Guia()->GuiaAduana);
 			$this->dtgGuias->MetaAddColumn(QQN::Guia()->GuiaCheckpoints);
 			$this->dtgGuias->MetaAddColumn(QQN::Guia()->GuiaModificada);

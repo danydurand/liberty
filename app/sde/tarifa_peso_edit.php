@@ -188,13 +188,6 @@ class TarifaPesoEditForm extends TarifaPesoEditFormBase {
         if (!strlen($this->txtPesoInicial->Text)) {
 	        $blnTodoOkey = false;
             $this->mensaje('El Peso Inicial es requerido para poder otorgar el Porcentaje del Franqueo!');
-            //$this->txtPesoInicial->SetFocus();
-        } else {
-	        /*if (!is_double($this->txtPesoInicial->Text)) {
-                $blnTodoOkey = false;
-	            $this->mensaje('El Peso Inicial debe ser un número con 3 Decimales máximo!');
-                $this->txtPesoInicial->SetFocus();
-            }*/
         }
         //--------------------------------------
         // Se valida el campo del Peso Final.
@@ -202,13 +195,6 @@ class TarifaPesoEditForm extends TarifaPesoEditFormBase {
         if (!strlen($this->txtPesoFinal->Text)) {
             $blnTodoOkey = false;
             $this->mensaje('El Peso Final es requerido para poder otorgar el Porcentaje del Franqueo!');
-            //$this->txtPesoFinal->SetFocus();
-        } else {
-            /*if (!is_float($this->txtPesoFinal->Text)) {
-                $blnTodoOkey = false;
-                $this->mensaje('El Peso Final debe ser un número con 3 Decimales máximo!');
-                $this->txtPesoFinal->SetFocus();
-            }*/
         }
         //-----------------------------------------------------------------------------------------------------------
         // Si se supera la Validación de los campos, se procede a asignar el porcentaje de Franqueo correspondiente.

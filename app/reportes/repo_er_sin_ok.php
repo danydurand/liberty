@@ -1,10 +1,10 @@
 <?php
-//----------------------------------------------------------------------------------------------
-// Programa      : repo_rp_sin_pu.php
+//-----------------------------------------------------------------------------------------------
+// Programa      : repo_er_sin_ok.php
 // Realizado por : Daniel Durand
-// Fecha Elab.   : 06/03/2018
-// Descripcion   : Este programa muestra las guias que debieron recolectarse y no lo hicieron.
-//----------------------------------------------------------------------------------------------
+// Fecha Elab.   : 10/03/2018
+// Descripcion   : Este programa muestra las guias que debieron entregarse y no la han sido.
+//-----------------------------------------------------------------------------------------------
 require_once('qcubed.inc.php');
 use PHPMailer\PHPMailer\PHPMailer;
 
@@ -17,14 +17,14 @@ foreach ($arrSucuSele as $objSucursal) {
     //--------------------------------------------------------
     // Selecciono los registros que satisfagan la condicion
     //--------------------------------------------------------
-    $strCadeSqlx  = "select distinct g.*,(fn_diastrans( now(), fech_guia ) - (fn_cantsados(fech_guia, now()) + fn_cantferiados(fech_guia, now()))) as dias_tran ";
-    $strCadeSqlx .= "  from guia g ";
-    $strCadeSqlx .= " where (fn_diastrans( now(), fech_guia ) - (fn_cantsados(fech_guia, now()) + fn_cantferiados(fech_guia, now()))) > 1  ";
-    $strCadeSqlx .= "   and g.esta_orig  = '".$objSucursal->CodiEsta."'";
-    $strCadeSqlx .= "   and g.esta_ckpt  = g.esta_orig";
-    $strCadeSqlx .= "   and g.codi_ckpt  = 'RP'";
-    $strCadeSqlx .= " order by fech_ckpt desc, ";
-    $strCadeSqlx .= "          hora_ckpt desc ";
+    $strCadeSqlx  = "select distinct g.*,(fn_diastrans( now(), e.fecha_ruta ) - (fn_cantsados(e.fecha_ruta, now()) + fn_cantferiados(e.fecha_ruta, now()))) as dias_tran ";
+    $strCadeSqlx .= "  from guia g inner join estadistica_de_guias e";
+    $strCadeSqlx .= "    on g.nume_guia = e.guia_id";
+    $strCadeSqlx .= " where (fn_diastrans( now(), e.fecha_ruta ) - (fn_cantsados(e.fecha_ruta, now()) + fn_cantferiados(e.fecha_ruta, now()))) > 1  ";
+    $strCadeSqlx .= "   and g.esta_dest = '".$objSucursal->CodiEsta."'";
+    $strCadeSqlx .= "   and e.fecha_ruta IS NOT NULL";
+    $strCadeSqlx .= "   and e.fecha_entrega IS NULL";
+    $strCadeSqlx .= " order by e.fecha_ruta desc ";
 
     $objDatabase  = Guia::GetDatabase();
     $objDbResult = $objDatabase->Query($strCadeSqlx);
@@ -47,9 +47,9 @@ foreach ($arrSucuSele as $objSucursal) {
     $intCantRepo = count($arrDatoRepo);
     if ($intCantRepo) {
         $arrDatoRepo = ordenar_array($arrDatoRepo,'8',SORT_DESC);
-        $strNombArch = 'guias_rp_sin_pu_'.$objSucursal->CodiEsta.'.xls';
+        $strNombArch = 'guias_er_sin_ok_'.$objSucursal->CodiEsta.'.xls';
         $mixManeArch = fopen($strNombArch,'w');
-        $strTituRepo = 'Guias con RP sin PU +24hrs ('.$objSucursal->CodiEsta.')';
+        $strTituRepo = 'Guias con ER sin OK +24hrs ('.$objSucursal->CodiEsta.')';
         $arrEncaDato = array(
             'Nro Guia',
             'Fecha',
@@ -82,11 +82,12 @@ foreach ($arrSucuSele as $objSucursal) {
             array_push($arrDestCorr,$strDireMail);
         }
         $strDireMail = $arrDestCorr;
+        $strDireMail = array('danydurand@gmail.com, aalvarado@libertyexpress.com, emontilla@libertyexpress.com, rortega@libertyexpress.com, jmartini@libertyexpress.com');
 
         $mail = new PHPMailer();
         $mail->setFrom('SisCO@libertyexpress.com', 'Medicion y Control');
         $mail->addAddress('soportelufeman@gmail.com');
-        $mail->addAddress('jhernandez@libertyexpress.com');
+        $mail->addAddress('aalvarado@libertyexpress.com');
         $mail->addAddress('aalvarado@libertyexpress.com');
         $mail->addAddress('emontilla@libertyexpress.com');
         $mail->addAddress('rortega@libertyexpress.com');
@@ -99,6 +100,6 @@ foreach ($arrSucuSele as $objSucursal) {
             echo "Mailer error: " . $mail->ErrorInfo."\n";
         }
     }
-    GrabarMedicion($objSucursal->CodiEsta,"RP_SIN_PU_24",$intCantRepo);
+    GrabarMedicion($objSucursal->CodiEsta,"ER_SIN_OK_24",$intCantRepo);
 }
 ?>

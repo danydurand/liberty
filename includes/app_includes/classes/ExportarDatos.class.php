@@ -22,26 +22,32 @@ class ExportarDatos {
         $this->intConxBord = $objValoRepo->blnConxBord ? 1 : 0;
     }
 
-    protected function Header(){
-        if ($this->strFormExpo == 'XLS') {
-            header("Content-type: application/vnd.ms-excel; name='excel' ");
-            header("Content-Disposition: filename=".QuitarEspaciosPuntosYComas($this->strTituRepo).".xls");
-            header("Pragma: no-cache");
-            header("Expires: 0");
-            $this->strHtmlExpo = '';
-        } else {
-            $this->strHtmlExpo  = '<!DOCTYPE html>';
-            $this->strHtmlExpo .= '<html>';
-            $this->strHtmlExpo .= '<head>';
-            $this->strHtmlExpo .= '    <meta charset="UTF-8">';
-            $this->strHtmlExpo .= '    <title>'.$this->strTituRepo.'</title>';
-            $this->strHtmlExpo .= '</head>';
-            $this->strHtmlExpo .= '</body>';
+    protected function Header() {
+        switch ($this->strFormExpo) {
+            case 'XLS':
+                header("Content-type: application/vnd.ms-excel; name='excel' ");
+                header("Content-Disposition: filename=".QuitarEspaciosPuntosYComas($this->strTituRepo).".xls");
+                header("Pragma: no-cache");
+                header("Expires: 0");
+                $this->strHtmlExpo = '';
+                break;
+            case 'HTML':
+                $this->strHtmlExpo  = '<!DOCTYPE html>';
+                $this->strHtmlExpo .= '<html>';
+                $this->strHtmlExpo .= '<head>';
+                $this->strHtmlExpo .= '    <meta charset="UTF-8">';
+                $this->strHtmlExpo .= '    <title>'.$this->strTituRepo.'</title>';
+                $this->strHtmlExpo .= '</head>';
+                $this->strHtmlExpo .= '</body>';
+                break;
+            default:
+                $this->strHtmlExpo = '';
         }
     }
 
     public function Exportar() {
         $this->Header();
+//        $this->strHtmlExpo .= '<h3 style="margin-top: 1em; margin-bottom: 1em; text-align: center">'.$this->strTituRepo.'</h3>';
         $this->strHtmlExpo .= '<table border="'.$this->intConxBord.'">';
         $this->strHtmlExpo .= '    <thead>';
         foreach ($this->arrEncaDato as $strEncaDato) {
@@ -59,7 +65,8 @@ class ExportarDatos {
         $this->strHtmlExpo .= '    </tboby>';
         $this->strHtmlExpo .= '</table>';
         $this->Footer();
-        echo $this->strHtmlExpo;
+//        echo $this->strHtmlExpo;
+        return $this->strHtmlExpo;
     }
 
     protected function Footer() {

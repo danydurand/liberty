@@ -9,11 +9,16 @@ class ComposerStaticInitb7de4641851e7694df3ec3179de84d3e
     public static $prefixLengthsPsr4 = array (
         'P' => 
         array (
+            'PhpConsole\\' => 11,
             'PHPMailer\\PHPMailer\\' => 20,
         ),
     );
 
     public static $prefixDirsPsr4 = array (
+        'PhpConsole\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/php-console/php-console/src/PhpConsole',
+        ),
         'PHPMailer\\PHPMailer\\' => 
         array (
             0 => __DIR__ . '/..' . '/phpmailer/phpmailer/src',
@@ -21,13 +26,6 @@ class ComposerStaticInitb7de4641851e7694df3ec3179de84d3e
     );
 
     public static $prefixesPsr0 = array (
-        'P' => 
-        array (
-            'PhpConsole' => 
-            array (
-                0 => __DIR__ . '/..' . '/php-console/php-console/src',
-            ),
-        ),
         'M' => 
         array (
             'Monolog' => 

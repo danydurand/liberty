@@ -59,7 +59,7 @@
 	 * @property integer $CantAyudantes the value for intCantAyudantes 
 	 * @property integer $ParadasAdicionales the value for intParadasAdicionales 
 	 * @property integer $CourierId the value for intCourierId (Not Null)
-	 * @property string $GuiaExterna the value for strGuiaExterna (Unique)
+	 * @property string $GuiaExterna the value for strGuiaExterna 
 	 * @property boolean $FleteDirecto the value for blnFleteDirecto (Not Null)
 	 * @property boolean $TieneGuiaRetorno the value for blnTieneGuiaRetorno 
 	 * @property string $GuiaRetorno the value for strGuiaRetorno 
@@ -125,6 +125,7 @@
 	 * @property FacVendedor $Vendedor the value for the FacVendedor object referenced by intVendedorId 
 	 * @property Aduana $Aduana the value for the Aduana object that uniquely references this Guia
 	 * @property CobroCod $CobroCod the value for the CobroCod object that uniquely references this Guia
+	 * @property EstadisticaDeGuias $EstadisticaDeGuias the value for the EstadisticaDeGuias object that uniquely references this Guia
 	 * @property GuiaAduana $GuiaAduana the value for the GuiaAduana object that uniquely references this Guia
 	 * @property GuiaCheckpoints $GuiaCheckpoints the value for the GuiaCheckpoints object that uniquely references this Guia
 	 * @property GuiaModificada $GuiaModificada the value for the GuiaModificada object that uniquely references this Guia
@@ -1249,6 +1250,24 @@
 		 * NOTE: Do not manually update this value
 		 */
 		protected $blnDirtyCobroCod;
+
+		/**
+		 * Protected member variable that contains the object which points to
+		 * this object by the reference in the unique database column estadistica_de_guias.guia_id.
+		 *
+		 * NOTE: Always use the EstadisticaDeGuias property getter to correctly retrieve this EstadisticaDeGuias object.
+		 * (Because this class implements late binding, this variable reference MAY be null.)
+		 * @var EstadisticaDeGuias objEstadisticaDeGuias
+		 */
+		protected $objEstadisticaDeGuias;
+
+		/**
+		 * Used internally to manage whether the adjoined EstadisticaDeGuias object
+		 * needs to be updated on save.
+		 *
+		 * NOTE: Do not manually update this value
+		 */
+		protected $blnDirtyEstadisticaDeGuias;
 
 		/**
 		 * Protected member variable that contains the object which points to
@@ -2407,6 +2426,21 @@
 				}
 			}
 
+			// Check for EstadisticaDeGuias Unique ReverseReference Binding
+			$strAlias = $strAliasPrefix . 'estadisticadeguias__guia_id';
+			$strAliasName = !empty($strColumnAliasArray[$strAlias]) ? $strColumnAliasArray[$strAlias] : $strAlias;
+			if ($objDbRow->ColumnExists($strAliasName)) {
+				if (!is_null($objDbRow->GetColumn($strAliasName))) {
+					$objExpansionNode = (empty($objExpansionAliasArray['estadisticadeguias']) ? null : $objExpansionAliasArray['estadisticadeguias']);
+					$objToReturn->objEstadisticaDeGuias = EstadisticaDeGuias::InstantiateDbRow($objDbRow, $strAliasPrefix . 'estadisticadeguias__', $objExpansionNode, null, $strColumnAliasArray);
+				}
+				else {
+					// We ATTEMPTED to do an Early Bind but the Object Doesn't Exist
+					// Let's set to FALSE so that the object knows not to try and re-query again
+					$objToReturn->objEstadisticaDeGuias = false;
+				}
+			}
+
 			// Check for GuiaAduana Unique ReverseReference Binding
 			$strAlias = $strAliasPrefix . 'guiaaduana__guia_id';
 			$strAliasName = !empty($strColumnAliasArray[$strAlias]) ? $strColumnAliasArray[$strAlias] : $strAlias;
@@ -2649,22 +2683,6 @@
 			return Guia::QuerySingle(
 				QQ::AndCondition(
 					QQ::Equal(QQN::Guia()->NumeGuia, $strNumeGuia)
-				),
-				$objOptionalClauses
-			);
-		}
-
-		/**
-		 * Load a single Guia object,
-		 * by GuiaExterna Index(es)
-		 * @param string $strGuiaExterna
-		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
-		 * @return Guia
-		*/
-		public static function LoadByGuiaExterna($strGuiaExterna, $objOptionalClauses = null) {
-			return Guia::QuerySingle(
-				QQ::AndCondition(
-					QQ::Equal(QQN::Guia()->GuiaExterna, $strGuiaExterna)
 				),
 				$objOptionalClauses
 			);
@@ -3327,6 +3345,38 @@
 			// Call Guia::QueryCount to perform the CountByClienteId query
 			return Guia::QueryCount(
 				QQ::Equal(QQN::Guia()->ClienteId, $intClienteId)
+			);
+		}
+
+		/**
+		 * Load an array of Guia objects,
+		 * by GuiaExterna Index(es)
+		 * @param string $strGuiaExterna
+		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
+		 * @return Guia[]
+		*/
+		public static function LoadArrayByGuiaExterna($strGuiaExterna, $objOptionalClauses = null) {
+			// Call Guia::QueryArray to perform the LoadArrayByGuiaExterna query
+			try {
+				return Guia::QueryArray(
+					QQ::Equal(QQN::Guia()->GuiaExterna, $strGuiaExterna),
+					$objOptionalClauses);
+			} catch (QCallerException $objExc) {
+				$objExc->IncrementOffset();
+				throw $objExc;
+			}
+		}
+
+		/**
+		 * Count Guias
+		 * by GuiaExterna Index(es)
+		 * @param string $strGuiaExterna
+		 * @return int
+		*/
+		public static function CountByGuiaExterna($strGuiaExterna) {
+			// Call Guia::QueryCount to perform the CountByGuiaExterna query
+			return Guia::QueryCount(
+				QQ::Equal(QQN::Guia()->GuiaExterna, $strGuiaExterna)
 			);
 		}
 
@@ -4032,6 +4082,26 @@
 				}
 
 
+				// Update the adjoined EstadisticaDeGuias object (if applicable)
+				// TODO: Make this into hard-coded SQL queries
+				if ($this->blnDirtyEstadisticaDeGuias) {
+					// Unassociate the old one (if applicable)
+					if ($objAssociated = EstadisticaDeGuias::LoadByGuiaId($this->strNumeGuia)) {
+						$objAssociated->GuiaId = null;
+						$objAssociated->Save();
+					}
+
+					// Associate the new one (if applicable)
+					if ($this->objEstadisticaDeGuias) {
+						$this->objEstadisticaDeGuias->GuiaId = $this->strNumeGuia;
+						$this->objEstadisticaDeGuias->Save();
+					}
+
+					// Reset the "Dirty" flag
+					$this->blnDirtyEstadisticaDeGuias = false;
+				}
+
+
 				// Update the adjoined GuiaAduana object (if applicable)
 				// TODO: Make this into hard-coded SQL queries
 				if ($this->blnDirtyGuiaAduana) {
@@ -4133,6 +4203,15 @@
 			// Optional -- if you **KNOW** that you do not want to EVER run any level of business logic on the disassocation,
 			// you *could* override Delete() so that this step can be a single hard coded query to optimize performance.
 			if ($objAssociated = CobroCod::LoadByNumeGuia($this->strNumeGuia)) {
+				$objAssociated->Delete();
+			}
+
+		
+			// Update the adjoined EstadisticaDeGuias object (if applicable) and perform a delete
+
+			// Optional -- if you **KNOW** that you do not want to EVER run any level of business logic on the disassocation,
+			// you *could* override Delete() so that this step can be a single hard coded query to optimize performance.
+			if ($objAssociated = EstadisticaDeGuias::LoadByGuiaId($this->strNumeGuia)) {
 				$objAssociated->Delete();
 			}
 
@@ -4659,7 +4738,7 @@
 
 				case 'GuiaExterna':
 					/**
-					 * Gets the value for strGuiaExterna (Unique)
+					 * Gets the value for strGuiaExterna 
 					 * @return string
 					 */
 					return $this->strGuiaExterna;
@@ -5238,6 +5317,24 @@
 						if (!$this->objCobroCod)
 							$this->objCobroCod = CobroCod::LoadByNumeGuia($this->strNumeGuia);
 						return $this->objCobroCod;
+					} catch (QCallerException $objExc) {
+						$objExc->IncrementOffset();
+						throw $objExc;
+					}
+
+				case 'EstadisticaDeGuias':
+					/**
+					 * Gets the value for the EstadisticaDeGuias object that uniquely references this Guia
+					 * by objEstadisticaDeGuias (Unique)
+					 * @return EstadisticaDeGuias
+					 */
+					try {
+						if ($this->objEstadisticaDeGuias === false)
+							// We've attempted early binding -- and the reverse reference object does not exist
+							return null;
+						if (!$this->objEstadisticaDeGuias)
+							$this->objEstadisticaDeGuias = EstadisticaDeGuias::LoadByGuiaId($this->strNumeGuia);
+						return $this->objEstadisticaDeGuias;
 					} catch (QCallerException $objExc) {
 						$objExc->IncrementOffset();
 						throw $objExc;
@@ -6022,7 +6119,7 @@
 
 				case 'GuiaExterna':
 					/**
-					 * Sets the value for strGuiaExterna (Unique)
+					 * Sets the value for strGuiaExterna 
 					 * @param string $mixValue
 					 * @return string
 					 */
@@ -7208,6 +7305,45 @@
 					}
 					break;
 
+				case 'EstadisticaDeGuias':
+					/**
+					 * Sets the value for the EstadisticaDeGuias object referenced by objEstadisticaDeGuias (Unique)
+					 * @param EstadisticaDeGuias $mixValue
+					 * @return EstadisticaDeGuias
+					 */
+					if (is_null($mixValue)) {
+						$this->objEstadisticaDeGuias = null;
+
+						// Make sure we update the adjoined EstadisticaDeGuias object the next time we call Save()
+						$this->blnDirtyEstadisticaDeGuias = true;
+
+						return null;
+					} else {
+						// Make sure $mixValue actually is a EstadisticaDeGuias object
+						try {
+							$mixValue = QType::Cast($mixValue, 'EstadisticaDeGuias');
+						} catch (QInvalidCastException $objExc) {
+							$objExc->IncrementOffset();
+							throw $objExc;
+						}
+
+						// Are we setting objEstadisticaDeGuias to a DIFFERENT $mixValue?
+						if ((!$this->EstadisticaDeGuias) || ($this->EstadisticaDeGuias->GuiaId != $mixValue->GuiaId)) {
+							// Yes -- therefore, set the "Dirty" flag to true
+							// to make sure we update the adjoined EstadisticaDeGuias object the next time we call Save()
+							$this->blnDirtyEstadisticaDeGuias = true;
+
+							// Update Local Member Variable
+							$this->objEstadisticaDeGuias = $mixValue;
+						} else {
+							// Nope -- therefore, make no changes
+						}
+
+						// Return $mixValue
+						return $mixValue;
+					}
+					break;
+
 				case 'GuiaAduana':
 					/**
 					 * Sets the value for the GuiaAduana object referenced by objGuiaAduana (Unique)
@@ -7383,7 +7519,11 @@
 		// Related Objects' Methods for GuiaCkptAsNume
 		//-------------------------------------------------------------------
 
-
+		/**
+		 * Gets all associated GuiaCkptsAsNume as an array of GuiaCkpt objects
+		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
+		 * @return GuiaCkpt[]
+		*/
 		public function GetGuiaCkptAsNumeArray($objOptionalClauses = null) {
 			if ((is_null($this->strNumeGuia)))
 				return array();
@@ -9174,6 +9314,7 @@
      *
      * @property-read QQReverseReferenceNodeAduana $Aduana
      * @property-read QQReverseReferenceNodeCobroCod $CobroCod
+     * @property-read QQReverseReferenceNodeEstadisticaDeGuias $EstadisticaDeGuias
      * @property-read QQReverseReferenceNodeGuiaAduana $GuiaAduana
      * @property-read QQReverseReferenceNodeGuiaCheckpoints $GuiaCheckpoints
      * @property-read QQReverseReferenceNodeGuiaCkpt $GuiaCkptAsNume
@@ -9415,6 +9556,8 @@
 					return new QQReverseReferenceNodeAduana($this, 'aduana', 'reverse_reference', 'guia_id', 'Aduana');
 				case 'CobroCod':
 					return new QQReverseReferenceNodeCobroCod($this, 'cobrocod', 'reverse_reference', 'nume_guia', 'CobroCod');
+				case 'EstadisticaDeGuias':
+					return new QQReverseReferenceNodeEstadisticaDeGuias($this, 'estadisticadeguias', 'reverse_reference', 'guia_id', 'EstadisticaDeGuias');
 				case 'GuiaAduana':
 					return new QQReverseReferenceNodeGuiaAduana($this, 'guiaaduana', 'reverse_reference', 'guia_id', 'GuiaAduana');
 				case 'GuiaCheckpoints':
@@ -9560,6 +9703,7 @@
      *
      * @property-read QQReverseReferenceNodeAduana $Aduana
      * @property-read QQReverseReferenceNodeCobroCod $CobroCod
+     * @property-read QQReverseReferenceNodeEstadisticaDeGuias $EstadisticaDeGuias
      * @property-read QQReverseReferenceNodeGuiaAduana $GuiaAduana
      * @property-read QQReverseReferenceNodeGuiaCheckpoints $GuiaCheckpoints
      * @property-read QQReverseReferenceNodeGuiaCkpt $GuiaCkptAsNume
@@ -9801,6 +9945,8 @@
 					return new QQReverseReferenceNodeAduana($this, 'aduana', 'reverse_reference', 'guia_id', 'Aduana');
 				case 'CobroCod':
 					return new QQReverseReferenceNodeCobroCod($this, 'cobrocod', 'reverse_reference', 'nume_guia', 'CobroCod');
+				case 'EstadisticaDeGuias':
+					return new QQReverseReferenceNodeEstadisticaDeGuias($this, 'estadisticadeguias', 'reverse_reference', 'guia_id', 'EstadisticaDeGuias');
 				case 'GuiaAduana':
 					return new QQReverseReferenceNodeGuiaAduana($this, 'guiaaduana', 'reverse_reference', 'guia_id', 'GuiaAduana');
 				case 'GuiaCheckpoints':

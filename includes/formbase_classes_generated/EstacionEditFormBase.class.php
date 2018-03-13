@@ -511,9 +511,9 @@ abstract class EstacionEditFormBase extends QForm {
 	}
 
     protected function btnLogxCamb_Click() {
-        $_SESSION['RegiRefe'] = $this->mctEstacion->Estacion->CodiEsta;
+        $_SESSION['RegiRefe'] = $this->mctEstacion->Estacion->Id;
         $_SESSION['TablRefe'] = 'Estacion';
-        $_SESSION['RegiReto'] = 'estacion_edit.php/'.$this->mctEstacion->Estacion->CodiEsta;
+        $_SESSION['RegiReto'] = 'estacion_edit.php/'.$this->mctEstacion->Estacion->Id;
         QApplication::Redirect(__SIST__.'/log_list.php');
     }
 

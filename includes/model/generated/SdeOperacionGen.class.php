@@ -1291,6 +1291,46 @@
 			);
 		}
 
+		/**
+		 * Load an array of SdeOperacion objects,
+		 * by CodiTipo, CodiEsta Index(es)
+		 * @param integer $intCodiTipo
+		 * @param string $strCodiEsta
+		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
+		 * @return SdeOperacion[]
+		*/
+		public static function LoadArrayByCodiTipoCodiEsta($intCodiTipo, $strCodiEsta, $objOptionalClauses = null) {
+			// Call SdeOperacion::QueryArray to perform the LoadArrayByCodiTipoCodiEsta query
+			try {
+				return SdeOperacion::QueryArray(
+					QQ::AndCondition(
+					QQ::Equal(QQN::SdeOperacion()->CodiTipo, $intCodiTipo),
+					QQ::Equal(QQN::SdeOperacion()->CodiEsta, $strCodiEsta)					)
+,
+					$objOptionalClauses);
+			} catch (QCallerException $objExc) {
+				$objExc->IncrementOffset();
+				throw $objExc;
+			}
+		}
+
+		/**
+		 * Count SdeOperacions
+		 * by CodiTipo, CodiEsta Index(es)
+		 * @param integer $intCodiTipo
+		 * @param string $strCodiEsta
+		 * @return int
+		*/
+		public static function CountByCodiTipoCodiEsta($intCodiTipo, $strCodiEsta) {
+			// Call SdeOperacion::QueryCount to perform the CountByCodiTipoCodiEsta query
+			return SdeOperacion::QueryCount(
+				QQ::AndCondition(
+				QQ::Equal(QQN::SdeOperacion()->CodiTipo, $intCodiTipo),
+				QQ::Equal(QQN::SdeOperacion()->CodiEsta, $strCodiEsta)				)
+
+			);
+		}
+
 
 
 		////////////////////////////////////////////////////

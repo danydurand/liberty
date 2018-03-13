@@ -79,9 +79,12 @@ class Envalijar extends FormularioBaseKaizen {
 	protected function lstTipoOper_Change() {
         if (!is_null($this->lstTipoOper->SelectedValue)) {
             $this->lstOperAbie->RemoveAllItems();
-            $intTipoOper = $this->lstTipoOper->SelectedValue;
-            $arrSdexOper = SdeOperacion::LoadArrayByCodiTipo($intTipoOper);
-            $intCantOper = count($arrSdexOper);
+            $intTipoOper   = $this->lstTipoOper->SelectedValue;
+            $strCodiSucu   = $this->objUsuario->CodiEsta;
+            $objClauOrde   = QQ::Clause();
+            $objClauOrde[] = QQ::OrderBy(QQN::SdeOperacion()->CodiRuta);
+            $arrSdexOper   = SdeOperacion::LoadArrayByCodiTipoCodiEsta($intTipoOper,$strCodiSucu,$objClauOrde);
+            $intCantOper   = count($arrSdexOper);
             $this->lstOperAbie->AddItem('- Seleccione Uno - ('.$intCantOper.')',null);
             foreach ($arrSdexOper as $objOperacion) {
                 if ($objOperacion->CodiRuta != "R9999") {

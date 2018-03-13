@@ -194,17 +194,19 @@ class SacarARuta extends FormularioBaseKaizen {
 
 	protected function lstTipoOper_Change() {
 		$this->lstOperAbie->RemoveAllItems();
-		$this->lstOperAbie->AddItem(QApplication::Translate('- Seleccione Uno -'),null);
 		if (!is_null($this->lstTipoOper->SelectedValue)) {
 			//------------------------------------------------------------------------------------------------------
             // A petición de la Gerente de Operaciones Actual (Josely Tineo @2016), se procede a mostrar todas las
             // rutas, sin distinguir de la sede desde donde se esté cargando. Solamente se muestran las rutas según
             // el tipo seleccionado.
 			//------------------------------------------------------------------------------------------------------
+            $strCodiSucu   = $this->objUsuario->CodiEsta;
 			$objClausula   = QQ::Clause();
 			$objClausula[] = QQ::OrderBy(QQN::SdeOperacion()->CodiRuta);
 			$intCodiTipo = $this->lstTipoOper->SelectedValue;
-			$arrSdexOper = SdeOperacion::LoadArrayByCodiTipo($intCodiTipo,$objClausula);
+            $arrSdexOper   = SdeOperacion::LoadArrayByCodiTipoCodiEsta($intCodiTipo,$strCodiSucu,$objClausula);
+            $intCantOper   = count($arrSdexOper);
+            $this->lstOperAbie->AddItem('- Seleccione Uno - ('.$intCantOper.')',null);
 			foreach ($arrSdexOper as $objOperacion) {
 				if ($objOperacion->CodiRuta != "R9999") {
 					if ($intCodiTipo == 0) {
@@ -220,17 +222,6 @@ class SacarARuta extends FormularioBaseKaizen {
 					}
 				}
 			}
-			/*foreach (SdeOperacion::LoadArrayByCodiEsta($this->objUsuario->CodiEsta,$objClausula) as $objOperacion) {
-				//---------------------------------------------------------------------
-				// Solo se deben mostrar las Rutas cuyo tipo, coincida con el valor
-				// seleccionado por el Usuario
-				//---------------------------------------------------------------------
-				if ($objOperacion->CodiTipo == $this->lstTipoOper->SelectedValue) {
-					if ($objOperacion->CodiRuta != "R9999" && $objOperacion->CodiEsta == $this->objUsuario->CodiEsta) {
-						$this->lstOperAbie->AddItem(substr($objOperacion->__toString(),0,50),$objOperacion->CodiOper);
-					}
-				}
-			}*/
 		}
 		if ($this->lstTipoOper->SelectedValue == 0) {
 			//-----------------------------------
@@ -341,13 +332,11 @@ class SacarARuta extends FormularioBaseKaizen {
 		} else {
 			$objCheckpoint = SdeCheckpoint::Load('TR');
 		}
-		//$blnTodoOkey = true;
 		$this->arrListNume = explode(',',nl2br2($this->txtListNume->Text));
-		//--------------------------------------------------
-		// Con la funcion DejarSoloLosNumeros1 se eliminan
-		// los caracteres especiales y letras
-		//--------------------------------------------------
-		array_walk($this->arrListNume,'DejarSoloLosNumeros1');
+		//--------------------------------------------------------------------------------------
+		// Con la funcion DejarSoloLosNumeros1 se eliminan los caracteres especiales y letras
+		//--------------------------------------------------------------------------------------
+//		array_walk($this->arrListNume,'DejarSoloLosNumeros1');
 		//---------------------------------------------------------------------------
 		// Con array_unique se eliminan las guias repetidas en caso de que las haya
 		//---------------------------------------------------------------------------
@@ -486,7 +475,7 @@ class SacarARuta extends FormularioBaseKaizen {
 							$arrDatoCkpt = array();
 							$arrDatoCkpt['NumeGuia'] = $objGuiaVali->NumeGuia;
                             $arrDatoCkpt['UltiCkpt'] = '';
-                            $arrDatoCkpt['GuiaAnul'] = $objGuia->Anulada;
+                            $arrDatoCkpt['GuiaAnul'] = $objGuiaVali->Anulada;
 							$arrDatoCkpt['CodiCkpt'] = $objCheckpoint->CodiCkpt;
 							$arrDatoCkpt['TextCkpt'] = $objCheckpoint->DescCkpt.' ('.$objContenedor->NumeCont.')';
 							$arrDatoCkpt['CodiRuta'] = $strCodiRuta;

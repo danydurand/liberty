@@ -25,7 +25,7 @@
 	 * @property string $Descripcion the value for strDescripcion (Not Null)
 	 * @property string $Sistema the value for strSistema 
 	 * @property boolean $Delicado the value for blnDelicado 
-	 * @property string $Ip the value for strIp
+	 * @property string $Ip the value for strIp 
 	 * @property-read boolean $__Restored whether or not this object was restored from the database (as opposed to created new)
 	 */
 	class LogGen extends QBaseClass implements IteratorAggregate {
@@ -119,15 +119,16 @@
 		const DelicadoDefault = null;
 
 
-        /**
-         * Protected member variable that maps to the database column log.ip
-         * @var string strIp
-         */
-        protected $strIp;
-        const IpMaxLength = 25;
-        const IpDefault = null;
+		/**
+		 * Protected member variable that maps to the database column log.ip
+		 * @var string strIp
+		 */
+		protected $strIp;
+		const IpMaxLength = 25;
+		const IpDefault = null;
 
-        /**
+
+		/**
 		 * Protected array of virtual attributes for this object (e.g. extra/other calculated and/or non-object bound
 		 * columns from the run-time database query result for this object).  Used by InstantiateDbRow and
 		 * GetVirtualAttribute.
@@ -166,7 +167,7 @@
 			$this->strDescripcion = Log::DescripcionDefault;
 			$this->strSistema = Log::SistemaDefault;
 			$this->blnDelicado = Log::DelicadoDefault;
-            $this->strIp = Log::IpDefault;
+			$this->strIp = Log::IpDefault;
 		}
 
 
@@ -518,6 +519,7 @@
 			    $objBuilder->AddSelectItem($strTableName, 'descripcion', $strAliasPrefix . 'descripcion');
 			    $objBuilder->AddSelectItem($strTableName, 'sistema', $strAliasPrefix . 'sistema');
 			    $objBuilder->AddSelectItem($strTableName, 'delicado', $strAliasPrefix . 'delicado');
+			    $objBuilder->AddSelectItem($strTableName, 'ip', $strAliasPrefix . 'ip');
             }
 		}
 
@@ -664,9 +666,9 @@
 			$strAlias = $strAliasPrefix . 'delicado';
 			$strAliasName = !empty($strColumnAliasArray[$strAlias]) ? $strColumnAliasArray[$strAlias] : $strAlias;
 			$objToReturn->blnDelicado = $objDbRow->GetColumn($strAliasName, 'Bit');
-            $strAlias = $strAliasPrefix . 'ip';
-            $strAliasName = !empty($strColumnAliasArray[$strAlias]) ? $strColumnAliasArray[$strAlias] : $strAlias;
-            $objToReturn->strIp = $objDbRow->GetColumn($strAliasName, 'VarChar');
+			$strAlias = $strAliasPrefix . 'ip';
+			$strAliasName = !empty($strColumnAliasArray[$strAlias]) ? $strColumnAliasArray[$strAlias] : $strAlias;
+			$objToReturn->strIp = $objDbRow->GetColumn($strAliasName, 'VarChar');
 
 			if (isset($objPreviousItemArray) && is_array($objPreviousItemArray)) {
 				foreach ($objPreviousItemArray as $objPreviousItem) {
@@ -795,6 +797,38 @@
 
 		/**
 		 * Load an array of Log objects,
+		 * by Fecha Index(es)
+		 * @param QDateTime $dttFecha
+		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
+		 * @return Log[]
+		*/
+		public static function LoadArrayByFecha($dttFecha, $objOptionalClauses = null) {
+			// Call Log::QueryArray to perform the LoadArrayByFecha query
+			try {
+				return Log::QueryArray(
+					QQ::Equal(QQN::Log()->Fecha, $dttFecha),
+					$objOptionalClauses);
+			} catch (QCallerException $objExc) {
+				$objExc->IncrementOffset();
+				throw $objExc;
+			}
+		}
+
+		/**
+		 * Count Logs
+		 * by Fecha Index(es)
+		 * @param QDateTime $dttFecha
+		 * @return int
+		*/
+		public static function CountByFecha($dttFecha) {
+			// Call Log::QueryCount to perform the CountByFecha query
+			return Log::QueryCount(
+				QQ::Equal(QQN::Log()->Fecha, $dttFecha)
+			);
+		}
+
+		/**
+		 * Load an array of Log objects,
 		 * by Fecha, Usuario Index(es)
 		 * @param QDateTime $dttFecha
 		 * @param string $strUsuario
@@ -862,38 +896,6 @@
 			// Call Log::QueryCount to perform the CountByTabla query
 			return Log::QueryCount(
 				QQ::Equal(QQN::Log()->Tabla, $strTabla)
-			);
-		}
-
-		/**
-		 * Load an array of Log objects,
-		 * by Fecha Index(es)
-		 * @param QDateTime $dttFecha
-		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
-		 * @return Log[]
-		*/
-		public static function LoadArrayByFecha($dttFecha, $objOptionalClauses = null) {
-			// Call Log::QueryArray to perform the LoadArrayByFecha query
-			try {
-				return Log::QueryArray(
-					QQ::Equal(QQN::Log()->Fecha, $dttFecha),
-					$objOptionalClauses);
-			} catch (QCallerException $objExc) {
-				$objExc->IncrementOffset();
-				throw $objExc;
-			}
-		}
-
-		/**
-		 * Count Logs
-		 * by Fecha Index(es)
-		 * @param QDateTime $dttFecha
-		 * @return int
-		*/
-		public static function CountByFecha($dttFecha) {
-			// Call Log::QueryCount to perform the CountByFecha query
-			return Log::QueryCount(
-				QQ::Equal(QQN::Log()->Fecha, $dttFecha)
 			);
 		}
 
@@ -1158,9 +1160,9 @@
 			$this->strNombre = $objReloaded->strNombre;
 			$this->strDescripcion = $objReloaded->strDescripcion;
 			$this->strSistema = $objReloaded->strSistema;
-            $this->blnDelicado = $objReloaded->blnDelicado;
-            $this->strIp = $objReloaded->strIp;
-        }
+			$this->blnDelicado = $objReloaded->blnDelicado;
+			$this->strIp = $objReloaded->strIp;
+		}
 
 
 
@@ -1250,15 +1252,15 @@
 					 */
 					return $this->blnDelicado;
 
-                case 'Ip':
-                    /**
-                     * Gets the value for strIp
-                     * @return string
-                     */
-                    return $this->strIp;
+				case 'Ip':
+					/**
+					 * Gets the value for strIp 
+					 * @return string
+					 */
+					return $this->strIp;
 
 
-                ///////////////////
+				///////////////////
 				// Member Objects
 				///////////////////
 
@@ -1411,21 +1413,21 @@
 						throw $objExc;
 					}
 
-                case 'Ip':
-                    /**
-                     * Sets the value for strIp
-                     * @param string $mixValue
-                     * @return string
-                     */
-                    try {
-                        return ($this->strIp = QType::Cast($mixValue, QType::String));
-                    } catch (QCallerException $objExc) {
-                        $objExc->IncrementOffset();
-                        throw $objExc;
-                    }
+				case 'Ip':
+					/**
+					 * Sets the value for strIp 
+					 * @param string $mixValue
+					 * @return string
+					 */
+					try {
+						return ($this->strIp = QType::Cast($mixValue, QType::String));
+					} catch (QCallerException $objExc) {
+						$objExc->IncrementOffset();
+						throw $objExc;
+					}
 
 
-                ///////////////////
+				///////////////////
 				// Member Objects
 				///////////////////
 				default:
@@ -1559,8 +1561,8 @@
 				$objToReturn->strSistema = $objSoapObject->Sistema;
 			if (property_exists($objSoapObject, 'Delicado'))
 				$objToReturn->blnDelicado = $objSoapObject->Delicado;
-            if (property_exists($objSoapObject, 'Ip'))
-                $objToReturn->strSistema = $objSoapObject->Ip;
+			if (property_exists($objSoapObject, 'Ip'))
+				$objToReturn->strIp = $objSoapObject->Ip;
 			if (property_exists($objSoapObject, '__blnRestored'))
 				$objToReturn->__blnRestored = $objSoapObject->__blnRestored;
 			return $objToReturn;
@@ -1607,7 +1609,7 @@
 			$iArray['Descripcion'] = $this->strDescripcion;
 			$iArray['Sistema'] = $this->strSistema;
 			$iArray['Delicado'] = $this->blnDelicado;
-			$iArray['Ip'] = $this-$this->strIp;
+			$iArray['Ip'] = $this->strIp;
 			return new ArrayIterator($iArray);
 		}
 
@@ -1687,8 +1689,8 @@
 					return new QQNode('sistema', 'Sistema', 'VarChar', $this);
 				case 'Delicado':
 					return new QQNode('delicado', 'Delicado', 'Bit', $this);
-                case 'Ip':
-                    return new QQNode('ip', 'Ip', 'VarChar', $this);
+				case 'Ip':
+					return new QQNode('ip', 'Ip', 'VarChar', $this);
 
 				case '_PrimaryKeyNode':
 					return new QQNode('id', 'Id', 'Integer', $this);
@@ -1746,8 +1748,8 @@
 					return new QQNode('sistema', 'Sistema', 'string', $this);
 				case 'Delicado':
 					return new QQNode('delicado', 'Delicado', 'boolean', $this);
-                case 'Ip':
-                    return new QQNode('ip', 'Ip', 'string', $this);
+				case 'Ip':
+					return new QQNode('ip', 'Ip', 'string', $this);
 
 				case '_PrimaryKeyNode':
 					return new QQNode('id', 'Id', 'integer', $this);

@@ -60,10 +60,10 @@ abstract class LogEditFormBase extends QForm {
 	protected $txtNombre;
 	protected $txtDescripcion;
 	protected $txtSistema;
-    protected $chkDelicado;
-    protected $txtIp;
+	protected $chkDelicado;
+	protected $txtIp;
 
-    // Other ListBoxes (if applicable) via Unique ReverseReferences and ManyToMany References
+	// Other ListBoxes (if applicable) via Unique ReverseReferences and ManyToMany References
 
 	// Other Controls
 	/**
