@@ -97,17 +97,12 @@ class CambioTarifaGuias extends FormularioBaseKaizen {
                 $this->txtNumeSeri->Text .= $strGuiaProc." (No Existe)".chr(13);
                 $blnTodoOkey = false;
             }
-            /*
-            if ($blnTodoOkey) {
-                if ($objGuiaProc->TarifaId == $intTariNuev) {
-                   $this->txtNumeSeri->Text .= $strGuiaProc." (Misma Tarifa)".chr(13);
-                   $blnTodoOkey = false;
-                }
-            }
-            */
             if ($blnTodoOkey) {
                 $objTariAnte = FacTarifa::Load($objGuiaProc->TarifaId);
-                $strTariAnte = $objTariAnte->Descripcion;
+                $strTariAnte = '';
+                if ($objTariAnte) {
+                    $strTariAnte = $objTariAnte->Descripcion;
+                }
                 $strTariDesp = $this->lstCodiTari->SelectedName;
                 //----------------------------------------------------
                 // Se actualiza la tarifa y se recalculan los montos
@@ -125,7 +120,11 @@ class CambioTarifaGuias extends FormularioBaseKaizen {
                     //---------------------------------------------------------------------
                     // Se deja evidencia del cambio, en el Registro de Trabajo de la guia 
                     //---------------------------------------------------------------------
-                    $strTextMens = "Tarifa: ".$strTariAnte." --> ".$strTariDesp;
+                    if (strlen($strTariAnte)) {
+                        $strTextMens = "Tarifa: ".$strTariAnte." --> ".$strTariDesp;
+                    } else {
+                        $strTextMens = "Nueva Tarifa: ".$strTariDesp;
+                    }
                     $arrParaRegi['CodiCkpt'] = 'MG';
                     $arrParaRegi['TextMens'] = $strTextMens;
                     $arrParaRegi['NumeGuia'] = $objGuiaProc->NumeGuia;

@@ -164,7 +164,7 @@ require(__APP_INCLUDES__ . '/header.inc.php');
 											<?php $this->chkPagoPpdx->RenderWithName(); ?>
 											<?php $this->chkPagoCrdx->RenderWithName(); ?>
 											<?php $this->chkPagoCodx->RenderWithName(); ?>
-											<?php //$this->chkGuiaReto->RenderWithName(); ?>
+											<?php $this->chkGuiaReto->RenderWithName(); ?>
 										</div>
 									</div>
 									<div class="col-md-6">

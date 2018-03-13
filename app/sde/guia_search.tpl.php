@@ -46,6 +46,7 @@ require(__APP_INCLUDES__ . '/header.inc.php');
                     <?php $this->rdbTienPodx->RenderWithName(); ?>
                 </div>
                 <div class="col-xs-12 col-md-4">
+                    <?php $this->lstTariIdxx->RenderWithName(); ?>
                     <?php $this->calFechTrx1->RenderWithName(); ?>
                     <?php $this->calFechTrx2->RenderWithName(); ?>
                     <?php $this->txtUsuaPodx->RenderWithName(); ?>

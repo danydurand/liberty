@@ -43,6 +43,7 @@ $arrEnca2XLS = array(
     'Mod Pago',
     'Remitente',
     'Destinatario',
+    'Tarifa',
     'Peso',
     'Tarifa Vol',
     'Piezas',
@@ -113,13 +114,18 @@ while ($intCantRepe <= $intCantCicl) {
     // Recorro la lista de registros, armando el vector de datos
     //--------------------------------------------------------------
     foreach ($arrDatoRepo as $objTabla) {
+        $strDescTari = '';
+        if (!is_null($objTabla->TarifaId)) {
+            $objTariGuia = FacTarifa::Load($objTabla->TarifaId);
+            if ($objTariGuia) {
+                $strDescTari = QuitarCaracteresEspeciales2(utf8_decode(quitaCaracter($strSepaColu,$objTariGuia->Descripcion)));
+            }
+        }
         $objEstaGuia = $objTabla->GetEstadisticaDeGuias();
-        // echo"Guia: ".$objTabla->NumeGuia."<br>";
         $strNumeGuia = " ".quitaCaracter($strSepaColu,$objTabla->NumeGuia);
         $strNumeTrac = QuitarCaracteresEspeciales2(utf8_decode(quitaCaracter($strSepaColu,$objTabla->GuiaExterna)));
         $strCodiClie = QuitarCaracteresEspeciales2(utf8_decode(quitaCaracter($strSepaColu,$objTabla->CodiClieObject->CodigoInterno)));
         $strFechGuia = $objTabla->FechGuia->__toString("YYYY-MM-DD");
-        // echo1;
         $strEstaOrig = QuitarCaracteresEspeciales2(utf8_decode(quitaCaracter($strSepaColu,$objTabla->EstaOrig)));
         $strReceOrig = QuitarCaracteresEspeciales2(utf8_decode(quitaCaracter($strSepaColu,$objTabla->ReceptoriaOrigen)));
         $strEstaDest = QuitarCaracteresEspeciales2(utf8_decode(quitaCaracter($strSepaColu,$objTabla->EstaDest)));
@@ -131,15 +137,10 @@ while ($intCantRepe <= $intCantCicl) {
         $strPesoVolu = SinoType::ToString($objTabla->CantAyudantes);
         $strCantPiez = nf0($objTabla->CantPiez);
         $strValoDecl = nf($objTabla->ValorDeclarado);
-        // echo2;
         $strEntrAxxx = QuitarCaracteresEspeciales2(utf8_decode(quitaCaracter($strSepaColu,$objTabla->EntregadoA)));
-        // echo3;
         $strFechEntr = $objTabla->FechaEntrega ? $objTabla->FechaEntrega->__toString("YYYY-MM-DD") : '';
-        // echo4;
         $strHoraEntr = $objTabla->HoraEntrega;
-        // echo5;
         $strCodiCkpt = $objTabla->CodiCkpt;
-        // echo"6<br>";
         $strEstaCkpt = $objTabla->EstaCkpt;
         $strFechCkpt = $objTabla->FechCkpt ? $objTabla->FechCkpt->__toString("YYYY-MM-DD") : '';
         $strHoraCkpt = $objTabla->HoraCkpt;
@@ -231,6 +232,7 @@ while ($intCantRepe <= $intCantCicl) {
             $strModaPago,
             $strNombRemi,
             $strNombDest,
+            $strDescTari,
             $strPesoGuia,
             $strPesoVolu,
             $strCantPiez,

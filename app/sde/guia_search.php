@@ -40,6 +40,7 @@ class GuiaSearchForm extends FormularioBaseKaizen {
     protected $btnExpoEsta;
     protected $txtSepaColu;
     protected $lstReceOrig;
+    protected $lstTariIdxx;
 
     protected function Form_Create() {
         parent::Form_Create();
@@ -70,6 +71,7 @@ class GuiaSearchForm extends FormularioBaseKaizen {
         $this->chkPesoVolu_Create();
         $this->calInicPodx_Create();
         $this->calFinaPodx_Create();
+        $this->lstTariIdxx_Create();
         $this->calFechTrx1_Create();
         $this->calFechTrx2_Create();
         $this->txtUsuaPodx_Create();
@@ -155,6 +157,20 @@ class GuiaSearchForm extends FormularioBaseKaizen {
         $this->calFinaPodx = new QCalendar($this);
         $this->calFinaPodx->Name = QApplication::Translate('Fecha Entrega Final');
         $this->calFinaPodx->Width = 100;
+    }
+
+    protected function lstTariIdxx_Create() {
+        $this->lstTariIdxx = new QListBox($this);
+        $this->lstTariIdxx->Name = 'Tarifa';
+        $objClauOrde   = QQ::Clause();
+        $objClauOrde[] = QQ::OrderBy(QQN::FacTarifa()->Id,false);
+        $arrTariIdxx   = FacTarifa::LoadAll($objClauOrde);
+        $intCantTari   = count($arrTariIdxx);
+        $this->lstTariIdxx->AddItem('- Seleccione - ('.$intCantTari.')');
+        foreach ($arrTariIdxx as $objTariIdxx) {
+            $this->lstTariIdxx->AddItem($objTariIdxx->__toString(),$objTariIdxx->Id);
+        }
+        $this->lstTariIdxx->Width = 180;
     }
 
     protected function calFechTrx1_Create() {
@@ -498,6 +514,8 @@ class GuiaSearchForm extends FormularioBaseKaizen {
                 on g.tipo_guia = t.id
                    left join usuario u
                 on g.usua_ckpt = u.codi_usua
+                   left join fac_tarifa t
+                on g.tarifa_id = t.id
              where 1 = 1
         ";
         $objClausula = QQ::Clause();
@@ -676,6 +694,10 @@ class GuiaSearchForm extends FormularioBaseKaizen {
             if (!is_null($this->lstCodiCkpt->SelectedValue)) {
                 $objClausula[]= QQ::Equal(QQN::Guia()->CodiCkpt,$this->lstCodiCkpt->SelectedValue);
                 $strCadeSqlx  .= " and g.codi_ckpt = '".$this->lstCodiCkpt->SelectedValue."'";
+            }
+            if (!is_null($this->lstTariIdxx->SelectedValue)) {
+                $objClausula[]= QQ::Equal(QQN::Guia()->TarifaId,$this->lstTariIdxx->SelectedValue);
+                $strCadeSqlx  .= " and g.tarifa_id = ".$this->lstTariIdxx->SelectedValue;
             }
             $objClausula[] = QQ::Equal(QQN::Guia()->Anulada,0);
             $strCadeSqlx  .= " and g.anulada = 0 ";

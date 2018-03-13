@@ -199,7 +199,6 @@ class MasterClienteEditForm extends FormularioBaseKaizen {
         $this->verificarNavegacion();
 
         $this->btnSave->Text = TextoIcono('cogs','Guardar','F','fa-lg');
-        //$this->btnSave->AddAction(new QClickEvent(), new QAjaxAction('btnSave_Click'));
         $this->btnDelete_Create();
         $this->btnCargMasi_Create();
 
@@ -268,6 +267,14 @@ class MasterClienteEditForm extends FormularioBaseKaizen {
 
         $this->btnMasxAcci_Create();
         $this->txtCodiInte->SetFocus();
+
+        //----------------------------------------------------------------------------------------
+        // Unicamente los SuperUsuarios podrán permitir a los Usuarios el uso de la Guia Retorno
+        //----------------------------------------------------------------------------------------
+        $this->chkGuiaReto->Visible = false;
+        if ($this->objUsuario->CodiGrup == 1) {
+            $this->chkGuiaReto->Visible = true;
+        }
 	}
 
 	//----------------------------

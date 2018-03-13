@@ -55,7 +55,9 @@ if (!$objCliente->CodiStat) {
 // opciones bloqueadas o invisibles.
 //---------------------------------------------------------------------------------------
 if (!$objCliente->tieneSubCuentas()) {
-    $arrOpciExcl[] = $objOpciSubc->Id;
+    if ($objOpciSubc) {
+        $arrOpciExcl[] = $objOpciSubc->Id;
+    }
 }
 //------------------------------------------------------------------------------
 // Si el Cliente posee una Tarifa que no sea "Por Peso", se agrega en el vector
@@ -68,7 +70,7 @@ if ($objCliente->Tarifa->TipoTarifa != FacTipoTarifaType::PORPESO) {
 // Si el Usuario no corresponde a los administradores del Sistema, la opción Admin
 // se agrega en el vector de opciones bloqueadas o invisibles.
 //---------------------------------------------------------------------------------
-$arrUsuaAdmi = array('ddurand','ianzola');
+$arrUsuaAdmi = array('ddurand');
 if (!in_array($objUsuario->LogiUsua,$arrUsuaAdmi)) {
     $arrOpciExcl[] = $objOpciAdmi->Id;
 }

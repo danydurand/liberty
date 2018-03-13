@@ -283,7 +283,9 @@
             // opciones bloqueadas o invisibles.
             //---------------------------------------------------------------------------------------
             if (!$objCliente->tieneSubCuentas()) {
-                $arrOpciExcl[] = $objOpciSubc->Id;
+                if ($objOpciSubc) {
+                    $arrOpciExcl[] = $objOpciSubc->Id;
+                }
             }
             //------------------------------------------------------------------------------
             // Si el Cliente posee una Tarifa que no sea "Por Peso", se agrega en el vector
