@@ -22,7 +22,7 @@ if ($objManifiesto) {
     $objChofer = Chofer::Load($objManifiesto->CodiOperObject->CodiChof);
     $intContRegi = 0;
     $intTotaPiez = 0;
-    $decPesoTota = 0;
+    $dblTotaPeso = 0;
     //--------------------------------------------------------------
     // Se procesan las Valijas incluidas dentro del Contenedor
     //--------------------------------------------------------------
@@ -36,9 +36,9 @@ if ($objManifiesto) {
             $intContRegi++;
             $arrRegiDato[] = array(
                 $intContRegi,
+                $objValija->NumeCont,
                 $objGuia->NumeGuia,
-                nfp($objGuia->MontoTotal),
-                $strSistGuia,
+                $objGuia->GuiaRetorno,
                 $objGuia->FechGuia->__toString("DD/MM/YYYY"),
                 substr($objGuia->NombRemi,0,30),
                 substr($objGuia->NombDest,0,30),
@@ -47,7 +47,7 @@ if ($objManifiesto) {
                 $objGuia->PesoGuia
             );
             $intTotaPiez += $objGuia->CantPiez;
-            $decPesoTota += floatval($objGuia->PesoGuia);
+            $dblTotaPeso += $objGuia->PesoGuia;
         }
     }
     //-------------------------------------------------------
@@ -61,9 +61,10 @@ if ($objManifiesto) {
         $intContRegi++;
         $arrRegiDato[] = array(
             $intContRegi,
-            $objGuia->NumeGuia,
             nfp($objGuia->MontoTotal),
+            $objGuia->NumeGuia,
             $strSistGuia,
+            $objGuia->GuiaRetorno,
             $objGuia->FechGuia->__toString("DD/MM/YYYY"),
             substr($objGuia->NombRemi,0,30),
             substr($objGuia->NombDest,0,30),
@@ -72,12 +73,12 @@ if ($objManifiesto) {
             $objGuia->PesoGuia
         );
         $intTotaPiez += $objGuia->CantPiez;
-        $decPesoTota += floatval($objGuia->PesoGuia);
+        $dblTotaPeso += $objGuia->PesoGuia;
     }
     //--------------------------------------------
     // Se envia una ultima linea con los totales
     //--------------------------------------------
-    $arrRegiDato[] = array('','','','','','','TOTAL',$intTotaPiez,nfp($decPesoTota));
+    $arrRegiDato[] = array('','','','','','','','','TOTAL',$intTotaPiez,nfp($dblTotaPeso));
 
     $objParametro = Parametro::Load('88888','logos');
     $strlogo = '../'.$objParametro->ParaTxt1;
@@ -85,9 +86,9 @@ if ($objManifiesto) {
     $objParametro = Parametro::Load('88888','datfisc');
     $strNombEmpr = $objParametro->ParaTxt1;
     $strDireEmpr = $objParametro->ParaTxt5;
-    $arrEncaColu = array('Nro','GUIA','MONTO','SIST','FECHA','REMITENTE','DESTINATARIO','DEST','BLT','PESO');
-    $arrJustColu = array('R','C','R','C','C','L','L','C','R','R');
-    $arrAnchColu = array(9,17,22,20,18,65,65,13,10,18);
+    $arrEncaColu = array('No','MTO','GUIA','SIST','RTRNO','FECHA','REMITENTE','DESTINATARIO','DEST','BLT','PESO');
+    $arrJustColu = array('L','C','C','C','C','C','L','L','L','C','R');
+    $arrAnchColu = array(9,17,18,15,18,18,65,65,13,10,12);
 
     $pdf=new PDF('L','mm','Letter');
     $strDestOper = implode($objManifiesto->GetDestinos(),", ");

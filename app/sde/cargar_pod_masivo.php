@@ -46,8 +46,6 @@ class CargarPodMasivo extends FormularioBaseKaizen {
         $this->btnSave->CssClass = 'btn btn-success btn-sm';
         $this->btnSave->PrimaryButton = true;
         $this->btnSave->CausesValidation = true;
-        // $blnBotoVisi = BuscarParametro('CargValo', $this->objUsuario->LogiUsua, "Val1", 0);
-        // $this->btnSave->Visible = $blnBotoVisi;
     }
 
     //-----------------------------------

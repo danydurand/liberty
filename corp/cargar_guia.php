@@ -94,21 +94,6 @@ class CargarGuia extends FormularioBaseKaizen {
 
     protected function setupValues() {
         $this->objCliente = unserialize($_SESSION['ClieMast']);
-        //$this->blnSoloCred = false;
-
-        //------------------------------------------------------------------------------------------------------------
-        // Vector que contiene codigo(s) interno(s) de clientes que solamente tienen autorizado CRD como modo de pago
-        //------------------------------------------------------------------------------------------------------------
-        //$arrCodiInte = array('CR424','CR940');
-
-        //--------------------------------------------------------------------------------------------------------------
-        // Si el Cliente, del cual el usuario actual es filiar, se encuentra dentro del vector de Clientes, los cuales
-        // solamente tienen permitido CRD como modo de pago, entonces al usuario actual solamente se le habilita CRD
-        // como modo de pago.
-        //--------------------------------------------------------------------------------------------------------------
-        /*if (in_array($this->objCliente->CodigoInterno,$arrCodiInte)) {
-            $this->blnSoloCred = true;
-        }*/
 
         //--------------------------------------------------------------------------------------------
         // Si la Guía se encuentra en modo de edición, la misma se queda con su Peso correspondiente.
@@ -358,7 +343,8 @@ class CargarGuia extends FormularioBaseKaizen {
         if ($this->blnEditMode) {
             $this->txtDireRemi->Text = $this->objGuia->DireRemi;
         } else {
-            $this->txtDireRemi->Text = $this->objCliente->DireReco;
+//            $this->txtDireRemi->Text = $this->objCliente->DireReco;
+            $this->txtDireRemi->Text = $this->objUsuario->Direccion;
         }
     }
     //----------------------------------------
@@ -438,7 +424,7 @@ class CargarGuia extends FormularioBaseKaizen {
         if ($this->blnEditMode) {
             $this->txtCeduDest->Text = $this->objGuia->CedulaRif;
         }
-        $this->txtCeduDest->AddAction(new QBlurEvent(), new QAjaxAction('txtCeduDest_Blur'));
+//        $this->txtCeduDest->AddAction(new QBlurEvent(), new QAjaxAction('txtCeduDest_Blur'));
     }
 
     protected function chkDestFrec_Create() {
@@ -589,28 +575,30 @@ class CargarGuia extends FormularioBaseKaizen {
         //------------------------------------
         // Validando campo de Valor Declarado
         //------------------------------------
-        if (strlen($this->txtValoDecl->Text) == 0) {
-            $blnTodoOkey = false;
-            if (strlen($strMensErro) > 0) {
-                $strMensErro .= ', ';
-            }
-            $strMensErro .= 'V. Decl. (Requerido)';
-        } else {
-            //-----------------------------------------------------------------------------------
-            // Verificando si el Valor Declarado se encuentra dentro del rango legal del Seguro,
-            // en caso de que el Usuario haya requerido el mismo.
-            //-----------------------------------------------------------------------------------
-            if ($this->objSeguGuia) {
-                if ($this->objSeguGuia->ExceMini) {
-                    //----------------------------------------------------------------------------------
-                    // El Valor Decl. se encuentra por debajo del rango legal, por lo que el Sistema no
-                    // debe permitir guardar la guía hasta no corregir dicho valor.
-                    //----------------------------------------------------------------------------------
-                    $blnTodoOkey = false;
-                    if (strlen($strMensErro) > 0) {
-                        $strMensErro .= ', ';
+        if ($this->chkSeguGuia->Checked) {
+            if (strlen($this->txtValoDecl->Text) == 0) {
+                $blnTodoOkey = false;
+                if (strlen($strMensErro) > 0) {
+                    $strMensErro .= ', ';
+                }
+                $strMensErro .= 'V. Decl. (Requerido)';
+            } else {
+                //-----------------------------------------------------------------------------------
+                // Verificando si el Valor Declarado se encuentra dentro del rango legal del Seguro,
+                // en caso de que el Usuario haya requerido el mismo.
+                //-----------------------------------------------------------------------------------
+                if ($this->objSeguGuia) {
+                    if ($this->txtValoDecl->Text < $this->arrValoMini[0]) {
+                        //----------------------------------------------------------------------------------
+                        // El Valor Decl. se encuentra por debajo del rango legal, por lo que el Sistema no
+                        // debe permitir guardar la guía hasta no corregir dicho valor.
+                        //----------------------------------------------------------------------------------
+                        $blnTodoOkey = false;
+                        if (strlen($strMensErro) > 0) {
+                            $strMensErro .= ', ';
+                        }
+                        $strMensErro .= 'V. Decl. ('.$this->objSeguGuia->MensSegu.')';
                     }
-                    $strMensErro .= 'V. Decl. ('.$this->objSeguGuia->MensSegu.')';
                 }
             }
         }
@@ -1064,10 +1052,6 @@ class CargarGuia extends FormularioBaseKaizen {
     protected function btnBorrGuia_Click() {
         BorrarGuia($this->txtNumeGuia->Text);
         QApplication::Redirect(__SIST__.'/guia_list.php');
-        // $this->mensaje('La guía ha sido borrada exitosamente!','','','check');
-        // $this->btnSave->Visible = false;
-        // $this->btnBorrGuia->Visible = false;
-        // $this->btnImprGuia->Visible = false;
     }
 
     protected function btnImprGuia_Click() {
@@ -1086,6 +1070,7 @@ class CargarGuia extends FormularioBaseKaizen {
     //----------------------------
     // Otras acciones del Sistema
     //----------------------------
+
     protected function permitirCambios() {
         $blnGuarGuia = true;
         $strMensUsua = '';
@@ -1261,30 +1246,33 @@ class CargarGuia extends FormularioBaseKaizen {
     }
 
     protected function UpdateGuiaFields() {
+        if (strlen($this->txtValoDecl->Text) == 0) {
+            $this->txtValoDecl->Text = 0;
+        }
         $this->objGuia->NumeGuia           = $this->txtNumeGuia->Text;
         $this->objGuia->CodiClie           = $this->objCliente->CodiClie;
         $this->objGuia->FechGuia           = $this->calFechGuia->DateTime;
         $this->objGuia->EstaOrig           = $this->objUsuario->SucursalId;
         $this->objGuia->EstaDest           = $this->lstSucuDest->SelectedValue;
         $this->objGuia->PesoGuia           = $this->strPesoGuia;
-        $this->objGuia->NombRemi           = $this->txtNombRemi->Text;
-        $this->objGuia->DireRemi           = $this->txtDireRemi->Text;
+        $this->objGuia->NombRemi           = limpiarCadena($this->txtNombRemi->Text);
+        $this->objGuia->DireRemi           = limpiarCadena($this->txtDireRemi->Text);
         $this->objGuia->TeleRemi           = DejarSoloLosNumeros($this->txtTeleRemi->Text);
-        $this->objGuia->NombDest           = $this->txtNombDest->Text;
-        $this->objGuia->DireDest           = $this->txtDireDest->Text;
-        $this->objGuia->CedulaDestinatario = $this->txtCeduDest->Text;
+        $this->objGuia->NombDest           = limpiarCadena($this->txtNombDest->Text);
+        $this->objGuia->DireDest           = limpiarCadena($this->txtDireDest->Text);
+        $this->objGuia->CedulaDestinatario = DejarSoloLosNumeros($this->txtCeduDest->Text);
         $this->objGuia->TeleDest           = DejarSoloLosNumeros2($this->txtTeleDest->Text);
-        $this->objGuia->CantPiez           = $this->txtCantPiez->Text;
-        $this->objGuia->DescCont           = $this->txtDescCont->Text;
+        $this->objGuia->CantPiez           = DejarSoloLosNumeros($this->txtCantPiez->Text);
+        $this->objGuia->DescCont           = limpiarCadena($this->txtDescCont->Text);
         $this->objGuia->CodiProd           = $this->objProducto->CodiProd;
         $this->objGuia->TipoGuia           = $this->lstModaPago->SelectedValue;
         $this->objGuia->ValorDeclarado     = $this->txtValoDecl->Text;
         $this->objGuia->Asegurado          = $this->chkSeguGuia->Checked;
         $this->objGuia->TieneGuiaRetorno   = $this->chkEnviReto->Checked;
         $this->objGuia->GuiaRetorno        = null;
-        $this->objGuia->Observacion        = $this->txtContReto->Text;
+        $this->objGuia->Observacion        = limpiarCadena($this->txtContReto->Text);
         $this->objGuia->TipoDocumentoId    = $this->lstCeduDest->SelectedValue;
-        $this->objGuia->CedulaRif          = $this->txtCeduDest->Text;
+        $this->objGuia->CedulaRif          = limpiarCadena($this->txtCeduDest->Text);
         $this->objGuia->CobroCod           = null;
         $this->objGuia->VendedorId         = $this->objCliente->VendedorId;
         $this->objGuia->TarifaId           = $this->objCliente->TarifaId;

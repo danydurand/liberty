@@ -443,7 +443,7 @@ function limpiarCadena($strCadeLimp,$strCadeQuit='') {
     if (strlen($strCadeLimp) > 0) {
         $strCadeLimp = quitaCaracter($strCadeQuit,$strCadeLimp);
     }
-    return $strCadeLimp;
+    return utf8_decode($strCadeLimp);
 }
 
 function QuitarAmpersand($strCadeProc) {

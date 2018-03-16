@@ -46,6 +46,7 @@ class MensajeYamaguchiListForm extends MensajeYamaguchiListFormBase {
 		$this->dtgMensajeYamaguchis->AlternateRowStyle->CssClass = 'alternate';
 
 		$objClauOrde   = QQ::Clause();
+		$objClauOrde[] = QQ::OrderBy(QQN::MensajeYamaguchi()->Id,false);
 		$objClauOrde[] = QQ::OrderBy(QQN::MensajeYamaguchi()->Orden);
 
 		// Se ordenan los registros por Orden.

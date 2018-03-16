@@ -1,5 +1,5 @@
 <?php
-$strNombSist = "YAMAGUCHI<br>SYSTEM";
+$strNombSist = "CORP<br>SYSTEM";
 $strNombEmpr = 'LIBERTY EXPRESS';
 if (isset($_SESSION['User'])) {
     $objUsuaCone = unserialize($_SESSION['User']);

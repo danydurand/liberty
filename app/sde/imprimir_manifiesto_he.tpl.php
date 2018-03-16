@@ -25,7 +25,6 @@ require(__APP_INCLUDES__ . '/header.inc.php');
                     <?php $this->lstTipoOper->renderWithName(); ?>
                     <?php $this->lstOperAbie->renderWithName(); ?>
                     <?php $this->calFechMani->renderWithName(); ?>
-                    <?php //$this->calFechReco->renderWithName(); ?>
                     <?php $this->lstContMani->renderWithName(); ?>
                     <?php $this->lstTipoRepo->renderWithName(); ?>
                 </div>

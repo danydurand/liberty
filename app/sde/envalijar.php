@@ -88,7 +88,7 @@ class Envalijar extends FormularioBaseKaizen {
             $this->lstOperAbie->AddItem('- Seleccione Uno - ('.$intCantOper.')',null);
             foreach ($arrSdexOper as $objOperacion) {
                 if ($objOperacion->CodiRuta != "R9999") {
-                    $this->lstOperAbie->AddItem($objOperacion->__toString(),$objOperacion->CodiOper);
+                    $this->lstOperAbie->AddItem(substr($objOperacion->__toString(),0,50),$objOperacion->CodiOper);
                 }
 			}
 		}

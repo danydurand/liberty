@@ -1128,6 +1128,9 @@ class CargarGuia extends FormularioBaseKaizen {
                             $blnTodoOkey = false;
                         }
                     }
+                    if ($blnTodoOkey) {
+                        QApplication::Redirect(__PMN__.'/consulta_guia.php/'.$this->objGuia->NumeGuia);
+                    }
                 } catch (Exception $e) {
                     $strPrefAcci = 'actualizacion';
                     if (!$this->blnEditMode) {
@@ -1182,6 +1185,7 @@ class CargarGuia extends FormularioBaseKaizen {
                 $arrLogxCamb['strDescCamb'] = 'Ejecutado';
                 $arrLogxCamb['strEnlaEnti'] = __SIST__.'/proceso_error_list.php/'.$objProcEjec->Id;
                 LogDeCambios($arrLogxCamb);
+
             }
         }
     }
