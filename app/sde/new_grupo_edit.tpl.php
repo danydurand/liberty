@@ -17,12 +17,27 @@ require(__APP_INCLUDES__ . '/botonera_edit.inc.php');
 	        </div>
 	        <div class="row">
 	            <div class="col-md-12" style="margin-top: 1em;">
-	            <?php $this->lblId->RenderWithName(); ?>
+	                <?php $this->lblId->RenderWithName(); ?>
 					<?php $this->txtNombre->RenderWithName(); ?>
 					<?php $this->chkActivo->RenderWithName(); ?>
 					<?php $this->lstSistema->RenderWithName(); ?>
 		        </div>
 	        </div>
+            <div class="row">
+                <div class="col-md-3 col-md-offset-1">
+                    <span class="titulo"><?php $this->lblUsuaGrup->Render() ?></span>
+                </div>
+            </div>
+            <div class="row" style="margin-top: 1em">
+                <div class="col-md-offset-1 col-md-10">
+                    <?php $this->dtgUsuaGrup->Render(); ?>
+                </div>
+            </div>
 	    </div>
 	</div>
+    <style>
+        .titulo {
+            font-weight: bold;
+        }
+    </style>
 <?php require(__APP_INCLUDES__ .'/footer.inc.php'); ?>

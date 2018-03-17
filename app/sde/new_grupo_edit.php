@@ -21,6 +21,8 @@ require_once(__FORMBASE_CLASSES__ . '/NewGrupoEditFormBase.class.php');
  * @subpackage Drafts
  */
 class NewGrupoEditForm extends NewGrupoEditFormBase {
+    protected $dtgUsuaGrup;
+    protected $lblUsuaGrup;
 
 	// Override Form Event Handlers as Needed
 	protected function Form_Run() {
@@ -45,6 +47,13 @@ class NewGrupoEditForm extends NewGrupoEditFormBase {
 		$this->chkActivo = $this->mctNewGrupo->chkActivo_Create();
 		$this->lstSistema = $this->mctNewGrupo->lstSistema_Create();
 
+		$this->lblUsuaGrup_Create();
+		$this->dtgUsuaGrup_Create();
+
+		if (!$this->mctNewGrupo->EditMode) {
+		    $this->lblUsuaGrup->Visible = false;
+		    $this->dtgUsuaGrup->Visible = false;
+        }
 	}
 
 	//----------------------------
@@ -57,11 +66,66 @@ class NewGrupoEditForm extends NewGrupoEditFormBase {
         $this->lblTituForm->Text .= ' ('.($this->intPosiRegi+1).'/'.$this->intCantRegi.')';
     }
 
+    protected function lblUsuaGrup_Create() {
+        $this->lblUsuaGrup = new QLabel($this);
+        $this->lblUsuaGrup->Text = 'Usuario(s) de este Grupo';
+    }
+
+    protected function dtgUsuaGrup_Create() {
+
+        $this->dtgUsuaGrup = new UsuarioDataGrid($this);
+        $this->dtgUsuaGrup->FontSize = 13;
+        $this->dtgUsuaGrup->ShowFilter = false;
+
+        // Style the DataGrid (if desired)
+        $this->dtgUsuaGrup->CssClass = 'datagrid';
+        $this->dtgUsuaGrup->AlternateRowStyle->CssClass = 'alternate';
+
+        // Los registros "Borrados" no deben mostrarse
+        $objClauWher   = QQ::Clause();
+        $objClauWher[] = QQ::IsNull(QQN::Usuario()->DeleteAt);
+        $objClauWher[] = QQ::Equal(QQN::Usuario()->GrupoId,$this->mctNewGrupo->NewGrupo->Id);
+        $this->dtgUsuaGrup->AdditionalConditions = QQ::AndCondition($objClauWher);
+
+        // Add Pagination (if desired)
+        $this->dtgUsuaGrup->Paginator = new QPaginator($this->dtgUsuaGrup);
+        $this->dtgUsuaGrup->ItemsPerPage = 10; //__FORM_DRAFTS_FORM_LIST_ITEMS_PER_PAGE__;
+
+        // Higlight the datagrid rows when mousing over them
+        $this->dtgUsuaGrup->AddRowAction(new QMouseOverEvent(), new QCssClassAction('selectedStyle'));
+        $this->dtgUsuaGrup->AddRowAction(new QMouseOutEvent(), new QCssClassAction());
+
+        // Add a click handler for the rows.
+        // We can use $_CONTROL->CurrentRowIndex to pass the row index to dtgPersonsRow_Click()
+        // or $_ITEM->Id to pass the object's id, or any other data grid variable
+        $this->dtgUsuaGrup->RowActionParameterHtml = '<?= $_ITEM->CodiUsua ?>';
+        $this->dtgUsuaGrup->AddRowAction(new QClickEvent(), new QAjaxAction('dtgUsuaGrupRow_Click'));
+
+        // Use the MetaDataGrid functionality to add Columns for this datagrid
+
+        // Create the Other Columns (note that you can use strings for usuario's properties, or you
+        // can traverse down QQN::usuario() to display fields that are down the hierarchy)
+        $this->dtgUsuaGrup->MetaAddColumn('CodiUsua');
+        $this->dtgUsuaGrup->MetaAddColumn('LogiUsua');
+        $this->dtgUsuaGrup->MetaAddColumn('NombUsua');
+        $this->dtgUsuaGrup->MetaAddColumn('ApelUsua');
+        $this->dtgUsuaGrup->MetaAddTypeColumn('CodiStat', 'StatusType');
+        $colSucuUsua = $this->dtgUsuaGrup->MetaAddColumn(QQN::Usuario()->CodiEsta);
+        $colSucuUsua->Name = 'Suc.';
+        $this->dtgUsuaGrup->MetaAddColumn('FechAcce');
+
+    }
+
     //-----------------------------------
 	// Acciones relativas a los objetos 
 	//-----------------------------------
 
-	protected function btnSave_Click($strFormId, $strControlId, $strParameter) {
+    public function dtgUsuaGrupRow_Click($strFormId, $strControlId, $strParameter) {
+        $intId = intval($strParameter);
+        QApplication::Redirect(__SIST__."/usuario_edit.php/$intId");
+    }
+
+    protected function btnSave_Click($strFormId, $strControlId, $strParameter) {
 		//--------------------------------------------
 		// Se clona el objeto para verificar cambios 
 		//--------------------------------------------

@@ -333,6 +333,11 @@ class UsuarioEditForm extends UsuarioEditFormBase {
         QApplication::Redirect(__SIST__.'/usuario_edit.php/'.$objRegiTabl->CodiUsua);
     }
 
+    protected function btnVolvList_Click() {
+        $objUltiAcce = PilaAcceso::Pop('D');
+        QApplication::Redirect(__SIST__."/".$objUltiAcce->__toString());
+    }
+
     protected function btnReseClav_Click() {
         $this->mensaje();
         $strMensUsua = 'Clave reseteada con Éxito. El Usuario recibirá un correo con instrucciones para ingresar al Sistema';
