@@ -77,11 +77,6 @@ class DarPermisos extends FormularioBaseKaizen {
         $this->dtgUsuaPerm->RowActionParameterHtml = '<?= $_ITEM->CodiPara ?>';
         $this->dtgUsuaPerm->AddRowAction(new QClickEvent(), new QAjaxAction('dtgUsuaPermRow_Click'));
 
-        /*
-        $colCodiUsua = new QDataGridColumn('ID','<?= $_FORM->dtgCodiUsua_Render($_ITEM); ?>');
-        $colCodiUsua->Width = 75;
-        $this->dtgUsuaPerm->AddColumn($colCodiUsua);
-        */
         $colLogiUsua = $this->dtgUsuaPerm->MetaAddColumn('CodiPara');
         $colLogiUsua->Name = 'Login';
         $colNombUsua = $this->dtgUsuaPerm->MetaAddColumn('DescPara');

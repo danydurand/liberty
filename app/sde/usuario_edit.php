@@ -24,6 +24,8 @@ class UsuarioEditForm extends UsuarioEditFormBase {
     protected $btnReseClav;
     protected $btnMasxOpci;
     protected $strPassUsua;
+    protected $lblPermUsua;
+    protected $dtgPermUsua;
 
     // Override Form Event Handlers as Needed
     protected function Form_Run() {
@@ -44,16 +46,6 @@ class UsuarioEditForm extends UsuarioEditFormBase {
 
         // Call MetaControl's methods to create qcontrols based on Usuario's data fields
         $this->lblCodiUsua = $this->mctUsuario->lblCodiUsua_Create();
-
-        /*if ($this->mctUsuario->EditMode) {
-            $intCodiGrup = $this->mctUsuario->Usuario->CodiGrupObject->CodiGrup;
-            $objClauWher   = QQ::Clause();
-            $objClauWher[] = QQ::Equal(QQN::Grupo()->CodiGrup, $intCodiGrup);
-            $objClauCond = QQ::AndCondition($objClauWher);
-            $this->lstCodiGrupObject = $this->mctUsuario->lstCodiGrupObject_Create(null,$objClauCond);
-        } else {
-            $this->lstCodiGrupObject = $this->mctUsuario->lstCodiGrupObject_Create();
-        }*/
 
         // Query para obtener los Grupos de Usuarios Activos.
         $objClauGrup   = QQ::Clause();
@@ -112,6 +104,7 @@ class UsuarioEditForm extends UsuarioEditFormBase {
         $this->calFechAcce->ForeColor = 'blue';
 
         $this->txtMotiBloq = $this->mctUsuario->txtMotiBloq_Create();
+        $this->txtMotiBloq->Name = 'Motivo Bloq.';
         $this->txtMotiBloq->TextMode = QTextMode::MultiLine;
         $this->txtMotiBloq->Rows = 3;
 
@@ -127,11 +120,6 @@ class UsuarioEditForm extends UsuarioEditFormBase {
         $this->btnMasxOpci_Create();
 
         $this->btnLogxCamb->Visible = false;
-
-        // if (isset($_SESSION['ReseClav'])) {
-        //     unset($_SESSION['ReseClav']);
-        //     $this->ResetearClave();
-        // }
 
         if (!$this->mctUsuario->EditMode) {
             $this->strPassUsua = generarCodigo();
@@ -149,11 +137,80 @@ class UsuarioEditForm extends UsuarioEditFormBase {
             $this->calFechClav->DateTime = $this->calFechClav->DateTime->AddMonths(-4);
             $this->calFechAcce->DateTime = new QDateTime(QDateTime::Now);
         }
+
+        $this->lblPermUsua_Create();
+        $this->dtgPermUsua_Create();
     }
 
     //----------------------------
     // Aquí se Crean los Objetos
     //----------------------------
+
+    protected function lblPermUsua_Create() {
+        $this->lblPermUsua = new QLabel($this);
+        $this->lblPermUsua->Text = 'Permisos Granulares del Usuario';
+    }
+
+    protected function dtgPermUsua_Create() {
+        $this->dtgPermUsua = new ParametroDataGrid($this);
+        $this->dtgPermUsua->FontSize = 13;
+        $this->dtgPermUsua->ShowFilter = false;
+
+        // Style the DataGrid (if desired)
+        $this->dtgPermUsua->CssClass = 'datagrid';
+        $this->dtgPermUsua->AlternateRowStyle->CssClass = 'alternate';
+
+        // Add Pagination (if desired)
+        $this->dtgPermUsua->Paginator = new QPaginator($this->dtgPermUsua);
+        $this->dtgPermUsua->ItemsPerPage = 8; //__FORM_DRAFTS_FORM_LIST_ITEMS_PER_PAGE__;
+
+        // Higlight the datagrid rows when mousing over them
+        $this->dtgPermUsua->AddRowAction(new QMouseOverEvent(), new QCssClassAction('selectedStyle'));
+        $this->dtgPermUsua->AddRowAction(new QMouseOutEvent(), new QCssClassAction());
+
+        $colCodiPerm = $this->dtgPermUsua->MetaAddColumn('IndiPara');
+        $colCodiPerm->Name = 'Codigo';
+        $colCodiPerm->Width = 5;
+
+        $colDescPerm = new QDataGridColumn('DESCRIPCION','<?= $_FORM->dtgDescPerm_Render($_ITEM); ?>');
+        $colDescPerm->Width = 15;
+        $this->dtgPermUsua->AddColumn($colDescPerm);
+
+        /*
+        $colNombUsua = $this->dtgPermUsua->MetaAddColumn('DescPara');
+        $colNombUsua->Name = 'Descripcion';
+        */
+
+        $this->dtgPermUsua->SetDataBinder('dtgPermUsua_Bind');
+    }
+
+    protected function dtgPermUsua_Bind() {
+        $objClauOrde   = QQ::Clause();
+        $objClauOrde[] = QQ::OrderBy(QQN::Parametro()->IndiPara);
+        $objClauWher   = QQ::Clause();
+        $objClauWher[] = QQ::Equal(QQN::Parametro()->CodiPara,$this->mctUsuario->Usuario->LogiUsua);
+        $objClauWher[] = QQ::Equal(QQN::Parametro()->ParaVal1,SinoType::SI);
+        $arrPermUsua   = Parametro::QueryArray(QQ::AndCondition($objClauWher));
+
+        $this->dtgPermUsua->TotalItemCount = count($arrPermUsua);
+        // Bind the datasource to the datagrid
+        $this->dtgPermUsua->DataSource = Parametro::QueryArray(
+            QQ::AndCondition($objClauWher),
+            QQ::Clause(QQ::OrderBy(QQN::Parametro()->IndiPara), $this->dtgPermUsua->LimitClause)
+//            QQ::Clause($this->dtgPermUsua->OrderByClause, $this->dtgPermUsua->LimitClause)
+        );
+    }
+
+    public function dtgDescPerm_Render(Parametro $objParaPerm) {
+        $strDescPerm = '';
+        if ($objParaPerm) {
+            $objDescPerm = Parametro::LoadByIndiParaCodiPara('VariPerm',$objParaPerm->IndiPara);
+            if ($objDescPerm) {
+                $strDescPerm = $objDescPerm->DescPara;
+            }
+        }
+        return $strDescPerm;
+    }
 
     protected function btnReseClav_Create() {
         $this->btnReseClav = new QButtonD($this);
@@ -196,27 +253,6 @@ class UsuarioEditForm extends UsuarioEditFormBase {
         $this->btnMasxOpci->Text = TextoIcono('plus fa-fw','Mas');
         $this->btnMasxOpci->AddAction(new QClickEvent(), new QAjaxAction('btnMasxOpci_Click'));
     }
-
-    // protected function btnMasxOpci_Create() {
-    //     $this->btnMasxOpci = new QLabel($this);
-    //     $this->btnMasxOpci->HtmlEntities = false;
-    //     $this->btnMasxOpci->CssClass = '';
-    //
-    //     // $strUrlxRese = '/invocar_reseteo_clave.php?codi_usua='.$this->mctUsuario->Usuario->CodiUsua;
-    //     $strUrlxRese = '/invocar_reseteo_clave.php/'.$this->mctUsuario->Usuario->CodiUsua;
-    //
-    //     $strUrlxHist = '/log_list.php';
-    //
-    //     $strTextBoto   = TextoIcono('plus fa-fw','Mas');
-    //     $arrOpciDrop   = array();
-    //     if ($this->mctUsuario->EditMode) {
-    //         $arrOpciDrop[] = OpcionDropDown(__UTIL__.$strUrlxRese,TextoIcono('exchange','Resetear Clave'));
-    //     }
-    //     $arrOpciDrop[] = OpcionDropDown(__SIST__.$strUrlxHist,TextoIcono('file-text-o','Histórico'));
-    //
-    //     $this->btnMasxOpci->Text = CrearDropDownButton($strTextBoto, $arrOpciDrop,'f');
-    //     $this->btnMasxOpci->Visible = $this->mctUsuario->EditMode;
-    // }
 
     //-----------------------------------
     // Acciones Asociadas a los Objetos

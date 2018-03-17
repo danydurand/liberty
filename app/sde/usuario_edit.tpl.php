@@ -56,25 +56,36 @@ require(__APP_INCLUDES__ . '/header.inc.php');
                 </div>
             </div>
             <div class="row">
-                <div class="visible-lg col-lg-1" style="margin-top: 1em;"></div>
-                <div class="col-md-6 col-lg-6" style="margin-top: 1em;">
+                <div class="col-md-3 col-lg-3" style="margin-top: 1em;">
                     <?php $this->lstCodiGrupObject->RenderWithName(); ?>
                     <?php $this->txtNombUsua->RenderWithName(); ?>
                     <?php $this->txtApelUsua->RenderWithName(); ?>
                     <?php $this->txtLogiUsua->RenderWithName(); ?>
                     <?php $this->lstCodiStatObject->RenderWithName(); ?>
+                </div>
+                <div class="col-md-5 col-lg-5" style="margin-top: 1em;">
                     <?php $this->lstCodiEstaObject->RenderWithName(); ?>
                     <?php $this->lstTipoUsuaObject->RenderWithName(); ?>
-                </div>
-                <div class="col-md-6 col-lg-5" style="margin-top: 1em;">
                     <?php $this->txtCantInte->RenderWithName(); ?>
                     <?php $this->txtMailUsua->RenderWithName(); ?>
                     <?php $this->calFechAcce->RenderWithName(); ?>
+                </div>
+                <div class="col-md-4 col-lg-4" style="margin-top: 1em;">
                     <?php $this->calFechClav->RenderWithName(); ?>
                     <?php $this->txtMotiBloq->RenderWithName(); ?>
                     <?php $this->chkSupervisor->RenderWithName(); ?>
                 </div>
                 <div class="visible-lg col-lg-1" style="margin-top: 1em;"></div>
+            </div>
+            <div class="row" style="margin-top: 1em">
+                <div class="col-md-offset-2 col-md-3">
+                    <span class="titulo"><?php $this->lblPermUsua->Render(); ?></span>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-offset-2 col-md-8">
+                    <?php $this->dtgPermUsua->Render(); ?>
+                </div>
             </div>
         </div>
     </div>
@@ -82,6 +93,9 @@ require(__APP_INCLUDES__ . '/header.inc.php');
     <style>
         .form-name {
             width: 30%;
+        }
+        .titulo {
+            font-weight: bold;
         }
     </style>
 
