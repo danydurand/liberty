@@ -71,16 +71,27 @@ class NewGrupoListForm extends NewGrupoListFormBase {
 		// can traverse down QQN::new_grupo() to display fields that are down the hierarchy)
 		$this->dtgNewGrupos->MetaAddColumn('Id');
 		$this->dtgNewGrupos->MetaAddColumn('Nombre');
+        $colCantUsua = new QDataGridColumn('CNT USUA','<?= $_FORM->dtgCantUsua_Render($_ITEM); ?>');
+        $colCantUsua->Width = 75;
+        $this->dtgNewGrupos->AddColumn($colCantUsua);
 		$this->dtgNewGrupos->MetaAddColumn('Activo');
-		$this->dtgNewGrupos->MetaAddColumn(QQN::NewGrupo()->Sistema);
+//		$this->dtgNewGrupos->MetaAddColumn(QQN::NewGrupo()->Sistema);
 
         $this->btnExpoExce_Create();
 
     }
 
-	public function dtgNewGruposRow_Click($strFormId, $strControlId, $strParameter) {
+    public function dtgCantUsua_Render(NewGrupo $objNewxGrup) {
+        if ($objNewxGrup) {
+            return $objNewxGrup->CountUsuariosAsGrupo();
+        } else {
+            return null;
+        }
+    }
+
+    public function dtgNewGruposRow_Click($strFormId, $strControlId, $strParameter) {
         $intId = intval($strParameter);
-        QApplication::Redirect("new_grupo_edit.php/$intId");
+        QApplication::Redirect(__SIST__."/new_grupo_edit.php/$intId");
 	}		
 
 }

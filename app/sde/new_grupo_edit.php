@@ -45,7 +45,9 @@ class NewGrupoEditForm extends NewGrupoEditFormBase {
 		$this->lblId = $this->mctNewGrupo->lblId_Create();
 		$this->txtNombre = $this->mctNewGrupo->txtNombre_Create();
 		$this->chkActivo = $this->mctNewGrupo->chkActivo_Create();
-		$this->lstSistema = $this->mctNewGrupo->lstSistema_Create();
+		$objClauWher   = QQ::Clause();
+		$objClauWher[] = QQ::Equal(QQN::Sistema()->CodiStat,StatusType::ACTIVO);
+		$this->lstSistema = $this->mctNewGrupo->lstSistema_Create(null,QQ::AndCondition($objClauWher));
 
 		$this->lblUsuaGrup_Create();
 		$this->dtgUsuaGrup_Create();
