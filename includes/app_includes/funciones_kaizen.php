@@ -218,16 +218,21 @@ function ordenar_array() {
 }
 
 function t($strTextTraz) {
-    $mixManeArch = fopen(__LOG_DIRECTORY__.'/traza_nueva.log','a');
-    $arrLineAudi = array();
-    $arrLineAudi[] = date('Y-m-d');
-    $arrLineAudi[] = date('H:i:s');
-    if (isset($_SESSION['NombProg'])) {
-        $arrLineAudi[] = basename($_SESSION['NombProg']);
+    if (isset($_SESSION['User'])) {
+        $objUsuario = unserialize($_SESSION['User']);
+        if ($objUsuario->LogiUsua == 'ddurand') {
+            $mixManeArch = fopen(__LOG_DIRECTORY__.'/traza.log','a');
+            $arrLineAudi = array();
+            $arrLineAudi[] = date('Y-m-d');
+            $arrLineAudi[] = date('H:i:s');
+            if (isset($_SESSION['NombProg'])) {
+                $arrLineAudi[] = basename($_SESSION['NombProg']);
+            }
+            $arrLineAudi[] = $strTextTraz;
+            $strCadeAudi = implode('|',$arrLineAudi);
+            fputs($mixManeArch,$strCadeAudi."|\n");
+        }
     }
-    $arrLineAudi[] = $strTextTraz;
-    $strCadeAudi = implode('|',$arrLineAudi);
-    fputs($mixManeArch,$strCadeAudi."|\n");
 }
 
 function RangoDeFechas($intNumeAnio,$intNumeDmes) {
