@@ -33,8 +33,22 @@
                     <?php $this->txtTextExpl->RenderWithName(); ?>
                     <?php $this->txtLogiUsua->RenderWithName(); ?>
                 </div>
-                <div class="col-md-3 col-lg-4" style="margin-top: 1em;"></div>
+            </div>
+            <div class="row" style="margin-top: .5em">
+                <div class="col-md-offset-2 col-md-3">
+                    <span class="titulo"><?php $this->lblUsuaPerm->Render(); ?></span>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-offset-2 col-md-8">
+                    <?php $this->dtgUsuaPerm->Render(); ?>
+                </div>
             </div>
         </div>
     </div>
+    <style>
+        .titulo {
+            font-weight: bold;
+        }
+    </style>
 <?php require(__APP_INCLUDES__ .'/footer.inc.php'); ?>

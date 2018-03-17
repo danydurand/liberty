@@ -113,10 +113,6 @@ class RegistrarPago extends FormularioBaseKaizen {
     // Creando objetos ...
     //---------------------
 
-    //------------------------------
-    //---- ... para Información ----
-    //------------------------------
-
     //---- Factura ----
 
     protected function lblNumeFact_Create() {

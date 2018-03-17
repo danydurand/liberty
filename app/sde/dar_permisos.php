@@ -15,12 +15,16 @@ class DarPermisos extends FormularioBaseKaizen {
     protected $lstPermProc;
     protected $txtTextExpl;
     protected $txtLogiUsua;
+    protected $lblUsuaPerm;
+    protected $dtgUsuaPerm;
+    protected $strIndiPara;
 
     protected $blnDarxQuit;
     protected $btnQuitar;
 
     protected function Form_Create() {
         parent::Form_Create();
+
         $this->lblTituForm->Text = QApplication::Translate('Dar/Quitar Permisos');
 
         $this->lstPermProc_Create();
@@ -37,6 +41,9 @@ class DarPermisos extends FormularioBaseKaizen {
             $this->blnDarxQuit = false;
         }
 
+        $this->lblUsuaPerm_Create();
+        $this->dtgUsuaPerm_Create();
+
         $this->btnSave_Create();
         $this->btnQuitar_Create();
     }
@@ -44,6 +51,101 @@ class DarPermisos extends FormularioBaseKaizen {
     //-------------------------------
     // Aqui se crean los objetos
     //-------------------------------
+
+    protected function lblUsuaPerm_Create() {
+        $this->lblUsuaPerm = new QLabel($this);
+        $this->lblUsuaPerm->Text = 'Usuarios con este Permiso';
+    }
+
+    protected function dtgUsuaPerm_Create() {
+        $this->dtgUsuaPerm = new ParametroDataGrid($this);
+        $this->dtgUsuaPerm->FontSize = 13;
+        $this->dtgUsuaPerm->ShowFilter = false;
+
+        // Style the DataGrid (if desired)
+        $this->dtgUsuaPerm->CssClass = 'datagrid';
+        $this->dtgUsuaPerm->AlternateRowStyle->CssClass = 'alternate';
+
+        // Add Pagination (if desired)
+        $this->dtgUsuaPerm->Paginator = new QPaginator($this->dtgUsuaPerm);
+        $this->dtgUsuaPerm->ItemsPerPage = 8; //__FORM_DRAFTS_FORM_LIST_ITEMS_PER_PAGE__;
+
+        // Higlight the datagrid rows when mousing over them
+        $this->dtgUsuaPerm->AddRowAction(new QMouseOverEvent(), new QCssClassAction('selectedStyle'));
+        $this->dtgUsuaPerm->AddRowAction(new QMouseOutEvent(), new QCssClassAction());
+
+        $this->dtgUsuaPerm->RowActionParameterHtml = '<?= $_ITEM->CodiPara ?>';
+        $this->dtgUsuaPerm->AddRowAction(new QClickEvent(), new QAjaxAction('dtgUsuaPermRow_Click'));
+
+        /*
+        $colCodiUsua = new QDataGridColumn('ID','<?= $_FORM->dtgCodiUsua_Render($_ITEM); ?>');
+        $colCodiUsua->Width = 75;
+        $this->dtgUsuaPerm->AddColumn($colCodiUsua);
+        */
+        $colLogiUsua = $this->dtgUsuaPerm->MetaAddColumn('CodiPara');
+        $colLogiUsua->Name = 'Login';
+        $colNombUsua = $this->dtgUsuaPerm->MetaAddColumn('DescPara');
+        $colNombUsua->Name = 'Nombre';
+        $colSucuUsua = new QDataGridColumn('SUC','<?= $_FORM->dtgSucuUsua_Render($_ITEM); ?>');
+        $colSucuUsua->Width = 75;
+        $this->dtgUsuaPerm->AddColumn($colSucuUsua);
+
+        $this->dtgUsuaPerm->SetDataBinder('dtgUsuaPerm_Bind');
+    }
+
+    protected function dtgUsuaPerm_Bind() {
+        $objClauWher   = QQ::Clause();
+        $objClauWher[] = QQ::Equal(QQN::Parametro()->IndiPara,$this->strIndiPara);
+        $objClauWher[] = QQ::Equal(QQN::Parametro()->ParaVal1,SinoType::SI);
+        $arrUsuaPerm   = Parametro::QueryArray(QQ::AndCondition($objClauWher));
+
+        $this->dtgUsuaPerm->TotalItemCount = count($arrUsuaPerm);
+        // Bind the datasource to the datagrid
+        $this->dtgUsuaPerm->DataSource = Parametro::QueryArray(
+            QQ::AndCondition($objClauWher),
+            QQ::Clause($this->dtgUsuaPerm->OrderByClause, $this->dtgUsuaPerm->LimitClause)
+        );
+
+    }
+
+    public function dtgUsuaPermRow_Click($strFormId, $strControlId, $strParameter) {
+        $strLogiusua = $strParameter;
+        if (strlen($strLogiusua) > 0) {
+            $objUsuaReal = Usuario::LoadByLogiUsua($strLogiusua);
+            if ($objUsuaReal) {
+                QApplication::Redirect(__SIST__."/usuario_edit.php/".$objUsuaReal->CodiUsua);
+            } else {
+                $this->mensaje('El Usuario <b>'.$strLogiusua.'</b> no Existe !!!','','d','',__iHAND__);
+            }
+        }
+    }
+
+
+    public function dtgCodiUsua_Render(Parametro $objParaUsua) {
+        $strCodiUsua = '';
+        if ($objParaUsua) {
+            if (strlen($objParaUsua->CodiPara) > 0) {
+                $objUsuaReal = Usuario::LoadByLogiUsua($objParaUsua->CodiPara);
+                if ($objUsuaReal) {
+                    $strCodiUsua = $objUsuaReal->CodiUsua;
+                }
+            }
+        }
+        return $strCodiUsua;
+    }
+
+    public function dtgSucuUsua_Render(Parametro $objParaUsua) {
+        $strSucuUsua = '';
+        if ($objParaUsua) {
+            if (strlen($objParaUsua->CodiPara) > 0) {
+                $objUsuaReal = Usuario::LoadByLogiUsua($objParaUsua->CodiPara);
+                if ($objUsuaReal) {
+                    $strSucuUsua = $objUsuaReal->CodiEsta;
+                }
+            }
+        }
+        return $strSucuUsua;
+    }
 
     protected function lstPermProc_Create() {
         $this->lstPermProc = new QListBox($this);
@@ -72,7 +174,7 @@ class DarPermisos extends FormularioBaseKaizen {
         $this->txtLogiUsua = new QTextBox($this);
         $this->txtLogiUsua->Name = QApplication::Translate('Login(es)');
         $this->txtLogiUsua->TextMode = QTextMode::MultiLine;
-        $this->txtLogiUsua->Rows = 5;
+        $this->txtLogiUsua->Rows = 3;
         $this->txtLogiUsua->Required = true;
     }
 
@@ -102,8 +204,11 @@ class DarPermisos extends FormularioBaseKaizen {
 
     protected function lstPermProc_Change($strFormId, $strControlId, $strParameter) {
         $this->txtTextExpl->Text = "";
-        if ($this->lstPermProc->SelectedValue) {
+        $this->strIndiPara       = "";
+        if (!is_null($this->lstPermProc->SelectedValue)) {
             $this->txtTextExpl->Text = $this->lstPermProc->SelectedValue->ParaTxt1;
+            $this->strIndiPara       = $this->lstPermProc->SelectedValue->CodiPara;
+            $this->dtgUsuaPerm->Refresh();
         }
     }
 
