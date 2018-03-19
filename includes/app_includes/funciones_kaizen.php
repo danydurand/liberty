@@ -78,7 +78,7 @@ function BorrarLineasEnBlanco($arrVectEntr) {
     return $arrVectSali;
 }
 
-function LimpiarArreglo($arrVectEntr) {
+function LimpiarArreglo($arrVectEntr,$blnSoloNume=true) {
     //--------------------------------
     // Se eliminan líneas en blanco
     //--------------------------------
@@ -88,10 +88,12 @@ function LimpiarArreglo($arrVectEntr) {
             $arrVectSali[] = $strLineEntr;
         }
     }
-    //-------------------------------------------------------------------------------------
-    // Con la funcion DejarSoloLosNumeros1 se eliminan los caracteres especiales y letras
-    //-------------------------------------------------------------------------------------
-    array_walk($arrVectSali,'DejarSoloLosNumeros1');
+    if ($blnSoloNume) {
+        //-------------------------------------------------------------------------------------
+        // Con la funcion DejarSoloLosNumeros1 se eliminan los caracteres especiales y letras
+        //-------------------------------------------------------------------------------------
+        array_walk($arrVectSali,'DejarSoloLosNumeros1');
+    }
     //---------------------------------------------------------------------------
     // Con array_unique se eliminan las guias repetidas en caso de que las haya
     //---------------------------------------------------------------------------

@@ -104,17 +104,8 @@ class DarPermisos extends FormularioBaseKaizen {
     }
 
     public function dtgUsuaPermRow_Click($strFormId, $strControlId, $strParameter) {
-        $strLogiusua = $strParameter;
-        if (strlen($strLogiusua) > 0) {
-            $objUsuaReal = Usuario::LoadByLogiUsua($strLogiusua);
-            if ($objUsuaReal) {
-                QApplication::Redirect(__SIST__."/usuario_edit.php/".$objUsuaReal->CodiUsua);
-            } else {
-                $this->mensaje('El Usuario <b>'.$strLogiusua.'</b> no Existe !!!','','d','',__iHAND__);
-            }
-        }
+        $this->txtLogiUsua->Text .= $strParameter.chr(13);
     }
-
 
     public function dtgCodiUsua_Render(Parametro $objParaUsua) {
         $strCodiUsua = '';
@@ -198,8 +189,10 @@ class DarPermisos extends FormularioBaseKaizen {
     //------------------------------------
 
     protected function lstPermProc_Change($strFormId, $strControlId, $strParameter) {
-        $this->txtTextExpl->Text = "";
-        $this->strIndiPara       = "";
+        $this->mensaje();
+        $this->txtLogiUsua->Text = '';
+        $this->txtTextExpl->Text = '';
+        $this->strIndiPara       = '';
         if (!is_null($this->lstPermProc->SelectedValue)) {
             $this->txtTextExpl->Text = $this->lstPermProc->SelectedValue->ParaTxt1;
             $this->strIndiPara       = $this->lstPermProc->SelectedValue->CodiPara;
@@ -213,7 +206,7 @@ class DarPermisos extends FormularioBaseKaizen {
         //-----------------------------------------------------------------------------
         // Con array_unique se eliminan los logines repetidos en caso de que los haya
         //-----------------------------------------------------------------------------
-        $arrListLogi = array_unique($arrListLogi,SORT_STRING);
+        $arrListLogi = LimpiarArreglo($arrListLogi,false);
         $this->txtLogiUsua->Text = '';
         $strPermProc = $this->lstPermProc->SelectedValue->CodiPara;
         $strNombBase = $this->lstPermProc->SelectedValue->ParaTxt2;
@@ -271,7 +264,7 @@ class DarPermisos extends FormularioBaseKaizen {
         //-----------------------------------------------------------------------------
         // Con array_unique se eliminan los logines repetidos en caso de que los haya
         //-----------------------------------------------------------------------------
-        $arrListLogi = array_unique($arrListLogi,SORT_STRING);
+        $arrListLogi = LimpiarArreglo($arrListLogi,false);
         $this->txtLogiUsua->Text = '';
         $strPermProc = $this->lstPermProc->SelectedValue->CodiPara;
         //--------------------------------------------------------
@@ -299,18 +292,16 @@ class DarPermisos extends FormularioBaseKaizen {
                     $arrLogxCamb['strNombRegi'] = $objUsuario->LogiUsua;
                     $arrLogxCamb['strDescCamb'] = $strTextCamb;
                     LogDeCambios($arrLogxCamb);
-                    // AuditoriaDeProcesos("Se le quitaron permisos al Usuario: ".$strLogiUsua." para: ".$this->lstPermProc->SelectedName);
                     $intUsuaProc++;
                 } else {
                     $this->txtLogiUsua->Text = $strLogiUsua." (NO EXISTE)".chr(13);
                 }
                 $intCantRegi++;
             } else {
-                // AuditoriaDeProcesos("Se intento quitar permisos a: ".$strLogiUsua." para: ".$this->lstPermProc->SelectedName);
                 $this->txtLogiUsua->Text = $strLogiUsua." (NO PUEDE SER PROCESADO)".chr(13);
             }
         }
-        $this->mensaje('Registros procesados: '.$intUsuaProc."/".$intCantRegi,'','','check');
+        $this->mensaje('Registros procesados: '.$intUsuaProc."/".$intCantRegi,'','','',__iCHEC__);
     }
 }
 
