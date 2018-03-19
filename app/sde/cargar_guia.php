@@ -1299,9 +1299,6 @@ class CargarGuia extends FormularioBaseKaizen {
         // Se verifica la existencia previa de la Guia
         //-----------------------------------------------
         if (strlen($this->txtNumeGuia->Text) > 0) {
-            if ($this->objUsuario->LogiUsua == 'ddurand') {
-//                echo "Blur de la Guia<br>";
-            }
             $this->chkPesoVolu->Enabled = true;
             $this->chkFletDire->Enabled = true;
             $this->lstModaPago->Enabled = true;
@@ -1333,9 +1330,6 @@ class CargarGuia extends FormularioBaseKaizen {
                 $this->objGuia = Guia::Load($this->txtNumeGuia->Text);
             }
             if ($this->objGuia) {
-                if ($this->objUsuario->LogiUsua == 'ddurand') {
-//                    echo "La Guia si Existe<br>";
-                }
                 //---------------------------------------------
                 // Si la Guia, ya existe, se cargan sus datos
                 //---------------------------------------------
@@ -1434,52 +1428,46 @@ class CargarGuia extends FormularioBaseKaizen {
                     $this->lstCodiOrig->ForeColor = 'blue';
                 }
                 $this->lblFechGuia->Text = $this->objGuia->FechGuia->__toString("YYYY-MM-DD");
-                $this->txtNombRemi->Text = $this->objGuia->NombRemi;
+                $this->txtNombRemi->Text = limpiarCadena($this->objGuia->NombRemi);
                 $this->txtTeleRemi->Text = $this->objGuia->TeleRemi;
-                $this->txtDireRemi->Text = $this->objGuia->DireRemi;
-                if ($this->objUsuario->LogiUsua == 'ddurand') {
-//                    echo "Voy a cargar el Cliente: ".$this->objGuia->CodiClie."<br>";
-                }
+                $this->txtDireRemi->Text = limpiarCadena($this->objGuia->DireRemi);
                 $this->lstCodiClie->RemoveAllItems();
                 $this->lstCodiClie->AddItem($this->objGuia->CodiClieObject->__toString(),$this->objGuia->CodiClie,true);
-                if ($this->objUsuario->LogiUsua == 'ddurand') {
-//                    echo "Cliente cargado: ".$this->lstCodiClie->SelectedValue."<br>";
-                }
                 $this->CargarOrigenes();
                 $this->lstCodiDest->RemoveAllItems();
                 $this->CargarDestinos();
-                $this->txtCantPiez->Text = $this->objGuia->CantPiez;
-                $this->txtPesoGuia->Text = $this->objGuia->PesoGuia;
-                $this->decPesoInic = $this->objGuia->PesoGuia; //Variable que almacena el peso inicial de la guia
-                $this->txtValoDecl->Text = $this->objGuia->ValorDeclarado;
+                $this->txtCantPiez->Text    = $this->objGuia->CantPiez;
+                $this->txtPesoGuia->Text    = $this->objGuia->PesoGuia;
+                $this->decPesoInic          = $this->objGuia->PesoGuia; //Variable que almacena el peso inicial de la guia
+                $this->txtValoDecl->Text    = $this->objGuia->ValorDeclarado;
                 $this->chkEnviSegu->Checked = $this->objGuia->Asegurado;
                 $this->chkGuiaInte->Checked = strlen($this->objGuia->GuiaExterna) ? true : false;
-                $this->txtGuiaInte->Text = $this->objGuia->GuiaExterna;
+                $this->txtGuiaInte->Text    = $this->objGuia->GuiaExterna;
                 $this->chkGuiaInte_Change();
-                $this->lblUsuaCrea->Text = $this->objGuia->UsuarioCreacion;
-                $this->lblFechCrea->Text = $this->objGuia->FechaCreacion->__toString("YYYY-MM-DD");
-                $this->lblHoraCrea->Text = $this->objGuia->HoraCreacion;
-                $this->txtDescCont->Text = $this->objGuia->DescCont;
-                $this->txtNombDest->Text = $this->objGuia->NombDest;
-                $this->txtTeleDest->Text = $this->objGuia->TeleDest;
-                $this->txtDireDest->Text = $this->objGuia->DireDest;
-                $this->txtMontBase->Text = $this->objGuia->MontoBase;
-                $this->txtMontIvax->Text = $this->objGuia->MontoIva;
-                $this->txtMontFran->Text = $this->objGuia->MontoFranqueo;
-                $this->txtMontSegu->Text = $this->objGuia->MontoSeguro;
+                $this->lblUsuaCrea->Text    = $this->objGuia->UsuarioCreacion;
+                $this->lblFechCrea->Text    = $this->objGuia->FechaCreacion->__toString("YYYY-MM-DD");
+                $this->lblHoraCrea->Text    = $this->objGuia->HoraCreacion;
+                $this->txtDescCont->Text    = $this->objGuia->DescCont;
+                $this->txtNombDest->Text    = limpiarCadena($this->objGuia->NombDest);
+                $this->txtTeleDest->Text    = $this->objGuia->TeleDest;
+                $this->txtDireDest->Text    = limpiarCadena($this->objGuia->DireDest);
+                $this->txtMontBase->Text    = $this->objGuia->MontoBase;
+                $this->txtMontIvax->Text    = $this->objGuia->MontoIva;
+                $this->txtMontFran->Text    = $this->objGuia->MontoFranqueo;
+                $this->txtMontSegu->Text    = $this->objGuia->MontoSeguro;
                 $this->chkFletDire->Checked = $this->objGuia->FleteDirecto;
-                $this->txtTextObse->Text = $this->objGuia->Observacion;
+                $this->txtTextObse->Text    = limpiarCadena($this->objGuia->Observacion);
                 $this->lstModaPago->RemoveAllItems();
                 $this->CargarModalidadesDePago();
-                $this->txtMontTota->Text = $this->objGuia->MontoTotal;
+                $this->txtMontTota->Text    = $this->objGuia->MontoTotal;
                 $this->chkPesoVolu->Checked = $this->objGuia->CantAyudantes;
-                $this->intCantPara = $this->objGuia->ParadasAdicionales;
+                $this->intCantPara          = $this->objGuia->ParadasAdicionales;
                 $this->lstVehiSuge->RemoveAllItems();
                 $this->CargarVehiculos();
-                $this->objProducto = FacProducto::Load($this->objGuia->CodiProd);
-                $this->objCliente = MasterCliente::Load($this->objGuia->CodiClie);
+                $this->objProducto          = FacProducto::Load($this->objGuia->CodiProd);
+                $this->objCliente           = MasterCliente::Load($this->objGuia->CodiClie);
                 $this->chkEnviReto->Checked = $this->objGuia->TieneGuiaRetorno;
-                $this->txtGuiaReto->Text = $this->objGuia->GuiaRetorno;
+                $this->txtGuiaReto->Text    = $this->objGuia->GuiaRetorno;
 
                 $this->btnImprGuia_Create();
                 $this->btnImprGuia->Visible = true;
@@ -1496,16 +1484,15 @@ class CargarGuia extends FormularioBaseKaizen {
                 // sufrir ningun cambio.
                 //------------------------------------------------------------------------------
                 if ($this->blnGuiaSode) {
-                    $this->chkGuiaInte->Enabled = false;
+                    $this->chkGuiaInte->Enabled   = false;
                     $this->chkGuiaInte->ForeColor = 'blue';
-                    $this->txtGuiaInte->Enabled = false;
+                    $this->txtGuiaInte->Enabled   = false;
                     $this->txtGuiaInte->ForeColor = 'blue';
                 }
                 //------------------------------------------------------------------------------------
                 // Se crea un objeto paralelo que permita comparar las modificaciones realizadas
                 //------------------------------------------------------------------------------------
                 $this->objGuiaOrig = clone $this->objGuia;
-                // t('Enabled del Peso: '.$this->txtPesoGuia->Enabled);
             } else {
                 //-----------------------------------------------------
                 // Si la Guia NO existe, se cargan datos por defecto
@@ -1515,43 +1502,43 @@ class CargarGuia extends FormularioBaseKaizen {
                 $dttFechGuia = new DateTime();
                 $this->lblFechGuia->Text = $dttFechGuia->format('Y-m-d');
                 if (strlen($this->txtNombRemi->Text) > 0) {
-                    $this->txtCodiInte->Text = '';
-                    $this->txtNombBusc->Text = '';
-                    $this->txtNombRemi->Text = '';
-                    $this->txtTeleRemi->Text = '';
-                    $this->txtDireRemi->Text = '';
+                    $this->txtCodiInte->Text    = '';
+                    $this->txtNombBusc->Text    = '';
+                    $this->txtNombRemi->Text    = '';
+                    $this->txtTeleRemi->Text    = '';
+                    $this->txtDireRemi->Text    = '';
                     $this->lstCodiClie->RemoveAllItems();
                     $this->lstCodiOrig->RemoveAllItems();
                     $this->CargarOrigenes();
                     $this->lstCodiDest->RemoveAllItems();
                     $this->CargarDestinos();
-                    $this->txtCantPiez->Text = '';
-                    $this->txtPesoGuia->Text = '';
-                    $this->txtValoDecl->Text = '';
+                    $this->txtCantPiez->Text    = '';
+                    $this->txtPesoGuia->Text    = '';
+                    $this->txtValoDecl->Text    = '';
                     $this->chkEnviSegu->Checked = false;
                     $this->chkGuiaInte->Checked = false;
-                    $this->txtGuiaInte->Text = '';
+                    $this->txtGuiaInte->Text    = '';
                     $this->chkGuiaInte_Change();
-                    $this->lblUsuaCrea->Text = $this->objUsuario->LogiUsua;
-                    $this->lblFechCrea->Text = date('Y-m-d');
-                    $this->lblHoraCrea->Text = date('H:i');
-                    $this->txtCodiInt2->Text = '';
-                    $this->txtNombBus2->Text = '';
-                    $this->txtDescCont->Text = '';
-                    $this->txtNombDest->Text = '';
-                    $this->txtTeleDest->Text = '';
-                    $this->txtDireDest->Text = '';
-                    $this->txtMontBase->Text = '';
-                    $this->txtMontIvax->Text = '';
-                    $this->txtMontFran->Text = '';
-                    $this->txtMontSegu->Text = '';
+                    $this->lblUsuaCrea->Text    = $this->objUsuario->LogiUsua;
+                    $this->lblFechCrea->Text    = date('Y-m-d');
+                    $this->lblHoraCrea->Text    = date('H:i');
+                    $this->txtCodiInt2->Text    = '';
+                    $this->txtNombBus2->Text    = '';
+                    $this->txtDescCont->Text    = '';
+                    $this->txtNombDest->Text    = '';
+                    $this->txtTeleDest->Text    = '';
+                    $this->txtDireDest->Text    = '';
+                    $this->txtMontBase->Text    = '';
+                    $this->txtMontIvax->Text    = '';
+                    $this->txtMontFran->Text    = '';
+                    $this->txtMontSegu->Text    = '';
                     $this->chkFletDire->Checked = false;
                     $this->chkPesoVolu->Checked = false;
-                    $this->txtTextObse->Text = '';
+                    $this->txtTextObse->Text    = '';
                     $this->lstModaPago->RemoveAllItems();
                     $this->CargarModalidadesDePago();
-                    $this->txtMontTota->Text = '';
-                    $this->intCantPara = '';
+                    $this->txtMontTota->Text    = '';
+                    $this->intCantPara          = '';
                     $this->lstVehiSuge->RemoveAllItems();
                     $this->CargarVehiculos();
                 }
@@ -1615,8 +1602,6 @@ class CargarGuia extends FormularioBaseKaizen {
             $this->btnImprPodx->Visible = false;
             $this->btnImprEtiq->Visible = false;
         }
-        // $this->txtCodiInte->SetFocus();
-        // t('Enabled del Peso: '.$this->txtPesoGuia->Enabled);
         if ($this->blnEditMode) {
             $this->lblTituForm->Text = 'Cargar Guia (Editar)';
         } else {
@@ -1695,9 +1680,9 @@ class CargarGuia extends FormularioBaseKaizen {
     protected function txtNombBusc_Blur() {
         $blnBuscDato = false;
         if (strlen($this->txtNombBusc->Text)) {
-            if (!$this->blnEditMode) {
+//            if (!$this->blnEditMode) {
                 $blnBuscDato = true;
-            }
+//            }
         }
         if ($blnBuscDato) {
             $this->txtCodiInte->Text = '';
