@@ -27,6 +27,11 @@
 			return sprintf('%s',  $this->Nombre);
 		}
 
+		public function __toStringConCantUsuarios() {
+		    $intCantUsua = $this->CountUsuariosAsGrupo();
+            return sprintf('%s (%s)',  $this->Nombre, $intCantUsua);
+        }
+
 
 		// Override or Create New Load/Count methods
 		// (For obvious reasons, these methods are commented out...

@@ -29,7 +29,7 @@
 
 		public function __toCliente() {
             $strTextMens  = '<div class="well">';
-            $strTextMens .= '    <span class="text-%s" style="font-size: 16px">';
+            $strTextMens .= '    <span class="text-%s">';
             $strTextMens .= '        <i class="fa fa-%s fa-lg"></i> %s';
             $strTextMens .= '    </span>';
             $strTextMens .= '</div>';
@@ -82,6 +82,47 @@
         }
 
         /**
+         * Retorna todos los Mensajes Generales y Exclusivos para el Cliente cuyo codigo entra como parametro.
+         *
+         * @param $strCodigo : Código interno del Cliente
+         * @param null $objOptionalClauses : Clausulas adicionales.
+         * @return array : Mensajes CORP generales y exclusivos para el Cliente.
+         */
+        public static function LoadMensajesVigentesParaElCliente($strCodigo, $objOptionalClauses = null) {
+            $dttFechDhoy   = new QDateTime(QDateTime::Now);
+            $objClauWher   = QQ::Clause();
+            $objClauWher[] = QQ::LessOrEqual(QQN::MensajeYamaguchi()->FechInic,$dttFechDhoy->__toString('YYYY-MM-DD'));
+            $objClauWher[] = QQ::GreaterOrEqual(QQN::MensajeYamaguchi()->FechFin,$dttFechDhoy->__toString('YYYY-MM-DD'));
+            $objClauWher[] = QQ::Equal(QQN::MensajeYamaguchi()->TiempoIndefinido,SinoType::NO);
+            $arrMensOkey   = array();
+            $arrMensCorp   = MensajeYamaguchi::QueryArray(QQ::AndCondition($objClauWher),$objOptionalClauses);
+            t('Encontre '.count($arrMensCorp).' mensajes especificos del Cliente para evaluar');
+            foreach ($arrMensCorp as $objMensCorp) {
+                $arrCodiClie = explode(',',nl2br2($objMensCorp->Codigos));
+                t('Mensaje: '.$objMensCorp->Id.' en el campo Codigos tiene: '.$objMensCorp->Codigos);
+                if (in_array($strCodigo, $arrCodiClie) || in_array('TODOS', $arrCodiClie)) {
+                    t('Encontré el codigo: '.$strCodigo.' dentro de los Codigos');
+                    $arrMensOkey[] = $objMensCorp;
+                }
+            }
+            $objClauWher   = QQ::Clause();
+            $objClauWher[] = QQ::LessOrEqual(QQN::MensajeYamaguchi()->FechInic,$dttFechDhoy->__toString('YYYY-MM-DD'));
+            $objClauWher[] = QQ::Equal(QQN::MensajeYamaguchi()->TiempoIndefinido,SinoType::SI);
+            $arrMensOkey   = array();
+            $arrMensCorp   = MensajeYamaguchi::QueryArray(QQ::AndCondition($objClauWher),$objOptionalClauses);
+            t('Encontre '.count($arrMensCorp).' mensajes para evaluar de tiempo indefinido');
+            foreach ($arrMensCorp as $objMensCorp) {
+                $arrCodiClie = explode(',',nl2br2($objMensCorp->Codigos));
+                t('Mensaje: '.$objMensCorp->Id.' en el campo Codigos tiene: '.$objMensCorp->Codigos);
+                if (in_array($strCodigo, $arrCodiClie) || in_array('TODOS', $arrCodiClie)) {
+                    t('Encontré el codigo: '.$strCodigo.' dentro de los Codigos');
+                    $arrMensOkey[] = $objMensCorp;
+                }
+            }
+            return $arrMensOkey;
+        }
+
+        /**
          * Retorna todos los Mensajes Generales y Exclusivos para el Cliente operativo en el Sistema Yamaguchi.
          *
          * @param $strCodigo : Código interno del Cliente
@@ -92,6 +133,7 @@
             $dttFechDhoy   = new QDateTime(QDateTime::Now);
             $objClauWher   = QQ::Clause();
             $objClauWher[] = QQ::GreaterOrEqual(QQN::MensajeYamaguchi()->FechInic,$dttFechDhoy->__toString('YYYY-MM-DD'));
+            $objClauWher[] = QQ::LessOrEqual(QQN::MensajeYamaguchi()->FechFin,$dttFechDhoy->__toString('YYYY-MM-DD'));
             $objClauWher[] = QQ::Equal(QQN::MensajeYamaguchi()->TiempoIndefinido,true);
             $arrMensOkey   = array();
             $arrMensCorp = MensajeYamaguchi::QueryArray(QQ::OrCondition($objClauWher),$objOptionalClauses);

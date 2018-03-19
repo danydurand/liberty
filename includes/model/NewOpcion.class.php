@@ -28,22 +28,12 @@
             return sprintf('%s',  $this->strNombre." ($strTipoOpci)");
         }
 
-        public function __toStringComoMenu1() {
-            if ($this->intNivel == 1) {
-                return sprintf('*** %s ***',  strtoupper(trim($this->strPrograma)));
-            } else {
-                // return sprintf('=> %s (Dep. de: %s)',  $this->strPrograma, $this->DependenciaObject->Nombre);
-                return sprintf('=> (Menu: %s) <=',  strtoupper(trim($this->strPrograma)));
-            }
-        }
-
         public function __toStringComoMenu() {
             if ($this->EsMenu) {
-                $strCadeDeco = str_repeat("*",$this->intNivel);
-                $strCadeDesc = $this->intNivel == 1 ? 'MENU:' : 'SUB-MENU:';
-                return sprintf($strCadeDeco.' %s %s '.$strCadeDeco,  $strCadeDesc, strtoupper(trim($this->strPrograma)));
+                return sprintf('==> %s <==',  strtoupper($this->strNombre));
             } else {
-                return $this->strNombre;
+                return sprintf('%s',  $this->strNombre, $this->DependenciaObject->Nombre);
+//                return sprintf('%s (Dep. de: %s)',  $this->strNombre, $this->DependenciaObject->Nombre);
             }
         }
 
@@ -146,101 +136,6 @@
             }
             return $strHtmlMenu;
         }
-
-        /*
-        public function ArregloDePermisos() {
-            $objUsuario  = unserialize($_SESSION['User']);
-            // $strDireProg = __APP__."/".$this->strDirectorio."/";
-            // $strCadeTabu = "\t";
-            // if ($this->Nivel > 0) {
-            //     for ($i = 1; $i <= $this->Nivel + 1; $i++) {
-            //         $strCadeTabu .= "\t";
-            //     }
-            // }
-            if (!$this->EsMenu) {
-                //---------------
-                //  PROGRAMA
-                //---------------
-                $strHtmlMenu  = $strCadeTabu."<li>\n";
-                if (strlen($this->strImagen) > 0) {
-                    $strHtmlMenu .= $strCadeTabu."\t<a href='".$strDireProg.$this->strPrograma."'><i class='fa ".$this->strImagen."'></i> ".$this->strNombre."</a>\n";
-                } else {
-                    $strHtmlMenu .= $strCadeTabu."\t<a href='".$strDireProg.$this->strPrograma."'>".$this->strNombre."</a>\n";
-                }
-                $strHtmlMenu .= $strCadeTabu."</li>\n";
-            } else {
-                //---------------
-                //  MENU
-                //---------------
-                // echo "Aqui estoy con ".$this->strName."<br>\n";
-                $strHtmlMenu  = $strCadeTabu."<li>\n";
-                if (strlen($this->strImagen) > 0) {
-                    // echo "El menu tiene imagen<br>\n";
-                    $strHtmlMenu .= $strCadeTabu."\t<a href='#'><i class='fa ".$this->strImagen."'></i> ".$this->strNombre."<span class='fa arrow'></span></a>\n";
-                } else {
-                    // echo "No hay imagen asociada el menu<br>\n";
-                    $strHtmlMenu .= $strCadeTabu."\t<a href='#'>".$this->strNombre."</a>\n";
-                }
-                // $strHtmlMenu .= "\t<li><a href='".$strDireProg."'>".$this->strName."</a>\n";
-                //---------------------------------------------------------
-                // La Clase del Menu, se determina en funcion de su nivel
-                //---------------------------------------------------------
-                // echo "El nivel es: ".$this->intLevel."<br>\n";
-                switch ($this->intNivel) {
-                    case 0:
-                        $strClasMenu = 'second';
-                        break;
-                    case 1:
-                        $strClasMenu = 'third';
-                        break;
-                    case 2:
-                        $strClasMenu = 'fourth';
-                        break;
-                    case 3:
-                        $strClasMenu = 'fifth';
-                        break;
-                    default:
-                        $strClasMenu = 'second';
-                        break;
-                }
-                $strHtmlMenu .= $strCadeTabu."\t<ul class='nav nav-".$strClasMenu."-level'>\n";
-                //-------------------------------------------------
-                // Se prepara el Query para las opciones del menu
-                //-------------------------------------------------
-                $objClauOrde   = QQ::Clause();
-                $objClauOrde[] = QQ::OrderBy(QQN::NewOpcion()->Posicion);
-                $objClauWher   = QQ::Clause();
-                $objClauWher[] = QQ::Equal(QQN::NewOpcion()->SistemaId,$_SESSION['Sistema']);
-                $objClauWher[] = QQ::Equal(QQN::NewOpcion()->Dependencia,$this->intId);
-                $objClauWher[] = QQ::Equal(QQN::NewOpcion()->Activo,true);
-                if ($objUsuario->CodiGrup != 1) {
-                    //---------------------------------------------------------
-                    // Aqui se identifican las Opciones del grupo del Usuario
-                    //---------------------------------------------------------
-                    $objClauPerm   = QQ::Clause();
-                    $objClauPerm[] = QQ::Equal(QQN::Permiso()->GrupoId,$objUsuario->CodiGrup);
-                    $arrOpciGrup   = Permiso::QueryArray(QQ::AndCondition($objClauPerm));
-                    $arrGroupId = array();
-                    foreach ($arrOpciGrup as $objOpciGrup) {
-                        $arrGroupId[] = $objOpciGrup->OpcionId;
-                    }
-                    $objClauWher[] = QQ::In(QQN::NewOpcion()->Id,$arrGroupId);
-                }
-                //--------------------------------------------------------
-                // Ahora se seleccionan y procesan las opciones del menu
-                //--------------------------------------------------------
-                $arrOpciMenu = NewOpcion::QueryArray(QQ::AndCondition($objClauWher),$objClauOrde);
-                if ($arrOpciMenu) {
-                    foreach ($arrOpciMenu as $objOpcion) {
-                        $strHtmlMenu .= $objOpcion->HtmlMenuBootstrap();
-                    }
-                }
-                $strHtmlMenu .= $strCadeTabu."\t</ul>\n";
-                $strHtmlMenu .= $strCadeTabu."</li>\n";
-            }
-            return $strHtmlMenu;
-        }
-        */
 
         public function HtmlMenuConnectBootstrap() {
             //$objUsuario  = unserialize($_SESSION['User']);

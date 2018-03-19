@@ -34,10 +34,11 @@ class Permisos extends FormularioBaseKaizen {
     protected function lstCodiGrup_Create() {
         $this->lstCodiGrup = new QListBox($this);
         $this->lstCodiGrup->Name = QApplication::Translate('Grupo');
-        $this->lstCodiGrup->AddItem(QApplication::Translate('- Seleccione Uno -'),null);
-        $this->lstCodiGrup->Width = 300;
-        foreach (NewGrupo::LoadArrayBySistemaId($this->strSistGrup) as $objGrupo) {
-            $this->lstCodiGrup->AddItem($objGrupo->Nombre,$objGrupo->Id);
+        $arrNewxGrup = NewGrupo::LoadArrayBySistemaId('pmn');
+        $intCanrGrup = count($arrNewxGrup);
+        $this->lstCodiGrup->AddItem(QApplication::Translate('- Seleccione Uno - ('.$intCanrGrup.')'),null);
+        foreach ($arrNewxGrup as $objGrupo) {
+            $this->lstCodiGrup->AddItem($objGrupo->__toStringConCantUsuarios(),$objGrupo->Id);
         }
         $this->lstCodiGrup->AddAction(new QChangeEvent(), new QServerAction('actualizarOpciones'));
     }
@@ -76,7 +77,7 @@ class Permisos extends FormularioBaseKaizen {
     }
 
     protected function actualizarOpciones() {
-        $this->mensaje('Presione la tecla CTRL, mientras hace Click en las Opciones','m','i','info-circle');
+        $this->mensaje('Presione la tecla <strong>CTRL</strong>, mientras hace <strong>CLICK</strong> en las Opciones','m','i','',__iINFO__);
         $this->lstOpciSist->RemoveAllItems();
         if (!is_null($this->lstCodiGrup->SelectedValue)) {
             //--------------------------------------------------
@@ -97,13 +98,46 @@ class Permisos extends FormularioBaseKaizen {
             //----------------------------------------
             // Se identifican los Menus del Sistema
             //----------------------------------------
+            $objClauWher   = QQ::Clause();
+            $objClauWher[] = QQ::Equal(QQN::NewOpcion()->Nombre,'Menu Principal');
+            $objClauWher[] = QQ::Equal(QQN::NewOpcion()->SistemaId,$_SESSION['Sistema']);
+            $objMenuPpal   = NewOpcion::QuerySingle(QQ::AndCondition($objClauWher));
+            if ($objMenuPpal) {
+                $objClauOrde   = QQ::Clause();
+                $objClauOrde[] = QQ::OrderBy(QQN::NewOpcion()->Dependencia);
+                $objClauOrde[] = QQ::OrderBy(QQN::NewOpcion()->Posicion);
+                $objClauWher   = QQ::Clause();
+                $objClauWher[] = QQ::Equal(QQN::NewOpcion()->SistemaId,$_SESSION['Sistema']);
+                $objClauWher[] = QQ::Equal(QQN::NewOpcion()->Activo,true);
+                $objClauWher[] = QQ::Equal(QQN::NewOpcion()->EsMenu,false);
+                $objClauWher[] = QQ::Equal(QQN::NewOpcion()->Dependencia,$objMenuPpal->Id);
+                $arrMenuSist   = NewOpcion::QueryArray(QQ::AndCondition($objClauWher),$objClauOrde);
+                //----------------------------------
+                // Se procesan uno a uno los Menus
+                //----------------------------------
+                foreach ($arrMenuSist as $objMenuSist) {
+                    $blnSeleRegi = false;
+                    if (in_array($objMenuSist->Id, $arrCodiGrup)) {
+                        //--------------------------------------------------------------------------
+                        // Si el Menu, esta en el grupo de opciones asignada al grupo
+                        // se marca como seleccionado dentro del ListBox
+                        //--------------------------------------------------------------------------
+                        $blnSeleRegi = true;
+                    }
+                    $this->lstOpciSist->AddItem($objMenuSist->__toString(), $objMenuSist->Id, $blnSeleRegi);
+                }
+            }
+            //----------------------------------------
+            // Se identifican los Menus del Sistema
+            //----------------------------------------
             $objClauOrde   = QQ::Clause();
             $objClauOrde[] = QQ::OrderBy(QQN::NewOpcion()->Dependencia);
             $objClauOrde[] = QQ::OrderBy(QQN::NewOpcion()->Posicion);
             $objClauWher   = QQ::Clause();
-            $objClauWher[] = QQ::Equal(QQN::NewOpcion()->SistemaId,$this->strSistGrup);
+            $objClauWher[] = QQ::Equal(QQN::NewOpcion()->SistemaId,$_SESSION['Sistema']);
             $objClauWher[] = QQ::Equal(QQN::NewOpcion()->Activo,true);
             $objClauWher[] = QQ::Equal(QQN::NewOpcion()->EsMenu,true);
+            $objClauWher[] = QQ::NotLike(QQN::NewOpcion()->Nombre,'%Principal%');
             $arrMenuSist   = NewOpcion::QueryArray(QQ::AndCondition($objClauWher),$objClauOrde);
             //----------------------------------
             // Se procesan uno a uno los Menus
@@ -122,12 +156,12 @@ class Permisos extends FormularioBaseKaizen {
                 // Por cada menu se identifican la opciones correspondientes
                 //------------------------------------------------------------
                 $objClauOrde   = QQ::Clause();
-                $objClauOrde   = QQ::OrderBy(QQN::NewOpcion()->Posicion);
+                $objClauOrde[] = QQ::OrderBy(QQN::NewOpcion()->Posicion);
                 $objClauWher   = QQ::Clause();
-                $objClauWher[] = QQ::Equal(QQN::NewOpcion()->SistemaId,$this->strSistGrup);
+                $objClauWher[] = QQ::Equal(QQN::NewOpcion()->SistemaId,$_SESSION['Sistema']);
                 $objClauWher[] = QQ::Equal(QQN::NewOpcion()->Dependencia,$objMenuSist->Id);
                 $objClauWher[] = QQ::Equal(QQN::NewOpcion()->Activo,true);
-                $objClauWher[] = QQ::Equal(QQN::NewOpcion()->EsMenu,false);
+                // $objClauWher[] = QQ::Equal(QQN::NewOpcion()->EsMenu,false);
                 $arrOpciMenu   = NewOpcion::QueryArray(QQ::AndCondition($objClauWher),$objClauOrde);
                 foreach ($arrOpciMenu as $objOpciMenu) {
                     $blnSeleRegi = false;
@@ -138,7 +172,7 @@ class Permisos extends FormularioBaseKaizen {
                         //--------------------------------------------------------------------------
                         $blnSeleRegi = true;
                     }
-                    $this->lstOpciSist->AddItem("\t*\t".$objOpciMenu->__toString(),$objOpciMenu->Id,$blnSeleRegi);
+                    $this->lstOpciSist->AddItem($objOpciMenu->__toStringComoMenu(),$objOpciMenu->Id,$blnSeleRegi);
                 }
             }
         }

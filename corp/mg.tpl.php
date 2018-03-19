@@ -17,7 +17,7 @@ require(__YAMAGUCHI__APP_INCLUDES__ . '/header.inc.php');
                 Ultimo Acceso: <small style="font-size: .7em"><?= $objUsuaCone->FechaAcceso->__toString("YYYY-MM-DD") ?></small><br>
             </p>
             <!-------------------------------------------------------------------->
-            <!-- Se muestra(n) el(los) mensaje(s) disponible(s) para el usuario -->
+            <!-- Se muestra(n) el(los) mensaje(s) disponible(s) para el Cliente -->
             <!-------------------------------------------------------------------->
             <?php
             /**
@@ -25,15 +25,13 @@ require(__YAMAGUCHI__APP_INCLUDES__ . '/header.inc.php');
              */
             $objClauOrde   = QQ::Clause();
             $objClauOrde[] = QQ::OrderBy(QQN::MensajeYamaguchi()->Orden);
-            $arrMensCorp   = MensajeYamaguchi::LoadArrayByCodigoTODOS($objClieUsua->CodigoInterno,$objClauOrde);
-            $dttFechDhoy   = new QDateTime(QDateTime::Now);
+            $arrMensCorp   = MensajeYamaguchi::LoadMensajesVigentesParaElCliente($objClieUsua->CodigoInterno,$objClauOrde);
+            t('Tengo un total de: '.count($arrMensCorp).' mensaje(s)');
             foreach ($arrMensCorp as $objMensCorp) {
                 //---------------------------------------------------------
                 // Si el mensaje esta Vigente o es por tiempo indefinido
                 //---------------------------------------------------------
-                if (($objMensCorp->__vigente())) {
-                    echo $objMensCorp->__toCliente();
-                }
+                echo $objMensCorp->__toCliente();
             }
             ?>
         </div>
@@ -46,6 +44,10 @@ require(__YAMAGUCHI__APP_INCLUDES__ . '/header.inc.php');
 
     .form-name {
         width: 30%;
+    }
+
+    .well {
+        font-size: 16px;
     }
 
 </style>

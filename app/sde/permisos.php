@@ -34,10 +34,12 @@ class Permisos extends FormularioBaseKaizen {
     protected function lstCodiGrup_Create() {
         $this->lstCodiGrup = new QListBox($this);
         $this->lstCodiGrup->Name = QApplication::Translate('Grupo');
-        $this->lstCodiGrup->AddItem(QApplication::Translate('- Seleccione Uno -'),null);
         $this->lstCodiGrup->Width = 320;
-        foreach (NewGrupo::LoadAll() as $objGrupo) {
-            $this->lstCodiGrup->AddItem($objGrupo->Nombre,$objGrupo->Id);
+        $arrNewxGrup = NewGrupo::LoadArrayBySistemaId('sde');
+        $intCanrGrup = count($arrNewxGrup);
+        $this->lstCodiGrup->AddItem(QApplication::Translate('- Seleccione Uno - ('.$intCanrGrup.')'),null);
+        foreach ($arrNewxGrup as $objGrupo) {
+            $this->lstCodiGrup->AddItem($objGrupo->__toStringConCantUsuarios(),$objGrupo->Id);
         }
         $this->lstCodiGrup->AddAction(new QChangeEvent(), new QServerAction('actualizarOpciones'));
     }
@@ -93,6 +95,38 @@ class Permisos extends FormularioBaseKaizen {
                     // Se carga un vector con los codigos de las opciones del Grupo
                     //----------------------------------------------------------------
                     $arrCodiGrup[] = $objPermGrup->OpcionId;
+                }
+            }
+            //----------------------------------------
+            // Se identifican los Menus del Sistema
+            //----------------------------------------
+            $objClauWher   = QQ::Clause();
+            $objClauWher[] = QQ::Equal(QQN::NewOpcion()->Nombre,'Menu Principal');
+            $objClauWher[] = QQ::Equal(QQN::NewOpcion()->SistemaId,$_SESSION['Sistema']);
+            $objMenuPpal   = NewOpcion::QuerySingle(QQ::AndCondition($objClauWher));
+            if ($objMenuPpal) {
+                $objClauOrde   = QQ::Clause();
+                $objClauOrde[] = QQ::OrderBy(QQN::NewOpcion()->Dependencia);
+                $objClauOrde[] = QQ::OrderBy(QQN::NewOpcion()->Posicion);
+                $objClauWher   = QQ::Clause();
+                $objClauWher[] = QQ::Equal(QQN::NewOpcion()->SistemaId,$_SESSION['Sistema']);
+                $objClauWher[] = QQ::Equal(QQN::NewOpcion()->Activo,true);
+                $objClauWher[] = QQ::Equal(QQN::NewOpcion()->EsMenu,false);
+                $objClauWher[] = QQ::Equal(QQN::NewOpcion()->Dependencia,$objMenuPpal->Id);
+                $arrMenuSist   = NewOpcion::QueryArray(QQ::AndCondition($objClauWher),$objClauOrde);
+                //----------------------------------
+                // Se procesan uno a uno los Menus
+                //----------------------------------
+                foreach ($arrMenuSist as $objMenuSist) {
+                    $blnSeleRegi = false;
+                    if (in_array($objMenuSist->Id, $arrCodiGrup)) {
+                        //--------------------------------------------------------------------------
+                        // Si el Menu, esta en el grupo de opciones asignada al grupo
+                        // se marca como seleccionado dentro del ListBox
+                        //--------------------------------------------------------------------------
+                        $blnSeleRegi = true;
+                    }
+                    $this->lstOpciSist->AddItem($objMenuSist->__toString(), $objMenuSist->Id, $blnSeleRegi);
                 }
             }
             //----------------------------------------
