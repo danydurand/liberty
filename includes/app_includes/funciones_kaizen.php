@@ -466,6 +466,7 @@ function Delimitar($strTextDeli) {
 function QuitarEspaciosPuntosYComas($strCadeProc) {
     $strCadeProc = str_replace('.','',$strCadeProc);
     $strCadeProc = str_replace(',','',$strCadeProc);
+    $strCadeProc = str_replace(' ','',$strCadeProc);
     return $strCadeProc;
 }
 

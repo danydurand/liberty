@@ -80,5 +80,5 @@ if ($blnTodoOkey) {
     $objValoRepo->blnConxBord = true;
 
     $objExpoDato = new ExportarDatos($objValoRepo);
-    $objExpoDato->Exportar();
+    echo $objExpoDato->Exportar();
 }
