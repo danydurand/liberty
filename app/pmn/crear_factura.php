@@ -48,6 +48,9 @@ class CrearFactura extends FormularioBaseKaizen {
     protected $lblFactImpr;
     protected $lblMotiAnul;
     //---- Ret. ISLR ----
+    protected $txtCoreIslr;
+    protected $txtPorcIslr;
+
     protected $lblCoreIslr;
     protected $calCoreIslr;
     protected $lblPorcIslr;
@@ -56,6 +59,9 @@ class CrearFactura extends FormularioBaseKaizen {
     protected $lblMontDcto;
     protected $lblMontFran;
     //---- Ret. IVA ----
+    protected $txtCompRete;
+    protected $txtPorcRete;
+
     protected $lblCompRete;
     protected $calCompRete;
     protected $lblPorcRete;
@@ -101,9 +107,6 @@ class CrearFactura extends FormularioBaseKaizen {
                 //----------------------------------------------------------------------------
                 $this->blnEditMode = false;
                 $this->objFactPmnx = new FacturaPmn();
-                /*if (!in_array($this->objGuia->NumeGuia,$this->arrGuiaSele)) {
-                    $this->arrGuiaSele[] = $this->objGuia->NumeGuia;
-                }*/
             }
             //------------------------------------------------
             // Se determina la Modalidad de pago de la Guia
@@ -156,6 +159,9 @@ class CrearFactura extends FormularioBaseKaizen {
         $this->lblFactImpr_Create();
         $this->lblMotiAnul_Create();
         //---- Ret. ISLR ----
+        $this->txtCoreIslr_Create();
+        $this->txtPorcIslr_Create();
+
         $this->lblCoreIslr_Create();
         $this->calCoreIslr_Create();
         $this->lblPorcIslr_Create();
@@ -164,6 +170,9 @@ class CrearFactura extends FormularioBaseKaizen {
         $this->lblMontDcto_Create();
         $this->lblMontFran_Create();
         //---- Ret. IVA ----
+        $this->txtCompRete_Create();
+        $this->txtPorcRete_Create();
+
         $this->lblCompRete_Create();
         $this->calCompRete_Create();
         $this->lblPorcRete_Create();
@@ -377,6 +386,31 @@ class CrearFactura extends FormularioBaseKaizen {
 
     //---- Ret. ISLR ----
 
+    protected function txtCoreIslr_Create() {
+        $this->txtCoreIslr = new QTextBox($this);
+        $this->txtCoreIslr->Name = 'Comp. Ret.';
+        $this->txtCoreIslr->Width = 100;
+        if (!$this->blnEditMode) {
+            $this->txtCoreIslr->Text = '';
+        } else {
+            $this->txtCoreIslr->Text = $this->objFactPmnx->ComprobanteRetencionIslr;
+        }
+    }
+
+    protected function txtPorcIslr_Create() {
+        $this->txtPorcIslr = new QFloatTextBox($this);
+        $this->txtPorcIslr->Name = '% Ret.';
+        $this->txtPorcIslr->Width = 25;
+        $this->txtPorcIslr->AddAction(new QKeyPressEvent(500), new QAjaxAction('txtPorcIslr_Change'));
+        $this->txtPorcIslr->AddAction(new QEnterKeyEvent(), new QTerminateAction());
+        $this->txtPorcIslr->AddAction(new QEscapeKeyEvent(), new QTerminateAction());
+        if (!$this->blnEditMode) {
+            $this->txtPorcIslr->Text = 0;
+        } else {
+            $this->txtPorcIslr->Text = $this->objFactPmnx->PorcentajeReteIslr;
+        }
+    }
+
     protected function lblCoreIslr_Create() {
         $this->lblCoreIslr = new QLabel($this);
         $this->lblCoreIslr->Name = 'Comp. Ret.';
@@ -389,13 +423,13 @@ class CrearFactura extends FormularioBaseKaizen {
     }
 
     protected function calCoreIslr_Create() {
-        $this->calCoreIslr = new QLabel($this);
+        $this->calCoreIslr = new QCalendar($this);
         $this->calCoreIslr->Name = 'Fec. Comp.';
         $this->calCoreIslr->Width = 90;
         if (!$this->blnEditMode) {
-            $this->calCoreIslr->Text = null;
+            $this->calCoreIslr->DateTime = null;
         } else {
-            $this->calCoreIslr->Text = $this->objFactPmnx->FechaComprobanteIslr;
+            $this->calCoreIslr->DateTime = $this->objFactPmnx->FechaComprobanteIslr;
         }
     }
 
@@ -447,6 +481,42 @@ class CrearFactura extends FormularioBaseKaizen {
 
     //---- Ret. IVA ----
 
+    protected function txtCompRete_Create() {
+        $this->txtCompRete = new QTextBox($this);
+        $this->txtCompRete->Name = 'Comp. Ret.';
+        $this->txtCompRete->Width = 100;
+        if (!$this->blnEditMode) {
+            $this->txtCompRete->Text = '';
+        } else {
+            $this->txtCompRete->Text = $this->objFactPmnx->ComprobanteRetencion;
+        }
+    }
+
+    protected function calCompRete_Create() {
+        $this->calCompRete = new QCalendar($this);
+        $this->calCompRete->Name = 'Fec. Comp.';
+        $this->calCompRete->Width = 90;
+        if (!$this->blnEditMode) {
+            $this->calCompRete->DateTime = null;
+        } else {
+            $this->calCompRete->DateTime = $this->objFactPmnx->FechaComprobante;
+        }
+    }
+
+    protected function txtPorcRete_Create() {
+        $this->txtPorcRete = new QFloatTextBox($this);
+        $this->txtPorcRete->Name = '% Ret.';
+        $this->txtPorcRete->Width = 25;
+        $this->txtPorcRete->AddAction(new QKeyPressEvent(500), new QAjaxAction('txtPorcRete_Change'));
+        $this->txtPorcRete->AddAction(new QEnterKeyEvent(), new QTerminateAction());
+        $this->txtPorcRete->AddAction(new QEscapeKeyEvent(), new QTerminateAction());
+        if (!$this->blnEditMode) {
+            $this->txtPorcRete->Text = 0;
+        } else {
+            $this->txtPorcRete->Text = $this->objFactPmnx->PorcentajeReteIva;
+        }
+    }
+
     protected function lblCompRete_Create() {
         $this->lblCompRete = new QLabel($this);
         $this->lblCompRete->Name = 'Comp. Ret.';
@@ -458,16 +528,16 @@ class CrearFactura extends FormularioBaseKaizen {
         }
     }
 
-    protected function calCompRete_Create() {
-        $this->calCompRete = new QLabel($this);
-        $this->calCompRete->Name = 'Fec. Comp.';
-        $this->calCompRete->Width = 90;
-        if (!$this->blnEditMode) {
-            $this->calCompRete->Text = null;
-        } else {
-            $this->calCompRete->Text = $this->objFactPmnx->FechaComprobante ? $this->objFactPmnx->FechaComprobante->__toString('DD/MM/YYYY') : null;
-        }
-    }
+//    protected function calCompRete_Create() {
+//        $this->calCompRete = new QCalendar($this);
+//        $this->calCompRete->Name = 'Fec. Comp.';
+//        $this->calCompRete->Width = 90;
+//        if (!$this->blnEditMode) {
+//            $this->calCompRete->DateTime = null;
+//        } else {
+//            $this->calCompRete->DateTime = $this->objFactPmnx->FechaComprobante;
+//        }
+//    }
 
     protected function lblPorcRete_Create() {
         $this->lblPorcRete = new QLabel($this);
@@ -646,6 +716,53 @@ class CrearFactura extends FormularioBaseKaizen {
     //-----------------------------------
     // Funciones asociadas a los objetos
     //-----------------------------------
+
+    protected function chkTienRete_Change() {
+        if ($this->chkTienRete->Checked) {
+            $this->btnImprFact->Visible = true;
+        } else {
+            if ($this->lblMontRest->Text > 0) {
+                $this->btnImprFact->Visible = false;
+            } else {
+                if (strlen($this->txtDocuFisc->Text) == 0) {
+                    $this->btnImprFact->Visible = false;
+                }
+            }
+        }
+    }
+
+    protected function txtPorcIslr_Change() {
+        if (is_numeric($this->txtPorcIslr->Text) || strlen($this->txtPorcIslr->Text) == 0) {
+            $decPorcIslr = $this->txtPorcIslr->Text;
+            $decMontRete = $decPorcIslr * $this->objFactPmnx->MontoBase / 100;
+            $this->lblMontBase->Text = round($this->objFactPmnx->MontoBase - $decMontRete,2);
+            //--------------------------------------
+            // Se actualiza la Factura en la BD
+            //--------------------------------------
+            $this->objFactPmnx->ComprobanteRetencionIslr = $this->txtCoreIslr->Text;
+            $this->objFactPmnx->FechaComprobanteIslr = new QDateTime($this->calCoreIslr->DateTime);
+            $this->objFactPmnx->PorcentajeReteIslr = $decPorcIslr;
+            $this->objFactPmnx->ActualizarMontos();
+            $this->MostrarMontos();
+        }
+    }
+
+    protected function txtPorcRete_Change() {
+        if (is_numeric($this->txtPorcRete->Text) || strlen($this->txtPorcRete->Text) == 0) {
+            $decPorcRete = $this->txtPorcRete->Text;
+            $decMontRete = $decPorcRete * $this->objFactPmnx->MontoIva / 100;
+            $this->lblMontMiva->Text = round($this->objFactPmnx->MontoIva - $decMontRete,2);
+            //--------------------------------------
+            // Se actualiza la Factura en la BD
+            //--------------------------------------
+            $this->objFactPmnx->ComprobanteRetencion = $this->txtCompRete->Text;
+            $this->objFactPmnx->FechaComprobante = new QDateTime($this->calCompRete->DateTime);
+            $this->objFactPmnx->PorcentajeReteIva = $decPorcRete;
+            $this->objFactPmnx->ActualizarMontos();
+            $this->MostrarMontos();
+        }
+    }
+
     protected function btnSave_Click() {
         $this->objFactPmnx->CedulaRif = $this->lblCeduRifx->Text;
         $this->objFactPmnx->RazonSocial = QuitarAmpersand($this->lblRazoSoci->Text);

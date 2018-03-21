@@ -77,9 +77,9 @@ require(__APP_INCLUDES__ . '/header.inc.php');
                     <div class="titulo">Retencion ISLR</div>
                 </div>
                 <div class="row">
-                    <?php $this->lblCoreIslr->RenderWithName(); ?>
+                    <?php $this->txtCoreIslr->RenderWithName(); ?>
                     <?php $this->calCoreIslr->RenderWithName(); ?>
-                    <?php $this->lblPorcIslr->RenderWithName(); ?>
+                    <?php $this->txtPorcIslr->RenderWithName(); ?>
                 </div>
             </div>
             <div class="col-md-2" style="margin-top: 0.5em; ">
@@ -97,9 +97,9 @@ require(__APP_INCLUDES__ . '/header.inc.php');
                     <div class="titulo">Retencion IVA</div>
                 </div>
                 <div class="row">
-                    <?php $this->lblCompRete->RenderWithName(); ?>
+                    <?php $this->txtCompRete->RenderWithName(); ?>
                     <?php $this->calCompRete->RenderWithName(); ?>
-                    <?php $this->lblPorcRete->RenderWithName(); ?>
+                    <?php $this->txtPorcRete->RenderWithName(); ?>
                 </div>
             </div>
             <div class="col-md-2" style="margin-top: 0.5em; ">
@@ -146,6 +146,9 @@ require(__APP_INCLUDES__ . '/header.inc.php');
     .form-field {
         width: 72%;
         font-size: 88%;
+    }
+    input[type=text] {
+        padding: 1.2px;
     }
 </style>
 <?php require(__APP_INCLUDES__ .'/footer.inc.php'); ?>
