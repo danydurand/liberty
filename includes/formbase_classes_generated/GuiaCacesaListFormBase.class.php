@@ -94,6 +94,8 @@
 			$this->dtgGuiaCacesas->MetaAddColumn('DescCont');
 			$this->dtgGuiaCacesas->MetaAddColumn('CantPiez');
 			$this->dtgGuiaCacesas->MetaAddColumn('PesoGuia');
+			$this->dtgGuiaCacesas->MetaAddColumn('ValorDeclarado');
+			$this->dtgGuiaCacesas->MetaAddColumn('CedulaRif');
 			$this->dtgGuiaCacesas->MetaAddColumn('RegistradoPor');
 			$this->dtgGuiaCacesas->MetaAddColumn('ArchInput');
 			$this->dtgGuiaCacesas->MetaAddColumn('ProcesadoPor');

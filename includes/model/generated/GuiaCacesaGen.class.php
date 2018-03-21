@@ -33,6 +33,8 @@
 	 * @property string $DescCont the value for strDescCont (Not Null)
 	 * @property integer $CantPiez the value for intCantPiez (Not Null)
 	 * @property string $PesoGuia the value for strPesoGuia (Not Null)
+	 * @property double $ValorDeclarado the value for fltValorDeclarado 
+	 * @property string $CedulaRif the value for strCedulaRif 
 	 * @property string $RegistradoPor the value for strRegistradoPor (Not Null)
 	 * @property string $ArchInput the value for strArchInput (Not Null)
 	 * @property string $ProcesadoPor the value for strProcesadoPor 
@@ -213,6 +215,23 @@
 
 
 		/**
+		 * Protected member variable that maps to the database column guia_cacesa.valor_declarado
+		 * @var double fltValorDeclarado
+		 */
+		protected $fltValorDeclarado;
+		const ValorDeclaradoDefault = null;
+
+
+		/**
+		 * Protected member variable that maps to the database column guia_cacesa.cedula_rif
+		 * @var string strCedulaRif
+		 */
+		protected $strCedulaRif;
+		const CedulaRifMaxLength = 20;
+		const CedulaRifDefault = null;
+
+
+		/**
 		 * Protected member variable that maps to the database column guia_cacesa.registrado_por
 		 * @var string strRegistradoPor
 		 */
@@ -389,6 +408,8 @@
 			$this->strDescCont = GuiaCacesa::DescContDefault;
 			$this->intCantPiez = GuiaCacesa::CantPiezDefault;
 			$this->strPesoGuia = GuiaCacesa::PesoGuiaDefault;
+			$this->fltValorDeclarado = GuiaCacesa::ValorDeclaradoDefault;
+			$this->strCedulaRif = GuiaCacesa::CedulaRifDefault;
 			$this->strRegistradoPor = GuiaCacesa::RegistradoPorDefault;
 			$this->strArchInput = GuiaCacesa::ArchInputDefault;
 			$this->strProcesadoPor = GuiaCacesa::ProcesadoPorDefault;
@@ -761,6 +782,8 @@
 			    $objBuilder->AddSelectItem($strTableName, 'desc_cont', $strAliasPrefix . 'desc_cont');
 			    $objBuilder->AddSelectItem($strTableName, 'cant_piez', $strAliasPrefix . 'cant_piez');
 			    $objBuilder->AddSelectItem($strTableName, 'peso_guia', $strAliasPrefix . 'peso_guia');
+			    $objBuilder->AddSelectItem($strTableName, 'valor_declarado', $strAliasPrefix . 'valor_declarado');
+			    $objBuilder->AddSelectItem($strTableName, 'cedula_rif', $strAliasPrefix . 'cedula_rif');
 			    $objBuilder->AddSelectItem($strTableName, 'registrado_por', $strAliasPrefix . 'registrado_por');
 			    $objBuilder->AddSelectItem($strTableName, 'arch_input', $strAliasPrefix . 'arch_input');
 			    $objBuilder->AddSelectItem($strTableName, 'procesado_por', $strAliasPrefix . 'procesado_por');
@@ -953,6 +976,12 @@
 			$strAlias = $strAliasPrefix . 'peso_guia';
 			$strAliasName = !empty($strColumnAliasArray[$strAlias]) ? $strColumnAliasArray[$strAlias] : $strAlias;
 			$objToReturn->strPesoGuia = $objDbRow->GetColumn($strAliasName, 'VarChar');
+			$strAlias = $strAliasPrefix . 'valor_declarado';
+			$strAliasName = !empty($strColumnAliasArray[$strAlias]) ? $strColumnAliasArray[$strAlias] : $strAlias;
+			$objToReturn->fltValorDeclarado = $objDbRow->GetColumn($strAliasName, 'Float');
+			$strAlias = $strAliasPrefix . 'cedula_rif';
+			$strAliasName = !empty($strColumnAliasArray[$strAlias]) ? $strColumnAliasArray[$strAlias] : $strAlias;
+			$objToReturn->strCedulaRif = $objDbRow->GetColumn($strAliasName, 'VarChar');
 			$strAlias = $strAliasPrefix . 'registrado_por';
 			$strAliasName = !empty($strColumnAliasArray[$strAlias]) ? $strColumnAliasArray[$strAlias] : $strAlias;
 			$objToReturn->strRegistradoPor = $objDbRow->GetColumn($strAliasName, 'VarChar');
@@ -1244,6 +1273,8 @@
 							`desc_cont`,
 							`cant_piez`,
 							`peso_guia`,
+							`valor_declarado`,
+							`cedula_rif`,
 							`registrado_por`,
 							`arch_input`,
 							`procesado_por`,
@@ -1275,6 +1306,8 @@
 							' . $objDatabase->SqlVariable($this->strDescCont) . ',
 							' . $objDatabase->SqlVariable($this->intCantPiez) . ',
 							' . $objDatabase->SqlVariable($this->strPesoGuia) . ',
+							' . $objDatabase->SqlVariable($this->fltValorDeclarado) . ',
+							' . $objDatabase->SqlVariable($this->strCedulaRif) . ',
 							' . $objDatabase->SqlVariable($this->strRegistradoPor) . ',
 							' . $objDatabase->SqlVariable($this->strArchInput) . ',
 							' . $objDatabase->SqlVariable($this->strProcesadoPor) . ',
@@ -1320,6 +1353,8 @@
 							`desc_cont` = ' . $objDatabase->SqlVariable($this->strDescCont) . ',
 							`cant_piez` = ' . $objDatabase->SqlVariable($this->intCantPiez) . ',
 							`peso_guia` = ' . $objDatabase->SqlVariable($this->strPesoGuia) . ',
+							`valor_declarado` = ' . $objDatabase->SqlVariable($this->fltValorDeclarado) . ',
+							`cedula_rif` = ' . $objDatabase->SqlVariable($this->strCedulaRif) . ',
 							`registrado_por` = ' . $objDatabase->SqlVariable($this->strRegistradoPor) . ',
 							`arch_input` = ' . $objDatabase->SqlVariable($this->strArchInput) . ',
 							`procesado_por` = ' . $objDatabase->SqlVariable($this->strProcesadoPor) . ',
@@ -1454,6 +1489,8 @@
 			$this->strDescCont = $objReloaded->strDescCont;
 			$this->intCantPiez = $objReloaded->intCantPiez;
 			$this->strPesoGuia = $objReloaded->strPesoGuia;
+			$this->fltValorDeclarado = $objReloaded->fltValorDeclarado;
+			$this->strCedulaRif = $objReloaded->strCedulaRif;
 			$this->strRegistradoPor = $objReloaded->strRegistradoPor;
 			$this->strArchInput = $objReloaded->strArchInput;
 			$this->strProcesadoPor = $objReloaded->strProcesadoPor;
@@ -1612,6 +1649,20 @@
 					 * @return string
 					 */
 					return $this->strPesoGuia;
+
+				case 'ValorDeclarado':
+					/**
+					 * Gets the value for fltValorDeclarado 
+					 * @return double
+					 */
+					return $this->fltValorDeclarado;
+
+				case 'CedulaRif':
+					/**
+					 * Gets the value for strCedulaRif 
+					 * @return string
+					 */
+					return $this->strCedulaRif;
 
 				case 'RegistradoPor':
 					/**
@@ -1990,6 +2041,32 @@
 						throw $objExc;
 					}
 
+				case 'ValorDeclarado':
+					/**
+					 * Sets the value for fltValorDeclarado 
+					 * @param double $mixValue
+					 * @return double
+					 */
+					try {
+						return ($this->fltValorDeclarado = QType::Cast($mixValue, QType::Float));
+					} catch (QCallerException $objExc) {
+						$objExc->IncrementOffset();
+						throw $objExc;
+					}
+
+				case 'CedulaRif':
+					/**
+					 * Sets the value for strCedulaRif 
+					 * @param string $mixValue
+					 * @return string
+					 */
+					try {
+						return ($this->strCedulaRif = QType::Cast($mixValue, QType::String));
+					} catch (QCallerException $objExc) {
+						$objExc->IncrementOffset();
+						throw $objExc;
+					}
+
 				case 'RegistradoPor':
 					/**
 					 * Sets the value for strRegistradoPor (Not Null)
@@ -2325,6 +2402,8 @@
 			$strToReturn .= '<element name="DescCont" type="xsd:string"/>';
 			$strToReturn .= '<element name="CantPiez" type="xsd:int"/>';
 			$strToReturn .= '<element name="PesoGuia" type="xsd:string"/>';
+			$strToReturn .= '<element name="ValorDeclarado" type="xsd:float"/>';
+			$strToReturn .= '<element name="CedulaRif" type="xsd:string"/>';
 			$strToReturn .= '<element name="RegistradoPor" type="xsd:string"/>';
 			$strToReturn .= '<element name="ArchInput" type="xsd:string"/>';
 			$strToReturn .= '<element name="ProcesadoPor" type="xsd:string"/>';
@@ -2398,6 +2477,10 @@
 				$objToReturn->intCantPiez = $objSoapObject->CantPiez;
 			if (property_exists($objSoapObject, 'PesoGuia'))
 				$objToReturn->strPesoGuia = $objSoapObject->PesoGuia;
+			if (property_exists($objSoapObject, 'ValorDeclarado'))
+				$objToReturn->fltValorDeclarado = $objSoapObject->ValorDeclarado;
+			if (property_exists($objSoapObject, 'CedulaRif'))
+				$objToReturn->strCedulaRif = $objSoapObject->CedulaRif;
 			if (property_exists($objSoapObject, 'RegistradoPor'))
 				$objToReturn->strRegistradoPor = $objSoapObject->RegistradoPor;
 			if (property_exists($objSoapObject, 'ArchInput'))
@@ -2492,6 +2575,8 @@
 			$iArray['DescCont'] = $this->strDescCont;
 			$iArray['CantPiez'] = $this->intCantPiez;
 			$iArray['PesoGuia'] = $this->strPesoGuia;
+			$iArray['ValorDeclarado'] = $this->fltValorDeclarado;
+			$iArray['CedulaRif'] = $this->strCedulaRif;
 			$iArray['RegistradoPor'] = $this->strRegistradoPor;
 			$iArray['ArchInput'] = $this->strArchInput;
 			$iArray['ProcesadoPor'] = $this->strProcesadoPor;
@@ -2560,6 +2645,8 @@
      * @property-read QQNode $DescCont
      * @property-read QQNode $CantPiez
      * @property-read QQNode $PesoGuia
+     * @property-read QQNode $ValorDeclarado
+     * @property-read QQNode $CedulaRif
      * @property-read QQNode $RegistradoPor
      * @property-read QQNode $ArchInput
      * @property-read QQNode $ProcesadoPor
@@ -2622,6 +2709,10 @@
 					return new QQNode('cant_piez', 'CantPiez', 'Integer', $this);
 				case 'PesoGuia':
 					return new QQNode('peso_guia', 'PesoGuia', 'VarChar', $this);
+				case 'ValorDeclarado':
+					return new QQNode('valor_declarado', 'ValorDeclarado', 'Float', $this);
+				case 'CedulaRif':
+					return new QQNode('cedula_rif', 'CedulaRif', 'VarChar', $this);
 				case 'RegistradoPor':
 					return new QQNode('registrado_por', 'RegistradoPor', 'VarChar', $this);
 				case 'ArchInput':
@@ -2685,6 +2776,8 @@
      * @property-read QQNode $DescCont
      * @property-read QQNode $CantPiez
      * @property-read QQNode $PesoGuia
+     * @property-read QQNode $ValorDeclarado
+     * @property-read QQNode $CedulaRif
      * @property-read QQNode $RegistradoPor
      * @property-read QQNode $ArchInput
      * @property-read QQNode $ProcesadoPor
@@ -2747,6 +2840,10 @@
 					return new QQNode('cant_piez', 'CantPiez', 'integer', $this);
 				case 'PesoGuia':
 					return new QQNode('peso_guia', 'PesoGuia', 'string', $this);
+				case 'ValorDeclarado':
+					return new QQNode('valor_declarado', 'ValorDeclarado', 'double', $this);
+				case 'CedulaRif':
+					return new QQNode('cedula_rif', 'CedulaRif', 'string', $this);
 				case 'RegistradoPor':
 					return new QQNode('registrado_por', 'RegistradoPor', 'string', $this);
 				case 'ArchInput':

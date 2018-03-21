@@ -655,6 +655,24 @@ function listadoDeClientes($strCritBusc) {
  *
  * @return int Numero de Guia
  */
+function proxIdVendedor() {
+    $objDatabase = VendedorConsecutivo::GetDatabase();
+    $objConsecutivo = new VendedorConsecutivo();
+    $objConsecutivo->Nada = 'X';
+    $objConsecutivo->Save();
+    $intProxNume = $objDatabase->InsertId('vendedor_consecutivo', 'id');
+    foreach (VendedorConsecutivo::QueryArray(QQ::AndCondition(QQ::LessThan(QQN::VendedorConsecutivo()->Id,$intProxNume))) as $objConsRegi) {
+        $objConsRegi->Delete();
+    }
+    return $intProxNume;
+}
+
+/**
+ * Esta rutina devuelve un numero que se considera como el "Proximo Nro
+ * de Guia" que esta disponible en el Sistema.
+ *
+ * @return int Numero de Guia
+ */
 function proxNroNotificacion() {
     $objDatabase = NotiConsecutivoCT::GetDatabase();
     $objConsecutivo = new NotiConsecutivoCT();

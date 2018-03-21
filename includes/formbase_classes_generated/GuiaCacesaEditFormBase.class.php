@@ -69,6 +69,8 @@ abstract class GuiaCacesaEditFormBase extends QForm {
 	protected $txtDescCont;
 	protected $txtCantPiez;
 	protected $txtPesoGuia;
+	protected $txtValorDeclarado;
+	protected $txtCedulaRif;
 	protected $txtRegistradoPor;
 	protected $txtArchInput;
 	protected $txtProcesadoPor;
@@ -165,6 +167,8 @@ abstract class GuiaCacesaEditFormBase extends QForm {
 		$this->txtDescCont = $this->mctGuiaCacesa->txtDescCont_Create();
 		$this->txtCantPiez = $this->mctGuiaCacesa->txtCantPiez_Create();
 		$this->txtPesoGuia = $this->mctGuiaCacesa->txtPesoGuia_Create();
+		$this->txtValorDeclarado = $this->mctGuiaCacesa->txtValorDeclarado_Create();
+		$this->txtCedulaRif = $this->mctGuiaCacesa->txtCedulaRif_Create();
 		$this->txtRegistradoPor = $this->mctGuiaCacesa->txtRegistradoPor_Create();
 		$this->txtArchInput = $this->mctGuiaCacesa->txtArchInput_Create();
 		$this->txtProcesadoPor = $this->mctGuiaCacesa->txtProcesadoPor_Create();

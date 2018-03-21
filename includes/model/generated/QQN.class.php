@@ -841,6 +841,12 @@
 			return new QQNodeVehiculo('vehiculo', null, null);
 		}
 		/**
+		 * @return QQNodeVendedorConsecutivo
+		 */
+		static public function VendedorConsecutivo() {
+			return new QQNodeVendedorConsecutivo('vendedor_consecutivo', null, null);
+		}
+		/**
 		 * @return QQNodeZncPorSucursal
 		 */
 		static public function ZncPorSucursal() {

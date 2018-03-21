@@ -131,6 +131,9 @@ class FacVendedorEditForm extends FacVendedorEditFormBase {
 		// Se clona el objeto para verificar cambios 
 		//--------------------------------------------
 		$objRegiViej = clone $this->mctFacVendedor->FacVendedor;
+		if (!$this->mctFacVendedor->EditMode) {
+		    $this->txtId->Text = proxIdVendedor();
+        }
 		$this->mctFacVendedor->SaveFacVendedor();
 		if ($this->mctFacVendedor->EditMode) {
 			//---------------------------------------------------------------------

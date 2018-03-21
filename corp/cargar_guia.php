@@ -1295,7 +1295,7 @@ class CargarGuia extends FormularioBaseKaizen {
         $this->objGuia->DescCont           = limpiarCadena($this->txtDescCont->Text);
         $this->objGuia->CodiProd           = $this->objProducto->CodiProd;
         $this->objGuia->TipoGuia           = $this->lstModaPago->SelectedValue;
-        $this->objGuia->ValorDeclarado     = $this->txtValoDecl->Text;
+        $this->objGuia->ValorDeclarado     = str_replace(',','.',$this->txtValoDecl->Text);
         $this->objGuia->Asegurado          = $this->chkSeguGuia->Checked;
         $this->objGuia->TieneGuiaRetorno   = $this->chkEnviReto->Checked;
         $this->objGuia->GuiaRetorno        = null;

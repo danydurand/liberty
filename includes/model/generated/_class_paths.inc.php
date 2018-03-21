@@ -979,6 +979,13 @@
 		QApplicationBase::$ClassFile['vehiculometacontrol'] = __META_CONTROLS__ . '/VehiculoMetaControl.class.php';
 		QApplicationBase::$ClassFile['vehiculodatagrid'] = __META_CONTROLS__ . '/VehiculoDataGrid.class.php';
 
+	// ClassPaths for the VendedorConsecutivo class
+		QApplicationBase::$ClassFile['vendedorconsecutivo'] = __MODEL__ . '/VendedorConsecutivo.class.php';
+		QApplicationBase::$ClassFile['qqnodevendedorconsecutivo'] = __MODEL__ . '/VendedorConsecutivo.class.php';
+		QApplicationBase::$ClassFile['qqreversereferencenodevendedorconsecutivo'] = __MODEL__ . '/VendedorConsecutivo.class.php';
+		QApplicationBase::$ClassFile['vendedorconsecutivometacontrol'] = __META_CONTROLS__ . '/VendedorConsecutivoMetaControl.class.php';
+		QApplicationBase::$ClassFile['vendedorconsecutivodatagrid'] = __META_CONTROLS__ . '/VendedorConsecutivoDataGrid.class.php';
+
 	// ClassPaths for the ZncPorSucursal class
 		QApplicationBase::$ClassFile['zncporsucursal'] = __MODEL__ . '/ZncPorSucursal.class.php';
 		QApplicationBase::$ClassFile['qqnodezncporsucursal'] = __MODEL__ . '/ZncPorSucursal.class.php';

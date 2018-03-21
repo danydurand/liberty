@@ -593,9 +593,6 @@ class CargarGuia extends FormularioBaseKaizen {
             // La modalidad de pago del envio debe ser acorde con el tipo de Cliente
             //------------------------------------------------------------------------
             $this->CargarModalidadesDePago();
-            /*$this->lstModaPago->RemoveAllItems();
-            foreach (TipoGuiaType::$NameArrayCorto as $intId => $strValue)
-                $this->lstModaPago->AddItem(new QListItem($strValue, $intId, ($this->objCliente->TipoCliente+1) == $intId));*/
         }
     }
 
@@ -713,7 +710,7 @@ class CargarGuia extends FormularioBaseKaizen {
             $this->lstModaPago->Enabled = false;
             $this->lstModaPago->ForeColor = 'blue';
         } else {
-            if ($this->blnEditMode) {
+//            if ($this->blnEditMode) {
                 $blnModaGuia = BuscarParametro("ModaGuia", $this->objUsuario->LogiUsua, "Val1", 0);
                 if ($blnModaGuia) {
                     $this->lstModaPago->Enabled = true;
@@ -721,19 +718,9 @@ class CargarGuia extends FormularioBaseKaizen {
                     $this->lstModaPago->Enabled = false;
                     $this->lstModaPago->ForeColor = 'blue';
                 }
-            }
+//            }
         }
     }
-
-    /*protected function CargarModalidadesDePago() {
-        foreach (TipoGuiaType::$NameArrayCorto as $intId => $strValue) {
-            if (!$this->blnEditMode) {
-                $this->lstModaPago->AddItem($strValue, $intId);
-            } else {
-                $this->lstModaPago->AddItem($strValue, $intId, $intId == $this->objGuia->TipoGuia);
-            }
-        }
-    }*/
 
     protected function calcularTarifaNacional() {
         //$strFormId, $strControlId, $strParameter
@@ -1680,9 +1667,7 @@ class CargarGuia extends FormularioBaseKaizen {
     protected function txtNombBusc_Blur() {
         $blnBuscDato = false;
         if (strlen($this->txtNombBusc->Text)) {
-//            if (!$this->blnEditMode) {
-                $blnBuscDato = true;
-//            }
+            $blnBuscDato = true;
         }
         if ($blnBuscDato) {
             $this->txtCodiInte->Text = '';
