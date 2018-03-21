@@ -49,13 +49,15 @@ class FacVendedorEditForm extends FacVendedorEditFormBase {
 		$this->txtId->Width = 30;
 
 		$this->txtNombre = $this->mctFacVendedor->txtNombre_Create();
+		$this->txtNombre->Width = 200;
 
         $this->txtCedula = $this->mctFacVendedor->txtCedula_Create();
 		$this->txtCedula->Name = 'Cédula';
+		$this->txtCedula->Width = 90;
 
         $this->txtDireccionEmail = $this->mctFacVendedor->txtDireccionEmail_Create();
         $this->txtDireccionEmail->Name = 'Correo Electrónico';
-		$this->txtDireccionEmail->Width = 200;
+		$this->txtDireccionEmail->Width = 250;
 
         $this->txtPorcentajeComision = $this->mctFacVendedor->txtPorcentajeComision_Create();
         $this->txtPorcentajeComision->Name = 'Porcentaje Comisión';
@@ -63,10 +65,21 @@ class FacVendedorEditForm extends FacVendedorEditFormBase {
         $this->txtPorcentajeComision->Width = 40;
 
         $this->calFechaRegistro = $this->mctFacVendedor->calFechaRegistro_Create();
+        if (!$this->mctFacVendedor->EditMode) {
+            $this->calFechaRegistro->DateTime = new QDateTime(QDateTime::Now);
+        }
+        $this->calFechaRegistro->Enabled = false;
+        $this->calFechaRegistro->ForeColor = 'blue';
 		$this->calFechaRegistro->Width = 120;
 
-		$this->lstPais = $this->mctFacVendedor->lstPais_Create();
+		$objClauWher   = QQ::Clause();
+		$objClauWher[] = QQ::Equal(QQN::Pais()->Id,1);
+		$this->lstPais = $this->mctFacVendedor->lstPais_Create(null,QQ::AndCondition($objClauWher));
+
 		$this->lstStatus = $this->mctFacVendedor->lstStatus_Create();
+        if (!$this->mctFacVendedor->EditMode) {
+            $this->lstStatus->SelectedIndex = 2;
+        }
 	}
 
 	//----------------------------
