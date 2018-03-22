@@ -724,7 +724,7 @@ class CrearFactura extends FormularioBaseKaizen {
             if ($this->lblMontRest->Text > 0) {
                 $this->btnImprFact->Visible = false;
             } else {
-                if (strlen($this->txtDocuFisc->Text) == 0) {
+                if (strlen($this->lblDocuFisc->Text) == 0) {
                     $this->btnImprFact->Visible = false;
                 }
             }
