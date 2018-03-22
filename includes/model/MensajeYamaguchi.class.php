@@ -91,12 +91,14 @@
         public static function LoadMensajesVigentesParaElCliente($strCodigo, $objOptionalClauses = null) {
             $dttFechDhoy   = new QDateTime(QDateTime::Now);
             $objClauWher   = QQ::Clause();
-            $objClauWher[] = QQ::LessOrEqual(QQN::MensajeYamaguchi()->FechInic,$dttFechDhoy->__toString('YYYY-MM-DD'));
-            $objClauWher[] = QQ::GreaterOrEqual(QQN::MensajeYamaguchi()->FechFin,$dttFechDhoy->__toString('YYYY-MM-DD'));
+            $objClauWher[] = QQ::LessOrEqual(QQN::MensajeYamaguchi()->FechInic,$dttFechDhoy);
+            $objClauWher[] = QQ::GreaterOrEqual(QQN::MensajeYamaguchi()->FechFin,$dttFechDhoy);
+//            $objClauWher[] = QQ::LessOrEqual(QQN::MensajeYamaguchi()->FechInic,$dttFechDhoy->__toString('YYYY-MM-DD'));
+//            $objClauWher[] = QQ::GreaterOrEqual(QQN::MensajeYamaguchi()->FechFin,$dttFechDhoy->__toString('YYYY-MM-DD'));
             $objClauWher[] = QQ::Equal(QQN::MensajeYamaguchi()->TiempoIndefinido,SinoType::NO);
             $arrMensOkey   = array();
             $arrMensCorp   = MensajeYamaguchi::QueryArray(QQ::AndCondition($objClauWher),$objOptionalClauses);
-            t('Encontre '.count($arrMensCorp).' mensajes especificos del Cliente para evaluar');
+            t('Encontre '.count($arrMensCorp).' mensaje(s) especifico(s) con rango de fecha');
             foreach ($arrMensCorp as $objMensCorp) {
                 $arrCodiClie = explode(',',nl2br2($objMensCorp->Codigos));
                 t('Mensaje: '.$objMensCorp->Id.' en el campo Codigos tiene: '.$objMensCorp->Codigos);
@@ -108,7 +110,7 @@
             $objClauWher   = QQ::Clause();
             $objClauWher[] = QQ::LessOrEqual(QQN::MensajeYamaguchi()->FechInic,$dttFechDhoy->__toString('YYYY-MM-DD'));
             $objClauWher[] = QQ::Equal(QQN::MensajeYamaguchi()->TiempoIndefinido,SinoType::SI);
-            $arrMensOkey   = array();
+//            $arrMensOkey   = array();
             $arrMensCorp   = MensajeYamaguchi::QueryArray(QQ::AndCondition($objClauWher),$objOptionalClauses);
             t('Encontre '.count($arrMensCorp).' mensajes para evaluar de tiempo indefinido');
             foreach ($arrMensCorp as $objMensCorp) {

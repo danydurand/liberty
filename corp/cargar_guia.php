@@ -148,7 +148,7 @@ class CargarGuia extends FormularioBaseKaizen {
     protected function Form_Create() {
         parent::Form_Create();
 
-       // t('Creando guia Expreso Nacional...');
+        // t('Creando guia Expreso Nacional...');
         $this->setupGuia();
         $this->setupValues();
 
@@ -344,7 +344,7 @@ class CargarGuia extends FormularioBaseKaizen {
         if ($this->blnEditMode) {
             $this->txtDireRemi->Text = $this->objGuia->DireRemi;
         } else {
-//            $this->txtDireRemi->Text = $this->objCliente->DireReco;
+            //            $this->txtDireRemi->Text = $this->objCliente->DireReco;
             $this->txtDireRemi->Text = substr($this->objUsuario->Direccion,0,200);
         }
     }
@@ -425,7 +425,7 @@ class CargarGuia extends FormularioBaseKaizen {
         if ($this->blnEditMode) {
             $this->txtCeduDest->Text = $this->objGuia->CedulaRif;
         }
-//        $this->txtCeduDest->AddAction(new QBlurEvent(), new QAjaxAction('txtCeduDest_Blur'));
+        //        $this->txtCeduDest->AddAction(new QBlurEvent(), new QAjaxAction('txtCeduDest_Blur'));
     }
 
     protected function chkDestFrec_Create() {
@@ -520,8 +520,8 @@ class CargarGuia extends FormularioBaseKaizen {
     }
 
     protected function Form_Validate() {
-       // t('Validando la Guia');
-       // t('=================');
+        // t('Validando la Guia');
+        // t('=================');
         $strTextMens = 'Errores: <b>';
         $strMensErro = '';
         $blnTodoOkey = true;
@@ -532,7 +532,7 @@ class CargarGuia extends FormularioBaseKaizen {
             $blnTodoOkey = false;
             $strMensErro .= 'Nombre/R.Social del Remitente (Requerido)';
         }
-       // t('Razon Social: '.$blnTodoOkey);
+        // t('Razon Social: '.$blnTodoOkey);
         //-------------------------------------------
         // Validando campo de Teléfono del Remitente
         //-------------------------------------------
@@ -546,7 +546,7 @@ class CargarGuia extends FormularioBaseKaizen {
                 $strMensErro .= 'Teléfono Remitente no debe tener más de 11 caracteres';
             }
         }
-       // t('Telefono del Remitente: '.$blnTodoOkey);
+        // t('Telefono del Remitente: '.$blnTodoOkey);
         //-------------------------------------------
         // Validando campo de Dirección de Recolecta
         //-------------------------------------------
@@ -557,7 +557,7 @@ class CargarGuia extends FormularioBaseKaizen {
             }
             $strMensErro .= 'Dirección de Recolecta (Requerida)';
         }
-       // t('Direccion de Recolecta: '.$blnTodoOkey);
+        // t('Direccion de Recolecta: '.$blnTodoOkey);
         //---------------------------------------------------------
         // Validando campo de Descripción del Contenido de la Guía
         //---------------------------------------------------------
@@ -568,7 +568,7 @@ class CargarGuia extends FormularioBaseKaizen {
             }
             $strMensErro .= 'Contenido del Envío (Requerido)';
         }
-       // t('Descripcion del Contenido: '.$blnTodoOkey);
+        // t('Descripcion del Contenido: '.$blnTodoOkey);
         //---------------------------------------
         // Validando campo de Cantidad de Piezas
         //---------------------------------------
@@ -579,7 +579,7 @@ class CargarGuia extends FormularioBaseKaizen {
             }
             $strMensErro .= 'Cant. Pzas (Requerida)';
         }
-       // t('Cantidad de Piezas: '.$blnTodoOkey);
+        // t('Cantidad de Piezas: '.$blnTodoOkey);
         //------------------------------------
         // Validando campo de Valor Declarado
         //------------------------------------
@@ -610,7 +610,7 @@ class CargarGuia extends FormularioBaseKaizen {
                 }
             }
         }
-       // t('Valor Declarado: '.$blnTodoOkey);
+        // t('Valor Declarado: '.$blnTodoOkey);
         //----------------------------
         // Validando campo de Destino
         //----------------------------
@@ -621,7 +621,7 @@ class CargarGuia extends FormularioBaseKaizen {
             }
             $strMensErro .= 'Destino (Requerido)';
         }
-       // t('Destino: '.$blnTodoOkey);
+        // t('Destino: '.$blnTodoOkey);
         //--------------------------------------------
         // Validando campo de Nombre del Destinatario
         //--------------------------------------------
@@ -632,7 +632,7 @@ class CargarGuia extends FormularioBaseKaizen {
             }
             $strMensErro .= 'Nombre/R. Social del Destinatario (Requerido)';
         }
-       // t('Nombre del Destinatario: '.$blnTodoOkey);
+        // t('Nombre del Destinatario: '.$blnTodoOkey);
         //----------------------------------------------
         // Validando campo de Teléfono del Destinatario
         //----------------------------------------------
@@ -689,7 +689,7 @@ class CargarGuia extends FormularioBaseKaizen {
                 }
             }
         }
-       // t('Telefono del Destinatario: '.$blnTodoOkey);
+        // t('Telefono del Destinatario: '.$blnTodoOkey);
         //-----------------------------------------
         // Validando campo de Dirección de Entrega
         //-----------------------------------------
@@ -700,7 +700,7 @@ class CargarGuia extends FormularioBaseKaizen {
             }
             $strMensErro .= 'Dirección de Entrega (Requerida)';
         }
-       // t('Direccion Destino: '.$blnTodoOkey);
+        // t('Direccion Destino: '.$blnTodoOkey);
         //----------------------------------------------------------------
         // Validando campo de Cédula y campo de Teléfono del Destinatario
         // en caso de que la Modalidad de Pago sea COD.
@@ -724,7 +724,7 @@ class CargarGuia extends FormularioBaseKaizen {
                 $strMensErro .= 'Teléfono del Destinatario (Requerido)';
             }
         }
-       // t('Cedula y Tlf del Destinatario: '.$blnTodoOkey);
+        // t('Cedula y Tlf del Destinatario: '.$blnTodoOkey);
         //------------------------------------------------------------------------------------------
         // Si hay uno o más errores, se notifican al usuario y no se permite la gestión de la guía.
         //------------------------------------------------------------------------------------------
@@ -733,7 +733,7 @@ class CargarGuia extends FormularioBaseKaizen {
             $strTextMens .= '</b>.';
             $this->mensaje($strTextMens,'','d','',__iHAND__);
         }
-       // t('Al final: '.$blnTodoOkey);
+        // t('Al final: '.$blnTodoOkey);
         return $blnTodoOkey;
     }
 
@@ -909,8 +909,8 @@ class CargarGuia extends FormularioBaseKaizen {
 
     protected function btnSave_Click() {
         $blnTodoOkey = true;
-       // t('Salvando la Guia en el CORP');
-       // t('===========================');
+        // t('Salvando la Guia en el CORP');
+        // t('===========================');
         //------------------------------------
         // Parámetros para Mensaje de Usuario
         //------------------------------------
@@ -929,12 +929,12 @@ class CargarGuia extends FormularioBaseKaizen {
         if (!$this->blnEditMode) {
             $this->txtNumeGuia->Text = proxNroDeGuia();
         }
-       // t('Nro de Guia asignado');
+        // t('Nro de Guia asignado');
         //--------------------------------------------
         // Se actualizan ahora los campos de la tabla
         //--------------------------------------------
         $this->UpdateGuiaFields();
-       // t('Campos de la Guia, actualizados');
+        // t('Campos de la Guia, actualizados');
         //----------------------------------------------------------------------------------------
         // Si el Cliente ya posee una operación o ruta de recolecta, ésta se le asigna a la Guía,
         // de lo contrario se le asigna por defecto una ruta u operación genérica.
@@ -948,19 +948,19 @@ class CargarGuia extends FormularioBaseKaizen {
                 $this->objGuia->OperacionId = $arrOperacion[0]->CodiOper;
             }
         }
-       // t('Operacion asignada');
+        // t('Operacion asignada');
         //-----------------------------------------------------------------
         // Si la guía no tiene un Cliente asignado, entonces se le asigna.
         //-----------------------------------------------------------------
         if (is_null($this->objGuia->CodiClie)) {
             $this->objGuia->CodiClie = $this->objCliente->CodiClie;
         }
-       // t('Codigo del Cliente re-asignado');
+        // t('Codigo del Cliente re-asignado');
         //--------------------------------------------------------------
         // Se salva la Guía con la data actualizada hasta los momentos.
         //--------------------------------------------------------------
         $this->objGuia->Save();
-       // t('Guia salvada');
+        // t('Guia salvada');
         //-----------------------------------------------------------------------------------------
         // Si el Usuario marcó el registro como "Destinatario Frecuente", los datos proporcionados
         // deben salvarse en la tabla correspondiente.
@@ -973,7 +973,7 @@ class CargarGuia extends FormularioBaseKaizen {
             );
             $_SESSION['DestFrec'] = serialize($arrDestFrec);
         }
-       // t('Destinatario Frecuente, gestionado...');
+        // t('Destinatario Frecuente, gestionado...');
         //--------------------------------------------------------------------
         // Si el Usuario especifico Guia Retorno, entonces se crea dicha Guia
         //--------------------------------------------------------------------
@@ -985,7 +985,7 @@ class CargarGuia extends FormularioBaseKaizen {
                 $strTipoInfo = 'd';
             }
         }
-       // t('Guia Retorno, gestionada...');
+        // t('Guia Retorno, gestionada...');
         //---------------------------------------------------------------------------------------------------
         // Se procede a buscar una Recolecta existente usando el código del Cliente y la Fecha de Recolecta.
         //---------------------------------------------------------------------------------------------------
@@ -1020,7 +1020,7 @@ class CargarGuia extends FormularioBaseKaizen {
                 $objRecoAnte->Save();
             }
         }
-       // t('Recolecta gestionada...');
+        // t('Recolecta gestionada...');
         //---------------------------------------------------------------------------
         // Luego se graba un Checkpoint para la Guía recien ingresada en el Sistema.
         //---------------------------------------------------------------------------
@@ -1046,7 +1046,7 @@ class CargarGuia extends FormularioBaseKaizen {
                 $strSimbMens = __iEXCL__;
             }
         }
-       // t('Checkpoint NR, grabado...');
+        // t('Checkpoint NR, grabado...');
         if ($blnTodoOkey) {
             //----------------------------------------------------------------------------------------------------------
             // Si todos los datos estan en orden, entonces se muestra en pantalla el boton que permite imprimir la Guia.
@@ -1061,7 +1061,7 @@ class CargarGuia extends FormularioBaseKaizen {
                 $strMensUsua .= '. '.$this->objSeguGuia->MensSegu;
             }
         }
-       // t('Botones de impresion, visibles...');
+        // t('Botones de impresion, visibles...');
         //-----------------------------------------------------------------------
         // Se muestra al Usuario la información del resultado de la transacción.
         //-----------------------------------------------------------------------
@@ -1072,10 +1072,10 @@ class CargarGuia extends FormularioBaseKaizen {
         if (strlen($strMensInfo) > 0) {
             $this->mensaje($strMensInfo,'n',$strTipoInfo,'',$strSimbInfo);
         }
-       // t('Mensaje mostrado al Usuario...');
+        // t('Mensaje mostrado al Usuario...');
         $this->setupGuia();
         $this->setupValues();
-       // t('Setups ejecutados...');
+        // t('Setups ejecutados...');
     }
 
     protected function btnBorrGuia_Click() {
