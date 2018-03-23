@@ -27,6 +27,85 @@
 			return sprintf('%s',  $this->strNumeGuia);
 		}
 
+		public function validarDevolucion(Usuario $objUsuario) {
+		    $blnTodoOkey = true;
+		    $strMensUsua = '';
+            //---------------------------------------------
+            // La Guia no debe esta anulada, ni entregada
+            //---------------------------------------------
+            if ($blnTodoOkey) {
+                $arrSepuProc = $this->SePuedeProcesar();
+                if (!$arrSepuProc['TodoOkey']) {
+                    $strMensUsua = $arrSepuProc['MensUsua'];
+                    $blnTodoOkey = false;
+                }
+            }
+            //-----------------------------------------------------
+            // La guia no debe estar ya "Devuelta al Remitente"
+            //-----------------------------------------------------
+            if ($blnTodoOkey) {
+                if ($this->tieneCheckpoint('DR')) {
+                    $strMensUsua = 'Ya fue Devuelta';
+                    $blnTodoOkey = false;
+                }
+            }
+            //------------------------------------------------------------
+            // El Usuario, debe estar en la Sucursal destino de la Guia
+            //------------------------------------------------------------
+            if ($blnTodoOkey) {
+                if ($this->EstaDest != $objUsuario->CodiEsta) {
+                    $strMensUsua = 'Suc. Dest. Diferente';
+                    $blnTodoOkey = false;
+                }
+            }
+            $arrResuVali['TodoOkey'] = $blnTodoOkey;
+            $arrResuVali['MensUsua'] = $strMensUsua;
+            return $arrResuVali;
+        }
+
+		public function Devolver(SdeCheckpoint $objCkptDevo) {
+            //--------------------------------------------
+            // Remitente y Destinatario, se intercambian
+            //--------------------------------------------
+            $strSucuDest = $this->EstaDest;
+            $strNombDest = $this->NombDest;
+            $strDireDest = $this->DireDest;
+            $strTeleDest = $this->TeleDest;
+
+            $this->EstaDest = $this->EstaOrig;
+            $this->NombDest = $this->NombRemi;
+            $this->DireDest = $this->DireRemi;
+            $this->TeleDest = $this->TeleRemi;
+
+            $this->EstaOrig = $strSucuDest;
+            $this->NombRemi = $strNombDest;
+            $this->DireRemi = $strDireDest;
+            $this->TeleRemi = $strTeleDest;
+            //-------------------------
+            // Los montos se duplican
+            //-------------------------
+            $this->MontoBase     += $this->MontoBase;
+            $this->MontoFranqueo += $this->MontoFranqueo;
+            $this->MontoSeguro   += $this->MontoSeguro;
+            $this->MontoIva      += $this->MontoIva;
+            $this->MontoTotal    += $this->MontoTotal;
+            $this->Save();
+            //-----------------------------------------
+            // Se graba el checkpoint correspondiente
+            //-----------------------------------------
+            $arrDatoCkpt = array();
+            $arrDatoCkpt['NumeGuia'] = $this->NumeGuia;
+            $arrDatoCkpt['UltiCkpt'] = $this->CodiCkpt;
+            $arrDatoCkpt['GuiaAnul'] = $this->Anulada;
+            $arrDatoCkpt['CodiCkpt'] = $objCkptDevo->CodiCkpt;
+            $arrDatoCkpt['TextCkpt'] = $objCkptDevo->DescCkpt;
+            $arrDatoCkpt['CodiRuta'] = '';
+            $arrResuGrab = GrabarCheckpointOptimizado($arrDatoCkpt);
+
+            return $arrResuGrab;
+        }
+
+
         public static function RecolectasPendientes($strCodiOrig, $objOptionalClauses = null) {
             $strCadeSqlx  = "select distinct g.*,(fn_diastrans( now(), fech_guia ) - (fn_cantsados(fech_guia, now()) + fn_cantferiados(fech_guia, now()))) as dias_tran ";
             $strCadeSqlx .= "  from guia g ";

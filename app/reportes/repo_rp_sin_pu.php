@@ -23,6 +23,7 @@ foreach ($arrSucuSele as $objSucursal) {
     $strCadeSqlx .= "   and g.esta_orig  = '".$objSucursal->CodiEsta."'";
     $strCadeSqlx .= "   and g.esta_ckpt  = g.esta_orig";
     $strCadeSqlx .= "   and g.codi_ckpt  = 'RP'";
+    $strCadeSqlx .= "   and g.anulada    = 0";
     $strCadeSqlx .= " order by fech_ckpt desc, ";
     $strCadeSqlx .= "          hora_ckpt desc ";
 

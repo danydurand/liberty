@@ -430,6 +430,13 @@ class UsuarioEditForm extends UsuarioEditFormBase {
                 $arrLogxCamb['strDescCamb'] = implode(',',$objResuComp->DifferentFields);
                 $arrLogxCamb['strEnlaEnti'] = __SIST__.'/usuario_edit.php/'.$this->mctUsuario->Usuario->CodiUsua;
                 LogDeCambios($arrLogxCamb);
+                //---------------------------------------------------------------------------------------------
+                // Si el Usuario modificado, es el mismo que esta conectado, entonces la variable de session
+                // se establece nuevamente, para tomar los cambios de manera inmediada
+                //---------------------------------------------------------------------------------------------
+                if ($this->objUsuario->CodiUsua == $this->mctUsuario->Usuario->CodiUsua) {
+                    $_SESSION['User'] = serialize($this->mctUsuario->Usuario);
+                }
             }
         } else {
             $arrLogxCamb['strNombTabl'] = 'Usuario';
@@ -443,6 +450,7 @@ class UsuarioEditForm extends UsuarioEditFormBase {
             $this->mctUsuario->SaveUsuario();
             $this->RedactarEmailCreacion($this->mctUsuario->Usuario,$this->strPassUsua);
         }
+
         $this->mensaje('Transacción Exitosa!','','',__iCHEC__);
     }
 

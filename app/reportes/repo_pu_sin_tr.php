@@ -24,6 +24,7 @@ foreach ($arrSucuSele as $objSucursal) {
     $strCadeSqlx .= "   and g.esta_orig  = '".$objSucursal->CodiEsta."'";
     $strCadeSqlx .= "   and g.esta_dest != '".$objSucursal->CodiEsta."'";
     $strCadeSqlx .= "   and g.esta_ckpt  = g.esta_orig";
+    $strCadeSqlx .= "   and g.anulada    = 0";
     $strCadeSqlx .= "   and e.fecha_pickup IS NOT NULL";
     $strCadeSqlx .= "   and e.fecha_traslado IS NULL";
     $strCadeSqlx .= "   and e.fecha_entrega IS NULL";

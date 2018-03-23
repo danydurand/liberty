@@ -22,6 +22,7 @@ foreach ($arrSucuSele as $objSucursal) {
     $strCadeSqlx .= "    on g.nume_guia = e.guia_id";
     $strCadeSqlx .= " where (fn_diastrans( now(), e.fecha_ruta ) - (fn_cantsados(e.fecha_ruta, now()) + fn_cantferiados(e.fecha_ruta, now()))) > 1  ";
     $strCadeSqlx .= "   and g.esta_dest = '".$objSucursal->CodiEsta."'";
+    $strCadeSqlx .= "   and g.anulada   = 0";
     $strCadeSqlx .= "   and e.fecha_ruta IS NOT NULL";
     $strCadeSqlx .= "   and e.fecha_entrega IS NULL";
     $strCadeSqlx .= " order by e.fecha_ruta desc ";
