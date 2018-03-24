@@ -91,6 +91,7 @@ class DevolverGuia extends FormularioBaseKaizen {
                 //--------------------------------------------------------------------------------------
                 $arrResuVali = $objGuiaProc->validarDevolucion($this->objUsuario);
                 if (!$arrResuVali['TodoOkey']) {
+                    $intCantErro++;
                     $this->txtNumeGuia->Text .= $strNumeGuia . ' (' . $arrResuVali['MensUsua'] . ')' . chr(13);
                     $blnTodoOkey = false;
                 }
