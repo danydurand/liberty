@@ -24,13 +24,31 @@ require(__APP_INCLUDES__ . '/header.inc.php');
                 </div>
             </div>
             <div class="row" style="margin-top: 1em;">
-                <div class="col-md-10">
-                    <?php $this->lstCodiGrup->RenderWithName(); ?>
-                    <?php $this->lstOpciSist->RenderWithName(); ?>
+                <div class="col-md-offset-1 col-md-5">
+                    <div class="title">Grupo</div>
+                    <?php $this->lstCodiGrup->Render(); ?>
+                    <div class="title">Permisos</div>
+                    <?php $this->lstOpciSist->Render(); ?>
                 </div>
-                <div class="col-md-2"></div>
+                <div class="col-md-5">
+                    <div class="row">
+                        <div class="col-md-7">
+                            <?php $this->txtLogiUsua->RenderWithName(); ?>
+                        </div>
+                        <div class="col-md-5">
+                            <?php $this->btnAgreUsua->Render(); ?>
+                        </div>
+                    </div>
+                    <div class="row" style="margin-top: 1em">
+                        <?php $this->dtgUsuaGrup->Render(); ?>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
-
+    <style>
+        .title {
+            font-weight: bold;
+        }
+    </style>
 <?php require(__APP_INCLUDES__ .'/footer.inc.php'); ?>

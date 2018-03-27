@@ -9,11 +9,13 @@ QApplication::CheckRemoteAdmin();
 
 
 class Permisos extends FormularioBaseKaizen {
-
     protected $lstCodiGrup;
     protected $btnCopiPerm;
     protected $lstOpciSist;
     protected $arrOpciSist;
+    protected $dtgUsuaGrup;
+    protected $txtLogiUsua;
+    protected $btnAgreUsua;
 
     protected function Form_Create() {
 
@@ -24,12 +26,74 @@ class Permisos extends FormularioBaseKaizen {
 
         $this->lstCodiGrup_Create();
         $this->lstOpciSist_Create();
+        $this->dtgUsuaGrup_Create();
+        $this->txtLogiUsua_Create();
+        $this->btnAgreUsua_Create();
 
     }
 
     //------------------------------
     // Aqui se crean los objetos
     //------------------------------
+
+    protected function dtgUsuaGrup_Create() {
+
+        $this->dtgUsuaGrup = new UsuarioDataGrid($this);
+        $this->dtgUsuaGrup->FontSize = 13;
+        $this->dtgUsuaGrup->ShowFilter = false;
+
+        // Style the DataGrid (if desired)
+        $this->dtgUsuaGrup->CssClass = 'datagrid';
+        $this->dtgUsuaGrup->AlternateRowStyle->CssClass = 'alternate';
+
+        // Los registros "Borrados" no deben mostrarse
+        /*
+        $objClauWher   = QQ::Clause();
+        $objClauWher[] = QQ::IsNull(QQN::Usuario()->DeleteAt);
+        $objClauWher[] = QQ::Equal(QQN::Usuario()->GrupoId,$this->lstCodiGrup->SelectedValue);
+        $this->dtgUsuaGrup->AdditionalConditions = QQ::AndCondition($objClauWher);
+        */
+
+        // Add Pagination (if desired)
+        $this->dtgUsuaGrup->Paginator = new QPaginator($this->dtgUsuaGrup);
+        $this->dtgUsuaGrup->ItemsPerPage = 10; //__FORM_DRAFTS_FORM_LIST_ITEMS_PER_PAGE__;
+
+        // Higlight the datagrid rows when mousing over them
+        $this->dtgUsuaGrup->AddRowAction(new QMouseOverEvent(), new QCssClassAction('selectedStyle'));
+        $this->dtgUsuaGrup->AddRowAction(new QMouseOutEvent(), new QCssClassAction());
+
+        /*
+        $this->dtgUsuaGrup->RowActionParameterHtml = '<?= $_ITEM->CodiUsua ?>';
+        $this->dtgUsuaGrup->AddRowAction(new QClickEvent(), new QAjaxAction('dtgUsuaGrupRow_Click'));
+        */
+
+
+        $this->dtgUsuaGrup->MetaAddColumn('LogiUsua');
+        $this->dtgUsuaGrup->MetaAddColumn('NombUsua');
+        $this->dtgUsuaGrup->MetaAddColumn('ApelUsua');
+        $this->dtgUsuaGrup->MetaAddTypeColumn('CodiStat', 'StatusType');
+        $colSucuUsua = $this->dtgUsuaGrup->MetaAddColumn(QQN::Usuario()->CodiEsta);
+        $colSucuUsua->Name = 'Suc.';
+        $this->dtgUsuaGrup->MetaAddColumn('FechAcce');
+        $this->dtgUsuaGrup->SetDataBinder('dtgUsuaGrup_Binder');
+
+    }
+
+    protected function dtgUsuaGrup_Binder(){
+        $objClauWher   = QQ::Clause();
+        $objClauWher[] = QQ::IsNull(QQN::Usuario()->DeleteAt);
+        $objClauWher[] = QQ::Equal(QQN::Usuario()->GrupoId,$this->lstCodiGrup->SelectedValue);
+
+        $arrUsuaGrup = Usuario::QueryArray(QQ::AndCondition($objClauWher));
+
+        $this->dtgUsuaGrup->TotalItemCount = count($arrUsuaGrup);
+        // Bind the datasource to the datagrid
+        $this->dtgUsuaGrup->DataSource = Usuario::QueryArray(
+            QQ::AndCondition($objClauWher),
+            QQ::Clause($this->dtgUsuaGrup->OrderByClause, $this->dtgUsuaGrup->LimitClause)
+        );
+
+    }
 
     protected function lstCodiGrup_Create() {
         $this->lstCodiGrup = new QListBox($this);
@@ -53,9 +117,21 @@ class Permisos extends FormularioBaseKaizen {
         $this->lstOpciSist->AddAction(new QClickEvent(), new QAjaxAction('lstOpciSist_Click'));
     }
 
-    //-------------------------
-    // Botónes del Formulario
-    //-------------------------
+    protected function txtLogiUsua_Create() {
+        $this->txtLogiUsua = new QTextBox($this);
+        $this->txtLogiUsua->Name = 'Usuario';
+        $this->txtLogiUsua->Placeholder = 'Login';
+        $this->txtLogiUsua->Width = 120;
+        $this->txtLogiUsua->Enabled = false;
+        $this->txtLogiUsua->SetCustomAttribute('onblur',"this.value=this.value.toLowerCase()");
+    }
+
+    protected function btnAgreUsua_Create(){
+        $this->btnAgreUsua = new QButtonP($this);
+        $this->btnAgreUsua->Text = 'Agregar Usuario al Grupo';
+        $this->btnAgreUsua->Enabled = false;
+        $this->btnAgreUsua->AddAction(new QClickEvent(), new QServerAction('btnAgreUsua_Click'));
+    }
 
     protected function btnCopiPerm_Create() {
         $this->btnCopiPerm = new QImageButton($this);
@@ -78,10 +154,66 @@ class Permisos extends FormularioBaseKaizen {
         QApplication::Redirect('copiar_permisos.php');
     }
 
+    protected function btnAgreUsua_Click() {
+        $blnTodoOkey = true;
+        $strLogiUsua = trim($this->txtLogiUsua->Text);
+        if (strlen($strLogiUsua) == 0) {
+            $blnTodoOkey = false;
+            $this->mensaje('Debe especificar un Login de Usuario','','d','',__iHAND__);
+        }
+        if ($blnTodoOkey) {
+            $objUsuaAgre = Usuario::LoadByLogiUsua($strLogiUsua);
+            if (!$objUsuaAgre) {
+                $blnTodoOkey = false;
+                $this->mensaje('El Usuario indicado, no existe','','d','',__iHAND__);
+            } else {
+                if (!is_null($objUsuaAgre->DeleteAt)) {
+                    $blnTodoOkey = false;
+                    $this->mensaje('El Usuario indicado, no existe','','d','',__iHAND__);
+                }
+            }
+        }
+        if ($blnTodoOkey) {
+            try {
+                $objUsuaAgre->GrupoId = $this->lstCodiGrup->SelectedValue;
+                $objUsuaAgre->Save();
+            } catch (Exception $e) {
+                $this->mensaje($e->getMessage(),'','d','',__iHAND__);
+            }
+            //----------------------------------------------
+            // Se deja rastro de la transaccion realizada
+            //----------------------------------------------
+            $arrLogxCamb['strNombTabl'] = 'Usuario';
+            $arrLogxCamb['intRefeRegi'] = $objUsuaAgre->CodiUsua;
+            $arrLogxCamb['strNombRegi'] = $objUsuaAgre->LogiUsua;
+            $arrLogxCamb['strDescCamb'] = 'Cambiado al Grupo: '.$this->lstCodiGrup->SelectedName;
+            LogDeCambios($arrLogxCamb);
+            $this->mensaje('Usuario Cambiado Exitosamente !','','','',__iCHEC__);
+            $this->dtgUsuaGrup->Refresh();
+            //-------------------------------------------------------------------
+            // Se actualiza el grupo, para mostrar la cantidad real de Usuarios
+            //-------------------------------------------------------------------
+            $intIndiActu = $this->lstCodiGrup->SelectedIndex;
+            $this->lstCodiGrup->RemoveAllItems();
+            $arrNewxGrup = NewGrupo::LoadArrayBySistemaId('sde');
+            $intCanrGrup = count($arrNewxGrup);
+            $this->lstCodiGrup->AddItem(QApplication::Translate('- Seleccione Uno - ('.$intCanrGrup.')'),null);
+            foreach ($arrNewxGrup as $objGrupo) {
+                $this->lstCodiGrup->AddItem($objGrupo->__toStringConCantUsuarios(),$objGrupo->Id);
+            }
+            $this->lstCodiGrup->SelectedIndex = $intIndiActu;
+        }
+    }
+
     protected function actualizarOpciones() {
         $this->mensaje('Presione la tecla <strong>CTRL</strong>, mientras hace <strong>CLICK</strong> en las Opciones','m','i','',__iINFO__);
+        $this->dtgUsuaGrup->Refresh();
+        $this->txtLogiUsua->Enabled = false;
+        $this->btnAgreUsua->Enabled = false;
         $this->lstOpciSist->RemoveAllItems();
         if (!is_null($this->lstCodiGrup->SelectedValue)) {
+            $this->txtLogiUsua->Enabled = true;
+            $this->btnAgreUsua->Enabled = true;
             //--------------------------------------------------
             // Se identifican las opciones asignadas al Grupo
             //--------------------------------------------------
@@ -178,77 +310,6 @@ class Permisos extends FormularioBaseKaizen {
                 }
             }
         }
-    }
-
-    protected function actualizarOpciones1() {
-        $this->mensaje('Presione la tecla <strong>CTRL</strong>, mientras hace <strong>CLICK</strong> en las Opciones','m','i','',__iINFO__);
-        $this->lstOpciSist->RemoveAllItems();
-        if (!is_null($this->lstCodiGrup->SelectedValue)) {
-            //--------------------------------------------------
-            // Se identifican las opciones asignadas al Grupo
-            //--------------------------------------------------
-            $intCodiGrup = $this->lstCodiGrup->SelectedValue;
-            $arrPermGrup = Permiso::LoadArrayByGrupoId($intCodiGrup);
-            $intCantGrup = count($arrPermGrup);
-            $arrCodiGrup = array();
-            if ($intCantGrup) {
-                foreach ($arrPermGrup as $objPermGrup) {
-                    //----------------------------------------------------------------
-                    // Se carga un vector con los codigos de las opciones del Grupo
-                    //----------------------------------------------------------------
-                    $arrCodiGrup[] = $objPermGrup->OpcionId;
-                }
-            }
-            //----------------------------------------
-            // Se identifican los Menus del Sistema
-            //----------------------------------------
-            $objClauOrde   = QQ::Clause();
-            $objClauOrde[] = QQ::OrderBy(QQN::NewOpcion()->Dependencia);
-            $objClauOrde[] = QQ::OrderBy(QQN::NewOpcion()->Posicion);
-            $objClauWher   = QQ::Clause();
-            $objClauWher[] = QQ::Equal(QQN::NewOpcion()->SistemaId,$_SESSION['Sistema']);
-            $objClauWher[] = QQ::Equal(QQN::NewOpcion()->Activo,true);
-            $objClauWher[] = QQ::Equal(QQN::NewOpcion()->EsMenu,true);
-            $objClauWher[] = QQ::NotEqual(QQN::NewOpcion()->Nombre,'Principal');
-            $arrMenuSist   = NewOpcion::QueryArray(QQ::AndCondition($objClauWher),$objClauOrde);
-            //----------------------------------
-            // Se procesan uno a uno los Menus
-            //----------------------------------
-            foreach ($arrMenuSist as $objMenuSist) {
-                $blnSeleRegi = false;
-                if (in_array($objMenuSist->Id,$arrCodiGrup)) {
-                    //--------------------------------------------------------------------------
-                    // Si el Menu, esta en el grupo de opciones asignada al grupo
-                    // se marca como seleccionado dentro del ListBox
-                    //--------------------------------------------------------------------------
-                    $blnSeleRegi = true;
-                }
-                $this->lstOpciSist->AddItem($objMenuSist->__toStringComoMenu(),$objMenuSist->Id,$blnSeleRegi);
-                //------------------------------------------------------------
-                // Por cada menu se identifican la opciones correspondientes
-                //------------------------------------------------------------
-                $objClauOrde   = QQ::Clause();
-                $objClauOrde[] = QQ::OrderBy(QQN::NewOpcion()->Posicion);
-                $objClauWher   = QQ::Clause();
-                $objClauWher[] = QQ::Equal(QQN::NewOpcion()->SistemaId,$_SESSION['Sistema']);
-                $objClauWher[] = QQ::Equal(QQN::NewOpcion()->Dependencia,$objMenuSist->Id);
-                $objClauWher[] = QQ::Equal(QQN::NewOpcion()->Activo,true);
-                $objClauWher[] = QQ::Equal(QQN::NewOpcion()->EsMenu,false);
-                $arrOpciMenu   = NewOpcion::QueryArray(QQ::AndCondition($objClauWher),$objClauOrde);
-                foreach ($arrOpciMenu as $objOpciMenu) {
-                    $blnSeleRegi = false;
-                    if (in_array($objOpciMenu->Id,$arrCodiGrup)) {
-                        //--------------------------------------------------------------------------
-                        // Si la opcion del menu, esta en el grupo de opciones asignada al grupo
-                        // se marca como seleccionada dentro del ListBox
-                        //--------------------------------------------------------------------------
-                        $blnSeleRegi = true;
-                    }
-                    $this->lstOpciSist->AddItem($objOpciMenu->__toString(),$objOpciMenu->Id,$blnSeleRegi);
-                }
-            }
-        }
-        $this->lstOpciSist->Width = 320;
     }
 
     protected function btnSave_Click($strFormId, $strControlId, $strParameter) {
