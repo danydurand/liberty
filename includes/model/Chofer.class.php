@@ -27,7 +27,17 @@
 			return sprintf('%s %s',$this->strNombChof,$this->strApelChof);
 		}
 
-		/**
+        public static function ChoferesActivosDeLaSucursal($strCodiSucu) {
+            $objClauOrde   = QQ::Clause();
+            $objClauOrde[] = QQ::OrderBy(QQN::Chofer()->NombChof);
+            $objClauWher   = QQ::Clause();
+            $objClauWher[] = QQ::Equal(QQN::Chofer()->CodiStat,StatusType::ACTIVO);
+            $objClauWher[] = QQ::Equal(QQN::Chofer()->CodiDisp,SinoType::SI);
+            $objClauWher[] = QQ::Equal(QQN::Chofer()->CodiEsta,$strCodiSucu);
+            return Chofer::QueryArray(QQ::AndCondition($objClauWher),$objClauOrde);
+        }
+
+        /**
 		 * Esta rutina retorna la Cantidad de Manifiestos abiertos
 		 * asociados al Cartero
 		 *

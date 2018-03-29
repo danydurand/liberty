@@ -55,6 +55,10 @@ abstract class SdeContenedorEditFormBase extends QForm {
 	protected $lstCodiOperObject;
 	protected $calFecha;
 	protected $txtStatCont;
+	protected $txtNombreChofer;
+	protected $txtCedulaChofer;
+	protected $txtPlacaVehiculo;
+	protected $txtDescipcionVehiculo;
 	protected $lstProducto;
 	protected $txtMontoFlete;
 	protected $txtMaster;
@@ -134,6 +138,10 @@ abstract class SdeContenedorEditFormBase extends QForm {
 		$this->lstCodiOperObject = $this->mctSdeContenedor->lstCodiOperObject_Create();
 		$this->calFecha = $this->mctSdeContenedor->calFecha_Create();
 		$this->txtStatCont = $this->mctSdeContenedor->txtStatCont_Create();
+		$this->txtNombreChofer = $this->mctSdeContenedor->txtNombreChofer_Create();
+		$this->txtCedulaChofer = $this->mctSdeContenedor->txtCedulaChofer_Create();
+		$this->txtPlacaVehiculo = $this->mctSdeContenedor->txtPlacaVehiculo_Create();
+		$this->txtDescipcionVehiculo = $this->mctSdeContenedor->txtDescipcionVehiculo_Create();
 		$this->lstProducto = $this->mctSdeContenedor->lstProducto_Create();
 		$this->txtMontoFlete = $this->mctSdeContenedor->txtMontoFlete_Create();
 		$this->txtMaster = $this->mctSdeContenedor->txtMaster_Create();

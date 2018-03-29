@@ -134,11 +134,27 @@ class ImprimirManifiestoHe extends FormularioBaseKaizen {
     }
 
     protected function Imprimir() {
+        $strManiImpr = $this->lstContMani->SelectedValue;
+        $objContenedor = SdeContenedor::Load($strManiImpr);
         if ($this->lstTipoRepo->SelectedValue == 'M') {
-            QApplication::Redirect('imprimir_manifiesto.php?manifiesto='.$this->lstContMani->SelectedValue);
+            if ($objContenedor) {
+                if (strlen($objContenedor->PlacaVehiculo) > 0) {
+                    QApplication::Redirect('imprimir_manifiesto_nuevo.php?manifiesto='.$strManiImpr);
+                } else {
+                    QApplication::Redirect('imprimir_manifiesto.php?manifiesto='.$strManiImpr);
+                }
+            }
+//            QApplication::Redirect('imprimir_manifiesto.php?manifiesto='.$strManiImpr);
         }
         if ($this->lstTipoRepo->SelectedValue == 'H') {
-            QApplication::Redirect('imprimir_hoja_entrega.php?manifiesto='.$this->lstContMani->SelectedValue);
+            if ($objContenedor) {
+                if (strlen($objContenedor->PlacaVehiculo) > 0) {
+                    QApplication::Redirect('imprimir_hoja_entrega_nueva.php?manifiesto='.$strManiImpr);
+                } else {
+                    QApplication::Redirect('imprimir_hoja_entrega.php?manifiesto='.$strManiImpr);
+                }
+            }
+//            QApplication::Redirect('imprimir_hoja_entrega.php?manifiesto='.$strManiImpr);
         }
     }
 

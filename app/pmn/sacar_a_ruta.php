@@ -29,6 +29,9 @@ class SacarARuta extends FormularioBaseKaizen {
 	protected $arrGuiaReto;  // Arreglo de Guias de Retorno
 	protected $arrImprReto;  // Arreglo de Guias de Retorno para Impresion
 	protected $dlgMensUsua;
+	
+	protected $dtgChofSucu;
+	protected $dtgVehiSucu;
 
 	protected $btnManiCarg;
 	protected $btnHojaEntr;
@@ -48,6 +51,9 @@ class SacarARuta extends FormularioBaseKaizen {
 
 		$this->btnSave->Text = TextoIcono('floppy-o','Guardar','F','fa-lg');
 
+		$this->dtgChofSucu_Create();
+//		$this->dtgVehiSucu_Create();
+		
 		$this->btnManiCarg_Create();
 		$this->btnHojaEntr_Create();
 		$this->btnRepoErro_Create();
@@ -60,7 +66,57 @@ class SacarARuta extends FormularioBaseKaizen {
 	// Aqui se crean los objetos
 	//-----------------------------
 
-	protected function dlgMensUsua_Create() {
+    protected function dtgChofSucu_Create() {
+
+        $this->dtgChofSucu = new ChoferDataGrid($this);
+        $this->dtgChofSucu->FontSize = 13;
+        $this->dtgChofSucu->ShowFilter = false;
+
+        // Style the DataGrid (if desired)
+        $this->dtgChofSucu->CssClass = 'datagrid';
+        $this->dtgChofSucu->AlternateRowStyle->CssClass = 'alternate';
+
+        // Add Pagination (if desired)
+        $this->dtgChofSucu->Paginator = new QPaginator($this->dtgChofSucu);
+        $this->dtgChofSucu->ItemsPerPage = 10; //__FORM_DRAFTS_FORM_LIST_ITEMS_PER_PAGE__;
+
+        // Higlight the datagrid rows when mousing over them
+        $this->dtgChofSucu->AddRowAction(new QMouseOverEvent(), new QCssClassAction('selectedStyle'));
+        $this->dtgChofSucu->AddRowAction(new QMouseOutEvent(), new QCssClassAction());
+
+        /*
+        $this->dtgChofSucu->RowActionParameterHtml = '<?= $_ITEM->CodiUsua ?>';
+        $this->dtgChofSucu->AddRowAction(new QClickEvent(), new QAjaxAction('dtgChofSucuRow_Click'));
+        */
+
+        $this->dtgChofSucu->MetaAddColumn('NombChof');
+        $this->dtgChofSucu->MetaAddColumn('NumeCedu');
+        $colSucuChof = $this->dtgChofSucu->MetaAddColumn(QQN::Chofer()->CodiEsta);
+        $colSucuChof->Name = 'Suc.';
+        $this->dtgChofSucu->SetDataBinder('dtgChofSucu_Binder');
+
+    }
+
+    protected function dtgChofSucu_Binder(){
+        $objClauOrde   = QQ::Clause();
+        $objClauOrde[] = QQ::OrderBy(QQN::Chofer()->NombChof);
+        $objClauWher   = QQ::Clause();
+        $objClauWher[] = QQ::Equal(QQN::Chofer()->CodiStat,StatusType::ACTIVO);
+        $objClauWher[] = QQ::Equal(QQN::Chofer()->CodiDisp,SinoType::SI);
+        $objClauWher[] = QQ::Equal(QQN::Chofer()->CodiEsta,$this->objUsuario->CodiEsta);
+
+        $arrChofSucu   = Chofer::QueryArray(QQ::AndCondition($objClauWher),$objClauOrde);
+
+        $this->dtgChofSucu->TotalItemCount = count($arrChofSucu);
+        // Bind the datasource to the datagrid
+        $this->dtgChofSucu->DataSource = Chofer::QueryArray(
+            QQ::AndCondition($objClauWher),
+            QQ::Clause($this->dtgChofSucu->OrderByClause, $this->dtgChofSucu->LimitClause)
+        );
+
+    }
+
+    protected function dlgMensUsua_Create() {
 		$this->dlgMensUsua = new QDialogBox($this);
 		$this->dlgMensUsua->Width = '500px';
 		$this->dlgMensUsua->Height = '350px';

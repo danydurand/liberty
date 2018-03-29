@@ -80,6 +80,10 @@
 			$this->dtgSdeContenedors->MetaAddColumn(QQN::SdeContenedor()->CodiOperObject);
 			$this->dtgSdeContenedors->MetaAddColumn('Fecha');
 			$this->dtgSdeContenedors->MetaAddColumn('StatCont');
+			$this->dtgSdeContenedors->MetaAddColumn('NombreChofer');
+			$this->dtgSdeContenedors->MetaAddColumn('CedulaChofer');
+			$this->dtgSdeContenedors->MetaAddColumn('PlacaVehiculo');
+			$this->dtgSdeContenedors->MetaAddColumn('DescipcionVehiculo');
 			$this->dtgSdeContenedors->MetaAddColumn(QQN::SdeContenedor()->Producto);
 			$this->dtgSdeContenedors->MetaAddColumn('MontoFlete');
 			$this->dtgSdeContenedors->MetaAddColumn('Master');

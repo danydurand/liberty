@@ -76,7 +76,7 @@
 		 * Parametros del programa accedido		 * @var string strParametros
 		 */
 		protected $strParametros;
-		const ParametrosMaxLength = 50;
+		const ParametrosMaxLength = 250;
 		const ParametrosDefault = null;
 
 

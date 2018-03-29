@@ -19,6 +19,10 @@
 	 * @property integer $CodiOper the value for intCodiOper (Not Null)
 	 * @property QDateTime $Fecha the value for dttFecha (Not Null)
 	 * @property string $StatCont the value for strStatCont 
+	 * @property string $NombreChofer the value for strNombreChofer 
+	 * @property string $CedulaChofer the value for strCedulaChofer 
+	 * @property string $PlacaVehiculo the value for strPlacaVehiculo 
+	 * @property string $DescipcionVehiculo the value for strDescipcionVehiculo 
 	 * @property integer $ProductoId the value for intProductoId 
 	 * @property double $MontoFlete the value for fltMontoFlete 
 	 * @property integer $Master the value for intMaster 
@@ -83,6 +87,42 @@
 		protected $strStatCont;
 		const StatContMaxLength = 1;
 		const StatContDefault = null;
+
+
+		/**
+		 * Protected member variable that maps to the database column sde_contenedor.nombre_chofer
+		 * @var string strNombreChofer
+		 */
+		protected $strNombreChofer;
+		const NombreChoferMaxLength = 50;
+		const NombreChoferDefault = null;
+
+
+		/**
+		 * Protected member variable that maps to the database column sde_contenedor.cedula_chofer
+		 * @var string strCedulaChofer
+		 */
+		protected $strCedulaChofer;
+		const CedulaChoferMaxLength = 50;
+		const CedulaChoferDefault = null;
+
+
+		/**
+		 * Protected member variable that maps to the database column sde_contenedor.placa_vehiculo
+		 * @var string strPlacaVehiculo
+		 */
+		protected $strPlacaVehiculo;
+		const PlacaVehiculoMaxLength = 10;
+		const PlacaVehiculoDefault = null;
+
+
+		/**
+		 * Protected member variable that maps to the database column sde_contenedor.descipcion_vehiculo
+		 * @var string strDescipcionVehiculo
+		 */
+		protected $strDescipcionVehiculo;
+		const DescipcionVehiculoMaxLength = 50;
+		const DescipcionVehiculoDefault = null;
 
 
 		/**
@@ -260,6 +300,10 @@
 			$this->intCodiOper = SdeContenedor::CodiOperDefault;
 			$this->dttFecha = (SdeContenedor::FechaDefault === null)?null:new QDateTime(SdeContenedor::FechaDefault);
 			$this->strStatCont = SdeContenedor::StatContDefault;
+			$this->strNombreChofer = SdeContenedor::NombreChoferDefault;
+			$this->strCedulaChofer = SdeContenedor::CedulaChoferDefault;
+			$this->strPlacaVehiculo = SdeContenedor::PlacaVehiculoDefault;
+			$this->strDescipcionVehiculo = SdeContenedor::DescipcionVehiculoDefault;
 			$this->intProductoId = SdeContenedor::ProductoIdDefault;
 			$this->fltMontoFlete = SdeContenedor::MontoFleteDefault;
 			$this->intMaster = SdeContenedor::MasterDefault;
@@ -612,6 +656,10 @@
 			    $objBuilder->AddSelectItem($strTableName, 'codi_oper', $strAliasPrefix . 'codi_oper');
 			    $objBuilder->AddSelectItem($strTableName, 'fecha', $strAliasPrefix . 'fecha');
 			    $objBuilder->AddSelectItem($strTableName, 'stat_cont', $strAliasPrefix . 'stat_cont');
+			    $objBuilder->AddSelectItem($strTableName, 'nombre_chofer', $strAliasPrefix . 'nombre_chofer');
+			    $objBuilder->AddSelectItem($strTableName, 'cedula_chofer', $strAliasPrefix . 'cedula_chofer');
+			    $objBuilder->AddSelectItem($strTableName, 'placa_vehiculo', $strAliasPrefix . 'placa_vehiculo');
+			    $objBuilder->AddSelectItem($strTableName, 'descipcion_vehiculo', $strAliasPrefix . 'descipcion_vehiculo');
 			    $objBuilder->AddSelectItem($strTableName, 'producto_id', $strAliasPrefix . 'producto_id');
 			    $objBuilder->AddSelectItem($strTableName, 'monto_flete', $strAliasPrefix . 'monto_flete');
 			    $objBuilder->AddSelectItem($strTableName, 'master', $strAliasPrefix . 'master');
@@ -757,6 +805,18 @@
 			$strAlias = $strAliasPrefix . 'stat_cont';
 			$strAliasName = !empty($strColumnAliasArray[$strAlias]) ? $strColumnAliasArray[$strAlias] : $strAlias;
 			$objToReturn->strStatCont = $objDbRow->GetColumn($strAliasName, 'VarChar');
+			$strAlias = $strAliasPrefix . 'nombre_chofer';
+			$strAliasName = !empty($strColumnAliasArray[$strAlias]) ? $strColumnAliasArray[$strAlias] : $strAlias;
+			$objToReturn->strNombreChofer = $objDbRow->GetColumn($strAliasName, 'VarChar');
+			$strAlias = $strAliasPrefix . 'cedula_chofer';
+			$strAliasName = !empty($strColumnAliasArray[$strAlias]) ? $strColumnAliasArray[$strAlias] : $strAlias;
+			$objToReturn->strCedulaChofer = $objDbRow->GetColumn($strAliasName, 'VarChar');
+			$strAlias = $strAliasPrefix . 'placa_vehiculo';
+			$strAliasName = !empty($strColumnAliasArray[$strAlias]) ? $strColumnAliasArray[$strAlias] : $strAlias;
+			$objToReturn->strPlacaVehiculo = $objDbRow->GetColumn($strAliasName, 'VarChar');
+			$strAlias = $strAliasPrefix . 'descipcion_vehiculo';
+			$strAliasName = !empty($strColumnAliasArray[$strAlias]) ? $strColumnAliasArray[$strAlias] : $strAlias;
+			$objToReturn->strDescipcionVehiculo = $objDbRow->GetColumn($strAliasName, 'VarChar');
 			$strAlias = $strAliasPrefix . 'producto_id';
 			$strAliasName = !empty($strColumnAliasArray[$strAlias]) ? $strColumnAliasArray[$strAlias] : $strAlias;
 			$objToReturn->intProductoId = $objDbRow->GetColumn($strAliasName, 'Integer');
@@ -1317,6 +1377,10 @@
 							`codi_oper`,
 							`fecha`,
 							`stat_cont`,
+							`nombre_chofer`,
+							`cedula_chofer`,
+							`placa_vehiculo`,
+							`descipcion_vehiculo`,
 							`producto_id`,
 							`monto_flete`,
 							`master`,
@@ -1329,6 +1393,10 @@
 							' . $objDatabase->SqlVariable($this->intCodiOper) . ',
 							' . $objDatabase->SqlVariable($this->dttFecha) . ',
 							' . $objDatabase->SqlVariable($this->strStatCont) . ',
+							' . $objDatabase->SqlVariable($this->strNombreChofer) . ',
+							' . $objDatabase->SqlVariable($this->strCedulaChofer) . ',
+							' . $objDatabase->SqlVariable($this->strPlacaVehiculo) . ',
+							' . $objDatabase->SqlVariable($this->strDescipcionVehiculo) . ',
 							' . $objDatabase->SqlVariable($this->intProductoId) . ',
 							' . $objDatabase->SqlVariable($this->fltMontoFlete) . ',
 							' . $objDatabase->SqlVariable($this->intMaster) . ',
@@ -1354,6 +1422,10 @@
 							`codi_oper` = ' . $objDatabase->SqlVariable($this->intCodiOper) . ',
 							`fecha` = ' . $objDatabase->SqlVariable($this->dttFecha) . ',
 							`stat_cont` = ' . $objDatabase->SqlVariable($this->strStatCont) . ',
+							`nombre_chofer` = ' . $objDatabase->SqlVariable($this->strNombreChofer) . ',
+							`cedula_chofer` = ' . $objDatabase->SqlVariable($this->strCedulaChofer) . ',
+							`placa_vehiculo` = ' . $objDatabase->SqlVariable($this->strPlacaVehiculo) . ',
+							`descipcion_vehiculo` = ' . $objDatabase->SqlVariable($this->strDescipcionVehiculo) . ',
 							`producto_id` = ' . $objDatabase->SqlVariable($this->intProductoId) . ',
 							`monto_flete` = ' . $objDatabase->SqlVariable($this->fltMontoFlete) . ',
 							`master` = ' . $objDatabase->SqlVariable($this->intMaster) . ',
@@ -1471,6 +1543,10 @@
 			$this->CodiOper = $objReloaded->CodiOper;
 			$this->dttFecha = $objReloaded->dttFecha;
 			$this->strStatCont = $objReloaded->strStatCont;
+			$this->strNombreChofer = $objReloaded->strNombreChofer;
+			$this->strCedulaChofer = $objReloaded->strCedulaChofer;
+			$this->strPlacaVehiculo = $objReloaded->strPlacaVehiculo;
+			$this->strDescipcionVehiculo = $objReloaded->strDescipcionVehiculo;
 			$this->ProductoId = $objReloaded->ProductoId;
 			$this->fltMontoFlete = $objReloaded->fltMontoFlete;
 			$this->intMaster = $objReloaded->intMaster;
@@ -1525,6 +1601,34 @@
 					 * @return string
 					 */
 					return $this->strStatCont;
+
+				case 'NombreChofer':
+					/**
+					 * Gets the value for strNombreChofer 
+					 * @return string
+					 */
+					return $this->strNombreChofer;
+
+				case 'CedulaChofer':
+					/**
+					 * Gets the value for strCedulaChofer 
+					 * @return string
+					 */
+					return $this->strCedulaChofer;
+
+				case 'PlacaVehiculo':
+					/**
+					 * Gets the value for strPlacaVehiculo 
+					 * @return string
+					 */
+					return $this->strPlacaVehiculo;
+
+				case 'DescipcionVehiculo':
+					/**
+					 * Gets the value for strDescipcionVehiculo 
+					 * @return string
+					 */
+					return $this->strDescipcionVehiculo;
 
 				case 'ProductoId':
 					/**
@@ -1752,6 +1856,58 @@
 					 */
 					try {
 						return ($this->strStatCont = QType::Cast($mixValue, QType::String));
+					} catch (QCallerException $objExc) {
+						$objExc->IncrementOffset();
+						throw $objExc;
+					}
+
+				case 'NombreChofer':
+					/**
+					 * Sets the value for strNombreChofer 
+					 * @param string $mixValue
+					 * @return string
+					 */
+					try {
+						return ($this->strNombreChofer = QType::Cast($mixValue, QType::String));
+					} catch (QCallerException $objExc) {
+						$objExc->IncrementOffset();
+						throw $objExc;
+					}
+
+				case 'CedulaChofer':
+					/**
+					 * Sets the value for strCedulaChofer 
+					 * @param string $mixValue
+					 * @return string
+					 */
+					try {
+						return ($this->strCedulaChofer = QType::Cast($mixValue, QType::String));
+					} catch (QCallerException $objExc) {
+						$objExc->IncrementOffset();
+						throw $objExc;
+					}
+
+				case 'PlacaVehiculo':
+					/**
+					 * Sets the value for strPlacaVehiculo 
+					 * @param string $mixValue
+					 * @return string
+					 */
+					try {
+						return ($this->strPlacaVehiculo = QType::Cast($mixValue, QType::String));
+					} catch (QCallerException $objExc) {
+						$objExc->IncrementOffset();
+						throw $objExc;
+					}
+
+				case 'DescipcionVehiculo':
+					/**
+					 * Sets the value for strDescipcionVehiculo 
+					 * @param string $mixValue
+					 * @return string
+					 */
+					try {
+						return ($this->strDescipcionVehiculo = QType::Cast($mixValue, QType::String));
 					} catch (QCallerException $objExc) {
 						$objExc->IncrementOffset();
 						throw $objExc;
@@ -2517,6 +2673,10 @@
 			$strToReturn .= '<element name="CodiOperObject" type="xsd1:SdeOperacion"/>';
 			$strToReturn .= '<element name="Fecha" type="xsd:dateTime"/>';
 			$strToReturn .= '<element name="StatCont" type="xsd:string"/>';
+			$strToReturn .= '<element name="NombreChofer" type="xsd:string"/>';
+			$strToReturn .= '<element name="CedulaChofer" type="xsd:string"/>';
+			$strToReturn .= '<element name="PlacaVehiculo" type="xsd:string"/>';
+			$strToReturn .= '<element name="DescipcionVehiculo" type="xsd:string"/>';
 			$strToReturn .= '<element name="Producto" type="xsd1:FacProducto"/>';
 			$strToReturn .= '<element name="MontoFlete" type="xsd:float"/>';
 			$strToReturn .= '<element name="Master" type="xsd:int"/>';
@@ -2557,6 +2717,14 @@
 				$objToReturn->dttFecha = new QDateTime($objSoapObject->Fecha);
 			if (property_exists($objSoapObject, 'StatCont'))
 				$objToReturn->strStatCont = $objSoapObject->StatCont;
+			if (property_exists($objSoapObject, 'NombreChofer'))
+				$objToReturn->strNombreChofer = $objSoapObject->NombreChofer;
+			if (property_exists($objSoapObject, 'CedulaChofer'))
+				$objToReturn->strCedulaChofer = $objSoapObject->CedulaChofer;
+			if (property_exists($objSoapObject, 'PlacaVehiculo'))
+				$objToReturn->strPlacaVehiculo = $objSoapObject->PlacaVehiculo;
+			if (property_exists($objSoapObject, 'DescipcionVehiculo'))
+				$objToReturn->strDescipcionVehiculo = $objSoapObject->DescipcionVehiculo;
 			if ((property_exists($objSoapObject, 'Producto')) &&
 				($objSoapObject->Producto))
 				$objToReturn->Producto = FacProducto::GetObjectFromSoapObject($objSoapObject->Producto);
@@ -2618,6 +2786,10 @@
 			$iArray['CodiOper'] = $this->intCodiOper;
 			$iArray['Fecha'] = $this->dttFecha;
 			$iArray['StatCont'] = $this->strStatCont;
+			$iArray['NombreChofer'] = $this->strNombreChofer;
+			$iArray['CedulaChofer'] = $this->strCedulaChofer;
+			$iArray['PlacaVehiculo'] = $this->strPlacaVehiculo;
+			$iArray['DescipcionVehiculo'] = $this->strDescipcionVehiculo;
 			$iArray['ProductoId'] = $this->intProductoId;
 			$iArray['MontoFlete'] = $this->fltMontoFlete;
 			$iArray['Master'] = $this->intMaster;
@@ -2775,6 +2947,10 @@
      * @property-read QQNodeSdeOperacion $CodiOperObject
      * @property-read QQNode $Fecha
      * @property-read QQNode $StatCont
+     * @property-read QQNode $NombreChofer
+     * @property-read QQNode $CedulaChofer
+     * @property-read QQNode $PlacaVehiculo
+     * @property-read QQNode $DescipcionVehiculo
      * @property-read QQNode $ProductoId
      * @property-read QQNodeFacProducto $Producto
      * @property-read QQNode $MontoFlete
@@ -2808,6 +2984,14 @@
 					return new QQNode('fecha', 'Fecha', 'Date', $this);
 				case 'StatCont':
 					return new QQNode('stat_cont', 'StatCont', 'VarChar', $this);
+				case 'NombreChofer':
+					return new QQNode('nombre_chofer', 'NombreChofer', 'VarChar', $this);
+				case 'CedulaChofer':
+					return new QQNode('cedula_chofer', 'CedulaChofer', 'VarChar', $this);
+				case 'PlacaVehiculo':
+					return new QQNode('placa_vehiculo', 'PlacaVehiculo', 'VarChar', $this);
+				case 'DescipcionVehiculo':
+					return new QQNode('descipcion_vehiculo', 'DescipcionVehiculo', 'VarChar', $this);
 				case 'ProductoId':
 					return new QQNode('producto_id', 'ProductoId', 'Integer', $this);
 				case 'Producto':
@@ -2852,6 +3036,10 @@
      * @property-read QQNodeSdeOperacion $CodiOperObject
      * @property-read QQNode $Fecha
      * @property-read QQNode $StatCont
+     * @property-read QQNode $NombreChofer
+     * @property-read QQNode $CedulaChofer
+     * @property-read QQNode $PlacaVehiculo
+     * @property-read QQNode $DescipcionVehiculo
      * @property-read QQNode $ProductoId
      * @property-read QQNodeFacProducto $Producto
      * @property-read QQNode $MontoFlete
@@ -2885,6 +3073,14 @@
 					return new QQNode('fecha', 'Fecha', 'QDateTime', $this);
 				case 'StatCont':
 					return new QQNode('stat_cont', 'StatCont', 'string', $this);
+				case 'NombreChofer':
+					return new QQNode('nombre_chofer', 'NombreChofer', 'string', $this);
+				case 'CedulaChofer':
+					return new QQNode('cedula_chofer', 'CedulaChofer', 'string', $this);
+				case 'PlacaVehiculo':
+					return new QQNode('placa_vehiculo', 'PlacaVehiculo', 'string', $this);
+				case 'DescipcionVehiculo':
+					return new QQNode('descipcion_vehiculo', 'DescipcionVehiculo', 'string', $this);
 				case 'ProductoId':
 					return new QQNode('producto_id', 'ProductoId', 'integer', $this);
 				case 'Producto':
