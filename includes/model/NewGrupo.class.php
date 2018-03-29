@@ -27,11 +27,19 @@
 			return sprintf('%s',  $this->Nombre);
 		}
 
-		public function __toStringConCantUsuarios() {
-		    $intCantUsua = $this->CountUsuariosAsGrupo();
+//		public function __toStringConCantUsuarios() {
+//		    $intCantUsua = $this->CountUsuariosAsGrupo();
+//            return sprintf('%s (%s)',  $this->Nombre, $intCantUsua);
+//        }
+
+        public function __toStringConCantUsuarios() {
+		    $objClauWher   = QQ::Clause();
+		    $objClauWher[] = QQ::Equal(QQN::Usuario()->GrupoId,$this->Id);
+		    $objClauWher[] = QQ::IsNull(QQN::Usuario()->DeleteAt);
+		    $objClauWher[] = QQ::Equal(QQN::Usuario()->CodiStat,StatusType::ACTIVO);
+            $intCantUsua   = Usuario::QueryCount(QQ::AndCondition($objClauWher));
             return sprintf('%s (%s)',  $this->Nombre, $intCantUsua);
         }
-
 
 		// Override or Create New Load/Count methods
 		// (For obvious reasons, these methods are commented out...

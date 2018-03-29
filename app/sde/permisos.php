@@ -71,7 +71,7 @@ class Permisos extends FormularioBaseKaizen {
         $this->dtgUsuaGrup->MetaAddColumn('LogiUsua');
         $this->dtgUsuaGrup->MetaAddColumn('NombUsua');
         $this->dtgUsuaGrup->MetaAddColumn('ApelUsua');
-        $this->dtgUsuaGrup->MetaAddTypeColumn('CodiStat', 'StatusType');
+//        $this->dtgUsuaGrup->MetaAddTypeColumn('CodiStat', 'StatusType');
         $colSucuUsua = $this->dtgUsuaGrup->MetaAddColumn(QQN::Usuario()->CodiEsta);
         $colSucuUsua->Name = 'Suc.';
         $this->dtgUsuaGrup->MetaAddColumn('FechAcce');
@@ -81,6 +81,7 @@ class Permisos extends FormularioBaseKaizen {
 
     protected function dtgUsuaGrup_Binder(){
         $objClauWher   = QQ::Clause();
+        $objClauWher[] = QQ::Equal(QQN::Usuario()->CodiStat,StatusType::ACTIVO);
         $objClauWher[] = QQ::IsNull(QQN::Usuario()->DeleteAt);
         $objClauWher[] = QQ::Equal(QQN::Usuario()->GrupoId,$this->lstCodiGrup->SelectedValue);
 
@@ -189,10 +190,11 @@ class Permisos extends FormularioBaseKaizen {
             $arrLogxCamb['strDescCamb'] = 'Cambiado al Grupo: '.$this->lstCodiGrup->SelectedName;
             LogDeCambios($arrLogxCamb);
             $this->mensaje('Usuario Cambiado Exitosamente !','','','',__iCHEC__);
+            $this->txtLogiUsua->Text = '';
             $this->dtgUsuaGrup->Refresh();
-            //-------------------------------------------------------------------
-            // Se actualiza el grupo, para mostrar la cantidad real de Usuarios
-            //-------------------------------------------------------------------
+            //-------------------------------------------------------------------------------
+            // Se actualiza el listado de Grupos, para mostrar la cantidad real de Usuarios
+            //-------------------------------------------------------------------------------
             $intIndiActu = $this->lstCodiGrup->SelectedIndex;
             $this->lstCodiGrup->RemoveAllItems();
             $arrNewxGrup = NewGrupo::LoadArrayBySistemaId('sde');
