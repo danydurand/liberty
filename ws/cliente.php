@@ -5,8 +5,12 @@
 // Fecha Elab.   : 21/03/2011
 // Descripcion   : Este programa consume los servicios web ofrecidos por Liberty Express
 //-----------------------------------------------------------------------------------------
-require_once('/appl/lib/nusoap.php');
-$cliente = new nusoap_client('http://200.74.218.246/liberty/ws/ws_liberty.php');
+
+require_once('qcubed.inc.php');
+require_once(__APP_INCLUDES__.'/nusoap/lib/nusoap.php');
+
+//require_once('/appl/lib/nusoap.php');
+$cliente = new nusoap_client('http://localhost/newliberty/ws/ws_liberty.php');
 //$cliente = new nusoap_client('http://www.app-libertyexpress.com/liberty/ws/ws_liberty.php');
 
 if (isset($_REQUEST['NombRuti'])) {
@@ -47,6 +51,16 @@ if (isset($_REQUEST['NombRuti'])) {
 				echo $resultado;
 			} else {
 				echo "Se requiren 1 parametro: id (id de la ndc)<br>";
+			}
+			break;
+		case "test":
+			if (isset($_REQUEST['id'])) {
+				$arrParaServ = array('intId' => $_GET['id']);
+				$resultado = $cliente->call('test',$arrParaServ);
+				header('Content-Type: text/xml');
+				echo $resultado;
+			} else {
+				echo "Se requiren 1 parametro: id (id de la factura)<br>";
 			}
 			break;
 		case "factura":

@@ -5,10 +5,14 @@
 // Fecha Elab.   : 21/03/2011
 // Descripcion   : Este programa expone los servicios web de Liberty Express
 //-------------------------------------------------------------------------------
-require_once('/appl/lib/nusoap.php');
+require_once('qcubed.inc.php');
+require_once(__APP_INCLUDES__.'/nusoap/lib/nusoap.php');
+
+//require_once('/appl/lib/nusoap.php');
 require_once('retorno_if.php');
 require_once('guia_cacesa.php');
 require_once('ndc.php');
+require_once('test.php');
 require_once('factura.php');
 require_once('clientes_salamandra.php');
 require_once('credito_salamandra.php');
@@ -27,6 +31,7 @@ $server->register('retorno_if');
 $server->register('guia_cacesa');
 $server->register('ndc');
 $server->register('factura');
+$server->register('test');
 $server->register('clientes_salamandra');
 $server->register('credito_salamandra');
 $server->register('guia_salamandra');
