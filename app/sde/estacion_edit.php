@@ -26,6 +26,7 @@ class EstacionEditForm extends EstacionEditFormBase {
     protected $intCuenComa;
     protected $dtgReceSucu;
     protected $intCantRece;
+    protected $chkVisiClie;
 
 	// Override Form Event Handlers as Needed
 	protected function Form_Run() {
@@ -139,6 +140,8 @@ class EstacionEditForm extends EstacionEditFormBase {
 
 		$this->lstEstado->Name = 'Esta Ubicada en el Estado ?';
 
+		$this->chkVisiClie_Create();
+
 		$this->dtgReceSucu_Create();
 		$this->intCantRece = Counter::CountBySucursalId($this->mctEstacion->Estacion->CodiEsta);
         //--------------------------
@@ -159,6 +162,14 @@ class EstacionEditForm extends EstacionEditFormBase {
 	//----------------------------
 	// Aqui se crean los objetos 
 	//----------------------------
+
+    protected function chkVisiClie_Create(){
+        $this->chkVisiClie = new QCheckBox($this);
+        $this->chkVisiClie->Name = 'Visible en el CORP ?';
+        if ($this->mctEstacion->EditMode) {
+            $this->chkVisiClie->Checked = $this->mctEstacion->Estacion->VisibleEnRegistroId;
+        }
+    }
 
     protected function dtgReceSucu_Create() {
         $this->dtgReceSucu = new CounterDataGrid($this);

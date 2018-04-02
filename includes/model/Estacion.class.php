@@ -74,9 +74,8 @@
             $objClauOrde[] = QQ::OrderBy(QQN::Estacion()->DescEsta);
             $objClauWher   = QQ::Clause();
             $objClauWher[] = QQ::Equal(QQN::Estacion()->CodiStat,StatusType::ACTIVO);
-//            $objClauWher[] = QQ::Equal(QQN::Estacion()->EsUnAlmacen,SinoType::SI);
+            $objClauWher[] = QQ::Equal(QQN::Estacion()->VisibleEnRegistroId,SinoType::SI);
             $objClauWher[] = QQ::Equal(QQN::Estacion()->PaisId,1);
-            $objClauWher[] = QQ::NotIn(QQN::Estacion()->CodiEsta,array('SMG'));
             return Estacion::QueryArray(QQ::AndCondition($objClauWher),$objClauOrde);
         }
 

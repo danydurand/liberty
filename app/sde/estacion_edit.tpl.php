@@ -56,6 +56,7 @@ require(__APP_INCLUDES__ . '/botonera_edit.inc.php');
                                     <?php $this->lstNotificarRecolectaObject->RenderWithName(); ?>
                                     <?php $this->lstAreaMetropolitanaObject->RenderWithName(); ?>
                                     <?php $this->lstEstado->RenderWithName(); ?>
+                                    <?php $this->chkVisiClie->RenderWithName(); ?>
                                 </div>
                             </div>
                         </div>

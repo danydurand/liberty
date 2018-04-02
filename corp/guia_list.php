@@ -133,29 +133,21 @@ class GuiaListForm extends GuiaListFormBase {
 
         $this->lblTituForm->Text = $this->objSubxClie->strTituForm;
 
-        //------------------------
-        // Criterios de Búsqueda
-        //------------------------
-
-        //---- Lado Izquierdo ----
         $this->txtNumeGuia_Create();
         $this->calFechInic_Create();
         $this->calFechFina_Create();
         $this->txtNombRemi_Create();
         $this->txtNombDest_Create();
 
-        //---- Lado Derecho ----
         $this->txtPesoGuia_Create();
         $this->txtCantPiez_Create();
 		$this->lstTipoPago_Create();
 		$this->lstCodiOrig_Create();
 		$this->lstCodiDest_Create();
 
-        //---------------------
-        // Botónes del Filtro
-        //---------------------
         $this->btnBuscRegi_Create();
         $this->btnImprMani_Create();
+
 
         // Instantiate the Meta DataGrid
         $this->dtgGuias = new GuiaDataGrid($this);
@@ -190,7 +182,6 @@ class GuiaListForm extends GuiaListFormBase {
         //-----------------------
         $objClauWher   = QQ::Clause();
         $objClauWher[] = QQ::Equal(QQN::Guia()->CodiClie, $this->objSubxClie->intCodiClie);
-        // $objClauWher[] = QQ::Equal(QQN::Guia()->GuiaCkptAsNume->CodiCkptObject->TipoCkpt, SdeTipoCkptType::PUBLICO);
         if (isset($_GET['f'])) {
             $strFiltComu = $_GET['f'];
             switch ($strFiltComu) {
@@ -233,10 +224,6 @@ class GuiaListForm extends GuiaListFormBase {
         //----------------------------------------------------------------------
         $_SESSION['CritXlsx'] = serialize($objClauWher);
 
-        // Use the MetaDataGrid functionality to add Columns for this datagrid
-
-        // Create the Other Columns (note that you can use strings for guia's properties, or you
-        // can traverse down QQN::guia() to display fields that are down the hierarchy)
         $colStatGuia = new QDataGridColumn('ST', '<?= $_FORM->StatusColumnRender($_ITEM) ?>');
         $colStatGuia->HtmlEntities         = false;
         $colStatGuia->Width                = 10;
@@ -323,8 +310,6 @@ class GuiaListForm extends GuiaListFormBase {
     }
 
 
-    /////////// Criterios de Búsqueda ///////////
-    // ---- Lado Izquierdo del Formulario ---- //
     protected function txtNumeGuia_Create() {
         $this->txtNumeGuia = new QTextBox($this);
         $this->txtNumeGuia->Name = 'Número de Guía';
@@ -507,7 +492,15 @@ class GuiaListForm extends GuiaListFormBase {
         $this->btnManiDrop->HtmlEntities = false;
         $this->btnManiDrop->CssClass = '';
 
-        $strTextBoto   = TextoIcono('print fa-lg','Manifiesto','F','sm');
+        $objClauWher = unserialize($_SESSION['CritXlsx']);
+        $arrGuiaSele = Guia::QueryArray(QQ::AndCondition($objClauWher));
+        $arrGuiaDefi = array();
+        foreach ($arrGuiaSele as $objGuia) {
+            $arrGuiaDefi[] = $objGuia->NumeGuia;
+        }
+        $_SESSION['Dato'] = serialize($arrGuiaDefi);
+
+        $strTextBoto   = TextoIcono('print fa-lg','Imprimir','F','sm');
 
         $strUrlxDiax = !is_null($this->objSubxClie->strCritSubx)
             ? __SIST__.'/guia_list.php?i=dia'.$this->objSubxClie->strCritSubx
@@ -515,9 +508,12 @@ class GuiaListForm extends GuiaListFormBase {
         $strUrlxOtro = !is_null($this->objSubxClie->strCritSubx)
             ? __SIST__.'/guia_list.php?i=otr'.$this->objSubxClie->strCritSubx
             : __SIST__.'/guia_list.php?i=otr';
+        $strUrlxLote = __SIST__.'/guia_pdf_lote.php';
 
-        $arrOpciDrop[] = OpcionDropDown($strUrlxDiax,TextoIcono('calendar','Diario')); //sun-o
-        $arrOpciDrop[] = OpcionDropDown($strUrlxOtro,TextoIcono('random','Otro'));
+
+        $arrOpciDrop[] = OpcionDropDown($strUrlxDiax,TextoIcono('calendar','Manif. Diario'));
+        $arrOpciDrop[] = OpcionDropDown($strUrlxOtro,TextoIcono('random','Otro Manif.'));
+        $arrOpciDrop[] = OpcionDropDown($strUrlxLote,TextoIcono('book','Guias en Lote'));
 
         $this->btnManiDrop->Text = CrearDropDownButton($strTextBoto, $arrOpciDrop, 'i');
     }
@@ -644,7 +640,6 @@ class GuiaListForm extends GuiaListFormBase {
                 $this->objClauWher[] = QQ::Equal(QQN::Guia()->GuiaCkptAsNume->CodiCkptObject->TipoCkpt, SdeTipoCkptType::PUBLICO);
             }
         }
-
         //----------------------------------------------------------------------
         // Guardo las cláusulas en una variable de sesión para futuros reportes
         //----------------------------------------------------------------------

@@ -126,13 +126,6 @@ class CargarGuia extends FormularioBaseKaizen {
         // Vector con las Sucursales activas de Venezuela, que no sean almacén.
         //----------------------------------------------------------------------
         $this->arrSucuActi = unserialize($_SESSION['SucuActi']);
-        t('El Vector de Sucursales tiene: '.count($this->arrSucuActi).' elementos');
-        foreach ($this->arrSucuActi as $objSucuProc) {
-            t($objSucuProc->CodiEsta);
-            if (in_array($objSucuProc->CodiEsta,array('VLN','MCY','MAR'))) {
-                t($objSucuProc->CodiEsta.' existe');
-            }
-        }
 
         //------------------------------------------------------
         // Vector con los Destinatarios Frecuentes del Cliente.
