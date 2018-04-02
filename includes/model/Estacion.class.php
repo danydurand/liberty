@@ -50,7 +50,7 @@
 			return Estacion::InstantiateDbResult($objDbResult);
 		}
 
-		public static function LoadSucursalesActivasToClients() {
+		public static function LoadSucursalesActivasSinAlmacenes() {
 		    //-------------------------------------------------------------------------------------------------
             // Esta función retorna una matriz de Objetos Estacion (Sucursales) activas, que no son almacén, y
             // cuyo país es Venezuela (1); todos ordenados por nombre o descripción de la Estación o Sucursal.
@@ -60,6 +60,21 @@
             $objClauWher   = QQ::Clause();
             $objClauWher[] = QQ::Equal(QQN::Estacion()->CodiStat,StatusType::ACTIVO);
             $objClauWher[] = QQ::Equal(QQN::Estacion()->EsUnAlmacen,SinoType::NO);
+            $objClauWher[] = QQ::Equal(QQN::Estacion()->PaisId,1);
+            $objClauWher[] = QQ::NotIn(QQN::Estacion()->CodiEsta,array('SMG'));
+            return Estacion::QueryArray(QQ::AndCondition($objClauWher),$objClauOrde);
+        }
+
+		public static function LoadSucursalesActivasToClients() {
+		    //-------------------------------------------------------------------------------------------------
+            // Esta función retorna una matriz de Objetos Estacion (Sucursales) activas, que no son almacén, y
+            // cuyo país es Venezuela (1); todos ordenados por nombre o descripción de la Estación o Sucursal.
+            //-------------------------------------------------------------------------------------------------
+            $objClauOrde   = QQ::Clause();
+            $objClauOrde[] = QQ::OrderBy(QQN::Estacion()->DescEsta);
+            $objClauWher   = QQ::Clause();
+            $objClauWher[] = QQ::Equal(QQN::Estacion()->CodiStat,StatusType::ACTIVO);
+//            $objClauWher[] = QQ::Equal(QQN::Estacion()->EsUnAlmacen,SinoType::SI);
             $objClauWher[] = QQ::Equal(QQN::Estacion()->PaisId,1);
             $objClauWher[] = QQ::NotIn(QQN::Estacion()->CodiEsta,array('SMG'));
             return Estacion::QueryArray(QQ::AndCondition($objClauWher),$objClauOrde);

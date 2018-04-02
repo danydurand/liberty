@@ -177,9 +177,9 @@ class Index extends QForm {
         $objClauOrde[] = QQ::OrderBy(QQN::Parametro()->ParaVal1);
         $objClauWher   = QQ::Clause();
         $objClauWher[] = QQ::Equal(QQN::Parametro()->IndiPara, 'SeguYama');
-        $arrReceAuxi = Parametro::QueryArray(QQ::AndCondition($objClauWher),$objClauOrde);
-        $arrValoMini = array();
-        $arrValoMaxi = array();
+        $arrReceAuxi   = Parametro::QueryArray(QQ::AndCondition($objClauWher),$objClauOrde);
+        $arrValoMini   = array();
+        $arrValoMaxi   = array();
         foreach ($arrReceAuxi as $objParaSegu) {
             $arrValoMini[] = $objParaSegu->ParaVal1;
             $arrValoMaxi[] = $objParaSegu->ParaVal2;

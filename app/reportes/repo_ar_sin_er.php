@@ -9,7 +9,7 @@ require_once('qcubed.inc.php');
 use PHPMailer\PHPMailer\PHPMailer;
 
 $dttFechDhoy = date('Y-m-d');
-$arrSucuSele = Estacion::LoadSucursalesActivasToClients();
+$arrSucuSele = Estacion::LoadSucursalesActivasSinAlmacenes();
 foreach ($arrSucuSele as $objSucursal) {
     if (!in_array($objSucursal->CodiEsta, array('CCS','VLN','MAR'))) {
         continue;

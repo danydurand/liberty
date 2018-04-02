@@ -126,6 +126,13 @@ class CargarGuia extends FormularioBaseKaizen {
         // Vector con las Sucursales activas de Venezuela, que no sean almacén.
         //----------------------------------------------------------------------
         $this->arrSucuActi = unserialize($_SESSION['SucuActi']);
+        t('El Vector de Sucursales tiene: '.count($this->arrSucuActi).' elementos');
+        foreach ($this->arrSucuActi as $objSucuProc) {
+            t($objSucuProc->CodiEsta);
+            if (in_array($objSucuProc->CodiEsta,array('VLN','MCY','MAR'))) {
+                t($objSucuProc->CodiEsta.' existe');
+            }
+        }
 
         //------------------------------------------------------
         // Vector con los Destinatarios Frecuentes del Cliente.
@@ -829,13 +836,11 @@ class CargarGuia extends FormularioBaseKaizen {
                     $this->lstSucuDest->RemoveAllItems();
                     if ($this->arrSucuActi) {
                         foreach ($this->arrSucuActi as $objSucuDest) {
-                            if ($objSucuDest->CodiEsta != 'TODOS') {
-                                $objListItem = new QListItem($objSucuDest->__toString(),$objSucuDest->CodiEsta);
-                                if ($objDestFrec->DestinoId == $objSucuDest->CodiEsta) {
-                                    $objListItem->Selected = true;
-                                }
-                                $this->lstSucuDest->AddItem($objListItem);
+                            $objListItem = new QListItem($objSucuDest->__toString(),$objSucuDest->CodiEsta);
+                            if ($objDestFrec->DestinoId == $objSucuDest->CodiEsta) {
+                                $objListItem->Selected = true;
                             }
+                            $this->lstSucuDest->AddItem($objListItem);
                         }
                     }
                 }
@@ -1154,25 +1159,23 @@ class CargarGuia extends FormularioBaseKaizen {
                 //------------------------------------------------------------------------
                 // Si el Códido de la Sucursal no es 'TODOS', puede agregarse a la lista.
                 //------------------------------------------------------------------------
-                if ($objSucuDest->CodiEsta != 'TODOS') {
-                    $blnSeleItem = false;
-                    $objListItem = new QListItem($objSucuDest->__toString(), $objSucuDest->CodiEsta);
-                    //------------------------------------------------------------------------------------------
-                    // Si $strCodiDest no es null, quiere decir que el programa se encuentra en modo de Edición
-                    //------------------------------------------------------------------------------------------
-                    if (strlen($strCodiDest) > 0) {
-                        //-------------------------------------------------------------------------------------
-                        // Si la Guía tiene una Sucursal Destino, y la misma coincide o es igual a la Sucursal
-                        // obtenida, entonces el ítem se carga a la lista y se deja seleccionado por defecto.
-                        //-------------------------------------------------------------------------------------
-                        if (($this->objGuia->EstaDestObject) &&
-                            ($this->objGuia->EstaDestObject->CodiEsta == $objSucuDest->CodiEsta)) {
-                            $blnSeleItem = true;
-                        }
+                $blnSeleItem = false;
+                $objListItem = new QListItem($objSucuDest->__toString(), $objSucuDest->CodiEsta);
+                //------------------------------------------------------------------------------------------
+                // Si $strCodiDest no es null, quiere decir que el programa se encuentra en modo de Edición
+                //------------------------------------------------------------------------------------------
+                if (strlen($strCodiDest) > 0) {
+                    //-------------------------------------------------------------------------------------
+                    // Si la Guía tiene una Sucursal Destino, y la misma coincide o es igual a la Sucursal
+                    // obtenida, entonces el ítem se carga a la lista y se deja seleccionado por defecto.
+                    //-------------------------------------------------------------------------------------
+                    if (($this->objGuia->EstaDestObject) &&
+                        ($this->objGuia->EstaDestObject->CodiEsta == $objSucuDest->CodiEsta)) {
+                        $blnSeleItem = true;
                     }
-                    $objListItem->Selected = $blnSeleItem;
-                    $this->lstSucuDest->AddItem($objListItem);
                 }
+                $objListItem->Selected = $blnSeleItem;
+                    $this->lstSucuDest->AddItem($objListItem);
             }
         }
     }
