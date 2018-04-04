@@ -43,6 +43,7 @@ class CargarGuia extends FormularioBaseKaizen {
     //---------------------------
     protected $txtNumeGuia;
     protected $calFechGuia;
+    protected $lstSucuOrig;
     protected $calFechReco;
     protected $txtDescCont;
     protected $txtCantPiez;
@@ -159,6 +160,7 @@ class CargarGuia extends FormularioBaseKaizen {
         //------------------------
         $this->txtNumeGuia_Create();
         $this->calFechGuia_Create();
+        $this->lstSucuOrig_Create();
         $this->calFechReco_Create();
         $this->txtDescCont_Create();
         $this->txtCantPiez_Create();
@@ -232,6 +234,16 @@ class CargarGuia extends FormularioBaseKaizen {
         } else {
             $this->calFechGuia->DateTime = new QDateTime(QDateTime::Now());
         }
+    }
+
+    protected function lstSucuOrig_Create() {
+        $this->lstSucuOrig = new QListBox($this);
+        if ($this->blnEditMode) {
+            $this->cargarOrigen($this->objGuia->EstaOrig);
+        } else {
+            $this->cargarOrigen();
+        }
+//        $this->lstSucuOrig->AddAction(new QChangeEvent(), new QAjaxAction('lstSucuDest_Change'));
     }
 
     protected function calFechReco_Create() {
@@ -611,6 +623,16 @@ class CargarGuia extends FormularioBaseKaizen {
             }
         }
         // t('Valor Declarado: '.$blnTodoOkey);
+        //----------------------------
+        // Validando el Origen
+        //----------------------------
+        if (is_null($this->lstSucuOrig->SelectedValue)) {
+            $blnTodoOkey = false;
+            if (strlen($strMensErro) > 0) {
+                $strMensErro .= ', ';
+            }
+            $strMensErro .= 'Origen (Requerido)';
+        }
         //----------------------------
         // Validando campo de Destino
         //----------------------------
@@ -1141,6 +1163,35 @@ class CargarGuia extends FormularioBaseKaizen {
         }
     }
 
+    protected function cargarOrigen($strCodiOrig = null) {
+        $this->lstSucuOrig->RemoveAllItems();
+        $this->lstSucuOrig->AddItem(QApplication::Translate('- Select One -'), null);
+        if ($this->arrSucuActi) {
+            //-----------------------------------------------------------------------------------
+            // Se itera cada elemento del vector, y a su vez cada uno se va cargando a la lista.
+            //-----------------------------------------------------------------------------------
+            foreach ($this->arrSucuActi as $objSucuOrig) {
+                $blnSeleItem = false;
+                $objListItem = new QListItem($objSucuOrig->__toString(), $objSucuOrig->CodiEsta);
+                //-----------------------------------------------------------------------------
+                // Si $strCodiDest tiene valor, el programa se encuentra en modo de Edición
+                //-----------------------------------------------------------------------------
+                if (strlen($strCodiOrig) > 0) {
+                    if (($this->objGuia->EstaOrigObject) &&
+                        ($this->objGuia->EstaOrigObject->CodiEsta == $objSucuOrig->CodiEsta)) {
+                        $blnSeleItem = true;
+                    }
+                } else {
+                    if ($objSucuOrig->CodiEsta == $this->objUsuario->SucursalId) {
+                        $blnSeleItem = true;
+                    }
+                }
+                $objListItem->Selected = $blnSeleItem;
+                $this->lstSucuOrig->AddItem($objListItem);
+            }
+        }
+    }
+
     protected function cargarDestino($strCodiDest = null) {
         $this->lstSucuDest->RemoveAllItems();
         $this->lstSucuDest->AddItem(QApplication::Translate('- Select One -'), null);
@@ -1149,26 +1200,19 @@ class CargarGuia extends FormularioBaseKaizen {
             // Se itera cada elemento del vector, y a su vez cada uno se va cargando a la lista.
             //-----------------------------------------------------------------------------------
             foreach ($this->arrSucuActi as $objSucuDest) {
-                //------------------------------------------------------------------------
-                // Si el Códido de la Sucursal no es 'TODOS', puede agregarse a la lista.
-                //------------------------------------------------------------------------
                 $blnSeleItem = false;
                 $objListItem = new QListItem($objSucuDest->__toString(), $objSucuDest->CodiEsta);
-                //------------------------------------------------------------------------------------------
-                // Si $strCodiDest no es null, quiere decir que el programa se encuentra en modo de Edición
-                //------------------------------------------------------------------------------------------
+                //-----------------------------------------------------------------------------
+                // Si $strCodiDest tiene valor, el programa se encuentra en modo de Edición
+                //-----------------------------------------------------------------------------
                 if (strlen($strCodiDest) > 0) {
-                    //-------------------------------------------------------------------------------------
-                    // Si la Guía tiene una Sucursal Destino, y la misma coincide o es igual a la Sucursal
-                    // obtenida, entonces el ítem se carga a la lista y se deja seleccionado por defecto.
-                    //-------------------------------------------------------------------------------------
                     if (($this->objGuia->EstaDestObject) &&
                         ($this->objGuia->EstaDestObject->CodiEsta == $objSucuDest->CodiEsta)) {
                         $blnSeleItem = true;
                     }
                 }
                 $objListItem->Selected = $blnSeleItem;
-                    $this->lstSucuDest->AddItem($objListItem);
+                $this->lstSucuDest->AddItem($objListItem);
             }
         }
     }
@@ -1277,7 +1321,7 @@ class CargarGuia extends FormularioBaseKaizen {
         $this->objGuia->NumeGuia           = $this->txtNumeGuia->Text;
         $this->objGuia->CodiClie           = $this->objCliente->CodiClie;
         $this->objGuia->FechGuia           = $this->calFechGuia->DateTime;
-        $this->objGuia->EstaOrig           = $this->objUsuario->SucursalId;
+        $this->objGuia->EstaOrig           = $this->lstSucuOrig->SelectedValue;
         $this->objGuia->EstaDest           = $this->lstSucuDest->SelectedValue;
         $this->objGuia->PesoGuia           = $this->strPesoGuia;
         $this->objGuia->NombRemi           = limpiarCadena($this->txtNombRemi->Text);

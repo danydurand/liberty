@@ -33,13 +33,17 @@ require(__YAMAGUCHI__APP_INCLUDES__ . '/header.inc.php');
             <div class="row">
                 <div class="col-md-12 col-lg-6" style="margin-top: 1em; margin-bottom: 1em;">
                     <div class="row">
-                        <div class="col-md-6">
-                            <div class="titulo-c">Número de Guía</div>
+                        <div class="col-md-3">
+                            <div class="titulo-c">Nro de Guía</div>
                             <?php $this->txtNumeGuia->Render(); ?>
                         </div>
-                        <div class="col-md-6">
-                            <div class="titulo-c">Fecha de la Guía</div>
+                        <div class="col-md-3">
+                            <div class="titulo-c">Fecha Guía</div>
                             <?php $this->calFechGuia->Render(); ?>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="titulo-c">Origen</div>
+                            <?php $this->lstSucuOrig->Render(); ?>
                         </div>
                     </div>
                     <div class="row">
