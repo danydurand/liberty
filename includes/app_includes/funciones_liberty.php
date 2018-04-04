@@ -674,12 +674,12 @@ function proxIdVendedor() {
  * @return int Numero de Guia
  */
 function proxNroNotificacion() {
-    $objDatabase = NotiConsecutivoCT::GetDatabase();
-    $objConsecutivo = new NotiConsecutivoCT();
+    $objDatabase = NotiConsecutivo::GetDatabase();
+    $objConsecutivo = new NotiConsecutivo();
     $objConsecutivo->Nada = 'X';
     $objConsecutivo->Save();
     $intProxNume = $objDatabase->InsertId('noti_consecutivo', 'id');
-    foreach (NotiConsecutivoCT::QueryArray(QQ::AndCondition(QQ::LessThan(QQN::NotiConsecutivoCT()->Id,$intProxNume))) as $objConsRegi) {
+    foreach (NotiConsecutivo::QueryArray(QQ::AndCondition(QQ::LessThan(QQN::NotiConsecutivo()->Id,$intProxNume))) as $objConsRegi) {
         $objConsRegi->Delete();
     }
     return $intProxNume;

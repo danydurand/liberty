@@ -27,6 +27,36 @@
 			return sprintf('%s',  $this->strDescEsta);
 		}
 
+        public function __toHtml()
+        {
+            $strTextMens  = '<div class="panel panel-primary">';
+            $strTextMens .= '    <div class="panel-heading">(%s) %s<span class="pull-right">%s</span></div>';
+            $strTextMens .= '    <div class="panel-body">';
+            $strTextMens .= '       <table>';
+            $strTextMens .= '          <tr>';
+            $strTextMens .= '              <td class="title"><i class="fa fa-user-circle fa-lg"></td>';
+            $strTextMens .= '              <td class="content">&nbsp;%s</td>';
+            $strTextMens .= '          </tr>';
+            $strTextMens .= '          <tr>';
+            $strTextMens .= '              <td class="title"><i class="fa fa-envelope fa-lg"></td>';
+            $strTextMens .= '              <td class="content">&nbsp;%s</td>';
+            $strTextMens .= '          </tr>';
+            $strTextMens .= '          <tr>';
+            $strTextMens .= '              <td class="title"><i class="fa fa-phone-square fa-lg"></td>';
+            $strTextMens .= '              <td class="content">&nbsp;%s</td>';
+            $strTextMens .= '          </tr>';
+            $strTextMens .= '       </table>';
+            $strTextMens .= '    </div>';
+            $strTextMens .= '</div>';
+            return sprintf($strTextMens,
+                $this->CodiEsta,
+                $this->DescEsta,
+                !is_null($this->EstadoId) ? str_replace('ESTADO','',$this->Estado->Nombre) : 'N/A',
+                substr($this->NombCont,0,50),
+                strtolower(substr($this->DireMailPrincipal,0,50)),
+                $this->NumeTele);
+        }
+
 		public function __toStringConTiempoDeEntrega() {
 			return sprintf('%s (%s) (%s)',  $this->strDescEsta, $this->NumeDias, $this->strFrecuenciaDeCobertura);
 		}

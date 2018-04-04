@@ -2,46 +2,33 @@
 //----------------------------------------------------------------------------------
 // Programa      : repo_guias_cmail.php
 // Realizado por : Daniel Durand
-// Fecha Elab.   : 04/11/2017
+// Fecha Elab.   : 03/04/2018
 // Descripcion   : Este programa genera una lista de las guías de correspondencia
-//                 interna de la Empresa en formato csv.
+//                 interna de la Empresa por Sucursal.
 //----------------------------------------------------------------------------------
 require_once('qcubed.inc.php');
+require_once('/appl/lib/repo_factura_pdf.php');
 use PHPMailer\PHPMailer\PHPMailer;
 
 //--------------------------------------
 // Identifico el nombre de la Empresa
 //--------------------------------------
-$objParametro = Parametro::Load('88888','datfisc');
-$strNombEmpr = $objParametro->ParaTxt1;
-$strDireEmpr = $objParametro->ParaTxt5;
+$objParaData = Parametro::Load('88888','datfisc');
+$strNombEmpr = $objParaData->ParaTxt1;
+$strDireEmpr = $objParaData->ParaTxt5;
 //---------------------------------------
 // Criterios de seleccion de registros
 //---------------------------------------
-if (isset($_SESSION['SucuSele'])) {
-	$arrSucuSele[] = Estacion::LoadByCodiEsta(unserialize($_SESSION['SucuSele']));
-	$strModoEjec   = 'MENU';
-}  else {
-	//----------------------------------------------------------------
-	// El reporte se esta invocando desde cron (ejecucion en batch)
-	//----------------------------------------------------------------
-	$dttFechDhoy = date('Y-m-d');
-	$arrSucuSele = Estacion::LoadSucursalesActivasSinAlmacenes();
-	$strModoEjec = 'CRON';
-}
-//----------------
-// Archivo plano
-//----------------
-$strNombArch = __TEMP__.'/guias_cmail.csv';
-$mixManeArch = fopen($strNombArch,'w');
-$arrDato2PDF = array('Guia', 'Pzas', 'Ubic', 'Nombre del Cliente', 'Ult.Status', 'F.Status', 'Destino', 'Servicio');
-$strCadeAudi = implode(';',$arrDato2PDF);
-fputs($mixManeArch,$strCadeAudi.";\n");
+$dttFechDhoy = date('Y-m-d');
+$arrSucuSele = Estacion::LoadSucursalesActivasSinAlmacenes();
+//---------------------------------------
+// Se procesan una a una las Sucursales
+//---------------------------------------
 foreach ($arrSucuSele as $objSucursal) {
     if (!in_array($objSucursal->CodiEsta, array('CCS','VLN','MAR'))) {
         continue;
     }
-    $strNombArch = 'guias_cmail_'.$objSucursal->CodiEsta.'.csv';
+    $strNombArch = 'guias_cmail_'.$objSucursal->CodiEsta.'.pdf';
     $strTituRepo = 'Guias CMAIL con Origen '.$objSucursal->CodiEsta;
     //--------------------------------------------------------
     // Selecciono los registros que satisfagan la condicion
@@ -49,12 +36,13 @@ foreach ($arrSucuSele as $objSucursal) {
     $strCadeSqlx  = "select distinct g.*, k.fech_ckpt FechTras";
     $strCadeSqlx .= "  from guia g, guia_ckpt k";
     $strCadeSqlx .= " where g.nume_guia = k.nume_guia";
-    $strCadeSqlx .= "   and g.codi_clie = 948";
+    $strCadeSqlx .= "   and g.codi_clie = 948";   // Codigo del Cliente C-Mail
     $strCadeSqlx .= "   and k.codi_ckpt = 'TR'";
     $strCadeSqlx .= "   and k.fech_ckpt >= date_sub( now( ), INTERVAL 60 DAY ) ";
     $strCadeSqlx .= "   and g.esta_orig = '".$objSucursal->CodiEsta."'";
     $strCadeSqlx .= "   and k.codi_esta = g.esta_orig ";
     $strCadeSqlx .= "   and g.esta_ckpt = g.esta_orig ";
+    $strCadeSqlx .= "   and g.anulada   = 0 ";
     $strCadeSqlx .= "   and not exists (select *";
     $strCadeSqlx .= "                     from sde_checkpoint";
     $strCadeSqlx .= "                    where sde_checkpoint.codi_ckpt = g.codi_ckpt ";
@@ -66,7 +54,6 @@ foreach ($arrSucuSele as $objSucursal) {
     //------------------------------------------
     $arrDatoRepo = array();
     while ($mixRegi = $objDbResult->FetchArray()) {
-        // echo "Procesando Guia Nro: ".$mixRegi['nume_guia']."\n";
         $arrDatoRepo[] = array(
         $mixRegi['nume_guia'],
         $mixRegi['esta_orig'].'-'.$mixRegi['esta_dest'],
@@ -81,20 +68,16 @@ foreach ($arrSucuSele as $objSucursal) {
     }
     $intCantRepo = count($arrDatoRepo);
     if ($intCantRepo > 0) {
-        // echo "El reporte de: ".$objSucursal->CodiEsta." tiene ".$intCantRepo." registro(s)\n";
-        //------------------------------------------------------------------
-        if ($strModoEjec == 'CRON') {
-            GrabarMedicion($objSucursal->CodiEsta,"CMAIL",$intCantRepo);
-        }
+        GrabarMedicion($objSucursal->CodiEsta,"CMAIL",$intCantRepo);
         //---------------------------------------------------------
         // Armo los otros vectores que requiere la rutina PDF
         //---------------------------------------------------------
         $arrEncaReco = array('Guia','Ori-Des','Fecha','Remitente','Destinatario','Ult Ckpt','Fec Ckpt','Hora Ckpt','SUC');
         $arrJustColu = array('C','C','C','L','L','L','C','C','C');
         $arrAnchColu = array(15,18,18,48,48,58,20,15,12);
-        //-----------------------------
+        //-------------------------------
         // Genero el reporte solicitado
-        //-----------------------------
+        //-------------------------------
         $pdf=new PDF('L','mm','Letter');
         $pdf->setVariables($arrEncaReco,$arrJustColu,$arrAnchColu,02,$strLogoComp);
         $pdf->setEmpresa($strNombEmpr,$strDireEmpr,$strTituRepo);
@@ -122,7 +105,6 @@ foreach ($arrSucuSele as $objSucursal) {
                 array_push($arrDestCorr,$strDireMail);
             }
             $strDireMail = $arrDestCorr;
-//                $strDireMail = array('danydurand@gmail.com, aalvarado@libertyexpress.com, emontilla@libertyexpress.com, rortega@libertyexpress.com, jmartini@libertyexpress.com');
 
             $mail = new PHPMailer();
             $mail->setFrom('SisCO@libertyexpress.com', 'Medicion y Control');
@@ -141,11 +123,7 @@ foreach ($arrSucuSele as $objSucursal) {
             }
         }
     } else {
-        if ($strModoEjec == 'MENU') {
-            echo "<h1> No existen Datos para la Sucursal: ".$objSucursal->CodiEsta."</h1>";
-        } else {
-            GrabarMedicion($objSucursal->CodiEsta,"CMAIL",0);
-        }
+        GrabarMedicion($objSucursal->CodiEsta,"CMAIL",0);
     }
 }
 ?>

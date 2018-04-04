@@ -87,7 +87,7 @@ class EstacionEditForm extends EstacionEditFormBase {
         $this->txtDireMail->SetCustomAttribute('onblur',"this.value=this.value.toLowerCase()");
 
         $this->txtDireMailPrincipal = $this->mctEstacion->txtDireMailPrincipal_Create();
-        $this->txtDireMailPrincipal->Name = 'Notificar reclectas a';
+        $this->txtDireMailPrincipal->Name = 'E-mail Principal';
         $this->txtDireMailPrincipal->Width = 250;
         $this->txtDireMailPrincipal->SetCustomAttribute('onblur',"this.value=this.value.toLowerCase()");
 

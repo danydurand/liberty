@@ -44,8 +44,8 @@ require(__APP_INCLUDES__ . '/botonera_edit.inc.php');
                                     <?php $this->txtNombCont->RenderWithName(); ?>
                                     <?php $this->txtNumeTele->RenderWithName(); ?>
                                     <?php $this->txtNumeDias->RenderWithName(); ?>
-                                    <?php $this->txtDireMail->RenderWithName(); ?>
                                     <?php $this->txtDireMailPrincipal->RenderWithName(); ?>
+                                    <?php $this->txtDireMail->RenderWithName(); ?>
                                 </div>
                                 <div class="col-md-6">
                                     <?php $this->lstRegion->RenderWithName(); ?>

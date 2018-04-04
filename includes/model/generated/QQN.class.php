@@ -571,6 +571,12 @@
 			return new QQNodeNotaCredito('nota_credito', null, null);
 		}
 		/**
+		 * @return QQNodeNotiConsecutivo
+		 */
+		static public function NotiConsecutivo() {
+			return new QQNodeNotiConsecutivo('noti_consecutivo', null, null);
+		}
+		/**
 		 * @return QQNodeNotificacion
 		 */
 		static public function Notificacion() {

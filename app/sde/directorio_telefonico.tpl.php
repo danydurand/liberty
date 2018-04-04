@@ -7,7 +7,7 @@
 
 	$strPageTitle = 'Directorio Telefonico';
 	require(__APP_INCLUDES__ . '/header.inc.php');
-	require(__APP_INCLUDES__ . '/botonera_list.inc.php');
+//	require(__APP_INCLUDES__ . '/botonera_list.inc.php');
 ?>
 <div class="form-controls">
     <div class="container-fluid">
@@ -16,12 +16,19 @@
                 <?php $this->lblMensUsua->Render(); ?>
             </div>
         </div>
-        <div class="row">
-            <div class="table-responsive">
-                <?php $this->dtgEstacions->Render(); ?>
-            </div>
-        </div>
+        <?php $this->dtrSucuActi->Paginator->Render(); ?>
+        <div style="margin-top: 0.5em"></div>
+        <?php $this->dtrSucuActi->Render(); ?>
+        <div style="margin-top: 0.5em"></div>
+        <?php $this->dtrSucuActi->PaginatorAlternate->Render(); ?>
     </div>
 </div>
+<style>
+    .title {
+        color: #A52422;
+        text-align: center;
+        vertical-align: top;
+    }
+</style>
 
 <?php require(__APP_INCLUDES__ . '/footer.inc.php'); ?>

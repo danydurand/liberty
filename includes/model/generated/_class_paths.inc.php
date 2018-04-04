@@ -664,6 +664,13 @@
 		QApplicationBase::$ClassFile['notacreditometacontrol'] = __META_CONTROLS__ . '/NotaCreditoMetaControl.class.php';
 		QApplicationBase::$ClassFile['notacreditodatagrid'] = __META_CONTROLS__ . '/NotaCreditoDataGrid.class.php';
 
+	// ClassPaths for the NotiConsecutivo class
+		QApplicationBase::$ClassFile['noticonsecutivo'] = __MODEL__ . '/NotiConsecutivo.class.php';
+		QApplicationBase::$ClassFile['qqnodenoticonsecutivo'] = __MODEL__ . '/NotiConsecutivo.class.php';
+		QApplicationBase::$ClassFile['qqreversereferencenodenoticonsecutivo'] = __MODEL__ . '/NotiConsecutivo.class.php';
+		QApplicationBase::$ClassFile['noticonsecutivometacontrol'] = __META_CONTROLS__ . '/NotiConsecutivoMetaControl.class.php';
+		QApplicationBase::$ClassFile['noticonsecutivodatagrid'] = __META_CONTROLS__ . '/NotiConsecutivoDataGrid.class.php';
+
 	// ClassPaths for the Notificacion class
 		QApplicationBase::$ClassFile['notificacion'] = __MODEL__ . '/Notificacion.class.php';
 		QApplicationBase::$ClassFile['qqnodenotificacion'] = __MODEL__ . '/Notificacion.class.php';
