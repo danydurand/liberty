@@ -16,17 +16,10 @@ if (isset($_GET['manifiesto'])) {
 } else {
     $strNumeMani = '';
 }
-
-//----------------------------------------------------------------------
-// Se determina el nombre del archivo que sera generado
-//----------------------------------------------------------------------
-$strNombArch = 'HojadeEntrega';
-
-
+$strNombArch = 'ManifiestoDeCarga';
 $arrRegiDato = array();
 $objManifiesto = SdeContenedor::Load($strNumeMani);
 if ($objManifiesto) {
-    $objChofer = Chofer::Load($objManifiesto->CodiOperObject->CodiChof);
     $intContRegi = 0;
     $intTotaPiez = 0;
     $dblTotaPeso = 0;
@@ -45,12 +38,13 @@ if ($objManifiesto) {
                 $objGuia->FechGuia->__toString("DD/MM/YYYY"),
                 substr($objGuia->NombRemi,0,30),
                 substr($objGuia->NombDest,0,30),
+                substr($objGuia->DescCont,0,50),
                 $objGuia->EstaDest,
                 $objGuia->CantPiez,
-                $objGuia->PesoGuia
+                nf($objGuia->PesoGuia)
             );
             $intTotaPiez += $objGuia->CantPiez;
-            $dblTotaPeso += $objGuia->PesoGuia;
+            $dblTotaPeso += floatval($objGuia->PesoGuia);
         }
     }
     //-------------------------------------------------------
@@ -60,28 +54,29 @@ if ($objManifiesto) {
         $intContRegi++;
         $arrRegiDato[] = array(
             $intContRegi,
-            $objGuia->MontoTotal,
+            nf($objGuia->MontoTotal),
             $objGuia->NumeGuia,
             $objGuia->GuiaRetorno,
             $objGuia->FechGuia->__toString("DD/MM/YYYY"),
             substr($objGuia->NombRemi,0,30),
             substr($objGuia->NombDest,0,30),
+            substr($objGuia->DescCont,0,50),
             $objGuia->EstaDest,
             $objGuia->CantPiez,
-            $objGuia->PesoGuia
+            nf($objGuia->PesoGuia)
         );
         $intTotaPiez += $objGuia->CantPiez;
-        $dblTotaPeso += $objGuia->PesoGuia;
+        $dblTotaPeso += floatval($objGuia->PesoGuia);
     }
     //--------------------------------------------
     // Se envia una ultima linea con los totales
     //--------------------------------------------
-    $arrRegiDato[] = array('','','','','','','','TOTAL',$intTotaPiez,$dblTotaPeso);
+    $arrRegiDato[] = array('','','','','','','','','TOTAL',$intTotaPiez,nf($dblTotaPeso));
 
 
-    $arrEnca2PDF = array('No','MONTO','GUIA','RETORNO','FECHA','REMITENTE','DESTINATARIO','DEST','BULT','PESO');
-    $arrJust2PDF = array('L','C','C','C','C','L','L','L','C','R');
-    $arrAnch2PDF = array(9,20,22,22,18,65,65,13,12,12);
+    $arrEnca2PDF = array('No','MONTO','GUIA','RETORNO','FECHA','REMITENTE','DESTINATARIO','CONTENIDO','DEST','BULT','PESO');
+    $arrJust2PDF = array('C','R','C','C','C','L','L','L','C','C','R');
+    $arrAnch2PDF = array(9,20,22,22,18,65,65,65,13,12,12);
 
     //----------------------------------------------------------------------
     // El vector generado, se lleva al archivo excel

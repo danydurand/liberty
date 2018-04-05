@@ -66,23 +66,13 @@ if ($objManifiesto) {
         $strDestDire = $objGuia->NombDest."\n".$objGuia->DireDest."\nTLF.: ".$objGuia->TeleDest;
         $arrRegiDato[] = array($intContRegi,$strNumeGuia,$strTipoGuia,$strFechCant,$strDestDire,'','','');
     }
-    /*$strNombEmpr = $objParametro->ParaTxt1;
-    $strDireEmpr = $objParametro->ParaTxt5;
-    $strDescRuta = $objManifiesto->CodiOperObject->CodiRutaObject->DescRuta.' ('.$objManifiesto->CodiOperObject->CodiChofObject->NombChof.' '.$objManifiesto->CodiOperObject->CodiChofObject->ApelChof.')';
-*/
-    //$arrEncaColu = array('No','GUIA','TIPO','FECHA','DESTINATARIO / DIR. DE ENTREGA','NOMBRE, APELLIDO Y CEDULA','EMPRDTA / FIRMA / OBSERVACION','HORA');
-    //$arrJustColu = array('L','C','C','C','L','L','L','C');
-    //$arrAnchColu = array(8,15,15,20,60,60,60,20);
     //----------------------------------------------------------------------
     // El vector generado, se lleva al archivo plano
     //----------------------------------------------------------------------
-    // $strCadeAudi = implode(';',$arrRegiDato);
-    //  fputs($mixManeArch,$arrRegiDato.";\n");
     $_SESSION['Dato'] = serialize($arrRegiDato);
     $_SESSION['Enca'] = serialize($arrEnca2PDF);
     $_SESSION['Anch'] = serialize($arrAnch2PDF);
     $_SESSION['Just'] = serialize($arrJust2PDF);
     QApplication::Redirect('../../../newliberty/includes/app_includes/tabla2xls2.php?nomb_repo='.$strNombArch);
-    //QApplication::Redirect(__UTIL__.'/descargar_archivo.php?f='.$strNombArch);
 }
 ?>

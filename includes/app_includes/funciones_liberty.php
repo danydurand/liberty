@@ -1982,32 +1982,8 @@ function EnviarSMS($arrDatoSmsx) {
 
     $response = file_get_contents($baseurl.$params);
 
-    //echo "Respuesta: ".$response;
+    echo "Respuesta: ".$response;
 
-    /*
-     * ini_set("default_socket_timeout", 1);
-    // ini_set("soap.wsdl_cache_enabled", WSDL_CACHE_NONE);
-    $wsdl= "http://200.74.222.35:8080/SmsDispatcher/SmsDispatcher?wsdl";
-    $id ="LibertyExpress_Expreso";
-    $key = "edd13671809e315d0135630741143549";
-    // $addr= "584242349157"; //584242349157 - 584269136441 - 584142344942 - Juan D: 584168315127
-    $addr = str_replace(substr($arrDatoSmsx['TlfnClie'], 0,1), "58", $arrDatoSmsx['TlfnClie']);
-    $text= $arrDatoSmsx['TextSmsx'];
-
-    try {
-       $client = new SoapClient($wsdl,array('cache_wsdl' => WSDL_CACHE_NONE, 'keep_alive' => false));
-       // $client = new SoapClient($wsdl,array('keep_alive' => false));
-       $sendRequest       = new stdClass();
-       $sendRequest->id   = $id;
-       $sendRequest->key  = $key;
-       $sendRequest->addr = $addr;
-       $sendRequest->text = $text;
-
-       $response = $client->send($sendRequest);
-       return $response;
-    } catch (SoapFault $fault) {
-       // trigger_error("SOAP Fault: (faultcode: {$fault->faultcode}, faultstring: {$fault->faultstring})", E_USER_ERROR);
-    } */
 }
 
 function comprobar_email($email){

@@ -32,24 +32,27 @@ if ($blnTodoOkey) {
    //-------------------------------------------------------
    // Se seleccionan las Notificaciones aun no realizadas
    //-------------------------------------------------------
-   $strCadeSqlx = "select n.*, g.esta_orig, g.esta_dest, g.dire_dest, g.nomb_remi, g.tele_remi, g.nomb_dest, g.tele_dest, g.receptoria_destino
-                     from notificacion n inner join guia g
-                       on n.guia_id = g.nume_guia
-                    where n.notificado_sms = 0
-                      and n.tipo_sms is not null
-                      and g.codi_ckpt not in ('OK','ER','RM','PU','TR')";
+   $strCadeSqlx  = "select n.*, ";
+   $strCadeSqlx .= "       g.esta_orig, ";
+   $strCadeSqlx .= "       g.esta_dest, ";
+   $strCadeSqlx .= "       g.dire_dest, ";
+   $strCadeSqlx .= "       g.nomb_remi, ";
+   $strCadeSqlx .= "       g.tele_remi, ";
+   $strCadeSqlx .= "       g.nomb_dest, ";
+   $strCadeSqlx .= "       g.tele_dest, ";
+   $strCadeSqlx .= "       g.receptoria_destino ";
+   $strCadeSqlx .= "  from notificacion n inner join guia g ";
+   $strCadeSqlx .= "    on n.guia_id = g.nume_guia ";
+   $strCadeSqlx .= " where n.notificado_sms = 0 ";
+   $strCadeSqlx .= "   and n.tipo_sms is not null ";
+   $strCadeSqlx .= "   and g.codi_ckpt not in ('OK','ER','RM','PU','TR')";
 
    $objDatabase = Notificacion::GetDatabase();
    $objResulSet = $objDatabase->Query($strCadeSqlx);
    while ($mixRegistro = $objResulSet->FetchArray()) {
-
       //----------------------
       // Vector de Parametros
       //----------------------
-      // $arrParaNoti['estaOrig'] = $mixRegistro['esta_orig'];
-      // $arrParaNoti['TeleRemi'] = $mixRegistro['tele_remi'];
-      // $arrParaNoti['TeleDest'] = $mixRegistro['tele_dest'];
-      // $arrParaNoti['EstaDest'] = $mixRegistro['esta_dest'];
       $arrParaNoti['NombRemi'] = $mixRegistro['nomb_remi'];
       $arrParaNoti['NombDest'] = $mixRegistro['nomb_dest'];
       $arrParaNoti['NumeGuia'] = $mixRegistro['guia_id'];
