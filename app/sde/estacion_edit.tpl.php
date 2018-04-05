@@ -35,28 +35,53 @@ require(__APP_INCLUDES__ . '/botonera_edit.inc.php');
                 <div class="tab-content">
                     <div class="tab-pane active" role="tabpanel" id="seccion1">
                         <div class="media">
-                            <div class="media-body"><br>
-                                <div class="col-md-6">
-                                    <?php $this->txtCodiEsta->RenderWithName(); ?>
-                                    <?php $this->txtDescEsta->RenderWithName(); ?>
-                                    <?php $this->lstCodiStatObject->RenderWithName(); ?>
-                                    <?php $this->txtTextObse->RenderWithName(); ?>
-                                    <?php $this->txtNombCont->RenderWithName(); ?>
-                                    <?php $this->txtNumeTele->RenderWithName(); ?>
-                                    <?php $this->txtNumeDias->RenderWithName(); ?>
-                                    <?php $this->txtDireMailPrincipal->RenderWithName(); ?>
-                                    <?php $this->txtDireMail->RenderWithName(); ?>
+                            <div class="media-body">
+                                <div class="espacio"></div>
+                                <div class="col-md-offset-1 col-md-3">
+                                    <div class="title">Codigo IATA</div>
+                                    <?php $this->txtCodiEsta->Render(); ?>
+                                    <div class="title">Nombre o Descripción</div>
+                                    <?php $this->txtDescEsta->Render(); ?>
+                                    <div class="title">Estatus</div>
+                                    <?php $this->lstCodiStatObject->Render(); ?>
+                                    <div class="title">Dirección</div>
+                                    <?php $this->txtTextObse->Render(); ?>
+                                    <div class="title">Persona Contacto</div>
+                                    <?php $this->txtNombCont->Render(); ?>
+                                    <div class="title">Nros de Teléfono</div>
+                                    <?php $this->txtNumeTele->Render(); ?>
                                 </div>
-                                <div class="col-md-6">
-                                    <?php $this->lstRegion->RenderWithName(); ?>
-                                    <?php $this->lstEsUnAlmacenObject->RenderWithName(); ?>
-                                    <?php $this->lstOperacion->RenderWithName(); ?>
-                                    <?php $this->lstZonaCodObject->RenderWithName(); ?>
-                                    <?php $this->txtZonasNc->RenderWithName(); ?>
-                                    <?php $this->lstNotificarRecolectaObject->RenderWithName(); ?>
-                                    <?php $this->lstAreaMetropolitanaObject->RenderWithName(); ?>
-                                    <?php $this->lstEstado->RenderWithName(); ?>
-                                    <?php $this->chkVisiClie->RenderWithName(); ?>
+                                <div class="col-md-offset-1 col-md-3">
+                                    <div class="title">Se cubre en</div>
+                                    <?php $this->txtNumeDias->Render(); ?>
+                                    <div class="title">E-mail Principal</div>
+                                    <?php $this->txtDireMailPrincipal->Render(); ?>
+                                    <div class="title">Medición y Control</div>
+                                    <?php $this->txtDireMail->Render(); ?>
+                                    <div class="title">Región</div>
+                                    <?php $this->lstRegion->Render(); ?>
+                                    <div class="title">Es un Almacén ?</div>
+                                    <?php $this->lstEsUnAlmacenObject->Render(); ?>
+                                    <div class="title">Operación Asociada</div>
+                                    <?php $this->lstOperacion->Render(); ?>
+                                </div>
+                                <div class="col-md-offset-1 col-md-3">
+                                    <div class="title">Zona COD ?</div>
+                                    <?php $this->lstZonaCodObject->Render(); ?>
+                                    <div class="title">Notificar Recolectas por E-mail ?</div>
+                                    <?php $this->lstNotificarRecolectaObject->Render(); ?>
+                                    <div class="title">Área Metropolitana ?</div>
+                                    <?php $this->lstAreaMetropolitanaObject->Render(); ?>
+                                    <div class="title">Ubicada en el Estado</div>
+                                    <?php $this->lstEstado->Render(); ?>
+                                    <div class="title">Visible en el CORP ?</div>
+                                    <?php $this->chkVisiClie->Render(); ?>
+                                    <div class="title">Se factura en ?</div>
+                                    <?php $this->lstSeFacturaEnObject->Render(); ?>
+                                </div>
+                                <div class="col-md-offset-1 col-md-10" style="margin-top: 1em">
+                                    <div class="title">Zonas no Cubiertas</div>
+                                    <?php $this->txtZonasNc->Render(); ?>
                                 </div>
                             </div>
                         </div>
@@ -76,6 +101,12 @@ require(__APP_INCLUDES__ . '/botonera_edit.inc.php');
     </div>
 </div>
 <style>
+    .espacio {
+        margin-top: 0.5em;
+    }
+    .title {
+        font-weight: bold;
+    }
     .nav-tabs > li.active > a, .nav-tabs > li.active > a:hover, .nav-tabs > li.active > a:focus {
         background-color: #a52422;
     }

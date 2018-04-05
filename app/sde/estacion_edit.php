@@ -42,6 +42,7 @@ class EstacionEditForm extends EstacionEditFormBase {
 		parent::Form_Create();
 
         $this->lblTituForm->Text = 'Sucursal';
+        $intAnchCamp = 280;
 
 		// Use the CreateFromPathInfo shortcut (this can also be done manually using the EstacionMetaControl constructor)
 		// MAKE SURE we specify "$this" as the MetaControl's (and thus all subsequent controls') parent
@@ -57,22 +58,22 @@ class EstacionEditForm extends EstacionEditFormBase {
 
         $this->txtDescEsta = $this->mctEstacion->txtDescEsta_Create();
         $this->txtDescEsta->Name = 'Descripción';
-        $this->txtDescEsta->Width = 250;
+        $this->txtDescEsta->Width = $intAnchCamp;
         $this->txtDescEsta->SetCustomAttribute('onblur',"this.value=this.value.toUpperCase()");
 
         $this->txtTextObse = $this->mctEstacion->txtTextObse_Create();
         $this->txtTextObse->Name = 'Dirección';
         $this->txtTextObse->TextMode = QTextMode::MultiLine;
-        $this->txtTextObse->Width = 250;
+        $this->txtTextObse->Width = $intAnchCamp;
         $this->txtTextObse->SetCustomAttribute('onblur',"this.value=this.value.toUpperCase()");
 
         $this->txtNombCont = $this->mctEstacion->txtNombCont_Create();
         $this->txtNombCont->Name = 'Persona Contacto';
-        $this->txtNombCont->Width = 250;
+        $this->txtNombCont->Width = $intAnchCamp;
 
         $this->txtNumeTele = $this->mctEstacion->txtNumeTele_Create();
         $this->txtNumeTele->Name = 'Teléfono del Contacto';
-        $this->txtNumeTele->Width = 250;
+        $this->txtNumeTele->Width = $intAnchCamp;
 
         $this->txtNumeDias = $this->mctEstacion->txtNumeDias_Create();
         $this->txtNumeDias->Name = 'Se cubre en';
@@ -81,14 +82,14 @@ class EstacionEditForm extends EstacionEditFormBase {
 
         $this->txtDireMail = $this->mctEstacion->txtDireMail_Create();
         $this->txtDireMail->Name = 'Correo Electrónico';
-        $this->txtDireMail->Width = 250;
-        $this->txtDireMail->Height = 80;
+        $this->txtDireMail->Width = $intAnchCamp;
+        $this->txtDireMail->Rows = 2;
         $this->txtDireMail->TextMode = QTextMode::MultiLine;
         $this->txtDireMail->SetCustomAttribute('onblur',"this.value=this.value.toLowerCase()");
 
         $this->txtDireMailPrincipal = $this->mctEstacion->txtDireMailPrincipal_Create();
         $this->txtDireMailPrincipal->Name = 'E-mail Principal';
-        $this->txtDireMailPrincipal->Width = 250;
+        $this->txtDireMailPrincipal->Width = $intAnchCamp;
         $this->txtDireMailPrincipal->SetCustomAttribute('onblur',"this.value=this.value.toLowerCase()");
 
         $this->lstRegion = $this->mctEstacion->lstRegion_Create();
@@ -116,11 +117,11 @@ class EstacionEditForm extends EstacionEditFormBase {
 		$this->txtPorcentajeEntrega->Width = 50;
 
 		$this->lstOperacion = $this->mctEstacion->lstOperacion_Create();
-		$this->lstOperacion->Width = 250;
+		$this->lstOperacion->Width = $intAnchCamp;
 
         $this->lstEsUnAlmacenObject = $this->mctEstacion->lstEsUnAlmacenObject_Create();
         $this->lstEsUnAlmacenObject->Name = 'Es un Almacen ?';
-        $this->lstEsUnAlmacenObject->Width = 100;
+        $this->lstEsUnAlmacenObject->Width = 60;
 
 		$this->lstZonaCodObject = $this->mctEstacion->lstZonaCodObject_Create();
 		$this->lstZonaCodObject->Name = 'Zona COD';
@@ -135,21 +136,23 @@ class EstacionEditForm extends EstacionEditFormBase {
 		$objClauOrde[] = QQ::OrderBy(QQN::Estado()->Nombre);
 		$this->lstEstado = $this->mctEstacion->lstEstado_Create(null,null,$objClauOrde);
 		$this->txtZonasNc->Name = 'Zonas No Cubiertas';
-		$this->txtZonasNc->Width = 250;
-		$this->txtZonasNc->Height = 100;
+		$this->txtZonasNc->Width = 950;
+		$this->txtZonasNc->Rows = 3;
 
 		$this->lstEstado->Name = 'Esta Ubicada en el Estado ?';
 
 		$this->chkVisiClie_Create();
+
+		$objClauWher   = QQ::Clause();
+		$objClauWher[] = QQ::Equal(QQN::Counter()->StatusId,StatusType::ACTIVO);
+		$this->lstSeFacturaEnObject = $this->mctEstacion->lstSeFacturaEnObject_Create(null,QQ::AndCondition($objClauWher));
 
 		$this->dtgReceSucu_Create();
 		$this->intCantRece = Counter::CountBySucursalId($this->mctEstacion->Estacion->CodiEsta);
         //--------------------------
         // Permiso para modificar
         //--------------------------
-        // echo  $this->objUsuario->CodiUsua."<br>";
         $blnTienPerm = BuscarParametro("ModiEsta", $this->objUsuario->LogiUsua, "Val1", 0);
-        // echo "TP:".$blnTienPerm;
         if ($blnTienPerm) {
             $this->btnSave->Visible = true;
             $this->btnDelete->Visible = true;
