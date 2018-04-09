@@ -209,6 +209,7 @@ class SacarARuta extends FormularioBaseKaizen {
         $objClauWher[] = QQ::Equal(QQN::Chofer()->CodiStat,StatusType::ACTIVO);
         $objClauWher[] = QQ::Equal(QQN::Chofer()->CodiDisp,SinoType::SI);
         $objClauWher[] = QQ::Equal(QQN::Chofer()->CodiEsta,$this->objUsuario->CodiEsta);
+        $objClauWher[] = QQ::NotEqual(QQN::Chofer()->NumeCedu,'9.999.999');
 
         $arrChofSucu   = Chofer::QueryArray(QQ::AndCondition($objClauWher));
         $intCantRegi   = count($arrChofSucu);
@@ -271,6 +272,7 @@ class SacarARuta extends FormularioBaseKaizen {
         $objClauWher[] = QQ::Equal(QQN::Vehiculo()->CodiStat,StatusType::ACTIVO);
         $objClauWher[] = QQ::Equal(QQN::Vehiculo()->CodiDisp,SinoType::SI);
         $objClauWher[] = QQ::Equal(QQN::Vehiculo()->CodiEsta,$this->objUsuario->CodiEsta);
+        $objClauWher[] = QQ::NotEqual(QQN::Vehiculo()->NumePlac,'999-999');
 
         $arrVehiSucu   = Vehiculo::QueryArray(QQ::AndCondition($objClauWher),$objClauOrde);
         $intCantRegi   = count($arrVehiSucu);
@@ -318,6 +320,7 @@ class SacarARuta extends FormularioBaseKaizen {
         $this->lstOperAbie->Required = true;
         $this->lstOperAbie->Width = 300;
         $this->lstOperAbie->AddAction(new QChangeEvent(), new QAjaxAction('validarCampos'));
+        $this->lstOperAbie->AddAction(new QChangeEvent(), new QAjaxAction('mostrarDatos'));
     }
 
     // Número de Contenedor
@@ -325,6 +328,7 @@ class SacarARuta extends FormularioBaseKaizen {
         $this->txtNumeCont = new QTextBox($this);
         $this->txtNumeCont->Placeholder = 'Precinto/Candado #';
         $this->txtNumeCont->AddAction(new QChangeEvent(), new QAjaxAction('validarCampos'));
+        $this->txtNumeCont->AddAction(new QChangeEvent(), new QAjaxAction('advertirExistencia'));
         $this->txtNumeCont->Required = true;
     }
 
@@ -370,6 +374,37 @@ class SacarARuta extends FormularioBaseKaizen {
     //---------------------------------------
     // Acciones asociadas a los objetos
     //---------------------------------------
+
+    protected function mostrarDatos() {
+        if (!is_null($this->lstOperAbie->SelectedValue)) {
+            $intOperSele = $this->lstOperAbie->SelectedValue;
+            $objOperSele = SdeOperacion::Load($intOperSele);
+            if ($objOperSele) {
+                //---------------------------------------------------------------------------
+                // Se muestran en pantalla, el Chofer y el Vehiculo asociado a la Operacion
+                //---------------------------------------------------------------------------
+                $this->intChofSele       = $objOperSele->CodiChof;
+                $this->txtNombChof->Text = $objOperSele->CodiChofObject->__toString();
+                $this->txtCeduChof->Text = $objOperSele->CodiChofObject->NumeCedu;
+
+                $this->intVehiSele       = $objOperSele->CodiVehi;
+                $this->txtDescVehi->Text = $objOperSele->CodiVehiObject->DescVehi;
+                $this->txtPlacVehi->Text = $objOperSele->CodiVehiObject->NumePlac;
+            }
+        }
+
+    }
+    protected function advertirExistencia() {
+        $strNumeMani = trim($this->txtNumeCont->Text);
+        if (strlen($strNumeMani) > 0) {
+            $objExisMani = SdeContenedor::Load($strNumeMani);
+            if ($objExisMani) {
+                $strMensUsua  = 'Ya existe el Manifiesto: <b>'.$strNumeMani.'</b>, creado el <b>';
+                $strMensUsua .= $objExisMani->Fecha->__toString('DD/MM/YYYY').'</b>.  Las piezas serán agregadas';
+                $this->mensaje($strMensUsua,'m','w','',__iEXCL__);
+            }
+        }
+    }
 
     protected function btnRegiVehi_Click(){
         //------------------------
@@ -531,31 +566,16 @@ class SacarARuta extends FormularioBaseKaizen {
     protected function lstTipoOper_Change() {
         $this->lstOperAbie->RemoveAllItems();
         if (!is_null($this->lstTipoOper->SelectedValue)) {
-            //------------------------------------------------------------------------------------------------------
-            // A petición de la Gerente de Operaciones Actual (Josely Tineo @2016), se procede a mostrar todas las
-            // rutas, sin distinguir de la sede desde donde se esté cargando. Solamente se muestran las rutas según
-            // el tipo seleccionado.
-            //------------------------------------------------------------------------------------------------------
             $strCodiSucu   = $this->objUsuario->CodiEsta;
             $objClausula   = QQ::Clause();
             $objClausula[] = QQ::OrderBy(QQN::SdeOperacion()->CodiRuta);
-            $intCodiTipo = $this->lstTipoOper->SelectedValue;
+            $intCodiTipo   = $this->lstTipoOper->SelectedValue;
             $arrSdexOper   = SdeOperacion::LoadArrayByCodiTipoCodiEsta($intCodiTipo,$strCodiSucu,$objClausula);
             $intCantOper   = count($arrSdexOper);
             $this->lstOperAbie->AddItem('- Seleccione Uno - ('.$intCantOper.')',null);
             foreach ($arrSdexOper as $objOperacion) {
                 if ($objOperacion->CodiRuta != "R9999") {
-                    if ($intCodiTipo == 0) {
-                        //---------------------------------------------------------------------------------------------
-                        // Solamente en el caso de las operaciones urbanas, escencialmente tienen que cargarse las que
-                        // les corresponden a la Sede donde se realiza la operación.
-                        //---------------------------------------------------------------------------------------------
-                        if ($objOperacion->CodiEsta == $this->objUsuario->CodiEsta) {
-                            $this->lstOperAbie->AddItem(substr($objOperacion->__toString(),0,50),$objOperacion->CodiOper);
-                        }
-                    } else {
-                        $this->lstOperAbie->AddItem(substr($objOperacion->__toString(),0,50),$objOperacion->CodiOper);
-                    }
+                    $this->lstOperAbie->AddItem(substr($objOperacion->__toString(),0,50),$objOperacion->CodiOper);
                 }
             }
         }
@@ -894,6 +914,9 @@ class SacarARuta extends FormularioBaseKaizen {
                     }
                 }
             }
+
+            $this->actualizarOperacion($objContenedor);
+
             $strMensUsua = sprintf('Guias procesadas (%s)  Ckpts procesados (%s)',$intContGuia,$intContCkpt);
             $this->mensaje($strMensUsua,'','','i','check');
             //--------------------------------------------------------------------------------
@@ -912,6 +935,28 @@ class SacarARuta extends FormularioBaseKaizen {
                 $this->btnImprReto->Visible = false;
             }
             $this->btnManiCarg->Visible = true;
+        }
+    }
+
+    protected function actualizarOperacion(SdeContenedor $objContenedor) {
+        if ($objContenedor) {
+            $objOperAsoc = $objContenedor->CodiOperObject;
+            if ($objOperAsoc->CodiChof != $this->intChofSele || $objOperAsoc->CodiVehi = $this->intVehiSele) {
+                //-----------------------------------------------------------------------------------------
+                // El Chofer y el Vehiculo seleccionado, se asocian a la Operacion para futuras ocasiones
+                //-----------------------------------------------------------------------------------------
+                $objOperAsoc->CodiChof = $this->intChofSele;
+                $objOperAsoc->CodiVehi = $this->intVehiSele;
+                $objOperAsoc->Save();
+                //---------------------------------------------
+                // Se deja rastro de la transaccion realizada
+                //---------------------------------------------
+                $arrLogxCamb['strNombTabl'] = 'SdeOperacion';
+                $arrLogxCamb['intRefeRegi'] = $objOperAsoc->CodiOper;
+                $arrLogxCamb['strNombRegi'] = $objOperAsoc->CodiRutaObject->CodiRuta;
+                $arrLogxCamb['strDescCamb'] = 'Modificado dinamicamente, desde Sacar a Ruta';
+                LogDeCambios($arrLogxCamb);
+            }
         }
     }
 }

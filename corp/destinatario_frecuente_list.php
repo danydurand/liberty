@@ -67,8 +67,11 @@ class DestinatarioFrecuenteListForm extends DestinatarioFrecuenteListFormBase {
 
 		// Create the Other Columns (note that you can use strings for destinatario_frecuente's properties, or you
 		// can traverse down QQN::destinatario_frecuente() to display fields that are down the hierarchy)
-		$colDestFrec = $this->dtgDestinatarioFrecuentes->MetaAddColumn('Nombre');
-		$colDestFrec->Width = 300;
+
+        $colNombDest = new QDataGridColumn('Nombre','<?= $_FORM->dtgDestFrec_NombreRender($_ITEM); ?>');
+//		$colDestFrec = $this->dtgDestinatarioFrecuentes->MetaAddColumn('Nombre');
+        $colNombDest->Width = 300;
+        $this->dtgDestinatarioFrecuentes->AddColumn($colNombDest);
 
 		$colDireDest = $this->dtgDestinatarioFrecuentes->MetaAddColumn('Direccion');
 		$colDireDest->Width = 550;
@@ -81,6 +84,12 @@ class DestinatarioFrecuenteListForm extends DestinatarioFrecuenteListFormBase {
         $this->btnExpoExce_Create();
 
     }
+
+    public function dtgDestFrec_NombreRender(DestinatarioFrecuente $objDescFrec) {
+		if ($objDescFrec) {
+			return limpiarCadena($objDescFrec->Nombre);
+		}
+	}
 
 	public function dtgDestinatarioFrecuentesRow_Click($strFormId, $strControlId, $strParameter) {
         $intId = intval($strParameter);

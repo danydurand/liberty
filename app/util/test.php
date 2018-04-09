@@ -1,6 +1,10 @@
 <?php
 require_once('qcubed.inc.php');
+require_once('.connection');
 
+echo $dbhost."\n";
+
+/*
 echo 1;
 $arrParaNoti['NombRemi'] = 'Daniel Durand';
 $arrParaNoti['NombDest'] = 'Maria Gabriela Perez';
@@ -15,3 +19,4 @@ echo 3;
 
 // Invocar funcion de SMS
 EnviarSMS($arrParaNoti);
+*/

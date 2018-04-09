@@ -279,7 +279,7 @@ class ConsultaMasiva extends FormularioBaseKaizen {
         if ($this->arrListNume) {
             $objClausula   = QQ::Clause();
             $objClausula[] = QQ::Equal(QQN::Guia()->Anulada,0);
-            $strCadeSqlx .= " and g.anulada = 0";
+            $strCadeSqlx  .= " and g.anulada = 0 ";
             if ($this->rdbTipoEnvi->SelectedValue == 'N') {
                 $objClausula[] = QQ::In(QQN::Guia()->NumeGuia,$this->arrListNume);
                 $strCadeSqlx .= " and g.nume_guia in ('$strCadeGuia')";

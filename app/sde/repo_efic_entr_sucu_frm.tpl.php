@@ -3,14 +3,13 @@ $strPageTitle = 'Eficiencia en Entrega por Sucursal';
 require(__APP_INCLUDES__ . '/header.inc.php');
 ?>
     <div class="titulo-formulario">
-        <div class="col-xs-4 col-md-3 col-lg-4" style="text-align: left; margin-left: -0.8em; margin-top: -0.30em">
+        <div class="col-xs-4 col-md-4" style="text-align: left; margin-left: -0.8em; margin-top: -0.30em">
             <?php $this->lblTituForm->Render(); ?>
         </div>
         <div class="hidden-xs hidden-sm col-md-6 col-lg-4" style="text-align: center; margin-top: -0.25em;">
             <?php $this->btnSave->Render(); ?>
             <?php $this->btnExpoPdfx->Render(); ?>
         </div>
-        <div class="hidden-sm col-md-3 col-lg-4"></div>
     </div>
     <!-- Form Controls -->
     <div class="form-controls">

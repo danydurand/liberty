@@ -328,6 +328,7 @@ class CargarGuia extends FormularioBaseKaizen {
         $this->txtNombRemi = new QTextBox($this);
         $this->txtNombRemi->Name = 'Nombre/R. Social';
         $this->txtNombRemi->Width = 225;
+        $this->txtNombRemi->MaxLength = Guia::NombRemiMaxLength;
         if ($this->blnEditMode) {
             $this->txtNombRemi->Text = $this->objGuia->NombRemi;
         } else {
@@ -386,6 +387,7 @@ class CargarGuia extends FormularioBaseKaizen {
         $this->txtNombDest = new QTextBox($this);
         $this->txtNombDest->Name = 'Nombre/R. Social';
         $this->txtNombDest->Width = 240;
+        $this->txtNombDest->MaxLength = Guia::NombDestMaxLength;
         $this->txtNombDest->SetCustomAttribute('onblur',"this.value=this.value.toUpperCase()");
         if ($this->blnEditMode) {
             $this->txtNombDest->Text = $this->objGuia->NombDest;
@@ -644,15 +646,25 @@ class CargarGuia extends FormularioBaseKaizen {
             $strMensErro .= 'Destino (Requerido)';
         }
         // t('Destino: '.$blnTodoOkey);
-        //--------------------------------------------
-        // Validando campo de Nombre del Destinatario
-        //--------------------------------------------
+        //-----------------------------------------------------
+        // Validando campo de Nombre del Destinatario (vacio)
+        //-----------------------------------------------------
         if (strlen($this->txtNombDest->Text) == 0) {
             $blnTodoOkey = false;
             if (strlen($strMensErro) > 0) {
                 $strMensErro .= ', ';
             }
             $strMensErro .= 'Nombre/R. Social del Destinatario (Requerido)';
+        }
+        //---------------------------------------------------------
+        // Validando campo de Nombre del Destinatario (muy largo)
+        //---------------------------------------------------------
+        if (strlen($this->txtNombDest->Text) > 100) {
+            $blnTodoOkey = false;
+            if (strlen($strMensErro) > 0) {
+                $strMensErro .= ', ';
+            }
+            $strMensErro .= 'Nombre del Destinatario (Max. 100 caracteres)';
         }
         // t('Nombre del Destinatario: '.$blnTodoOkey);
         //----------------------------------------------
@@ -1158,7 +1170,7 @@ class CargarGuia extends FormularioBaseKaizen {
         //----------------------------------------------------------------
         if ($this->arrDestFrec) {
             foreach ($this->arrDestFrec as $objDestFrec) {
-                $this->lstDestFrec->AddItem($objDestFrec->Nombre, $objDestFrec->Id);
+                $this->lstDestFrec->AddItem(limpiarCadena($objDestFrec->Nombre), $objDestFrec->Id);
             }
         }
     }

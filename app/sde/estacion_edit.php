@@ -77,8 +77,8 @@ class EstacionEditForm extends EstacionEditFormBase {
 
         $this->txtNumeDias = $this->mctEstacion->txtNumeDias_Create();
         $this->txtNumeDias->Name = 'Se cubre en';
-        $this->txtNumeDias->HtmlAfter = ' Día(s)';
-        $this->txtNumeDias->Width = 50;
+//        $this->txtNumeDias->HtmlAfter = ' Día(s)';
+        $this->txtNumeDias->Width = 80;
 
         $this->txtDireMail = $this->mctEstacion->txtDireMail_Create();
         $this->txtDireMail->Name = 'Correo Electrónico';
@@ -135,17 +135,20 @@ class EstacionEditForm extends EstacionEditFormBase {
 		$objClauOrde   = QQ::Clause();
 		$objClauOrde[] = QQ::OrderBy(QQN::Estado()->Nombre);
 		$this->lstEstado = $this->mctEstacion->lstEstado_Create(null,null,$objClauOrde);
-		$this->txtZonasNc->Name = 'Zonas No Cubiertas';
+        $this->lstEstado->Name = 'Esta Ubicada en el Estado ?';
+        $this->lstEstado->Width = $intAnchCamp-40;
+
+        $this->txtZonasNc->Name = 'Zonas No Cubiertas';
 		$this->txtZonasNc->Width = 950;
 		$this->txtZonasNc->Rows = 3;
 
-		$this->lstEstado->Name = 'Esta Ubicada en el Estado ?';
 
 		$this->chkVisiClie_Create();
 
 		$objClauWher   = QQ::Clause();
 		$objClauWher[] = QQ::Equal(QQN::Counter()->StatusId,StatusType::ACTIVO);
 		$this->lstSeFacturaEnObject = $this->mctEstacion->lstSeFacturaEnObject_Create(null,QQ::AndCondition($objClauWher));
+		$this->lstSeFacturaEnObject->Width = $intAnchCamp-40;
 
 		$this->dtgReceSucu_Create();
 		$this->intCantRece = Counter::CountBySucursalId($this->mctEstacion->Estacion->CodiEsta);

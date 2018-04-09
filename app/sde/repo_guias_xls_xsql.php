@@ -60,7 +60,19 @@ $arrEnca2XLS = array(
     'FechaPago',
     'NumeroDoc.',
     'TipoDocumento',
-    'Tipo Envio'
+    'F. PickUp',
+    'F. Traslado',
+    'F. Arribo',
+    'F. En Ruta',
+    'F. Entrega',
+    'D. PickUp',
+    'D. Traslado',
+    'D. Arribo',
+    'D. En Ruta',
+    'D. Entrega',
+    'Total Dias',
+    'D. Sin Entrega',
+    'D. Sin Actualizar'
 );
 //----------------------------------------------------------------------
 // El vector de encabezados, se lleva al archivo plano
@@ -110,7 +122,39 @@ while ($mixRegistro = $objResulSet->FetchArray()) {
     $strNumeDocu = $mixRegistro['numero_documento'];
     $strTipoDocu = $mixRegistro['tipo_documento'];
 
-    //  $strEsunReto = $mixRegistro['retorno'];
+    // Estadistica de la guia
+    $objGuiaProc = Guia::Load($mixRegistro['nume_guia']);
+    $objEstaGuia = $objGuiaProc->GetEstadisticaDeGuias();
+
+    if ($objEstaGuia) {
+        $strFechPick = $objEstaGuia->FechaPickup ? $objEstaGuia->FechaPickup->__toString("DD/MM/YYYY") : null;
+        $strFechTras = $objEstaGuia->FechaTraslado ? $objEstaGuia->FechaTraslado->__toString("DD/MM/YYYY") : null;
+        $strFechArri = $objEstaGuia->FechaArribo ? $objEstaGuia->FechaArribo->__toString("DD/MM/YYYY") : null;
+        $strFechRuta = $objEstaGuia->FechaRuta ? $objEstaGuia->FechaRuta->__toString("DD/MM/YYYY") : null;
+        $strFechEntr = $objEstaGuia->FechaEntrega ? $objEstaGuia->FechaEntrega->__toString("DD/MM/YYYY") : null;
+        $intDiasPick = $objEstaGuia->DiasPickup;
+        $intDiasTras = $objEstaGuia->DiasTraslado;
+        $intDiasArri = $objEstaGuia->DiasArribo;
+        $intDiasRuta = $objEstaGuia->DiasRuta;
+        $intDiasEntr = $objEstaGuia->DiasEntrega;
+        $intAcumEntr = $objEstaGuia->AcumuladoEntrega;
+        $intSinxEntr = $objEstaGuia->AcumuladoSinEntrega;
+        $intDiasSina = $objEstaGuia->DiasSinActualizar;
+    } else {
+        $strFechPick = null;
+        $strFechTras = null;
+        $strFechArri = null;
+        $strFechRuta = null;
+        $strFechEntr = null;
+        $intDiasPick = null;
+        $intDiasTras = null;
+        $intDiasArri = null;
+        $intDiasRuta = null;
+        $intDiasEntr = null;
+        $intAcumEntr = null;
+        $intSinxEntr = null;
+        $intDiasSina = null;
+    }
 
     $arrLineArch = array(
         $strNumeGuia,
@@ -147,7 +191,20 @@ while ($mixRegistro = $objResulSet->FetchArray()) {
         $strReciPago,
         $strFechPago,
         $strNumeDocu,
-        $strTipoDocu
+        $strTipoDocu,
+        $strFechPick,
+        $strFechTras,
+        $strFechArri,
+        $strFechRuta,
+        $strFechEntr,
+        $intDiasPick,
+        $intDiasTras,
+        $intDiasArri,
+        $intDiasRuta,
+        $intDiasEntr,
+        $intAcumEntr,
+        $intSinxEntr,
+        $intDiasSina
     );
     //----------------------------------------------------------------------
     // El vector generado, se lleva al archivo plano

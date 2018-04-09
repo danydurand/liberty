@@ -182,6 +182,7 @@ class GuiaListForm extends GuiaListFormBase {
         //-----------------------
         $objClauWher   = QQ::Clause();
         $objClauWher[] = QQ::Equal(QQN::Guia()->CodiClie, $this->objSubxClie->intCodiClie);
+        $objClauWher[] = QQ::Equal(QQN::Guia()->Anulada, 0);
         if (isset($_GET['f'])) {
             $strFiltComu = $_GET['f'];
             switch ($strFiltComu) {

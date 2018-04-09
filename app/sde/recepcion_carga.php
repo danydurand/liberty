@@ -97,7 +97,7 @@ class RecepcionCarga extends FormularioBaseKaizen {
 
     protected function lstOperAbie_Change() {
         $this->lstNumeCont->RemoveAllItems();
-        $arrContPend = SdeContenedor::LoadArrayByCodiOperStatCont($this->lstOperAbie->SelectedValue, 'P', QQ::Clause(QQ::OrderBy(QQN::SdeContenedor()->Fecha, false),QQ::LimitInfo(500)));
+        $arrContPend = SdeContenedor::LoadArrayByCodiOperStatCont($this->lstOperAbie->SelectedValue, 'P', QQ::Clause(QQ::OrderBy(QQN::SdeContenedor()->Fecha, false),QQ::LimitInfo(200)));
         $intContPend = count($arrContPend);
         $this->lstNumeCont->AddItem(QApplication::Translate('- Seleccione Uno - (' . $intContPend . ')'), null);
         foreach ($arrContPend as $objContenedor) {

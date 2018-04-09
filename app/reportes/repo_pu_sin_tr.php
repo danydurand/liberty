@@ -11,16 +11,16 @@ use PHPMailer\PHPMailer\PHPMailer;
 $dttFechDhoy = date('Y-m-d');
 $arrSucuSele = Estacion::LoadSucursalesActivasSinAlmacenes();
 foreach ($arrSucuSele as $objSucursal) {
-    if (!in_array($objSucursal->CodiEsta, array('CCS','VLN','MAR'))) {
+    if ($objSucursal->CodiEsta != 'CCS') {
         continue;
     }
     //--------------------------------------------------------
     // Selecciono los registros que satisfagan la condicion
     //--------------------------------------------------------
-    $strCadeSqlx  = "select distinct g.*,(fn_diastrans( now(), e.fecha_pickup ) - (fn_cantsados(e.fecha_pickup, now()) + fn_cantferiados(e.fecha_pickup, now()))) as dias_tran ";
+    $strCadeSqlx  = "select distinct g.*,e.fecha_pickup, (fn_diastrans(e.fecha_pickup, now()) - (fn_cantsados(e.fecha_pickup, now()) + fn_cantferiados(e.fecha_pickup, now()))) as dias_tran ";
     $strCadeSqlx .= "  from guia g inner join estadistica_de_guias e";
     $strCadeSqlx .= "    on g.nume_guia = e.guia_id";
-    $strCadeSqlx .= " where (fn_diastrans( now(), e.fecha_pickup ) - (fn_cantsados(e.fecha_pickup, now()) + fn_cantferiados(e.fecha_pickup, now()))) > 1  ";
+    $strCadeSqlx .= " where (fn_diastrans(e.fecha_pickup, now()) - (fn_cantsados(e.fecha_pickup, now()) + fn_cantferiados(e.fecha_pickup, now()))) > 1  ";
     $strCadeSqlx .= "   and g.esta_orig  = '".$objSucursal->CodiEsta."'";
     $strCadeSqlx .= "   and g.esta_dest != '".$objSucursal->CodiEsta."'";
     $strCadeSqlx .= "   and g.esta_ckpt  = g.esta_orig";
@@ -94,12 +94,12 @@ foreach ($arrSucuSele as $objSucursal) {
         $mail = new PHPMailer();
         $mail->setFrom('SisCO@libertyexpress.com', 'Medicion y Control');
         $mail->addAddress('soportelufeman@gmail.com');
-        $mail->addAddress('jhernandez@libertyexpress.com');
-        $mail->addAddress('aalvarado@libertyexpress.com');
-        $mail->addAddress('operacionesurbanas@libertyexpress.com');
-        $mail->addAddress('emontilla@libertyexpress.com');
-        $mail->addAddress('rortega@libertyexpress.com');
-        $mail->addAddress('jmartini@libertyexpress.com');
+//        $mail->addAddress('jhernandez@libertyexpress.com');
+//        $mail->addAddress('aalvarado@libertyexpress.com');
+//        $mail->addAddress('operacionesurbanas@libertyexpress.com');
+//        $mail->addAddress('emontilla@libertyexpress.com');
+//        $mail->addAddress('rortega@libertyexpress.com');
+//        $mail->addAddress('jmartini@libertyexpress.com');
         $mail->Subject  = $strTituRepo;
         $mail->Body     = 'Estimado Usuario, sírvase revisar el documento anexo...';
         $mail->addAttachment($strNombArch);

@@ -68,7 +68,7 @@ if ($_SESSION['NombSist'] == 'DESPACHO DE ENVIOS') {
                     <span class="icon-bar"></span>
                 </button>
                 <a class="navbar-brand" style="color: white; text-decoration: none" href="<?= __APP__.'/mg.php'?>">
-                    LibertyExpress | SISPAQ | <?= $_SESSION['NombSist'] ?>
+                    LibertyExpress | SISPAQ | <?= $_SESSION['NombSist'] ?> | <?= $strDatoEsta ?>
                 <?php if ($_SESSION['Sistema'] == 'pmn') { ?>
                     | <?= $strDatoEsta ?> | <?= isset($_SESSION['ReceOrig']) ? unserialize($_SESSION['ReceOrig']) : '' ?>
                 <?php } ?>
