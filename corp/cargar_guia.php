@@ -132,6 +132,15 @@ class CargarGuia extends FormularioBaseKaizen {
         // Vector con los Destinatarios Frecuentes del Cliente.
         //------------------------------------------------------
         $this->arrDestFrec = unserialize($_SESSION['DestFrec']);
+        $intCantCarg = count($this->arrDestFrec);
+        $intCantBase = $this->objCliente->CountDestinatarioFrecuentesAsCliente();
+        if ($intCantCarg != $intCantBase) {
+            $this->arrDestFrec = DestinatarioFrecuente::LoadArrayByClienteId(
+                $this->objCliente->CodiClie,
+                QQ::Clause(QQ::OrderBy(QQN::DestinatarioFrecuente()->Nombre))
+            );
+            $_SESSION['DestFrec'] = serialize($this->arrDestFrec);
+        }
 
         //-----------------------------------------------------
         // Vectores que definen rango reglamentario del Seguro
@@ -1164,11 +1173,12 @@ class CargarGuia extends FormularioBaseKaizen {
     }
 
     protected function cargarDestinatario() {
-        $this->lstDestFrec->AddItem(QApplication::Translate('- Seleccione Uno -'), null);
         //----------------------------------------------------------------
         // Se cargan los destinatarios frecuentes uno por uno a la lista.
         //----------------------------------------------------------------
         if ($this->arrDestFrec) {
+            $intCantRegi = count($this->arrDestFrec);
+            $this->lstDestFrec->AddItem(QApplication::Translate('- Seleccione Uno - ('.$intCantRegi.')'), null);
             foreach ($this->arrDestFrec as $objDestFrec) {
                 $this->lstDestFrec->AddItem(limpiarCadena($objDestFrec->Nombre), $objDestFrec->Id);
             }
@@ -1206,7 +1216,8 @@ class CargarGuia extends FormularioBaseKaizen {
 
     protected function cargarDestino($strCodiDest = null) {
         $this->lstSucuDest->RemoveAllItems();
-        $this->lstSucuDest->AddItem(QApplication::Translate('- Select One -'), null);
+        $intCantRegi = count($this->arrSucuActi);
+        $this->lstSucuDest->AddItem('- Seleccione Uno - ('.$intCantRegi.')', null);
         if ($this->arrSucuActi) {
             //-----------------------------------------------------------------------------------
             // Se itera cada elemento del vector, y a su vez cada uno se va cargando a la lista.

@@ -27,7 +27,7 @@ require(__APP_INCLUDES__ . '/botonera_edit.inc.php');
                     <?php $this->txtCedulaRif->RenderWithName(); ?>
                     <?php $this->txtPersonaContacto->RenderWithName(); ?>
                     <?php $this->txtCodigoPostal->RenderWithName(); ?>
-                    <?php $this->chkCambDest->RenderWithName(); ?>
+                    <?php //$this->chkCambDest->RenderWithName(); ?>
                     <?php $this->lstDestino->RenderWithName(); ?>
                 </div>
                 <div class="col-md-1"></div>

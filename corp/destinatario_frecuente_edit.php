@@ -70,14 +70,20 @@ class DestinatarioFrecuenteEditForm extends DestinatarioFrecuenteEditFormBase {
 		$this->txtCodigoPostal = $this->mctDestinatarioFrecuente->txtCodigoPostal_Create();
 		$this->txtCodigoPostal->Width = 70;
 
-		$this->chkCambDest_Create();
-		$this->lstDestino_Create();
+		$objClauWher   = QQ::Clause();
+		$objClauWher[] = QQ::Equal(QQN::Estacion()->EsUnAlmacen,SinoType::NO);
+		$objClauWher[] = QQ::Equal(QQN::Estacion()->CodiStat,StatusType::ACTIVO);
+		$objClauWher[] = QQ::Equal(QQN::Estacion()->PaisId,1);
+		$this->lstDestino = $this->mctDestinatarioFrecuente->lstDestino_Create(null,QQ::AndCondition($objClauWher));
 
-        if ($this->mctDestinatarioFrecuente->EditMode) {
-            $this->chkCambDest_Change($this->mctDestinatarioFrecuente->DestinatarioFrecuente->Destino->CodiEsta,'SOLOUNA');
-        } else {
-            $this->chkCambDest_Change(null,'TODAS');
-        }
+//		$this->chkCambDest_Create();
+//		$this->lstDestino_Create();
+
+//        if ($this->mctDestinatarioFrecuente->EditMode) {
+//            $this->chkCambDest_Change($this->mctDestinatarioFrecuente->DestinatarioFrecuente->Destino->CodiEsta,'SOLOUNA');
+//        } else {
+//            $this->chkCambDest_Change(null,'TODAS');
+//        }
 	}
 
 	//----------------------------
