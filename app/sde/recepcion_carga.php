@@ -90,7 +90,6 @@ class RecepcionCarga extends FormularioBaseKaizen {
     //-----------------------------------
 
     protected function btnErroProc_Click() {
-        // $_SESSION['PagiBack'] = __SIST__."/carga_masiva_guias.php";
         QApplication::Redirect(__SIST__.'/detalle_error_list.php/'.$this->objProcEjec->Id);
     }
 
@@ -124,19 +123,6 @@ class RecepcionCarga extends FormularioBaseKaizen {
         $this->lstNumeCont->SelectedIndex = 0;
     }
 
-    // protected function btnGeneRepo_Click() {
-    //     //---------------------------------------------------------
-    //     // Finalmente se genera el reporte de las Discrepancias
-    //     //---------------------------------------------------------
-    //     $arrEnca2PDF = array('Guia','Tipo de Discrepancia');
-    //     $arrAnch2PDF = array(35,60);
-    //     $arrJust2PDF = array('C','L');
-    //     $_SESSION['Dato'] = serialize($this->arrMotiDisc);
-    //     $_SESSION['Enca'] = serialize($arrEnca2PDF);
-    //     $_SESSION['Anch'] = serialize($arrAnch2PDF);
-    //     $_SESSION['Just'] = serialize($arrJust2PDF);
-    //     QApplication::Redirect('../util/includes/tabla2xls2.php?nomb_repo=Discrepancias_'.$this->lstNumeCont->SelectedValue);
-    // }
 
     protected function btnSave_Click() {
         $objContenedor = SdeContenedor::Load($this->lstNumeCont->SelectedValue);

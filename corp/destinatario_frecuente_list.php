@@ -69,17 +69,17 @@ class DestinatarioFrecuenteListForm extends DestinatarioFrecuenteListFormBase {
 		// can traverse down QQN::destinatario_frecuente() to display fields that are down the hierarchy)
 
         $colNombDest = new QDataGridColumn('Nombre','<?= $_FORM->dtgDestFrec_NombreRender($_ITEM); ?>');
-//		$colDestFrec = $this->dtgDestinatarioFrecuentes->MetaAddColumn('Nombre');
         $colNombDest->Width = 300;
         $this->dtgDestinatarioFrecuentes->AddColumn($colNombDest);
 
 		$colDireDest = $this->dtgDestinatarioFrecuentes->MetaAddColumn('Direccion');
-		$colDireDest->Width = 550;
+		$colDireDest->Width = 500;
 
 		$colNumeTele = $this->dtgDestinatarioFrecuentes->MetaAddColumn('Telefono');
 		$colNumeTele->Width = 200;
 
-		$this->dtgDestinatarioFrecuentes->MetaAddColumn(QQN::DestinatarioFrecuente()->Destino);
+		$colDestClie = $this->dtgDestinatarioFrecuentes->MetaAddColumn(QQN::DestinatarioFrecuente()->Destino);
+		$colDestClie->Width = 250;
 
         $this->btnExpoExce_Create();
 

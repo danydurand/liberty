@@ -764,30 +764,53 @@ class CrearFactura extends FormularioBaseKaizen {
     }
 
     protected function btnSave_Click() {
-        $this->objFactPmnx->CedulaRif = $this->lblCeduRifx->Text;
-        $this->objFactPmnx->RazonSocial = QuitarAmpersand($this->lblRazoSoci->Text);
-        $this->objFactPmnx->DireccionFiscal = $this->lblDireFisc->Text;
-        $this->objFactPmnx->Telefono = $this->lblNumeTele->Text;
-        $this->objFactPmnx->TieneRetencion = $this->chkTienRete->Checked ? 1 : 0;
-        $this->objFactPmnx->Save();
+        $strNombProc = 'Creando Factura Expreso Nacional';
+        $objProcEjec = CrearProceso($strNombProc);
+        $mixErroOrig = error_reporting();
+        error_reporting(0);
+        try {
+            $this->objFactPmnx->CedulaRif        = $this->lblCeduRifx->Text;
+            $this->objFactPmnx->RazonSocial      = QuitarAmpersand($this->lblRazoSoci->Text);
+            $this->objFactPmnx->DireccionFiscal  = $this->lblDireFisc->Text;
+            $this->objFactPmnx->Telefono         = $this->lblNumeTele->Text;
+            $this->objFactPmnx->TieneRetencion   = $this->chkTienRete->Checked ? 1 : 0;
+            $this->objFactPmnx->Save();
+        } catch (Exception $e) {
+            $this->mensaje($e->getMessage(),'m','d','',__iHAND__);
+            $arrParaErro['ProcIdxx'] = $objProcEjec->Id;
+            $arrParaErro['NumeRefe'] = 'Factura Exp Nac: '.$this->lblNumeFact->Text;
+            $arrParaErro['MensErro'] = $e->getMessage();
+            $arrParaErro['ComeErro'] = 'Falló la creación de la Factura';
+            GrabarError($arrParaErro);
+            return;
+        }
         //------------------------------------------------------------------
         // La razon social de la factura, puede ser diferente al remitente
         // y al destinatario de la guia, por ese motivo, se revisa la
         // existencia en la base de datos y en caso de no existir, se crea
         //------------------------------------------------------------------
         $objCliePmnx = ClientePmn::Load($this->lblCeduRifx->Text);
-        if (!$objCliePmnx) {
-            $objCliePmnx = new ClientePmn();
-            $objCliePmnx->SucursalId = $this->objUsuario->CodiEsta;
-            $objCliePmnx->RegistradoPor = $this->objUsuario->CodiUsua;
-            $objCliePmnx->RegistradoEl = new QDateTime(QDateTime::Now);
+        try {
+            if (!$objCliePmnx) {
+                $objCliePmnx = new ClientePmn();
+                $objCliePmnx->SucursalId    = $this->objUsuario->CodiEsta;
+                $objCliePmnx->RegistradoPor = $this->objUsuario->CodiUsua;
+                $objCliePmnx->RegistradoEl  = new QDateTime(QDateTime::Now);
+            }
+            $objCliePmnx->CedulaRif     = $this->lblCeduRifx->Text;
+            $objCliePmnx->Nombre        = $this->lblRazoSoci->Text;
+            $objCliePmnx->TelefonoFijo  = $this->lblNumeTele->Text;
+            $objCliePmnx->TelefonoMovil = $this->lblNumeTele->Text;
+            $objCliePmnx->Direccion     = $this->lblDireFisc->Text;
+            $objCliePmnx->Save();
+        } catch (Exception $e) {
+            $this->mensaje($e->getMessage(),'m','d','',__iHAND__);
+            $arrParaErro['ProcIdxx'] = $objProcEjec->Id;
+            $arrParaErro['NumeRefe'] = 'Cliente Exp Nac: '.$this->lblCeduRifx->Text;
+            $arrParaErro['MensErro'] = $e->getMessage();
+            $arrParaErro['ComeErro'] = 'Falló el Save del Cliente Exp Nac';
+            GrabarError($arrParaErro);
         }
-        $objCliePmnx->CedulaRif = $this->lblCeduRifx->Text;
-        $objCliePmnx->Nombre = $this->lblRazoSoci->Text;
-        $objCliePmnx->TelefonoFijo = $this->lblNumeTele->Text;
-        $objCliePmnx->TelefonoMovil = $this->lblNumeTele->Text;
-        $objCliePmnx->Direccion = $this->lblDireFisc->Text;
-        $objCliePmnx->Save();
         //---------------------------------------------------------------
         // Se actualiza la guia asociandola con el Id de la Pre-Factura
         //---------------------------------------------------------------
@@ -810,6 +833,7 @@ class CrearFactura extends FormularioBaseKaizen {
         // Se activa el boton que permite agregar nuevos Items
         //-----------------------------------------------------------
         $this->blnEditMode = true;
+        error_reporting($mixErroOrig);
     }
 
     protected function btnAnulFact_Click($strFormId, $strControlId, $strParameter) {

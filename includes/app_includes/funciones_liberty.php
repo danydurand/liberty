@@ -1892,10 +1892,10 @@ function GrabarCheckpointOptimizado($arrDatoCkpt) {
 
         if (in_array($objGuiaCkpt->CodiCkpt, $arrCkptSmsx)) {
             $objNotificacion = new Notificacion();
-            $objNotificacion->Id = proxNroNotificacion();
-            $objNotificacion->GuiaId = $objGuiaCkpt->NumeGuia;
-            $objNotificacion->CheckpointId = $objGuiaCkpt->CodiCkpt;
-            $objNotificacion->Notificado = SinoType::NO;
+            $objNotificacion->Id            = proxNroNotificacion();
+            $objNotificacion->GuiaId        = $objGuiaCkpt->NumeGuia;
+            $objNotificacion->CheckpointId  = $objGuiaCkpt->CodiCkpt;
+            $objNotificacion->Notificado    = SinoType::NO;
             $objNotificacion->NotificadoSms = SinoType::SI;
             $objNotificacion->Save();
         }

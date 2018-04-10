@@ -20,12 +20,10 @@ require(__APP_INCLUDES__ . '/header.inc.php');
             </div>
         </div>
         <div class="row">
-            <div class="col-md-1" style="margin-top: 1em;"></div>
-            <div class="col-md-8" style="margin-top: 1em;">
+            <div class="col-md-offset-1 col-md-9" style="margin-top: 1em;">
                 <?php $this->txtNumeGuia->RenderWithName(); ?>
                 <?php $this->lstChecBoxs->RenderWithName(); ?>
             </div>
-            <div class="col-md-3" style="margin-top: 1em;"></div>
         </div>
     </div>
 </div>

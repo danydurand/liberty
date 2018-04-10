@@ -95,6 +95,14 @@
             return Estacion::QueryArray(QQ::AndCondition($objClauWher),$objClauOrde);
         }
 
+        public static function CriteriosDeSucusalesActivas() {
+            $objClauWher   = QQ::Clause();
+            $objClauWher[] = QQ::Equal(QQN::Estacion()->CodiStat,StatusType::ACTIVO);
+            $objClauWher[] = QQ::Equal(QQN::Estacion()->VisibleEnRegistroId,SinoType::SI);
+            $objClauWher[] = QQ::Equal(QQN::Estacion()->PaisId,1);
+            return $objClauWher;
+        }
+
 		public static function LoadSucursalesActivasToClients() {
 		    //-------------------------------------------------------------------------------------------------
             // Esta función retorna una matriz de Objetos Estacion (Sucursales) activas, que no son almacén, y
@@ -102,10 +110,7 @@
             //-------------------------------------------------------------------------------------------------
             $objClauOrde   = QQ::Clause();
             $objClauOrde[] = QQ::OrderBy(QQN::Estacion()->DescEsta);
-            $objClauWher   = QQ::Clause();
-            $objClauWher[] = QQ::Equal(QQN::Estacion()->CodiStat,StatusType::ACTIVO);
-            $objClauWher[] = QQ::Equal(QQN::Estacion()->VisibleEnRegistroId,SinoType::SI);
-            $objClauWher[] = QQ::Equal(QQN::Estacion()->PaisId,1);
+            $objClauWher   = Estacion::CriteriosDeSucusalesActivas();
             return Estacion::QueryArray(QQ::AndCondition($objClauWher),$objClauOrde);
         }
 

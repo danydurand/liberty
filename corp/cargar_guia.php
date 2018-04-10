@@ -1030,6 +1030,7 @@ class CargarGuia extends FormularioBaseKaizen {
         //---------------------------------------------------------------------------------------------------
         // Se procede a buscar una Recolecta existente usando el código del Cliente y la Fecha de Recolecta.
         //---------------------------------------------------------------------------------------------------
+        $blnGrabReco = false;
         if ($blnGrabReco) {
             $dteFechReco = DspDespacho::LoadFechaRecolecta($this->strHoraTope);
             $objRecoAnte = DspDespacho::BuscarRecolectaPorCodiClieYFechReco($this->objCliente,$dteFechReco);

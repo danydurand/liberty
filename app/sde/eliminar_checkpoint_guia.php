@@ -12,14 +12,15 @@ class EliminarCkptGuia extends FormularioBaseKaizen {
     protected $lstChecBoxs;
     protected $blnTienPerm;
 
-    protected $btnSave;
-    protected $btnCancel;
-
     protected function Form_Create() {
         parent::Form_Create();
+
         $this->lblTituForm->Text = QApplication::Translate('Eliminar Checkpoint(s)');
 
         $this->blnTienPerm = BuscarParametro("ElimCkpt", $this->objUsuario->LogiUsua, "Val1", 0);
+        if ($this->objUsuario->LogiUsua == 'ddurand') {
+            $this->mensaje('Parametro: ElimCkpt','n','i','',__iINFO__);
+        }
 
         $this->txtNumeGuia_Create();
         $this->lstChecBoxs_Create();
@@ -48,7 +49,7 @@ class EliminarCkptGuia extends FormularioBaseKaizen {
         $this->lstChecBoxs->SelectionMode = QSelectionMode::Multiple;
         $this->lstChecBoxs->Rows = 10;
         $this->lstChecBoxs->Required = true;
-        $this->lstChecBoxs->Width = 550;
+        $this->lstChecBoxs->Width = 500;
     }
 
     //-----------------------------------
@@ -76,8 +77,12 @@ class EliminarCkptGuia extends FormularioBaseKaizen {
     protected function btnSave_Click($strFormId, $strControlId, $strParameter) {
         $arrClavRegi = $this->lstChecBoxs->SelectedValues;
         $objDatabase = Guia::GetDatabase();
-        $intContElem = count($arrClavRegi);
-
+        $strNombProc = 'Eliminando Checkpoints de Guias';
+        $objProcEjec = CrearProceso($strNombProc);
+        $intCantErro = 0;
+        $blnTodoOkey = true;
+        $mixErroOrig = error_reporting();
+        error_reporting(0);
         foreach ($arrClavRegi as $strCkptDelt) {
             $arrCkptDelt = explode(',',$strCkptDelt);
             $strNumeGuia = $arrCkptDelt[0];
@@ -99,38 +104,56 @@ class EliminarCkptGuia extends FormularioBaseKaizen {
             $strCadeSqlx .= "   and fech_ckpt = '$strFechCkpt'";
             $strCadeSqlx .= "   and hora_ckpt = '$strHoraCkpt'";
 
-            $objResuChec = $objDatabase->NonQuery($strCadeSqlx);
-
-            if($strCodiCkpt == 'OK'){
-                $strCadeSqlx  = "update guia ";
-                $strCadeSqlx .= "   set entregado_a = null, ";
-                $strCadeSqlx .= "       fecha_entrega = null, ";
-                $strCadeSqlx .= "       hora_entrega = null ";
-                $strCadeSqlx .= " where nume_guia = '$strNumeGuia'";
-
-                $objResuChec = $objDatabase->NonQuery($strCadeSqlx);
+            try {
+                $objDatabase->NonQuery($strCadeSqlx);
+            } catch (Exception $e) {
+                $this->mensaje($e->getMessage(),'m','d','',__iHAND__);
+                $arrParaErro['ProcIdxx'] = $objProcEjec->Id;
+                $arrParaErro['NumeRefe'] = 'Guia: '.$strNumeGuia;
+                $arrParaErro['MensErro'] = $e->getMessage();
+                $arrParaErro['ComeErro'] = 'Falló la eliminación del Checkpoint ('.$strCodiCkpt.')';
+                GrabarError($arrParaErro);
+                $intCantErro ++;
+                $blnTodoOkey = false;
             }
+            if ($blnTodoOkey) {
+                if ($strCodiCkpt == 'OK'){
+                    $strCadeSqlx  = "update guia ";
+                    $strCadeSqlx .= "   set entregado_a = null, ";
+                    $strCadeSqlx .= "       fecha_entrega = null, ";
+                    $strCadeSqlx .= "       hora_entrega = null ";
+                    $strCadeSqlx .= " where nume_guia = '$strNumeGuia'";
 
-            //----------------------------------------------------------------------------------------
-            // En el Registro de Trabajo, debe quedar constancia de los cambios ocurridos a la Guia
-            //----------------------------------------------------------------------------------------
-            $arrParaRegi['CodiCkpt'] = 'EC';
-            $arrParaRegi['TextMens'] = 'ELIMINO CHECKPOINT: '.$strRegiTrab;
-            $arrParaRegi['NumeGuia'] = $strNumeGuia;
-            $arrParaRegi['CodiUsua'] = $this->objUsuario->CodiUsua;
-            $arrParaRegi['CodiEsta'] = $this->objUsuario->CodiEsta;
-            CrearRegistroDeTrabajo($arrParaRegi);
-            $this->mensaje('Transaccion Exitosa','m','s','check');
-
+                    try {
+                        $objDatabase->NonQuery($strCadeSqlx);
+                    } catch (Exception $e) {
+                        $this->mensaje($e->getMessage(),'m','d','',__iHAND__);
+                        $arrParaErro['ProcIdxx'] = $objProcEjec->Id;
+                        $arrParaErro['NumeRefe'] = 'Guia: '.$strNumeGuia;
+                        $arrParaErro['MensErro'] = $e->getMessage();
+                        $arrParaErro['ComeErro'] = 'Falló la eliminación de la información del POD';
+                        GrabarError($arrParaErro);
+                        $intCantErro ++;
+                        $blnTodoOkey = false;
+                    }
+                }
+                if ($blnTodoOkey) {
+                    //----------------------------------------------------------------------------------------
+                    // En el Registro de Trabajo, debe quedar constancia de los cambios ocurridos a la Guia
+                    //----------------------------------------------------------------------------------------
+                    $arrParaRegi['CodiCkpt'] = 'EC';
+                    $arrParaRegi['TextMens'] = 'ELIMINO CHECKPOINT: '.$strRegiTrab;
+                    $arrParaRegi['NumeGuia'] = $strNumeGuia;
+                    $arrParaRegi['CodiUsua'] = $this->objUsuario->CodiUsua;
+                    $arrParaRegi['CodiEsta'] = $this->objUsuario->CodiEsta;
+                    CrearRegistroDeTrabajo($arrParaRegi);
+                    $this->mensaje('Transacción Exitosa !','m','s','',__iCHEC__);
+                }
+            }
         }
         $this->txtNumeGuia_Blur();
-    }
-
-    protected function btnCancel_Click($strFormId, $strControlId, $strParameter) {
-        $objUltAcce = PilaAcceso::Pop('D');
-        QApplication::Redirect(__SIST__.'/'.$objUltAcce->__toString());
+        error_reporting($mixErroOrig);
     }
 }
-
 EliminarCkptGuia::Run('EliminarCkptGuia');
 ?>
