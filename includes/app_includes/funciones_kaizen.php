@@ -230,7 +230,13 @@ function t($strTextTraz) {
             if (isset($_SESSION['NombProg'])) {
                 $arrLineAudi[] = basename($_SESSION['NombProg']);
             }
-            $arrLineAudi[] = $strTextTraz;
+            if (!is_array($strTextTraz)) {
+                $arrLineAudi[] = $strTextTraz;
+            } else {
+                foreach ($strTextTraz as $strElemArra) {
+                    $arrLineAudi[] = $strElemArra;
+                }
+            }
             $strCadeAudi = implode('|',$arrLineAudi);
             fputs($mixManeArch,$strCadeAudi."|\n");
         }

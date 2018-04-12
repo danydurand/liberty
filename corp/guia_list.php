@@ -128,25 +128,31 @@ class GuiaListForm extends GuiaListFormBase {
     protected function Form_Create() {
         parent::Form_Create();
 
+        t('B1');
         $this->objUsuario = unserialize($_SESSION['User']);
         $this->SetupValores();
 
         $this->lblTituForm->Text = $this->objSubxClie->strTituForm;
 
+        t('B2');
         $this->txtNumeGuia_Create();
         $this->calFechInic_Create();
         $this->calFechFina_Create();
         $this->txtNombRemi_Create();
         $this->txtNombDest_Create();
 
+        t('B3');
         $this->txtPesoGuia_Create();
         $this->txtCantPiez_Create();
 		$this->lstTipoPago_Create();
 		$this->lstCodiOrig_Create();
 		$this->lstCodiDest_Create();
 
+		t('B4');
         $this->btnBuscRegi_Create();
         $this->btnImprMani_Create();
+
+        t('B5');
 
 
         // Instantiate the Meta DataGrid
@@ -161,7 +167,6 @@ class GuiaListForm extends GuiaListFormBase {
         // Add Pagination (if desired)
         $this->dtgGuias->Paginator = new QPaginator($this->dtgGuias);
         $this->dtgGuias->ItemsPerPage = __FORM_DRAFTS_FORM_LIST_ITEMS_PER_PAGE__;
-        //$this->dtgGuias->ItemsPerPage = 45;
 
         // Higlight the datagrid rows when mousing over them
         $this->dtgGuias->AddRowAction(new QMouseOverEvent(), new QCssClassAction('selectedStyle'));
@@ -173,6 +178,7 @@ class GuiaListForm extends GuiaListFormBase {
         $this->dtgGuias->RowActionParameterHtml = '<?= $_ITEM->NumeGuia ?>';
         $this->dtgGuias->AddRowAction(new QClickEvent(), new QAjaxAction('dtgGuiasRow_Click'));
 
+        t('B6');
         //-------------------------------------------------------------
         // Cláusula adicional para ordenar por Fecha y Número de Guía.
         //-------------------------------------------------------------
@@ -218,12 +224,18 @@ class GuiaListForm extends GuiaListFormBase {
             }
         }
 
+        t('B7');
         $this->dtgGuias->AdditionalConditions = QQ::AndCondition($objClauWher);
         $this->dtgGuias->AdditionalClauses = $objClauOrde;
         //----------------------------------------------------------------------
         // Guardo las cláusulas en una variable de sesión para futuros reportes
         //----------------------------------------------------------------------
-        $_SESSION['CritXlsx'] = serialize($objClauWher);
+
+        t('B8');
+//        $_SESSION['CritXlsx'] = serialize($objClauWher);
+        $this->listaDeGuiasParaExportar($objClauWher);
+
+        t('B8.1');
 
         $colStatGuia = new QDataGridColumn('ST', '<?= $_FORM->StatusColumnRender($_ITEM) ?>');
         $colStatGuia->HtmlEntities         = false;
@@ -278,6 +290,7 @@ class GuiaListForm extends GuiaListFormBase {
         $colUsuaCrea->FilterBoxSize = 5;
         $colUsuaCrea->Name = 'USUARIO';
 
+        t('B9');
         //------------------
         // Botónes Propios
         //------------------
@@ -296,11 +309,13 @@ class GuiaListForm extends GuiaListFormBase {
             $this->btnManiDrop->Visible = false;
             $this->btnImprMani->Visible = false;
         }
+
     }
 
     //----------------------------
     // Aquí se Crean los Objetos
     //----------------------------
+
     protected function btnCancel_Create() {
         $this->btnCancel = new QButton($this);
         $this->btnCancel->Text = '<i class="fa fa-mail-reply fa-lg"></i> Volver';
@@ -384,9 +399,7 @@ class GuiaListForm extends GuiaListFormBase {
 		$this->lstCodiOrig->Visible = false;
 		$objClauOrde   = QQ::Clause();
 		$objClauOrde[] = QQ::OrderBy(QQN::Estacion()->DescEsta);
-		$objClauWher   = QQ::Clause();
-		$objClauWher[] = QQ::Equal(QQN::Estacion()->CodiStat,StatusType::ACTIVO);
-		$objClauWher[] = QQ::Equal(QQN::Estacion()->EsUnAlmacen,SinoType::NO);
+		$objClauWher   = Estacion::CriteriosDeSucusalesActivas();
 		$arrCodiOrig   = Estacion::QueryArray(QQ::AndCondition($objClauWher),$objClauOrde);
 		$intCantOrig   = count($arrCodiOrig);
 		$this->lstCodiOrig->AddItem(QApplication::Translate('- Seleccione Uno - ('.$intCantOrig.')'),null);
@@ -402,9 +415,7 @@ class GuiaListForm extends GuiaListFormBase {
 		$this->lstCodiDest->Visible = false;
 		$objClauOrde   = QQ::Clause();
 		$objClauOrde[] = QQ::OrderBy(QQN::Estacion()->DescEsta);
-		$objClauWher   = QQ::Clause();
-		$objClauWher[] = QQ::Equal(QQN::Estacion()->CodiStat,StatusType::ACTIVO);
-		$objClauWher[] = QQ::Equal(QQN::Estacion()->EsUnAlmacen,SinoType::NO);
+		$objClauWher   = Estacion::CriteriosDeSucusalesActivas();
 		$arrCodiDest   = Estacion::QueryArray(QQ::AndCondition($objClauWher),$objClauOrde);
 		$intCantDest   = count($arrCodiDest);
 		$this->lstCodiDest->AddItem(QApplication::Translate('- Seleccione Uno - ('.$intCantDest.')'),null);
@@ -489,18 +500,29 @@ class GuiaListForm extends GuiaListFormBase {
     }
 
     protected function btnManiDrop_Create() {
+
+        t('Uno');
         $this->btnManiDrop = new QLabel($this);
         $this->btnManiDrop->HtmlEntities = false;
         $this->btnManiDrop->CssClass = '';
 
-        $objClauWher = unserialize($_SESSION['CritXlsx']);
-        $arrGuiaSele = Guia::QueryArray(QQ::AndCondition($objClauWher));
+        t('Dos');
+        /*
         $arrGuiaDefi = array();
-        foreach ($arrGuiaSele as $objGuia) {
-            $arrGuiaDefi[] = $objGuia->NumeGuia;
+        if (isset($_SESSION['CritXlsx'])) {
+            t('La variable de session si existe');
+            $objClauWher = unserialize($_SESSION['CritXlsx']);
+            t('Qui toy');
+            $arrGuiaSele = Guia::QueryArray(QQ::AndCondition($objClauWher));
+            t('Hay '.count($arrGuiaSele).' guias');
+            foreach ($arrGuiaSele as $objGuia) {
+                $arrGuiaDefi[] = $objGuia->NumeGuia;
+            }
         }
         $_SESSION['Dato'] = serialize($arrGuiaDefi);
+        */
 
+        t('Tres');
         $strTextBoto   = TextoIcono('print fa-lg','Imprimir','F','sm');
 
         $strUrlxDiax = !is_null($this->objSubxClie->strCritSubx)
@@ -511,12 +533,12 @@ class GuiaListForm extends GuiaListFormBase {
             : __SIST__.'/guia_list.php?i=otr';
         $strUrlxLote = __SIST__.'/guia_pdf_lote.php';
 
-
         $arrOpciDrop[] = OpcionDropDown($strUrlxDiax,TextoIcono('calendar','Manif. Diario'));
         $arrOpciDrop[] = OpcionDropDown($strUrlxOtro,TextoIcono('random','Otro Manif.'));
         $arrOpciDrop[] = OpcionDropDown($strUrlxLote,TextoIcono('book','Guias en Lote'));
 
         $this->btnManiDrop->Text = CrearDropDownButton($strTextBoto, $arrOpciDrop, 'i');
+        t('Aqui cree el boton');
     }
 
     //-----------------------------------
@@ -602,6 +624,7 @@ class GuiaListForm extends GuiaListFormBase {
 
         $this->dtgGuias->SetDataBinder('dtgGuias_Bind');
         $this->dtgGuias->Refresh();
+        $this->listaDeGuiasParaExportar($this->objClauWher);
 
         if ($this->blnHayxCond) {
             $intCantRegi = Guia::QueryCount(QQ::AndCondition($this->objClauWher));
@@ -618,7 +641,7 @@ class GuiaListForm extends GuiaListFormBase {
 
     public function dtgNombDest_Render(Guia $objGuiaList) {
         if ($objGuiaList) {
-            return substr($objGuiaList->NombDest,0,40).'...';
+            return substr(limpiarCadena($objGuiaList->NombDest),0,40).'...';
         } else {
             return null;
         }
@@ -644,7 +667,8 @@ class GuiaListForm extends GuiaListFormBase {
         //----------------------------------------------------------------------
         // Guardo las cláusulas en una variable de sesión para futuros reportes
         //----------------------------------------------------------------------
-        $_SESSION['CritXlsx'] = serialize($this->objClauWher);
+//        $_SESSION['CritXlsx'] = serialize($this->objClauWher);
+        $this->listaDeGuiasParaExportar($this->objClauWher);
 
         $this->dtgGuias->TotalItemCount = Guia::QueryCount(QQ::AndCondition($this->objClauWher));
 
@@ -654,6 +678,20 @@ class GuiaListForm extends GuiaListFormBase {
         );
 
         $this->dtgGuias->DataSource = $arrGuiaNaci;
+    }
+
+    protected function listaDeGuiasParaExportar($objClauWher) {
+        $arrGuiaDefi = array();
+        t($objClauWher);
+        t('Aja');
+        $arrGuiaSele = Guia::QueryArray(QQ::AndCondition($objClauWher));
+        t('Epa');
+        foreach ($arrGuiaSele as $objGuia) {
+            $arrGuiaDefi[] = $objGuia->NumeGuia;
+        }
+        $_SESSION['Dato']     = serialize($arrGuiaDefi);
+        $_SESSION['CritXlsx'] = serialize($objClauWher);
+        t('Variable de session creada');
     }
 
     public function dtgGuiasRow_Click($strFormId, $strControlId, $strParameter) {

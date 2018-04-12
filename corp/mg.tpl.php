@@ -26,7 +26,6 @@ require(__YAMAGUCHI__APP_INCLUDES__ . '/header.inc.php');
             $objClauOrde   = QQ::Clause();
             $objClauOrde[] = QQ::OrderBy(QQN::MensajeYamaguchi()->Orden);
             $arrMensCorp   = MensajeYamaguchi::LoadMensajesVigentesParaElCliente($objClieUsua->CodigoInterno,$objClauOrde);
-            t('Tengo un total de: '.count($arrMensCorp).' mensaje(s)');
             foreach ($arrMensCorp as $objMensCorp) {
                 //---------------------------------------------------------
                 // Si el mensaje esta Vigente o es por tiempo indefinido
