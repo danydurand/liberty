@@ -8,6 +8,7 @@
 //-------------------------------------------------------------------------------------
 require_once('qcubed.inc.php');
 require_once(__APP_INCLUDES__.'/protected.inc.php');
+require_once(__APP_INCLUDES__.'/validar_ubicacion.inc.php');
 require_once(__APP_INCLUDES__.'/FormularioBaseKaizen.class.php');
 
 class ConsultaGuia extends FormularioBaseKaizen {

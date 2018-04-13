@@ -8,6 +8,7 @@
 //-----------------------------------------------------------------------------------
 require_once('qcubed.inc.php');
 require_once(__APP_INCLUDES__.'/protected.inc.php');
+require_once(__APP_INCLUDES__.'/validar_ubicacion.inc.php');
 require_once(__APP_INCLUDES__.'/FormularioBaseKaizen.class.php');
 
 // Security check for ALLOW_REMOTE_ADMIN
@@ -983,8 +984,8 @@ class CargarGuia extends FormularioBaseKaizen {
     //------------------------------------------------------------
     // Función que define el evento click del QButton de Facturar
     //------------------------------------------------------------
+
     protected function btnFactGuia_Click() {
-        $this->mensaje('Evento en construccion!','','w','',__iEXCL__);
         //--------------------------------------------------------------------------------------------------
         // Si la factura o prefactura ya existe, se invoca al programa de facturación con el ID de la misma,
         // de lo contrario, se hace la invocación con el número de la guía.
@@ -1038,18 +1039,18 @@ class CargarGuia extends FormularioBaseKaizen {
         // Si los datos del Remitente no existen, se almacenan en la base de datos, para futuros envios.
         // En caso de que exista, se actualizan sus datos.
         //------------------------------------------------------------------------------------------------
-        $this->objCliePmnx->Nombre        = $this->txtNombClie->Text;
+        $this->objCliePmnx->Nombre        = substr(limpiarCadena($this->txtNombClie->Text),0,100);
         $this->objCliePmnx->CedulaRif     = DejarNumerosVJGuion($this->txtNumeCedu->Text);
         $this->objCliePmnx->TelefonoFijo  = DejarSoloLosNumeros($this->txtTeleFijo->Text);
         $this->objCliePmnx->TelefonoMovil = DejarSoloLosNumeros($this->txtTeleMovi->Text);
-        $this->objCliePmnx->Direccion     = $this->txtDireClie->Text;
+        $this->objCliePmnx->Direccion     = substr(limpiarCadena($this->txtDireClie->Text),0,200);
         //----------------------------------------------------------------------------------
         // Si el Cliente Remitente no existe aún, se graba Usuario y la fecha de creación.
         //----------------------------------------------------------------------------------
         if (!$this->blnEditClie) {
-            $this->objCliePmnx->SucursalId = $this->objUsuario->CodiEsta;
+            $this->objCliePmnx->SucursalId    = $this->objUsuario->CodiEsta;
             $this->objCliePmnx->RegistradoPor = $this->objUsuario->CodiUsua;
-            $this->objCliePmnx->RegistradoEl = new QDateTime(QDateTime::Now);
+            $this->objCliePmnx->RegistradoEl  = new QDateTime(QDateTime::Now);
         }
         //------------------------------
         // Se salva la data del Cliente
@@ -1063,9 +1064,9 @@ class CargarGuia extends FormularioBaseKaizen {
             $this->objDestPmnx = new ClientePmn();
             $this->objDestPmnx->CedulaRif = DejarNumerosVJGuion($this->txtCeduDest->Text);
         }
-        $this->objDestPmnx->Nombre        = $this->txtNombDest->Text;
+        $this->objDestPmnx->Nombre        = substr(limpiarCadena($this->txtNombDest->Text),0,100);
         $this->objDestPmnx->TelefonoMovil = DejarSoloLosNumeros($this->txtTeleDest->Text);
-        $this->objDestPmnx->Direccion     = $this->txtDireDest->Text;
+        $this->objDestPmnx->Direccion     = substr(limpiarCadena($this->txtDireDest->Text),0,200);
         if (!$this->blnEditDest) {
             $this->objDestPmnx->TelefonoFijo  = 'N/A';
             $this->objDestPmnx->SucursalId    = $this->objUsuario->CodiEsta;
@@ -1523,6 +1524,10 @@ class CargarGuia extends FormularioBaseKaizen {
             $this->mensaje('Guía Facturada. No admite cambios','','w',
                            '',__iEXCL__);
         }
+    }
+
+    protected function enviarMensajeDeError($strTextMens) {
+        $this->mensaje($strTextMens,'','d', '', __iHAND__);
     }
 
     //-----------------------------------------------------------------------------------------

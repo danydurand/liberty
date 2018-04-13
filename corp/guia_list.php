@@ -501,12 +501,10 @@ class GuiaListForm extends GuiaListFormBase {
 
     protected function btnManiDrop_Create() {
 
-        t('Uno');
         $this->btnManiDrop = new QLabel($this);
         $this->btnManiDrop->HtmlEntities = false;
         $this->btnManiDrop->CssClass = '';
 
-        t('Dos');
         /*
         $arrGuiaDefi = array();
         if (isset($_SESSION['CritXlsx'])) {
@@ -522,7 +520,6 @@ class GuiaListForm extends GuiaListFormBase {
         $_SESSION['Dato'] = serialize($arrGuiaDefi);
         */
 
-        t('Tres');
         $strTextBoto   = TextoIcono('print fa-lg','Imprimir','F','sm');
 
         $strUrlxDiax = !is_null($this->objSubxClie->strCritSubx)
@@ -538,7 +535,6 @@ class GuiaListForm extends GuiaListFormBase {
         $arrOpciDrop[] = OpcionDropDown($strUrlxLote,TextoIcono('book','Guias en Lote'));
 
         $this->btnManiDrop->Text = CrearDropDownButton($strTextBoto, $arrOpciDrop, 'i');
-        t('Aqui cree el boton');
     }
 
     //-----------------------------------
@@ -682,16 +678,14 @@ class GuiaListForm extends GuiaListFormBase {
 
     protected function listaDeGuiasParaExportar($objClauWher) {
         $arrGuiaDefi = array();
-        t($objClauWher);
-        t('Aja');
-        $arrGuiaSele = Guia::QueryArray(QQ::AndCondition($objClauWher));
-        t('Epa');
-        foreach ($arrGuiaSele as $objGuia) {
-            $arrGuiaDefi[] = $objGuia->NumeGuia;
+        if ($this->objUsuario->ClienteId != 1836) {
+            $arrGuiaSele = Guia::QueryArray(QQ::AndCondition($objClauWher));
+            foreach ($arrGuiaSele as $objGuia) {
+                $arrGuiaDefi[] = $objGuia->NumeGuia;
+            }
+            $_SESSION['Dato']     = serialize($arrGuiaDefi);
         }
-        $_SESSION['Dato']     = serialize($arrGuiaDefi);
         $_SESSION['CritXlsx'] = serialize($objClauWher);
-        t('Variable de session creada');
     }
 
     public function dtgGuiasRow_Click($strFormId, $strControlId, $strParameter) {
