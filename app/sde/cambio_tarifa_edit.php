@@ -53,6 +53,7 @@ class CambioTarifaEditForm extends CambioTarifaEditFormBase {
 		$this->lstTarifaOrigen = $this->mctCambioTarifa->lstTarifaOrigen_Create(null,null,$objClauOrde);
 		$this->lstTarifaOrigen->Name = 'Los Cliente que tienen';
 		$this->lstTarifaOrigen->Width = 250;
+		$this->lstTarifaOrigen->Required = false;
 		$this->lstTarifaOrigen->AddAction(new QChangeEvent(), new QAjaxAction('lstTariOrig_Change'));
 
         if (!$this->mctCambioTarifa->EditMode) {
@@ -72,6 +73,7 @@ class CambioTarifaEditForm extends CambioTarifaEditFormBase {
         }
 		$this->lstTarifaDestino->Name = 'Ahora deben tener';
 		$this->lstTarifaDestino->Width = 250;
+		$this->lstTarifaDestino->Required = false;
 		$this->lstTarifaDestino->AddAction(new QChangeEvent(), new QAjaxAction('lstTariDest_Change'));
 
 		$this->txtExcluir = $this->mctCambioTarifa->txtExcluir_Create();
@@ -81,7 +83,6 @@ class CambioTarifaEditForm extends CambioTarifaEditFormBase {
 
 		$this->calEjecutarEl = $this->mctCambioTarifa->calEjecutarEl_Create();
 		$this->calEjecutarEl->Name = 'Ejecutar el cambio el';
-		$this->calEjecutarEl->Required = true;
 
 		$this->calRegistradoEl = $this->mctCambioTarifa->calRegistradoEl_Create();
 		$this->calRegistradoEl->Enabled = false;
@@ -223,7 +224,7 @@ class CambioTarifaEditForm extends CambioTarifaEditFormBase {
         $this->mensaje($strMensErro,'','d',__iHAND__);
     }
 
-    protected function validarCampos() {
+    protected function Form_Validate() {
 	    if (is_null($this->lstTarifaOrigen->SelectedValue)) {
 	        $strMensError = 'Debe especificar la Tarifa que desea cambiar';
 	        $this->enviarMensajeDeError($strMensError);
@@ -249,43 +250,41 @@ class CambioTarifaEditForm extends CambioTarifaEditFormBase {
     }
 
     protected function btnSave_Click($strFormId, $strControlId, $strParameter) {
-	    if ($this->validarCampos()) {
-            //--------------------------------------------
-            // Se clona el objeto para verificar cambios
-            //--------------------------------------------
-            $this->txtExcluir->Text = nl2br2($this->txtExcluir->Text);
+        //--------------------------------------------
+        // Se clona el objeto para verificar cambios
+        //--------------------------------------------
+        $this->txtExcluir->Text = nl2br2($this->txtExcluir->Text);
 
-            $objRegiViej = clone $this->mctCambioTarifa->CambioTarifa;
-            $this->mctCambioTarifa->SaveCambioTarifa();
-            $strNombCamb = $this->lstTarifaOrigen->SelectedName.' por '.$this->lstTarifaDestino->SelectedName;
-            if ($this->mctCambioTarifa->EditMode) {
-                //---------------------------------------------------------------------
-                // Si estamos en modo Edicion, entonces se verifican la existencia
-                // de algun cambio en algun dato
-                //---------------------------------------------------------------------
-                $objRegiNuev = $this->mctCambioTarifa->CambioTarifa;
-                $objResuComp = QObjectDiff::Compare($objRegiViej, $objRegiNuev);
-                if ($objResuComp->FriendlyComparisonStatus == 'different') {
-                    //------------------------------------------
-                    // En caso de que el objeto haya cambiado
-                    //------------------------------------------
-                    $arrLogxCamb['strNombTabl'] = 'CambioTarifa';
-                    $arrLogxCamb['intRefeRegi'] = $this->mctCambioTarifa->CambioTarifa->Id;
-                    $arrLogxCamb['strNombRegi'] = $strNombCamb;
-                    $arrLogxCamb['strDescCamb'] = implode(',',$objResuComp->DifferentFields);
-                    $arrLogxCamb['strEnlaEnti'] = __SIST__.'/cambio_tarifa_edit.php/'.$this->mctCambioTarifa->CambioTarifa->Id;
-                    LogDeCambios($arrLogxCamb);
-                    $this->mensaje('Transacción Exitosa','','','check');
-                }
-            } else {
+        $objRegiViej = clone $this->mctCambioTarifa->CambioTarifa;
+        $this->mctCambioTarifa->SaveCambioTarifa();
+        $strNombCamb = $this->lstTarifaOrigen->SelectedName.' por '.$this->lstTarifaDestino->SelectedName;
+        if ($this->mctCambioTarifa->EditMode) {
+            //---------------------------------------------------------------------
+            // Si estamos en modo Edicion, entonces se verifican la existencia
+            // de algun cambio en algun dato
+            //---------------------------------------------------------------------
+            $objRegiNuev = $this->mctCambioTarifa->CambioTarifa;
+            $objResuComp = QObjectDiff::Compare($objRegiViej, $objRegiNuev);
+            if ($objResuComp->FriendlyComparisonStatus == 'different') {
+                //------------------------------------------
+                // En caso de que el objeto haya cambiado
+                //------------------------------------------
                 $arrLogxCamb['strNombTabl'] = 'CambioTarifa';
                 $arrLogxCamb['intRefeRegi'] = $this->mctCambioTarifa->CambioTarifa->Id;
                 $arrLogxCamb['strNombRegi'] = $strNombCamb;
-                $arrLogxCamb['strDescCamb'] = "Creado";
+                $arrLogxCamb['strDescCamb'] = implode(',',$objResuComp->DifferentFields);
                 $arrLogxCamb['strEnlaEnti'] = __SIST__.'/cambio_tarifa_edit.php/'.$this->mctCambioTarifa->CambioTarifa->Id;
                 LogDeCambios($arrLogxCamb);
                 $this->mensaje('Transacción Exitosa','','','check');
             }
+        } else {
+            $arrLogxCamb['strNombTabl'] = 'CambioTarifa';
+            $arrLogxCamb['intRefeRegi'] = $this->mctCambioTarifa->CambioTarifa->Id;
+            $arrLogxCamb['strNombRegi'] = $strNombCamb;
+            $arrLogxCamb['strDescCamb'] = "Creado";
+            $arrLogxCamb['strEnlaEnti'] = __SIST__.'/cambio_tarifa_edit.php/'.$this->mctCambioTarifa->CambioTarifa->Id;
+            LogDeCambios($arrLogxCamb);
+            $this->mensaje('Transacción Exitosa','','','check');
         }
 	}
 

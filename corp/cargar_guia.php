@@ -265,7 +265,7 @@ class CargarGuia extends FormularioBaseKaizen {
 
     protected function txtDescCont_Create() {
         $this->txtDescCont = new QTextBox($this);
-        $this->txtDescCont->Name = 'Contenido del envío';
+        $this->txtDescCont->Placeholder = 'Descripción del Contenido';
         $this->txtDescCont->TextMode = QTextMode::MultiLine;
         $this->txtDescCont->MaxLength = Guia::DescContMaxLength;
         $this->txtDescCont->SetCustomAttribute('onblur',"this.value=this.value.toUpperCase()");
@@ -366,13 +366,10 @@ class CargarGuia extends FormularioBaseKaizen {
         if ($this->blnEditMode) {
             $this->txtDireRemi->Text = $this->objGuia->DireRemi;
         } else {
-            //            $this->txtDireRemi->Text = $this->objCliente->DireReco;
             $this->txtDireRemi->Text = substr($this->objUsuario->Direccion,0,200);
         }
     }
-    //----------------------------------------
-    // ---- Información del Destinatario ----
-    //----------------------------------------
+
     protected function lstDestFrec_Create() {
         $this->lstDestFrec = new QListBox($this);
         $this->lstDestFrec->Name = 'Destinatario Frecuente';
@@ -394,7 +391,7 @@ class CargarGuia extends FormularioBaseKaizen {
 
     protected function txtNombDest_Create() {
         $this->txtNombDest = new QTextBox($this);
-        $this->txtNombDest->Name = 'Nombre/R. Social';
+        $this->txtNombDest->Placeholder = 'Nombre/R. Social';
         $this->txtNombDest->Width = 240;
         $this->txtNombDest->MaxLength = Guia::NombDestMaxLength;
         $this->txtNombDest->SetCustomAttribute('onblur',"this.value=this.value.toUpperCase()");
@@ -406,6 +403,7 @@ class CargarGuia extends FormularioBaseKaizen {
     protected function txtTeleDest_Create() {
         $this->txtTeleDest = new QTextBox($this);
         $this->txtTeleDest->Name = 'Teléfono (Solo Números)';
+        $this->txtTeleDest->Placeholder = '(Solo Números)';
         $this->txtTeleDest->Width = 218;
         if ($this->blnEditMode) {
             $this->txtTeleDest->Text = $this->objGuia->TeleDest;
@@ -414,7 +412,7 @@ class CargarGuia extends FormularioBaseKaizen {
 
     protected function txtDireDest_Create() {
         $this->txtDireDest = new QTextBox($this);
-        $this->txtDireDest->Name = 'Dirección Entrega';
+        $this->txtDireDest->Placeholder = 'Dirección Entrega';
         $this->txtDireDest->TextMode = QTextMode::MultiLine;
         $this->txtDireDest->MaxLength = Guia::DireDestMaxLength;
         $this->txtDireDest->SetCustomAttribute('onblur',"this.value=this.value.toUpperCase()");
@@ -427,7 +425,7 @@ class CargarGuia extends FormularioBaseKaizen {
 
     protected function lblCeduDest_Create() {
         $this->lblCeduDest = new QLabel($this);
-        $this->lblCeduDest->Text = 'Cédula/RIF del Destinatario (opcional)';
+        $this->lblCeduDest->Text = 'Cédula/RIF del Destinatario';
     }
 
     protected function lstCeduDest_Create() {
@@ -445,10 +443,10 @@ class CargarGuia extends FormularioBaseKaizen {
     protected function txtCeduDest_Create() {
         $this->txtCeduDest = new QTextBox($this);
         $this->txtCeduDest->Width = 160;
+        $this->txtCeduDest->Placeholder = 'CED/RIF Destinatario';
         if ($this->blnEditMode) {
             $this->txtCeduDest->Text = $this->objGuia->CedulaRif;
         }
-        //        $this->txtCeduDest->AddAction(new QBlurEvent(), new QAjaxAction('txtCeduDest_Blur'));
     }
 
     protected function chkDestFrec_Create() {
@@ -462,9 +460,6 @@ class CargarGuia extends FormularioBaseKaizen {
         $this->lstModaPago->AddAction(new QChangeEvent(),new QAjaxAction('lstModaPago_Change'));
     }
 
-    //-------------------
-    // ---- Botones ----
-    //-------------------
     protected function btnImprGuia_Create() {
         $this->btnImprGuia = new QButtonI($this);
         $this->btnImprGuia->Text = TextoIcono('print fa-lg','Impr');
@@ -542,242 +537,117 @@ class CargarGuia extends FormularioBaseKaizen {
         }
     }
 
+    protected function enviarMensajeDeError($strMensErro) {
+        $this->mensaje($strMensErro,'','d','',__iHAND__);
+    }
+
     protected function Form_Validate() {
-        // t('Validando la Guia');
-        // t('=================');
-        $strTextMens = 'Errores: <b>';
-        $strMensErro = '';
-        $blnTodoOkey = true;
-        //-----------------------------------------
-        // Validando campo de Nombre del Remitente
-        //-----------------------------------------
         if (strlen($this->txtNombRemi->Text) == 0) {
-            $blnTodoOkey = false;
-            $strMensErro .= 'Nombre/R.Social del Remitente (Requerido)';
+            $strMensErro = 'Nombre/R.Social del Remitente (Requerido)';
+            $this->enviarMensajeDeError($strMensErro);
+            return false;
         }
-        // t('Razon Social: '.$blnTodoOkey);
-        //-------------------------------------------
-        // Validando campo de Teléfono del Remitente
-        //-------------------------------------------
-        if (strlen($this->txtTeleRemi->Text) > 0) {
-            $this->txtTeleRemi->Text = DejarSoloLosNumeros($this->txtTeleRemi->Text);
-            if (strlen($this->txtTeleRemi->Text) > 11) {
-                $blnTodoOkey = false;
-                if (strlen($strMensErro) > 0) {
-                    $strMensErro .= ', ';
-                }
-                $strMensErro .= 'Teléfono Remitente no debe tener más de 11 caracteres';
-            }
+        if (strlen($this->txtTeleRemi->Text) == 0) {
+            $strMensErro = 'Teléfono del Remitente (Requerido)';
+            $this->enviarMensajeDeError($strMensErro);
+            return false;
         }
-        // t('Telefono del Remitente: '.$blnTodoOkey);
-        //-------------------------------------------
-        // Validando campo de Dirección de Recolecta
-        //-------------------------------------------
+        if (strlen($this->txtTeleRemi->Text) > 11) {
+            $strMensErro = 'Teléfono Remitente (No debe tener más de 11 caracteres numéricos)';
+            $this->enviarMensajeDeError($strMensErro);
+            return false;
+        }
         if (strlen($this->txtDireRemi->Text) == 0) {
-            $blnTodoOkey = false;
-            if (strlen($strMensErro) > 0) {
-                $strMensErro .= ', ';
-            }
-            $strMensErro .= 'Dirección de Recolecta (Requerida)';
+            $strMensErro = 'Dirección de Recolecta (Requerida)';
+            $this->enviarMensajeDeError($strMensErro);
+            return false;
         }
-        // t('Direccion de Recolecta: '.$blnTodoOkey);
-        //---------------------------------------------------------
-        // Validando campo de Descripción del Contenido de la Guía
-        //---------------------------------------------------------
+        if (strlen($this->txtDireRemi->Text) < 10) {
+            $strMensErro = 'Dirección de Remitente (Muy corta)';
+            $this->enviarMensajeDeError($strMensErro);
+            return false;
+        }
         if (strlen($this->txtDescCont->Text) == 0) {
-            $blnTodoOkey = false;
-            if (strlen($strMensErro) > 0) {
-                $strMensErro .= ', ';
-            }
-            $strMensErro .= 'Contenido del Envío (Requerido)';
+            $strMensErro = 'Contenido del Envío (Requerido)';
+            $this->enviarMensajeDeError($strMensErro);
+            return false;
         }
-        // t('Descripcion del Contenido: '.$blnTodoOkey);
-        //---------------------------------------
-        // Validando campo de Cantidad de Piezas
-        //---------------------------------------
         if (strlen($this->txtCantPiez->Text) == 0) {
-            $blnTodoOkey = false;
-            if (strlen($strMensErro) > 0) {
-                $strMensErro .= ', ';
-            }
-            $strMensErro .= 'Cant. Pzas (Requerida)';
+            $strMensErro = 'Cantidad de Piezas (Requerida)';
+            $this->enviarMensajeDeError($strMensErro);
+            return false;
         }
-        // t('Cantidad de Piezas: '.$blnTodoOkey);
-        //------------------------------------
-        // Validando campo de Valor Declarado
-        //------------------------------------
+        if ($this->txtCantPiez->Text <= 0) {
+            $strMensErro = 'Cantidad de Piezas (Debe ser mayor a cero)';
+            $this->enviarMensajeDeError($strMensErro);
+            return false;
+        }
         if ($this->chkSeguGuia->Checked) {
             if (strlen($this->txtValoDecl->Text) == 0) {
-                $blnTodoOkey = false;
-                if (strlen($strMensErro) > 0) {
-                    $strMensErro .= ', ';
-                }
-                $strMensErro .= 'V. Decl. (Requerido)';
+                $strMensErro = 'Valor Declarado (Requerido)';
+                $this->enviarMensajeDeError($strMensErro);
+                return false;
             } else {
-                //-----------------------------------------------------------------------------------
-                // Verificando si el Valor Declarado se encuentra dentro del rango legal del Seguro,
-                // en caso de que el Usuario haya requerido el mismo.
-                //-----------------------------------------------------------------------------------
                 if ($this->objSeguGuia) {
                     if ($this->txtValoDecl->Text < $this->arrValoMini[0]) {
-                        //----------------------------------------------------------------------------------
-                        // El Valor Decl. se encuentra por debajo del rango legal, por lo que el Sistema no
-                        // debe permitir guardar la guía hasta no corregir dicho valor.
-                        //----------------------------------------------------------------------------------
-                        $blnTodoOkey = false;
-                        if (strlen($strMensErro) > 0) {
-                            $strMensErro .= ', ';
-                        }
-                        $strMensErro .= 'V. Decl. ('.$this->objSeguGuia->MensSegu.')';
+                        $strMensErro = 'Valor Declaro ('.$this->objSeguGuia->MensSegu.')';
+                        $this->enviarMensajeDeError($strMensErro);
+                        return false;
                     }
                 }
             }
         }
-        // t('Valor Declarado: '.$blnTodoOkey);
-        //----------------------------
-        // Validando el Origen
-        //----------------------------
         if (is_null($this->lstSucuOrig->SelectedValue)) {
-            $blnTodoOkey = false;
-            if (strlen($strMensErro) > 0) {
-                $strMensErro .= ', ';
-            }
-            $strMensErro .= 'Origen (Requerido)';
+            $strMensErro = 'Origen (Requerido)';
+            $this->enviarMensajeDeError($strMensErro);
+            return false;
         }
-        //----------------------------
-        // Validando campo de Destino
-        //----------------------------
         if (is_null($this->lstSucuDest->SelectedValue)) {
-            $blnTodoOkey = false;
-            if (strlen($strMensErro) > 0) {
-                $strMensErro .= ', ';
-            }
-            $strMensErro .= 'Destino (Requerido)';
+            $strMensErro = 'Destino (Requerido)';
+            $this->enviarMensajeDeError($strMensErro);
+            return false;
         }
-        // t('Destino: '.$blnTodoOkey);
-        //-----------------------------------------------------
-        // Validando campo de Nombre del Destinatario (vacio)
-        //-----------------------------------------------------
         if (strlen($this->txtNombDest->Text) == 0) {
-            $blnTodoOkey = false;
-            if (strlen($strMensErro) > 0) {
-                $strMensErro .= ', ';
-            }
-            $strMensErro .= 'Nombre/R. Social del Destinatario (Requerido)';
+            $strMensErro = 'Nombre/Razón Social del Destinatario (Requerido)';
+            $this->enviarMensajeDeError($strMensErro);
+            return false;
         }
-        //---------------------------------------------------------
-        // Validando campo de Nombre del Destinatario (muy largo)
-        //---------------------------------------------------------
         if (strlen($this->txtNombDest->Text) > 100) {
-            $blnTodoOkey = false;
-            if (strlen($strMensErro) > 0) {
-                $strMensErro .= ', ';
-            }
-            $strMensErro .= 'Nombre del Destinatario (Max. 100 caracteres)';
+            $strMensErro = 'Nombre/Razón Social del Destinatario (Max. 100 caracteres)';
+            $this->enviarMensajeDeError($strMensErro);
+            return false;
         }
-        // t('Nombre del Destinatario: '.$blnTodoOkey);
-        //----------------------------------------------
-        // Validando campo de Teléfono del Destinatario
-        //----------------------------------------------
-        if (strlen($this->txtTeleDest->Text) > 0) {
-            $blnErroDest = false;
-            //---------------------------------------------------------------------------
-            // Se inicia contador de errores para el campo del Teléfono del Destinatario
-            // en caso de que en el mismo exista más de un número de teléfono.
-            //---------------------------------------------------------------------------
-            $intErroDest = 0;
-            $this->txtTeleDest->Text = DejarSoloLosNumeros2($this->txtTeleDest->Text);
-            //-------------------------------------------------------------------------------
-            // En la cadena del campo, se verifica de que exista más de un teléfono
-            // del destinatario, mediante un signo divisor reglamentario entre los
-            // mismos. En este caso estos números deben estar separador por un slash ("/").
-            //-------------------------------------------------------------------------------
-            $arrTeleDest = explode('/',$this->txtTeleDest->Text);
-            if ($arrTeleDest !== false) {
-                //------------------------------------------------------------------------------------------
-                // Si existe más de un número, se iteran uno por uno, validando su formato correspondiente.
-                //------------------------------------------------------------------------------------------
-                foreach  ($arrTeleDest as $strTeleDest) {
-                    $strTeleDest = DejarSoloLosNumeros($strTeleDest);
-                    if (strlen($strTeleDest) > 11) {
-                        //-----------------------------------------------------------------------------------------
-                        // Si el número iterado posee más de la cantidad reglamentaria de caracteres, se considera
-                        // como formato no válido, y se incrementa el contador de errores.
-                        //-----------------------------------------------------------------------------------------
-                        $blnTodoOkey = false;
-                        $blnErroDest = true;
-                        $intErroDest++;
-                    }
-                }
-            } else {
-                //-----------------------------------------------------------------------------------------------
-                // Se entiende que existe solamente un número del destinatario, y se valida el formato del mismo
-                //-----------------------------------------------------------------------------------------------
-                if (strlen($this->txtTeleDest->Text) > 11) {
-                    $blnTodoOkey = false;
-                    $blnErroDest = true;
-                }
-            }
-            if ($blnErroDest){
-                //------------------------------------------------------------------------------------------------
-                // Si hubo algún error en el campo del teléfono del destinatario, se reporta el mismo al usuario.
-                //------------------------------------------------------------------------------------------------
-                if (strlen($strMensErro) > 0) {
-                    $strMensErro .= ', ';
-                }
-                if ($intErroDest > 0) {
-                    $strMensErro .= 'Cantidad de caracteres inválida de '.$intErroDest.' Teléfono(s) del Destinatario. No debe ser mayor a 11';
-                } else {
-                    $strMensErro .= 'Cantidad de caracteres de Teléfono del Destinatario no debe ser mayor a 11';
-                }
-            }
+        if (strlen($this->txtTeleDest->Text) == 0) {
+            $strMensErro = 'Nro de Teléfono del Destinatario (Requerido)';
+            $this->enviarMensajeDeError($strMensErro);
+            return false;
         }
-        // t('Telefono del Destinatario: '.$blnTodoOkey);
-        //-----------------------------------------
-        // Validando campo de Dirección de Entrega
-        //-----------------------------------------
+        if (strlen($this->txtTeleDest->Text) > 11) {
+            $strMensErro = 'El Teléfono del Destinatario (No debe tener más de 11 caracteres numéricos)';
+            $this->enviarMensajeDeError($strMensErro);
+            return false;
+        }
         if (strlen($this->txtDireDest->Text) == 0) {
-            $blnTodoOkey = false;
-            if (strlen($strMensErro) > 0) {
-                $strMensErro .= ', ';
-            }
-            $strMensErro .= 'Dirección de Entrega (Requerida)';
+            $strMensErro = 'Dirección de Entrega (Requerida)';
+            $this->enviarMensajeDeError($strMensErro);
+            return false;
         }
-        // t('Direccion Destino: '.$blnTodoOkey);
-        //----------------------------------------------------------------
-        // Validando campo de Cédula y campo de Teléfono del Destinatario
-        // en caso de que la Modalidad de Pago sea COD.
-        //----------------------------------------------------------------
+        if (strlen($this->txtDireDest->Text) < 20) {
+            $strMensErro = 'Dirección de Entrega (Muy corta)';
+            $this->enviarMensajeDeError($strMensErro);
+            return false;
+        }
         $strModoPago = $this->lstModaPago->SelectedName;
         $intPosiPago = strpos($strModoPago, "-");
         $strNombPago = substr($strModoPago, 0, $intPosiPago);
         if ($strNombPago == 'COD') {
             if (strlen(trim($this->txtCeduDest->Text)) == 0) {
-                $blnTodoOkey = false;
-                if (strlen($strMensErro) > 0) {
-                    $strMensErro .= ', ';
-                }
-                $strMensErro .= 'Cédula/RIF del Destinatario (Requerido)';
-            }
-            if (strlen($this->txtTeleDest->Text) == 0) {
-                $blnTodoOkey = false;
-                if (strlen($strMensErro) > 0) {
-                    $strMensErro .= ', ';
-                }
-                $strMensErro .= 'Teléfono del Destinatario (Requerido)';
+                $strMensErro = 'Cédula/RIF del Destinatario (Requerido)';
+                $this->enviarMensajeDeError($strMensErro);
+                return false;
             }
         }
-        // t('Cedula y Tlf del Destinatario: '.$blnTodoOkey);
-        //------------------------------------------------------------------------------------------
-        // Si hay uno o más errores, se notifican al usuario y no se permite la gestión de la guía.
-        //------------------------------------------------------------------------------------------
-        if (!$blnTodoOkey) {
-            $strTextMens .= $strMensErro;
-            $strTextMens .= '</b>.';
-            $this->mensaje($strTextMens,'','d','',__iHAND__);
-        }
-        // t('Al final: '.$blnTodoOkey);
-        return $blnTodoOkey;
+        return true;
     }
 
     protected function chkSeguGuia_Change() {

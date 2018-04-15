@@ -351,7 +351,6 @@ class CargarGuia extends FormularioBaseKaizen {
     protected function txtNumeCedu_Create() {
         $this->txtNumeCedu = new QTextBox($this);
         $this->txtNumeCedu->Name = 'Cedula/RIF';
-//        $this->txtNumeCedu->Required = true;
         $this->txtNumeCedu->Width = 100;
         $this->txtNumeCedu->SetCustomAttribute('onblur',"this.value=this.value.toUpperCase()");
         if ($this->blnEditMode) {
@@ -363,7 +362,6 @@ class CargarGuia extends FormularioBaseKaizen {
     protected function txtNombClie_Create() {
         $this->txtNombClie = new QTextBox($this);
         $this->txtNombClie->Name = 'Nombre';
-        $this->txtNombClie->Required = true;
         $this->txtNombClie->Width = 250;
         $this->txtNombClie->SetCustomAttribute('onblur',"this.value=this.value.toUpperCase()");
         if ($this->blnEditMode) {
@@ -374,7 +372,6 @@ class CargarGuia extends FormularioBaseKaizen {
     protected function txtTeleFijo_Create() {
         $this->txtTeleFijo = new QTextBox($this);
         $this->txtTeleFijo->Name = 'Tlf. Fijo';
-        $this->txtTeleFijo->Required = true;
         $this->txtTeleFijo->Width = 120;
         if ($this->blnEditMode) {
             $this->txtTeleFijo->Text = $this->objGuia->TeleRemi;
@@ -384,7 +381,6 @@ class CargarGuia extends FormularioBaseKaizen {
     protected function txtTeleMovi_Create() {
         $this->txtTeleMovi = new QTextBox($this);
         $this->txtTeleMovi->Name = 'Tlf. Movil';
-        $this->txtTeleMovi->Required = true;
         $this->txtTeleMovi->Width = 120;
         if ($this->blnEditMode && $this->objCliePmnx) {
             $this->txtTeleMovi->Text = $this->objCliePmnx->TelefonoMovil;
@@ -394,7 +390,6 @@ class CargarGuia extends FormularioBaseKaizen {
     protected function txtDireClie_Create() {
         $this->txtDireClie = new QTextBox($this);
         $this->txtDireClie->Name = 'Direccion';
-        $this->txtDireClie->Required = true;
         $this->txtDireClie->Width = 250;
         $this->txtDireClie->Height = 60;
         $this->txtDireClie->TextMode = QTextMode::MultiLine;
@@ -407,7 +402,6 @@ class CargarGuia extends FormularioBaseKaizen {
     protected function lstSucuDest_Create() {
         $this->lstSucuDest = new QListBox($this);
         $this->lstSucuDest->Name = 'Sucursal';
-        $this->lstSucuDest->Required = true;
         $this->lstSucuDest->Width = 200;
         if ($this->blnEditMode) {
             $this->cargarDestinos($this->objGuia->EstaDest);
@@ -432,7 +426,6 @@ class CargarGuia extends FormularioBaseKaizen {
     protected function lstReceDest_Create() {
         $this->lstReceDest = new QListBox($this);
         $this->lstReceDest->Name = 'Receptoria';
-        $this->lstReceDest->Required = true;
         $this->lstReceDest->Width = 200;
         if ($this->blnEditMode) {
             $this->cargarReceptorias($this->objGuia->EstaDest,$this->objGuia->ReceptoriaDestino);
@@ -443,7 +436,6 @@ class CargarGuia extends FormularioBaseKaizen {
     protected function txtNombDest_Create() {
         $this->txtNombDest = new QTextBox($this);
         $this->txtNombDest->Name = 'Nombre';
-        $this->txtNombDest->Required = true;
         $this->txtNombDest->Width = 250;
         $this->txtNombDest->SetCustomAttribute('onblur',"this.value=this.value.toUpperCase()");
         if ($this->blnEditMode) {
@@ -454,7 +446,6 @@ class CargarGuia extends FormularioBaseKaizen {
     protected function txtCeduDest_Create() {
         $this->txtCeduDest = new QTextBox($this);
         $this->txtCeduDest->Name = 'Cedula/RIF';
-        $this->txtCeduDest->Required = true;
         $this->txtCeduDest->Width = 100;
         $this->txtCeduDest->SetCustomAttribute('onblur',"this.value=this.value.toUpperCase()");
         if ($this->blnEditMode) {
@@ -466,7 +457,6 @@ class CargarGuia extends FormularioBaseKaizen {
     protected function txtTeleDest_Create() {
         $this->txtTeleDest = new QTextBox($this);
         $this->txtTeleDest->Name = 'Tlf. Movil';
-        $this->txtTeleDest->Required = true;
         $this->txtTeleDest->Width = 120;
         if ($this->blnEditMode) {
             $this->txtTeleDest->Text = $this->objGuia->TeleDest;
@@ -476,7 +466,6 @@ class CargarGuia extends FormularioBaseKaizen {
     protected function txtDireDest_Create() {
         $this->txtDireDest = new QTextBox($this);
         $this->txtDireDest->Name = 'Direccion';
-        $this->txtDireDest->Required = true;
         $this->txtDireDest->Width = 250;
         $this->txtDireDest->Height = 60;
         $this->txtDireDest->TextMode = QTextMode::MultiLine;
@@ -490,7 +479,6 @@ class CargarGuia extends FormularioBaseKaizen {
         $this->txtCantPiez = new QIntegerTextBox($this);
         $this->txtCantPiez->Name = 'Piezas';
         $this->txtCantPiez->Width = 38;
-        $this->txtCantPiez->Required = true;
         if ($this->blnEditMode) {
             $this->txtCantPiez->Text = $this->objGuia->CantPiez;
         }
@@ -500,7 +488,6 @@ class CargarGuia extends FormularioBaseKaizen {
         $this->txtPesoGuia = new QFloatTextBox($this);
         $this->txtPesoGuia->Name = 'Peso';
         $this->txtPesoGuia->Width = 38;
-        $this->txtPesoGuia->Required = true;
         if ($this->blnEditMode) {
             $this->txtPesoGuia->Text = $this->objGuia->PesoGuia;
         }
@@ -510,7 +497,6 @@ class CargarGuia extends FormularioBaseKaizen {
         $this->txtDescCont = new QTextBox($this);
         $this->txtDescCont->Name = 'Contenido';
         $this->txtDescCont->Width = 290;
-        $this->txtDescCont->Required = true;
         $this->txtDescCont->SetCustomAttribute('onblur',"this.value=this.value.toUpperCase()");
         if ($this->blnEditMode) {
             $this->txtDescCont->Text = $this->objGuia->DescCont;
@@ -532,7 +518,6 @@ class CargarGuia extends FormularioBaseKaizen {
     protected function rdbModaPago_Create() {
         $this->rdbModaPago = new QRadioButtonList($this);
         $this->rdbModaPago->Name = 'Modalidad de Pago';
-        $this->rdbModaPago->Required = true;
         $this->rdbModaPago->HtmlEntities = false;
         if (!$this->blnEditMode) {
             $this->cargarModalidadesDePago();
@@ -1654,45 +1639,115 @@ class CargarGuia extends FormularioBaseKaizen {
         return $blnTodoOkey;
     }
 
-    //----------------------------------------------------------------------------------------------------
-    // Función encargada de validar en el momento de ejecutar la acción save varios campos del formulario
-    //----------------------------------------------------------------------------------------------------
     protected function Form_Validate() {
+        //--------------------------------------------------------------------------------------
+        // Se ha colocado aquí todas las validaciones, para prestar mayor elegancia al proceso
+        //--------------------------------------------------------------------------------------
+        $this->mensaje();
         if (strlen($this->txtNumeCedu->Text) == 0) {
             $strTextMens = 'La Cédula/RIF del Remitente, es requerida';
             $this->enviarMensajeDeError($strTextMens);
             return false;
         }
-        if ($this->txtCantPiez->Text == 0) {
+        if (strlen($this->txtNombClie->Text) == 0) {
+            $strTextMens = 'El Nombre del Remitente, es requerido';
+            $this->enviarMensajeDeError($strTextMens);
+            return false;
+        }
+        if (strlen($this->txtTeleFijo->Text) == 0) {
+            $strTextMens = 'El Teléfono Fijo del Remitente, es requerido';
+            $this->enviarMensajeDeError($strTextMens);
+            return false;
+        }
+        if (strlen($this->txtTeleFijo->Text) > 11) {
+            $strTextMens = 'El Teléfono Fijo del Remitente, no debe tener más de 11 caracteres numéricos';
+            $this->enviarMensajeDeError($strTextMens);
+            return false;
+        }
+        if (strlen($this->txtTeleMovi->Text) == 0) {
+            $strTextMens = 'El Teléfono Movil del Remitente, es requerido';
+            $this->enviarMensajeDeError($strTextMens);
+            return false;
+        }
+        if (strlen($this->txtTeleMovi->Text) > 11) {
+            $strTextMens = 'El Teléfono Movil del Remitente, no debe tener más de 11 caracteres numéricos';
+            $this->enviarMensajeDeError($strTextMens);
+            return false;
+        }
+        if (strlen($this->txtDireClie->Text) == 0) {
+            $strTextMens = 'La Dirección de Remitente, es requerida';
+            $this->enviarMensajeDeError($strTextMens);
+            return false;
+        }
+        if (is_null($this->lstSucuDest->SelectedValue)) {
+            $strTextMens = 'La Sucursal Destino, es requerida';
+            $this->enviarMensajeDeError($strTextMens);
+            return false;
+        }
+        if (is_null($this->lstReceDest->SelectedValue)) {
+            $strTextMens = 'La Receptoria Destino, es requerida';
+            $this->enviarMensajeDeError($strTextMens);
+            return false;
+        }
+        if (is_null($this->lstSucuDest->SelectedValue)) {
+            $strTextMens = 'La Sucursal Destino, es requerida';
+            $this->enviarMensajeDeError($strTextMens);
+            return false;
+        }
+        if (strlen($this->txtCeduDest->Text) == 0) {
+            $strTextMens = 'La Cédula del Destinario, es requerida';
+            $this->enviarMensajeDeError($strTextMens);
+            return false;
+        }
+        if (strlen($this->txtNombDest->Text) == 0) {
+            $strTextMens = 'El Nombre del Destinario, es requerido';
+            $this->enviarMensajeDeError($strTextMens);
+            return false;
+        }
+        if (strlen($this->txtTeleDest->Text) == 0) {
+            $strTextMens = 'El Teléfono Movil del Destinario, es requerido';
+            $this->enviarMensajeDeError($strTextMens);
+            return false;
+        }
+        if (strlen($this->txtTeleDest->Text) > 11) {
+            $strTextMens = 'El Teléfono Movil del Destinatario, no debe tener más de 11 caracteres numéricos';
+            $this->enviarMensajeDeError($strTextMens);
+            return false;
+        }
+        if (strlen($this->txtCantPiez->Text) == 0) {
+            $strTextMens = 'La Cantidad de Piezas, es requerida';
+            $this->enviarMensajeDeError($strTextMens);
+            return false;
+        }
+        if ($this->txtCantPiez->Text <= 0) {
             $strTextMens = 'La Cantidad de Piezas debe ser Mayor a Cero (0)';
+            $this->enviarMensajeDeError($strTextMens);
+            return false;
+        }
+        if (strlen($this->txtPesoGuia->Text) == 0) {
+            $strTextMens = 'El Peso, es requerido';
+            $this->enviarMensajeDeError($strTextMens);
+            return false;
+        }
+        if ($this->txtPesoGuia->Text <= 0) {
+            $strTextMens = 'El Peso debe ser Mayor a Cero (0)';
+            $this->enviarMensajeDeError($strTextMens);
+            return false;
+        }
+        if (strlen($this->txtDescCont->Text) == 0) {
+            $strTextMens = 'La Descripción del Contenido, es requerida';
             $this->enviarMensajeDeError($strTextMens);
             return false;
         }
         if (strlen($this->txtValoDecl->Text) == 0) {
             $this->txtValoDecl->Text = 0;
         }
-        if (strlen($this->txtTeleFijo->Text) > 11) {
-            $blnTodoOkey = false;
-            $this->mensaje('Formato de teléfono inválido! La cantidad de caracteres no debe ser mayor '.
-                            'a 11 (usar solamente números)', '', 'w',
-                  'exclamation-triangle');
+        if (is_null($this->rdbModaPago->SelectedValue)) {
+            $strTextMens = 'La Modalidad de Pago, es requerida';
+            $this->enviarMensajeDeError($strTextMens);
+            return false;
         }
-        if (strlen($this->txtTeleMovi->Text) > 11) {
-            $blnTodoOkey = false;
-            $this->mensaje('Formato de teléfono inválido! La cantidad de caracteres no debe ser mayor '.
-                           'a 11 (usar solamente números)', '', 'w',
-                'exclamation-triangle');
-        }
-        if (strlen($this->txtTeleDest->Text) > 11) {
-            $blnTodoOkey = false;
-            $this->mensaje('Formato de telofono inválido! La cantidad de caracteres no debe ser mayor '.
-                           'a 11 (usar solamente números)', '', 'w',
-                'exclamation-triangle');
-        }
-        if ($blnTodoOkey) {
-            $this->mensaje();
-        }
-        return $blnTodoOkey;
+        return true;
     }
 
 }

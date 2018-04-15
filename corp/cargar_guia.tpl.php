@@ -116,7 +116,7 @@ require(__YAMAGUCHI__APP_INCLUDES__ . '/header.inc.php');
                             <?php $this->txtNombDest->Render(); ?>
                         </div>
                         <div class="col-md-6">
-                            <div class="titulo-c">Teléfono Destinatario (Solo Números)</div>
+                            <div class="titulo-c">Teléfono Destinatario</div>
                             <?php $this->txtTeleDest->Render(); ?>
                         </div>
                     </div>
@@ -126,7 +126,7 @@ require(__YAMAGUCHI__APP_INCLUDES__ . '/header.inc.php');
                             <?php $this->txtDireDest->Render(); ?>
                         </div>
                         <div class="col-md-6">
-                            <div class="titulo-c">Cédula/RIF del Destinatario (Opcional)</div>
+                            <div class="titulo-c">Cédula/RIF del Destinatario</div>
                             <?php $this->lstCeduDest->Render(); ?>
                             <?php $this->txtCeduDest->Render(); ?>
                         </div>
