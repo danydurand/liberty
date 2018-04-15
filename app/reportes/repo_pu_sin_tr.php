@@ -11,13 +11,13 @@ use PHPMailer\PHPMailer\PHPMailer;
 $dttFechDhoy = date('Y-m-d');
 $arrSucuSele = Estacion::LoadSucursalesActivasSinAlmacenes();
 foreach ($arrSucuSele as $objSucursal) {
-    if ($objSucursal->CodiEsta != 'CCS') {
-        continue;
-    }
+    //if ($objSucursal->CodiEsta != 'CCS') {
+    //    continue;
+    //}
     //--------------------------------------------------------
     // Selecciono los registros que satisfagan la condicion
     //--------------------------------------------------------
-    $strCadeSqlx  = "select distinct g.*,e.fecha_pickup, (fn_diastrans(e.fecha_pickup, now()) - (fn_cantsados(e.fecha_pickup, now()) + fn_cantferiados(e.fecha_pickup, now()))) as dias_tran ";
+    $strCadeSqlx  = "select g.*,e.fecha_pickup, (fn_diastrans(e.fecha_pickup, now()) - (fn_cantsados(e.fecha_pickup, now()) + fn_cantferiados(e.fecha_pickup, now()))) as dias_tran ";
     $strCadeSqlx .= "  from guia g inner join estadistica_de_guias e";
     $strCadeSqlx .= "    on g.nume_guia = e.guia_id";
     $strCadeSqlx .= " where (fn_diastrans(e.fecha_pickup, now()) - (fn_cantsados(e.fecha_pickup, now()) + fn_cantferiados(e.fecha_pickup, now()))) > 1  ";
@@ -25,10 +25,11 @@ foreach ($arrSucuSele as $objSucursal) {
     $strCadeSqlx .= "   and g.esta_dest != '".$objSucursal->CodiEsta."'";
     $strCadeSqlx .= "   and g.esta_ckpt  = g.esta_orig";
     $strCadeSqlx .= "   and g.anulada    = 0";
+    $strCadeSqlx .= "   and e.fecha_pickup >= date_sub(now(), INTERVAL 30 DAY) ";
     $strCadeSqlx .= "   and e.fecha_pickup IS NOT NULL";
     $strCadeSqlx .= "   and e.fecha_traslado IS NULL";
     $strCadeSqlx .= "   and e.fecha_entrega IS NULL";
-    $strCadeSqlx .= " order by fecha_pickup desc ";
+    $strCadeSqlx .= " order by fecha_pickup ";
 
     $objDatabase  = Guia::GetDatabase();
     $objDbResult = $objDatabase->Query($strCadeSqlx);
@@ -51,6 +52,7 @@ foreach ($arrSucuSele as $objSucursal) {
     }
 
     $intCantRepo = count($arrDatoRepo);
+
     if ($intCantRepo) {
         $arrDatoRepo = ordenar_array($arrDatoRepo,'10',SORT_DESC);
         $strNombArch = 'guias_pu_sin_tr_'.$objSucursal->CodiEsta.'.xls';
@@ -93,13 +95,17 @@ foreach ($arrSucuSele as $objSucursal) {
 
         $mail = new PHPMailer();
         $mail->setFrom('SisCO@libertyexpress.com', 'Medicion y Control');
-        $mail->addAddress('soportelufeman@gmail.com');
-//        $mail->addAddress('jhernandez@libertyexpress.com');
-//        $mail->addAddress('aalvarado@libertyexpress.com');
-//        $mail->addAddress('operacionesurbanas@libertyexpress.com');
-//        $mail->addAddress('emontilla@libertyexpress.com');
-//        $mail->addAddress('rortega@libertyexpress.com');
-//        $mail->addAddress('jmartini@libertyexpress.com');
+        if ($objSucursal->CodiEsta == 'CCS') {
+            $mail->addAddress('soportelufeman@gmail.com');
+        }
+        $mail->addAddress('jhernandez@libertyexpress.com');
+        $mail->addAddress('aalvarado@libertyexpress.com');
+        $mail->addAddress('operacionesurbanas@libertyexpress.com');
+        $mail->addAddress('emontilla@libertyexpress.com');
+        $mail->addAddress('rortega@libertyexpress.com');
+        $mail->addAddress('jmartini@libertyexpress.com');
+        $mail->addAddress('incidencias@libertyexpress.com');
+        $mail->addAddress('calidadyservicio@libertyexpress.com');
         $mail->Subject  = $strTituRepo;
         $mail->Body     = 'Estimado Usuario, sírvase revisar el documento anexo...';
         $mail->addAttachment($strNombArch);

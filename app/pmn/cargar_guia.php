@@ -351,7 +351,7 @@ class CargarGuia extends FormularioBaseKaizen {
     protected function txtNumeCedu_Create() {
         $this->txtNumeCedu = new QTextBox($this);
         $this->txtNumeCedu->Name = 'Cedula/RIF';
-        $this->txtNumeCedu->Required = true;
+//        $this->txtNumeCedu->Required = true;
         $this->txtNumeCedu->Width = 100;
         $this->txtNumeCedu->SetCustomAttribute('onblur',"this.value=this.value.toUpperCase()");
         if ($this->blnEditMode) {
@@ -1658,11 +1658,15 @@ class CargarGuia extends FormularioBaseKaizen {
     // Función encargada de validar en el momento de ejecutar la acción save varios campos del formulario
     //----------------------------------------------------------------------------------------------------
     protected function Form_Validate() {
-        $blnTodoOkey = true;
+        if (strlen($this->txtNumeCedu->Text) == 0) {
+            $strTextMens = 'La Cédula/RIF del Remitente, es requerida';
+            $this->enviarMensajeDeError($strTextMens);
+            return false;
+        }
         if ($this->txtCantPiez->Text == 0) {
-            $blnTodoOkey = false;
-            $this->mensaje('La Cantidad de Piezas debe ser Mayor a Cero (0)','',
-                           'w','',__iEXCL__);
+            $strTextMens = 'La Cantidad de Piezas debe ser Mayor a Cero (0)';
+            $this->enviarMensajeDeError($strTextMens);
+            return false;
         }
         if (strlen($this->txtValoDecl->Text) == 0) {
             $this->txtValoDecl->Text = 0;

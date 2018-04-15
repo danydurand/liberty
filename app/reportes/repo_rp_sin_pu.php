@@ -11,19 +11,29 @@ use PHPMailer\PHPMailer\PHPMailer;
 $dttFechDhoy = date('Y-m-d');
 $arrSucuSele = Estacion::LoadSucursalesActivasSinAlmacenes();
 foreach ($arrSucuSele as $objSucursal) {
-    if (!in_array($objSucursal->CodiEsta, array('CCS','VLN','MAR'))) {
-        continue;
-    }
+    //if (!in_array($objSucursal->CodiEsta, array('CCS'))) {
+    //    continue;
+    //}
     //--------------------------------------------------------
     // Selecciono los registros que satisfagan la condicion
     //--------------------------------------------------------
-    $strCadeSqlx  = "select distinct g.*,(fn_diastrans( now(), fech_guia ) - (fn_cantsados(fech_guia, now()) + fn_cantferiados(fech_guia, now()))) as dias_tran ";
+    $strCadeSqlx  = "select g.nume_guia, ";
+    $strCadeSqlx .= "       g.fech_guia, ";
+    $strCadeSqlx .= "       g.esta_orig, ";
+    $strCadeSqlx .= "       g.esta_dest, ";
+    $strCadeSqlx .= "       g.nomb_remi, ";
+    $strCadeSqlx .= "       g.codi_ckpt, ";
+    $strCadeSqlx .= "       g.fech_ckpt, ";
+    $strCadeSqlx .= "       g.hora_ckpt, ";
+    $strCadeSqlx .= "       g.esta_ckpt, ";
+    $strCadeSqlx .= "       (fn_diastrans(fech_guia, now()) - (fn_cantsados(fech_guia, now()) + fn_cantferiados(fech_guia, now()))) as dias_tran ";
     $strCadeSqlx .= "  from guia g ";
-    $strCadeSqlx .= " where (fn_diastrans( now(), fech_guia ) - (fn_cantsados(fech_guia, now()) + fn_cantferiados(fech_guia, now()))) > 1  ";
+    $strCadeSqlx .= " where (fn_diastrans(fech_guia, now()) - (fn_cantsados(fech_guia, now()) + fn_cantferiados(fech_guia, now()))) > 1  ";
     $strCadeSqlx .= "   and g.esta_orig  = '".$objSucursal->CodiEsta."'";
     $strCadeSqlx .= "   and g.esta_ckpt  = g.esta_orig";
     $strCadeSqlx .= "   and g.codi_ckpt  = 'RP'";
     $strCadeSqlx .= "   and g.anulada    = 0";
+    $strCadeSqlx .= "   and g.fech_ckpt >= date_sub(now(), INTERVAL 30 DAY) ";
     $strCadeSqlx .= " order by fech_ckpt desc, ";
     $strCadeSqlx .= "          hora_ckpt desc ";
 
@@ -86,12 +96,16 @@ foreach ($arrSucuSele as $objSucursal) {
 
         $mail = new PHPMailer();
         $mail->setFrom('SisCO@libertyexpress.com', 'Medicion y Control');
-        $mail->addAddress('soportelufeman@gmail.com');
+        if ($objSucursal->CodiEsta == 'CCS') {
+            $mail->addAddress('soportelufeman@gmail.com');
+        }
         $mail->addAddress('jhernandez@libertyexpress.com');
         $mail->addAddress('aalvarado@libertyexpress.com');
         $mail->addAddress('emontilla@libertyexpress.com');
         $mail->addAddress('rortega@libertyexpress.com');
         $mail->addAddress('jmartini@libertyexpress.com');
+        $mail->addAddress('incidencias@libertyexpress.com');
+        $mail->addAddress('calidadyservicio@libertyexpress.com');
         $mail->Subject  = $strTituRepo;
         $mail->Body     = 'Estimado Usuario, sírvase revisar el documento anexo...';
         $mail->addAttachment($strNombArch);

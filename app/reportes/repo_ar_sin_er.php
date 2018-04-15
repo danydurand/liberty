@@ -11,21 +11,41 @@ use PHPMailer\PHPMailer\PHPMailer;
 $dttFechDhoy = date('Y-m-d');
 $arrSucuSele = Estacion::LoadSucursalesActivasSinAlmacenes();
 foreach ($arrSucuSele as $objSucursal) {
-    if (!in_array($objSucursal->CodiEsta, array('CCS','VLN','MAR'))) {
-        continue;
-    }
+    //if (!in_array($objSucursal->CodiEsta, array('CCS'))) {
+    //    continue;
+    //}
     //--------------------------------------------------------
     // Selecciono los registros que satisfagan la condicion
     //--------------------------------------------------------
-    $strCadeSqlx  = "select distinct g.*,(fn_diastrans( now(), e.fecha_arribo ) - (fn_cantsados(e.fecha_arribo, now()) + fn_cantferiados(e.fecha_arribo, now()))) as dias_tran ";
+    $strCadeSqlx  = "select g.nume_guia, ";
+    $strCadeSqlx .= "       g.fech_guia, ";
+    $strCadeSqlx .= "       g.esta_orig, ";
+    $strCadeSqlx .= "       g.esta_dest, ";
+    $strCadeSqlx .= "       g.nomb_remi, ";
+    $strCadeSqlx .= "       g.codi_ckpt, ";
+    $strCadeSqlx .= "       g.fech_ckpt, ";
+    $strCadeSqlx .= "       g.hora_ckpt, ";
+    $strCadeSqlx .= "       g.esta_ckpt, ";
+    $strCadeSqlx .= "       (fn_diastrans(e.fecha_arribo, now()) - (fn_cantsados(e.fecha_arribo, now()) + fn_cantferiados(e.fecha_arribo, now()))) as dias_tran ";
     $strCadeSqlx .= "  from guia g inner join estadistica_de_guias e";
     $strCadeSqlx .= "    on g.nume_guia = e.guia_id";
-    $strCadeSqlx .= " where (fn_diastrans( now(), e.fecha_arribo ) - (fn_cantsados(e.fecha_arribo, now()) + fn_cantferiados(e.fecha_arribo, now()))) > 1  ";
+    $strCadeSqlx .= " where (fn_diastrans(e.fecha_arribo, now()) - (fn_cantsados(e.fecha_arribo, now()) + fn_cantferiados(e.fecha_arribo, now()))) > 1  ";
     $strCadeSqlx .= "   and g.esta_dest = '".$objSucursal->CodiEsta."'";
     $strCadeSqlx .= "   and g.anulada = 0";
+    $strCadeSqlx .= "   and e.fecha_arribo >= date_sub(now(), INTERVAL 30 DAY) ";
     $strCadeSqlx .= "   and e.fecha_arribo IS NOT NULL";
     $strCadeSqlx .= "   and e.fecha_ruta IS NULL";
     $strCadeSqlx .= "   and e.fecha_entrega IS NULL";
+    $strCadeSqlx .= "   and exists (select NULL ";
+    $strCadeSqlx .= "                 from guia_ckpt k ";
+    $strCadeSqlx .= "                where k.nume_guia = g.nume_guia ";
+    $strCadeSqlx .= "                  and k.codi_esta = '".$objSucursal->CodiEsta."'";
+    $strCadeSqlx .= "                  and k.codi_ckpt = 'AR')";
+    $strCadeSqlx .= "   and not exists (select NULL ";
+    $strCadeSqlx .= "                    from guia_ckpt k ";
+    $strCadeSqlx .= "                   where k.nume_guia = g.nume_guia ";
+    $strCadeSqlx .= "                     and k.codi_esta = '".$objSucursal->CodiEsta."'";
+    $strCadeSqlx .= "                     and k.codi_ckpt = 'RM')";
     $strCadeSqlx .= " order by fecha_arribo desc ";
 
     $objDatabase  = Guia::GetDatabase();
@@ -88,12 +108,16 @@ foreach ($arrSucuSele as $objSucursal) {
 
         $mail = new PHPMailer();
         $mail->setFrom('SisCO@libertyexpress.com', 'Medicion y Control');
-        $mail->addAddress('soportelufeman@gmail.com');
+        if ($objSucursal->CodiEsta == 'CCS') {
+            $mail->addAddress('soportelufeman@gmail.com');
+        }
         $mail->addAddress('aalvarado@libertyexpress.com');
         $mail->addAddress('aalvarado@libertyexpress.com');
         $mail->addAddress('emontilla@libertyexpress.com');
         $mail->addAddress('rortega@libertyexpress.com');
         $mail->addAddress('jmartini@libertyexpress.com');
+        $mail->addAddress('incidencias@libertyexpress.com');
+        $mail->addAddress('calidadyservicio@libertyexpress.com');
         $mail->Subject  = $strTituRepo;
         $mail->Body     = 'Estimado Usuario, sírvase revisar el documento anexo...';
         $mail->addAttachment($strNombArch);

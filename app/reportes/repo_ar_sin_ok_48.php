@@ -36,9 +36,9 @@ if (isset($_SESSION['SucuSele'])) {
 	$strModoEjec = 'CRON';
 }
 foreach ($arrSucuSele as $objSucursal) {
-    if (!in_array($objSucursal->CodiEsta, array('CCS','VLN','MAR'))) {
-        continue;
-    }
+    //if (!in_array($objSucursal->CodiEsta, array('CCS'))) {
+    //    continue;
+    //}
     $strNombArch = 'guias_ar_sin_ok_48_'.$objSucursal->CodiEsta.'.pdf';
     $strTituRepo = 'Guias con AR sin Ok +48 Hrs '.$objSucursal->CodiEsta;
     //--------------------------------------------------------
@@ -85,9 +85,7 @@ foreach ($arrSucuSele as $objSucursal) {
     $strCadeSqlx .= "                 from guia_ckpt k ";
     $strCadeSqlx .= "                where k.nume_guia = g.nume_guia ";
     $strCadeSqlx .= "                  and k.codi_ckpt = 'PP')";
-    //		$strCadeSqlx .= " order by g.fech_guia";
-    //		echo $strCadeSqlx;
-    //		return;
+
     $objDatabase = Guia::GetDatabase();
     $objDbResult  = $objDatabase->Query($strCadeSqlx);
     //------------------------------------------
@@ -117,7 +115,6 @@ foreach ($arrSucuSele as $objSucursal) {
         }
     }
     if (count($arrDatoRepo)) {
-        //------------------------------------------------------------------
         $intCantRepo = count($arrDatoRepo);
         if ($strModoEjec == 'CRON') {
             GrabarMedicion($objSucursal->CodiEsta,"AR_SIN_OK_48",$intCantRepo);
@@ -166,11 +163,13 @@ foreach ($arrSucuSele as $objSucursal) {
             $mail = new PHPMailer();
             $mail->setFrom('SisCO@libertyexpress.com', 'Medicion y Control');
             $mail->addAddress('soportelufeman@gmail.com');
-            //                $mail->addAddress('aalvarado@libertyexpress.com');
-            //                $mail->addAddress('aalvarado@libertyexpress.com');
-            //                $mail->addAddress('emontilla@libertyexpress.com');
-            //                $mail->addAddress('rortega@libertyexpress.com');
-            //                $mail->addAddress('jmartini@libertyexpress.com');
+            $mail->addAddress('aalvarado@libertyexpress.com');
+            $mail->addAddress('aalvarado@libertyexpress.com');
+            $mail->addAddress('emontilla@libertyexpress.com');
+            $mail->addAddress('rortega@libertyexpress.com');
+            $mail->addAddress('jmartini@libertyexpress.com');
+            $mail->addAddress('incidencias@libertyexpress.com');
+            $mail->addAddress('calidadyservicio@libertyexpress.com');
             $mail->Subject  = $strTituRepo;
             $mail->Body     = 'Estimado Usuario, sírvase revisar el documento anexo...';
             $mail->addAttachment($strNombArch);

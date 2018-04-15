@@ -277,7 +277,7 @@ class GuiaListForm extends GuiaListFormBase {
         $colSucCkpt->FilterBoxSize = 2;
         $colSucCkpt->Name = 'SUC';
 
-        $colFechGuia = new QDataGridColumn('FECHA ESTATUS','<?= $_ITEM->FechCkpt ?>');
+        $colFechGuia = new QDataGridColumn('FECHA ESTATUS','<?= $_ITEM->FechCkpt->__toString("DD/MM/YYYY") ?>');
         $colFechGuia->OrderByClause = QQ::OrderBy(QQN::Guia()->FechCkpt, false);
         $colFechGuia->ReverseOrderByClause = QQ::OrderBy(QQN::Guia()->FechCkpt);
         $this->dtgGuias->AddColumn($colFechGuia);
@@ -677,14 +677,14 @@ class GuiaListForm extends GuiaListFormBase {
     }
 
     protected function listaDeGuiasParaExportar($objClauWher) {
-        $arrGuiaDefi = array();
-        if ($this->objUsuario->ClienteId != 1836) {
+//        if (!in_array($this->objUsuario->ClienteId,array(1836,1018))) {
+            $arrGuiaDefi = array();
             $arrGuiaSele = Guia::QueryArray(QQ::AndCondition($objClauWher));
             foreach ($arrGuiaSele as $objGuia) {
                 $arrGuiaDefi[] = $objGuia->NumeGuia;
             }
-            $_SESSION['Dato']     = serialize($arrGuiaDefi);
-        }
+            $_SESSION['Dato'] = serialize($arrGuiaDefi);
+//        }
         $_SESSION['CritXlsx'] = serialize($objClauWher);
     }
 
@@ -698,7 +698,76 @@ class GuiaListForm extends GuiaListFormBase {
     }
 
     protected function btnExpExce_Click() {
-        QApplication::Redirect(__SIST__."/exportar_guias.php");
+//        QApplication::Redirect(__SIST__."/exportar_guias.php");
+        $this->ExportarGuias();
+    }
+
+    protected function ExportarGuias() {
+        $arrEncaDato = array(
+            'SubCuenta',
+            'Guia Nro.',
+            'Fecha',
+            'Remitente',
+            'Destinatario',
+            'Peso',
+            'Mto Base',
+            'F.Postal',
+            'Seguro',
+            'I.V.A.',
+            'Mto Total',
+            'V. Decl',
+            'F.Pago',
+            'ORI-DES',
+            'Status',
+            'Fecha Status',
+            'Hora Status'
+        );
+        $arrDatoExpo = array();
+        $objClauOrde   = QQ::Clause();
+        $objClauOrde[] = QQ::OrderBy(QQN::Guia()->FechGuia, false, QQN::Guia()->NumeGuia, false);
+        $arrDatoRepo = Guia::QueryArray(QQ::AndCondition($this->objClauWher),$objClauOrde);
+//        $arrDatoRepo = $this->dtgGuias->DataSource;
+        foreach ($arrDatoRepo as $objDatoExpo) {
+            //-------------------------------------------------------
+            // Si la Guía tiene su checkpoint, se agrega al reporte.
+            //-------------------------------------------------------
+            $strDescCkpt = '';
+            if (strlen($objDatoExpo->CodiCkpt) > 0) {
+                $objCheckpoint = SdeCheckpoint::Load($objDatoExpo->CodiCkpt);
+                $strDescCkpt = $objCheckpoint->DescDevo;
+            }
+            //----------------------------------------
+            // Se arma el vector de datos del reporte
+            //----------------------------------------
+            $arrDatoExpo[] = array(
+                $objDatoExpo->CodiClieObject->CodigoInterno,
+                $objDatoExpo->NumeGuia,
+                $objDatoExpo->FechGuia->__toString("DD/MM/YYYY"),
+                $objDatoExpo->NombRemi,
+                $objDatoExpo->NombDest,
+                nf($objDatoExpo->PesoGuia),
+                nf($objDatoExpo->MontoBase),
+                nf($objDatoExpo->MontoFranqueo),
+                nf($objDatoExpo->MontoSeguro),
+                nf($objDatoExpo->MontoIva),
+                nf($objDatoExpo->MontoTotal),
+                nf($objDatoExpo->ValorDeclarado),
+                TipoGuiaType::ToStringCorto($objDatoExpo->TipoGuia),
+                $objDatoExpo->EstaOrig.' - '.$objDatoExpo->EstaDest,
+                $strDescCkpt,
+                $objDatoExpo->FechCkpt ? $objDatoExpo->FechCkpt->__toString("DD/MM/YYYY") : '',
+                $objDatoExpo->HoraCkpt ? $objDatoExpo->HoraCkpt : ''
+            );
+        }
+
+        $objValoRepo = new stdClass();
+        $objValoRepo->arrEncaDato = $arrEncaDato;
+        $objValoRepo->arrDatoExpo = $arrDatoExpo;
+        $objValoRepo->strTituRepo = 'Guias_'.QuitarEspaciosPuntosYComas($this->objUsuario->Cliente->NombClie);
+        $objValoRepo->blnConxBord = true;
+
+        $objExpoDato = new ExportarDatos($objValoRepo);
+        echo $objExpoDato->Exportar();
     }
 
     protected function btnManiDiar_Click() {
