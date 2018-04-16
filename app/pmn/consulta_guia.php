@@ -171,7 +171,7 @@ class ConsultaGuia extends FormularioBaseKaizen {
                 $this->blnGuiaFact = true;
             } elseif ($this->objMastClie) {
                 //------------------------------------
-                // Se trata de una Guía SDE o CONNECT
+                // Se trata de una Guía SDE o CORP
                 //------------------------------------
                 if (trim($this->objGuia->EstaDest) == trim($this->strSucuOrig)) {
                     $this->blnGuiaFact = true;
@@ -185,11 +185,10 @@ class ConsultaGuia extends FormularioBaseKaizen {
             }
 
             if (!$this->blnGuiaFact) {
-                //-----------------------------------------------------------------------------
-                // Otra posibilidad para que una guia sea Facturable, es que la Sucursal en la
-                // que se encuentra el Usuario, se el "Centro de Facturacion" del Destino de
-                // la guia.
-                //-----------------------------------------------------------------------------
+                //-----------------------------------------------------------------------------------------------
+                // Otra posibilidad para que una guia sea Facturable, es que la Sucursal en la que se encuentra
+                // el Usuario, se el "Centro de Facturacion" del Destino de la guia.
+                //-----------------------------------------------------------------------------------------------
                 if (strlen($this->objGuia->EstaDestObject->SeFacturaEn) > 0) {
                     if (trim($this->objGuia->EstaDestObject->SeFacturaEnObject->Siglas) == trim($this->strSucuOrig)) {
                         $this->blnGuiaFact = true;
@@ -205,9 +204,9 @@ class ConsultaGuia extends FormularioBaseKaizen {
             }
         } else {
             if (!$this->objMastClie) {
-                //----------------------------------------------------------
+                //-----------------------------------------------------------
                 // La Guia es PrePagada y fue creada en el Expreso Nacional
-                //----------------------------------------------------------
+                //-----------------------------------------------------------
                 $this->blnGuiaFact = true;
             }
         }
@@ -361,9 +360,7 @@ class ConsultaGuia extends FormularioBaseKaizen {
     protected function lblDireClie_Create() {
         $this->lblDireClie = new QLabel($this);
         $this->lblDireClie->Name = 'Direccion';
-        //$this->lblDireClie->Text = substr($this->objGuia->DireRemi,0,40);
         $this->lblDireClie->Text = $this->objGuia->DireRemi;
-        //$this->lblDireClie->ToolTip = $this->objGuia->DireRemi;
     }
 
     //-------- Información del Destinatario --------

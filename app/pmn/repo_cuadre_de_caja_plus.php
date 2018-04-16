@@ -146,9 +146,9 @@ class RepoCuadreDeCajaPlus extends FormularioBaseKaizen {
         //---------------------------------------------------------
         // Armo los otros vectores que requiere la rutina PDF
         //---------------------------------------------------------
-        $arrEncaReco = array('Id','Ubic','Fecha','Factura','Cliente','Maq. Fiscal','Monto Total','F. Pago','Documento','Banco','Mto. Pagado');
-        $arrJustColu = array('C','C','C','C','L','C','R','C','L','L','R');
-        $arrAnchColu = array(14,28,15,16,55,20,20,15,20,20,20);
+        $arrEncaReco = array('Id','Ubic','Guia','Fecha','Factura','Cliente','Maq. Fiscal','Monto Total','F. Pago','Documento','Banco','Mto. Pagado');
+        $arrJustColu = array('C','C','C','C','C','L','C','R','C','L','L','R');
+        $arrAnchColu = array(14,28,15,15,16,55,20,20,15,20,20,20);
         //---------------------------------------------------------
         // Los vectores se llevan a variables de session
         //---------------------------------------------------------
@@ -160,6 +160,7 @@ class RepoCuadreDeCajaPlus extends FormularioBaseKaizen {
         //--------------------------------------------------
         $strCadeSqlx = "select f.id,
 						 	   f.sucursal_id,
+						 	   g.nume_guia,
 							   r.siglas,
 							   u.logi_usua, 
                                f.fecha_impresion, 
@@ -182,6 +183,8 @@ class RepoCuadreDeCajaPlus extends FormularioBaseKaizen {
 		                    on u.codi_usua = f.creada_por
 		                       inner join counter r 
 		                    on r.id = f.receptoria_id
+		                       inner join guia g
+		                    on f.id = g.factura_id
 		                 where f.estatus != 'A'
 		                   and f.sucursal_id = '".$this->lstCodiSucu->SelectedValue."' ";
         if (!is_null($this->lstCodiRece->SelectedValue)) {
@@ -213,6 +216,7 @@ class RepoCuadreDeCajaPlus extends FormularioBaseKaizen {
             $arrDatoRepo[] = array(
                 $mixRegi['id'],
                 $strUbicFact,
+                $mixRegi['nume_guia'],
                 $strFechImpr,
                 $mixRegi['numero'],
                 $mixRegi['cedula_rif']."|".substr($mixRegi['razon_social'],0,20),
@@ -234,12 +238,12 @@ class RepoCuadreDeCajaPlus extends FormularioBaseKaizen {
             $decTotaPago += $mixRegi['monto_pago'];
         }
         // Linea de totales
-        $arrDatoRepo[] = array('','','','','','TOTALES',nf($decTotaFact),'','','',nf($decTotaPago));
-        $arrDatoRepo[] = array('','','','','','','','','','','');
-        $arrDatoRepo[] = array('','','','','','','','','','Resumen FP','');
+        $arrDatoRepo[] = array('','','','','','','TOTALES',nf($decTotaFact),'','','',nf($decTotaPago));
+        $arrDatoRepo[] = array('','','','','','','','','','','','');
+        $arrDatoRepo[] = array('','','','','','','','','','','Resumen FP','');
         foreach ($this->arrFormPago as $strFormPago => $decMontPago) {
             if ($decMontPago > 0) {
-                $arrDatoRepo[] = array('','','','','','','','','',$strFormPago,nf($decMontPago));
+                $arrDatoRepo[] = array('','','','','','','','','','',$strFormPago,nf($decMontPago));
             }
         }
 

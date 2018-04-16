@@ -27,6 +27,24 @@
 			return sprintf('%s',  $this->strNumeGuia);
 		}
 
+		public function verificarTarifa() {
+            //-------------------------------------------------------------
+            // Se asigna codigo de la Tarifa, en caso de que no lo tenga
+            //-------------------------------------------------------------
+            if (empty($this->TarifaId) && ($this->CodiCkpt != 'OK')) {
+                $this->TarifaId = $this->CodiClieObject->TarifaId;
+                $this->Save();
+                //------------------------------------------------------------
+                // Se deja rastro de la operacion en el log de transacciones
+                //------------------------------------------------------------
+                $arrLogxCamb['strNombTabl'] = 'Guia';
+                $arrLogxCamb['intRefeRegi'] = $this->NumeGuia;
+                $arrLogxCamb['strNombRegi'] = $this->NombRemi;
+                $arrLogxCamb['strDescCamb'] = "Se asignó tarifa (porque no tenía): ".$this->CodiClieObject->Tarifa->Descripcion;
+                LogDeCambios($arrLogxCamb);
+            }
+        }
+
 		public function validarDevolucion(Usuario $objUsuario) {
 		    $blnTodoOkey = true;
 		    $strMensUsua = '';

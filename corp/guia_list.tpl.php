@@ -16,7 +16,7 @@ require(__YAMAGUCHI__APP_INCLUDES__ . '/header.inc.php');
             <?php $this->btnCancel->Render(); ?>
             <?php $this->btnNuevRegi->Render() ?>
             <?php $this->btnFiltComu->Render() ?>
-            <?php $this->btnExpoExce->Render() ?>
+            <?php //$this->btnExpoExce->Render() ?>
             <?php $this->btnManiDrop->Render() ?>
         </div>
     </div>

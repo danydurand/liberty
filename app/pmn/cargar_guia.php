@@ -1684,11 +1684,13 @@ class CargarGuia extends FormularioBaseKaizen {
             $this->enviarMensajeDeError($strTextMens);
             return false;
         }
+        /*
         if (is_null($this->lstReceDest->SelectedValue)) {
             $strTextMens = 'La Receptoria Destino, es requerida';
             $this->enviarMensajeDeError($strTextMens);
             return false;
         }
+        */
         if (is_null($this->lstSucuDest->SelectedValue)) {
             $strTextMens = 'La Sucursal Destino, es requerida';
             $this->enviarMensajeDeError($strTextMens);

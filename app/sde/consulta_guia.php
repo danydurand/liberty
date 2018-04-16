@@ -116,7 +116,6 @@ class ConsultaGuia extends FormularioBaseKaizen {
         if ($strNumeGuia) {
             $this->objGuia = Guia::Load($strNumeGuia);
             if (!$this->objGuia) {
-                //throw new Exception('Could not find a Guia object with PK arguments: ' . $strNumeGuia);
                 if (isset($_SESSION['StatGuia'])) {
                     unset($_SESSION['StatGuia']);
                 }
@@ -129,6 +128,8 @@ class ConsultaGuia extends FormularioBaseKaizen {
                     }
                     $_SESSION['StatGuia'] = 'La Guía <b>#'.$strNumeGuia.'</b> ha sido eliminada! ';
                     QApplication::Redirect(__SIST__.'/guia_invalida.php');
+                } else {
+                    $this->objGuia->verificarTarifa();
                 }
             }
         } else {

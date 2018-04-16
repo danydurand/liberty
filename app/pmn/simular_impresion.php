@@ -34,7 +34,7 @@ class SimularImpresion extends FormularioBaseKaizen {
         $this->txtFechImpr_Create();
         $this->txtHoraImpr_Create();
 
-        $this->btnSave->Text = TextoIcono('cogs','Generar','F','lg');
+        $this->btnSave->Text = TextoIcono('cogs','Guardar','F','lg');
     }
 
     //-----------------------------
@@ -130,13 +130,13 @@ class SimularImpresion extends FormularioBaseKaizen {
             $objFactPmnx = FacturaPmn::Load($this->txtNumeDocu->Text);
             if ($objFactPmnx) {
                 if ($objFactPmnx->ImpresaId == SinoType::SI) {
-                    $this->mensaje('La Factura ya fue Impresa Previamente','','d','exclamation-triangle');
+                    $this->mensaje('La Factura ya fue impresa previamente','','d','',__iEXCL__);
                     $blnTodoOkey = false;
                 }
                 if ($blnTodoOkey) {
                     if ($objFactPmnx->MontoCobrado == 0 && !$objFactPmnx->GuiaCODdelSDE()) {
                         if ($objFactPmnx->TieneRetencion == SinoType::NO) {
-                            $this->mensaje('Factura Sin Retencion, Pendiente de Pago','','d','exclamation-triangle');
+                            $this->mensaje('Factura Sin Retencion, Pendiente de Pago','','d','',__iEXCL__);
                             $blnTodoOkey = false;
                         }
                     } else {
@@ -144,7 +144,7 @@ class SimularImpresion extends FormularioBaseKaizen {
                             if ($objFactPmnx->MontoCobrado == null && $objFactPmnx->GuiaCODdelSDE()){
                                 $blnTodoOkey = true;
                             } else {
-                                $this->mensaje('Factura Pendiente de Pago','','d','exclamation-triangle');
+                                $this->mensaje('Factura Pendiente de Pago','','d','',__iEXCL__);
                                 $blnTodoOkey = false;
                             }
                         }
@@ -158,17 +158,17 @@ class SimularImpresion extends FormularioBaseKaizen {
                     $objFactPmnx->ImpresaId = SinoType::SI;
                     $objFactPmnx->Save();
 
-                    $this->mensaje('Transacción Exitosa','','s','check');
+                    $this->mensaje('Transacción Exitosa !','','s','',__iCHEC__);
                     $this->blanquearCampos();
                 }
             } else {
-                $this->mensaje('La Factura No Existe','','d','exclamation-triangle');
+                $this->mensaje('La Factura No Existe','','d','',__iHAND__);
             }
         } else {
             $objNotaCred = NotaCredito::Load($this->txtNumeDocu->Text);
             if ($objNotaCred) {
                 if ($objNotaCred->ImpresaId == SinoType::SI) {
-                    $this->mensaje('La NDC ya fue Impresa Previamente','','d','exclamation-triangle');
+                    $this->mensaje('La NDC ya fue Impresa Previamente','','d','',__iEXCL__);
                     $blnTodoOkey = false;
                 }
                 if ($blnTodoOkey) {
@@ -187,11 +187,11 @@ class SimularImpresion extends FormularioBaseKaizen {
                     $arrParaAnul['UsuaAnul'] = $this->objUsuario->CodiUsua;
                     $objFactPmnx->AnularFactura($arrParaAnul);
 
-                    $this->mensaje('Transacción Exitosa','','s','check');
+                    $this->mensaje('Transacción Exitosa !','','s','',__iCHEC__);
                     $this->blanquearCampos();
                 }
             } else {
-                $this->mensaje('La Nota de Crédito No Existe','','d','exclamation-triangle');
+                $this->mensaje('La Nota de Crédito No Existe','','d','',__iHAND__);
             }
         }
     }

@@ -10,10 +10,10 @@ $strPageTitle = 'Simular Impresión Fiscal';
 require(__APP_INCLUDES__ . '/header.inc.php');
 ?>
 <div class="titulo-formulario">
-    <div class="col-xs-4 col-md-4 col-lg-4" style="text-align: left; margin-left: -0.8em; margin-top: -0.30em">
+    <div class="col-xs-4 col-md-5" style="text-align: left; margin-left: -0.8em; margin-top: -0.30em">
         <?php $this->lblTituForm->Render(); ?>
     </div>
-    <div class="hidden-xs hidden-sm col-md-8 col-lg-8" style="text-align: left; margin-top: -0.25em;">
+    <div class="hidden-xs hidden-sm col-md-7" style="text-align: left; margin-top: -0.25em;">
         <?php $this->btnSave->Render(); ?>
     </div>
 </div>
