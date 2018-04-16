@@ -75,7 +75,7 @@ require(__APP_INCLUDES__ . '/botonera_edit.inc.php');
                                     <div class="title">Ubicada en el Estado</div>
                                     <?php $this->lstEstado->Render(); ?>
                                     <div class="title">Visible en el CORP ?</div>
-                                    <?php $this->chkVisiClie->Render(); ?>
+                                    <?php $this->lstVisibleEnRegistro->Render(); ?>
                                     <div class="title">Se factura en ?</div>
                                     <?php $this->lstSeFacturaEnObject->Render(); ?>
                                 </div>

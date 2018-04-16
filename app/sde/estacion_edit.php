@@ -77,7 +77,6 @@ class EstacionEditForm extends EstacionEditFormBase {
 
         $this->txtNumeDias = $this->mctEstacion->txtNumeDias_Create();
         $this->txtNumeDias->Name = 'Se cubre en';
-//        $this->txtNumeDias->HtmlAfter = ' Día(s)';
         $this->txtNumeDias->Width = 80;
 
         $this->txtDireMail = $this->mctEstacion->txtDireMail_Create();
@@ -142,8 +141,9 @@ class EstacionEditForm extends EstacionEditFormBase {
 		$this->txtZonasNc->Width = 950;
 		$this->txtZonasNc->Rows = 3;
 
-
-		$this->chkVisiClie_Create();
+		$this->lstVisibleEnRegistro = $this->mctEstacion->lstVisibleEnRegistro_Create();
+		$this->lstVisibleEnRegistro->Name = 'Visible en el CORP ?';
+		$this->lstVisibleEnRegistro->Width = 50;
 
 		$objClauWher   = QQ::Clause();
 		$objClauWher[] = QQ::Equal(QQN::Counter()->StatusId,StatusType::ACTIVO);
@@ -169,14 +169,6 @@ class EstacionEditForm extends EstacionEditFormBase {
 	// Aqui se crean los objetos 
 	//----------------------------
 
-    protected function chkVisiClie_Create(){
-        $this->chkVisiClie = new QCheckBox($this);
-        $this->chkVisiClie->Name = 'Visible en el CORP ?';
-        if ($this->mctEstacion->EditMode) {
-            $this->chkVisiClie->Checked = $this->mctEstacion->Estacion->VisibleEnRegistroId;
-        }
-    }
-
     protected function dtgReceSucu_Create() {
         $this->dtgReceSucu = new CounterDataGrid($this);
         $this->dtgReceSucu->FontSize = 13;
@@ -186,53 +178,27 @@ class EstacionEditForm extends EstacionEditFormBase {
         $this->dtgReceSucu->CssClass = 'datagrid';
         $this->dtgReceSucu->AlternateRowStyle->CssClass = 'alternate';
 
-        // Add Pagination (if desired)
-        // $this->dtgReceSucu->Paginator = new QPaginator($this->dtgReceSucu);
-        // $this->dtgReceSucu->ItemsPerPage = __FORM_DRAFTS_FORM_LIST_ITEMS_PER_PAGE__;
-
         $objClauWher   = QQ::Clause();
         $objClauWher[] = QQ::Equal(QQN::Counter()->SucursalId,$this->mctEstacion->Estacion->CodiEsta);
         $this->dtgReceSucu->AdditionalConditions = QQ::AndCondition($objClauWher);
 
-        // Higlight the datagrid rows when mousing over them
         $this->dtgReceSucu->AddRowAction(new QMouseOverEvent(), new QCssClassAction('selectedStyle'));
         $this->dtgReceSucu->AddRowAction(new QMouseOutEvent(), new QCssClassAction());
 
-        // Add a click handler for the rows.
-        // We can use $_CONTROL->CurrentRowIndex to pass the row index to dtgPersonsRow_Click()
-        // or $_ITEM->Id to pass the object's id, or any other data grid variable
         $this->dtgReceSucu->RowActionParameterHtml = '<?= $_ITEM->Id ?>';
         $this->dtgReceSucu->AddRowAction(new QClickEvent(), new QAjaxAction('dtgReceSucuRow_Click'));
 
-        // Use the MetaDataGrid functionality to add Columns for this datagrid
-
-        // Create the Other Columns (note that you can use strings for counter's properties, or you
-        // can traverse down QQN::counter() to display fields that are down the hierarchy)
-        // $colReceIdxx = $this->dtgReceSucu->MetaAddColumn('Id');
-        // $colReceIdxx->FilterType = null;
-
-        //Filter = QQ::Like(QQN::Cliente()->Estado->Nombre,null);
-        //FilterPrefix = $colNombVend->FilterPostfix = '%';
         $this->dtgReceSucu->MetaAddColumn('Siglas');
         $this->dtgReceSucu->MetaAddColumn('Descripcion');
 
         $colNombSuce = $this->dtgReceSucu->MetaAddColumn(QQN::Counter()->Sucursal->DescEsta);
         $colNombSuce->Name = 'Sucursal';
-        // $colNombSuce->FilterType = QFilterType::TextFilter;
-        // $colNombSuce->FilterPrefix = '%';
-        // $colNombSuce->FilterPostfix = '%';
 
         $colReceStat = $this->dtgReceSucu->MetaAddTypeColumn('StatusId', 'StatusType');
         $colReceStat->Name = 'Estatus';
-        // $colReceStat->FilterType = QFilterType::ListFilter;
-        // $colReceStat->FilterAddListItem('ACTIVO',QQ::Equal(QQN::Counter()->StatusId,StatusType::ACTIVO));
-        // $colReceStat->FilterAddListItem('INACTIVO',QQ::Equal(QQN::Counter()->StatusId,StatusType::INACTIVO));
 
         $colReceRuta = $this->dtgReceSucu->MetaAddTypeColumn('EsRuta', 'SinoType');
         $colReceRuta->Name = 'DOM?';
-        // $colReceRuta->FilterType = QFilterType::ListFilter;
-        // $colReceRuta->FilterAddListItem('SI',QQ::Equal(QQN::Counter()->EsRuta,SinoType::SI));
-        // $colReceRuta->FilterAddListItem('NO',QQ::Equal(QQN::Counter()->EsRuta,SinoType::NO));
 
     }
 
@@ -362,17 +328,6 @@ class EstacionEditForm extends EstacionEditFormBase {
     }
 
     protected function btnSave_Click($strFormId, $strControlId, $strParameter) {
-        if (strlen($this->txtCuentaCnt->Text) > 0) {
-            $this->txtCuentaCnt->Text = $this->intCuenCont;
-        }
-
-        if (strlen($this->txtCuentaCod->Text) > 0) {
-            $this->txtCuentaCod->Text = $this->intCuenCods;
-        }
-
-        if (strlen($this->txtCuentaCom->Text) > 0) {
-            $this->txtCuentaCom->Text = $this->intCuenComa;
-        }
 		//--------------------------------------------
 		// Se clona el objeto para verificar cambios 
 		//--------------------------------------------
@@ -389,22 +344,21 @@ class EstacionEditForm extends EstacionEditFormBase {
 				//------------------------------------------
 				// En caso de que el objeto haya cambiado 
 				//------------------------------------------
-				$arrLogxCamb['strNombTabl'] = 'Estacion';
+				$arrLogxCamb['strNombTabl'] = 'Sucursal';
 				$arrLogxCamb['intRefeRegi'] = $this->mctEstacion->Estacion->CodiEsta;
 				$arrLogxCamb['strNombRegi'] = $this->mctEstacion->Estacion->DescEsta;
 				$arrLogxCamb['strDescCamb'] = implode(',',$objResuComp->DifferentFields);
-                $arrLogxCamb['strEnlaEnti'] = __SIST__.'/estacion_edit.php/'.$this->mctEstacion->Estacion->CodiEsta;
 				LogDeCambios($arrLogxCamb);
-                $this->mensaje('Transacción Exitosa','','','check');
+                $this->mensaje('Transacción Exitosa !','','',__iCHEC__);
 			}
 		} else {
-			$arrLogxCamb['strNombTabl'] = 'Estacion';
+			$arrLogxCamb['strNombTabl'] = 'Sucursal';
 			$arrLogxCamb['intRefeRegi'] = $this->mctEstacion->Estacion->CodiEsta;
 			$arrLogxCamb['strNombRegi'] = $this->mctEstacion->Estacion->DescEsta;
 			$arrLogxCamb['strDescCamb'] = "Creado";
             $arrLogxCamb['strEnlaEnti'] = __SIST__.'/estacion_edit.php/'.$this->mctEstacion->Estacion->CodiEsta;
 			LogDeCambios($arrLogxCamb);
-            $this->mensaje('Transacción Exitosa','','','check');
+            $this->mensaje('Transacción Exitosa !','','',__iCHEC__);
 		}
 	}
 

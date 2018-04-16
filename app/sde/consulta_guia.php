@@ -1041,9 +1041,10 @@ class ConsultaGuia extends FormularioBaseKaizen {
     }
 
     public function dtgGuiaCkpt_TextObse_Render(GuiaCkpt $objGuiaCkpt) {
+        $strCodiCkpt = $objGuiaCkpt->CodiCkpt;
         $strTextObse = $objGuiaCkpt->TextObse;
         if (strlen($strTextObse) > 0) {
-            $strTextObse = limpiarCadena($strTextObse);
+            $strTextObse = '('.$strCodiCkpt.') '.limpiarCadena($strTextObse);
         }
         return utf8_encode($strTextObse);
     }

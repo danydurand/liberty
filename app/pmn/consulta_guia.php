@@ -591,7 +591,7 @@ class ConsultaGuia extends FormularioBaseKaizen {
         $colSiglCkpt->HtmlEntities = false;
         $this->dtgGuiaCkpt->AddColumn($colSiglCkpt);
 
-        $colDescCkpt = new QDataGridColumn('Observacion', '<?= $_ITEM->CodiCkptObject->DescCkpt ?>');
+        $colDescCkpt = new QDataGridColumn('Observacion', '<?= $_FORM->dtgGuiaCkpt_TextObse_Render($_ITEM); ?>');
         $colDescCkpt->Width = 150;
         $colDescCkpt->HtmlEntities = false;
         $this->dtgGuiaCkpt->AddColumn($colDescCkpt);
@@ -618,6 +618,15 @@ class ConsultaGuia extends FormularioBaseKaizen {
 
         // Specify the DataBinder method for the DataGrid
         $this->dtgGuiaCkpt->SetDataBinder('dtgGuiaCkpt_Bind');
+    }
+
+    public function dtgGuiaCkpt_TextObse_Render(GuiaCkpt $objGuiaCkpt) {
+        $strCodiCkpt = $objGuiaCkpt->CodiCkpt;
+        $strTextObse = $objGuiaCkpt->TextObse;
+        if (strlen($strTextObse) > 0) {
+            $strTextObse = '('.$strCodiCkpt.') '.limpiarCadena($strTextObse);
+        }
+        return utf8_encode($strTextObse);
     }
 
     //-------- Información de Registro de Trabajo (Histórico) --------
