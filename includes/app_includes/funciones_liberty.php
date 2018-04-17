@@ -674,12 +674,12 @@ function proxIdVendedor() {
  * @return int Numero de Guia
  */
 function proxNroNotificacion() {
-    $objDatabase = NotiConsecutivo::GetDatabase();
-    $objConsecutivo = new NotiConsecutivo();
+    $objDatabase = NotiConsecutivoCT::GetDatabase();
+    $objConsecutivo = new NotiConsecutivoCT();
     $objConsecutivo->Nada = 'X';
     $objConsecutivo->Save();
     $intProxNume = $objDatabase->InsertId('noti_consecutivo', 'id');
-    foreach (NotiConsecutivo::QueryArray(QQ::AndCondition(QQ::LessThan(QQN::NotiConsecutivo()->Id,$intProxNume))) as $objConsRegi) {
+    foreach (NotiConsecutivoCT::QueryArray(QQ::AndCondition(QQ::LessThan(QQN::NotiConsecutivoCT()->Id,$intProxNume))) as $objConsRegi) {
         $objConsRegi->Delete();
     }
     return $intProxNume;
@@ -1833,19 +1833,16 @@ function DeterminarUsuario() {
 }
 
 function GrabarCheckpointOptimizado($arrDatoCkpt) {
-    //------------------------
-    // Parametros de entrada
-    //------------------------
+    //---------------------------------------------------------------------------------------------
+    // Esta rutina controla lo concerniente al ingresos de informacion de la tabla de checkpoints
+    //---------------------------------------------------------------------------------------------
     $strNumeGuia = $arrDatoCkpt['NumeGuia'];
     $strUltiCkpt = $arrDatoCkpt['UltiCkpt'];
     $intGuiaAnul = $arrDatoCkpt['GuiaAnul'];
     $strCodiCkpt = $arrDatoCkpt['CodiCkpt'];
     $strTextCkpt = $arrDatoCkpt['TextCkpt'];
     $strCodiRuta = $arrDatoCkpt['CodiRuta'];
-    //------------------------------------------------------------
-    // Esta rutina controla lo concerniente al ingresos de
-    // informacion de la tabla de checkpoints
-    //------------------------------------------------------------
+
     $arrResuGrab = array();
     $arrResuGrab['TodoOkey'] = true;
     $arrResuGrab['MotiNook'] = '';
@@ -1856,49 +1853,42 @@ function GrabarCheckpointOptimizado($arrDatoCkpt) {
     $strCodiEsta = $arrDatoUsua['CodiEsta'];
     $intCodiUsua = $arrDatoUsua['CodiUsua'];
 
+    $objGuiaProc = Guia::Load($strNumeGuia);
+
+    if ($objGuiaProc->Anulada) {
+        $arrResuGrab['MotiNook'] = "Guia Eliminada. No Adtmite Incidencias";
+        $arrResuGrab['TodoOkey'] = false;
+        return $arrResuGrab;
+    }
+    if ($objGuiaProc->tieneCheckpointDeCierre()) {
+        $arrResuGrab['MotiNook'] = "La Guia ya cerró su Ciclo. No Adtmite Incidencias";
+        $arrResuGrab['TodoOkey'] = false;
+        return $arrResuGrab;
+    }
+    $objGuiaCkpt = new GuiaCkpt();
+    $objGuiaCkpt->NumeGuia = $strNumeGuia;
+    $objGuiaCkpt->CodiEsta = $strCodiEsta;
+    $objGuiaCkpt->CodiCkpt = $strCodiCkpt;
+    $objGuiaCkpt->FechCkpt = new QDateTime(QDateTime::Now);
+    $objGuiaCkpt->HoraCkpt = date('H:i:s');
+    $objGuiaCkpt->TextObse = strtoupper($strTextCkpt);
+    $objGuiaCkpt->CodiUsua = $intCodiUsua;
+    $objGuiaCkpt->CodiRuta = strlen($strCodiRuta) > 0 ? $strCodiRuta : '';
+    $objGuiaCkpt->Save();
+
     if (isset($_SESSION['CkptSmsx'])) {
         $arrCkptSmsx = unserialize($_SESSION['CkptSmsx']);
     } else {
         $arrCkptSmsx = array();
     }
-
-    if ($arrResuGrab['TodoOkey']) {
-        // if ($objGuia->Anulada) {
-        if ($intGuiaAnul == SinoType::SI) {
-            $arrResuGrab['MotiNook'] = "Guia Eliminada. No Adtmite Incidencias";
-            $arrResuGrab['TodoOkey'] = false;
-        }
-    }
-    if ($arrResuGrab['TodoOkey']) {
-        if (isset($_SESSION['CkptTerm']) && (strlen($strUltiCkpt))) {
-            $arrCkptTerm = unserialize($_SESSION['CkptTerm']);
-            if (in_array($strUltiCkpt,$arrCkptTerm)) {
-                $arrResuGrab['MotiNook'] = "Envio ya Cerro su Ciclo. No Adtmite Incidencias";
-                $arrResuGrab['TodoOkey'] = false;
-            }
-        }
-    }
-    if ($arrResuGrab['TodoOkey']) {
-        $objGuiaCkpt = new GuiaCkpt();
-        $objGuiaCkpt->NumeGuia = $strNumeGuia;
-        $objGuiaCkpt->CodiEsta = $strCodiEsta;
-        $objGuiaCkpt->CodiCkpt = $strCodiCkpt;
-        $objGuiaCkpt->FechCkpt = new QDateTime(QDateTime::Now);
-        $objGuiaCkpt->HoraCkpt = date('H:i:s');
-        $objGuiaCkpt->TextObse = strtoupper($strTextCkpt);
-        $objGuiaCkpt->CodiUsua = $intCodiUsua;
-        $objGuiaCkpt->CodiRuta = strlen($strCodiRuta) > 0 ? $strCodiRuta : '';
-        $objGuiaCkpt->Save();
-
-        if (in_array($objGuiaCkpt->CodiCkpt, $arrCkptSmsx)) {
-            $objNotificacion = new Notificacion();
-            $objNotificacion->Id            = proxNroNotificacion();
-            $objNotificacion->GuiaId        = $objGuiaCkpt->NumeGuia;
-            $objNotificacion->CheckpointId  = $objGuiaCkpt->CodiCkpt;
-            $objNotificacion->Notificado    = SinoType::NO;
-            $objNotificacion->NotificadoSms = SinoType::SI;
-            $objNotificacion->Save();
-        }
+    if (in_array($objGuiaCkpt->CodiCkpt, $arrCkptSmsx)) {
+        $objNotificacion = new Notificacion();
+        $objNotificacion->Id            = proxNroNotificacion();
+        $objNotificacion->GuiaId        = $objGuiaCkpt->NumeGuia;
+        $objNotificacion->CheckpointId  = $objGuiaCkpt->CodiCkpt;
+        $objNotificacion->Notificado    = SinoType::NO;
+        $objNotificacion->NotificadoSms = SinoType::SI;
+        $objNotificacion->Save();
     }
     return $arrResuGrab;
 }

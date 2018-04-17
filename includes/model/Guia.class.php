@@ -27,6 +27,17 @@
 			return sprintf('%s',  $this->strNumeGuia);
 		}
 
+        public function tieneCheckpointDeCierre() {
+            //-------------------------------------------------------------------
+            // Esta rutina verifica la existencia de algún checkpoint de cierre
+            // relacionado con la guia
+            //-------------------------------------------------------------------
+            $objClauWher   = QQ::Clause();
+            $objClauWher[] = QQ::Equal(QQN::GuiaCkpt()->NumeGuia,$this->NumeGuia);
+            $objClauWher[] = QQ::Equal(QQN::GuiaCkpt()->CodiCkptObject->TipoTerm,SinoType::SI);
+            return GuiaCkpt::QueryCount(QQ::AndCondition($objClauWher));
+        }
+
 		public function verificarTarifa() {
             //-------------------------------------------------------------
             // Se asigna codigo de la Tarifa, en caso de que no lo tenga

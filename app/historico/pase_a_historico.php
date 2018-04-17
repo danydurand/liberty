@@ -20,26 +20,27 @@ foreach ($arrGuiaCadu as $objGuiaCadu) {
     $blnTodoOkey = verificarDatosQuePrelan($objGuiaCadu);
     if ($blnTodoOkey) {
 
-        // Mover Guia
+        // Copiar Guia
 
-        // Mover Checkpoints
+        // Copiar Checkpoints
 
-        // Mover Registro de Trabajo
+        // Copiar Registro de Trabajo
 
-        // Mover Log de Transacciones
+        // Copiar Log de Transacciones
 
+        // Borrar la guía
     }
 }
 
-function moverGuia(Guia $objGuiaCadu) {
+function copiarGuia(Guia $objGuiaCadu) {
 
 }
 
-function moverCheckpoints(Guia $objGuiaCadu) {
+function copiarCheckpoints(Guia $objGuiaCadu) {
 
 }
 
-function moverRegistroDeTrabajo(Guia $objGuiaCadu) {
+function copiarRegistroDeTrabajo(Guia $objGuiaCadu) {
 
 }
 
@@ -58,8 +59,6 @@ function verificarDatosQuePrelan(Guia $objGuiaCadu) {
     // Verificar Destino (esta_dest)
 
     // Verificar Producto (codi_prod)
-
-    // Verificar Tipo Guia (tipo_guia)
 
     // Verificar Tipo Guia (tipo_guia)
 
