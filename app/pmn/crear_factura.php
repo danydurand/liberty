@@ -140,10 +140,6 @@ class CrearFactura extends FormularioBaseKaizen {
 
         $this->lblTituForm->Text = 'Crear una Factura';
 
-        //-------------
-        // Información
-        //-------------
-
         //---- Pre-Factura y Datos Fiscales ----
         $this->lblNumeFact_Create();
         $this->lblCeduRifx_Create();
@@ -947,9 +943,10 @@ class CrearFactura extends FormularioBaseKaizen {
         //----------------------------------------------------
         // Se recalcula el IVA y Tarifa de la Guía a asociar.
         //----------------------------------------------------
-        $arrCalcTari   = CalcularTarifaPmnDeLaGuia($this->objGuia);
-        $blnTodoOkey   = $arrCalcTari['blnTodoOkey'];
-        $this->objGuia = $arrCalcTari['objGuiaCalc'];
+//        $arrCalcTari   = CalcularTarifaPmnDeLaGuia($this->objGuia);
+//        $blnTodoOkey   = $arrCalcTari['blnTodoOkey'];
+//        $this->objGuia = $arrCalcTari['objGuiaCalc'];
+        $blnTodoOkey = true;
         if ($blnTodoOkey) {
             //---------------------------------------------
             // Se crea un registro en la tabla factura
@@ -982,50 +979,50 @@ class CrearFactura extends FormularioBaseKaizen {
     }
 
     protected function UpdateFieldsFactura() {
-        $this->objFactPmnx->CedulaRif = $this->lblCeduRifx->Text;
-        $this->objFactPmnx->RazonSocial = QuitarAmpersand($this->lblRazoSoci->Text);
-        $this->objFactPmnx->DireccionFiscal = $this->lblDireFisc->Text;
-        $this->objFactPmnx->Telefono = $this->lblNumeTele->Text;
-        $this->objFactPmnx->Numero = null;
-        $this->objFactPmnx->MaquinaFiscal = null;
-        $this->objFactPmnx->FechaImpresion = null;
-        $this->objFactPmnx->HoraImpresion = null;
-        $this->objFactPmnx->MontoBase = 0;
-        $this->objFactPmnx->MontoFranqueo = 0;
-        $this->objFactPmnx->MontoIva = 0;
-        $this->objFactPmnx->MontoSeguro = 0;
-        $this->objFactPmnx->MontoOtros = 0;
-        $this->objFactPmnx->MontoTotal = 0;
-        $this->objFactPmnx->SucursalId = $this->objUsuario->CodiEsta;
-        $this->objFactPmnx->ReceptoriaId = unserialize($_SESSION['CodiRece']);
-        $this->objFactPmnx->CajaId = 1;
-        $this->objFactPmnx->CreadaPor = $this->objUsuario->CodiUsua;
-        $this->objFactPmnx->CreadaEl = $this->calFechFact->DateTime;
-        $this->objFactPmnx->Estatus = 'P';
-        $this->objFactPmnx->ImpresaId = SinoType::NO;
-        $this->objFactPmnx->AnuladaPor = '';
-        $this->objFactPmnx->AnuladaEl = null;
-        $this->objFactPmnx->MotivoAnulacion = '';
-        $this->objFactPmnx->PorcentajeReteIva = 0;
-        $this->objFactPmnx->MontoReteIva = 0;
+        $this->objFactPmnx->CedulaRif          = $this->lblCeduRifx->Text;
+        $this->objFactPmnx->RazonSocial        = QuitarAmpersand($this->lblRazoSoci->Text);
+        $this->objFactPmnx->DireccionFiscal    = $this->lblDireFisc->Text;
+        $this->objFactPmnx->Telefono           = $this->lblNumeTele->Text;
+        $this->objFactPmnx->Numero             = null;
+        $this->objFactPmnx->MaquinaFiscal      = null;
+        $this->objFactPmnx->FechaImpresion     = null;
+        $this->objFactPmnx->HoraImpresion      = null;
+        $this->objFactPmnx->MontoBase          = 0;
+        $this->objFactPmnx->MontoFranqueo      = 0;
+        $this->objFactPmnx->MontoIva           = 0;
+        $this->objFactPmnx->MontoSeguro        = 0;
+        $this->objFactPmnx->MontoOtros         = 0;
+        $this->objFactPmnx->MontoTotal         = 0;
+        $this->objFactPmnx->SucursalId         = $this->objUsuario->CodiEsta;
+        $this->objFactPmnx->ReceptoriaId       = unserialize($_SESSION['CodiRece']);
+        $this->objFactPmnx->CajaId             = 1;
+        $this->objFactPmnx->CreadaPor          = $this->objUsuario->CodiUsua;
+        $this->objFactPmnx->CreadaEl           = $this->calFechFact->DateTime;
+        $this->objFactPmnx->Estatus            = 'P';
+        $this->objFactPmnx->ImpresaId          = SinoType::NO;
+        $this->objFactPmnx->AnuladaPor         = '';
+        $this->objFactPmnx->AnuladaEl          = null;
+        $this->objFactPmnx->MotivoAnulacion    = '';
+        $this->objFactPmnx->PorcentajeReteIva  = 0;
+        $this->objFactPmnx->MontoReteIva       = 0;
         $this->objFactPmnx->PorcentajeReteIslr = 0;
-        $this->objFactPmnx->MontoReteIslr = 0;
-        $this->objFactPmnx->MontoDscto = 0;
+        $this->objFactPmnx->MontoReteIslr      = 0;
+        $this->objFactPmnx->MontoDscto         = 0;
     }
 
     protected function AgregarPrimerItemFactura() {
         $objItemFact = new ItemFacturaPmn();
-        $objItemFact->FacturaId = $this->objFactPmnx->Id;
-        $objItemFact->GuiaId = $this->objGuia->NumeGuia;
-        $objItemFact->MontoBase = $this->objGuia->MontoBase;
+        $objItemFact->FacturaId       = $this->objFactPmnx->Id;
+        $objItemFact->GuiaId          = $this->objGuia->NumeGuia;
+        $objItemFact->MontoBase       = $this->objGuia->MontoBase;
         $objItemFact->PorcentajeDscto = 0;
-        $objItemFact->MontoDscto = 0;
-        $objItemFact->MontoFranqueo = $this->objGuia->MontoFranqueo;
-        $objItemFact->PorcentajeIva = $this->objGuia->PorcentajeIva;
-        $objItemFact->MontoIva = $this->objGuia->MontoIva;
-        $objItemFact->MontoSeguro = $this->objGuia->MontoSeguro;
-        $objItemFact->MontoOtros = $this->objGuia->MontoOtros;
-        $objItemFact->MontoTotal = $this->objGuia->MontoTotal;
+        $objItemFact->MontoDscto      = 0;
+        $objItemFact->MontoFranqueo   = $this->objGuia->MontoFranqueo;
+        $objItemFact->PorcentajeIva   = $this->objGuia->PorcentajeIva;
+        $objItemFact->MontoIva        = $this->objGuia->MontoIva;
+        $objItemFact->MontoSeguro     = $this->objGuia->MontoSeguro;
+        $objItemFact->MontoOtros      = $this->objGuia->MontoOtros;
+        $objItemFact->MontoTotal      = $this->objGuia->MontoTotal;
         $objItemFact->Save();
     }
 

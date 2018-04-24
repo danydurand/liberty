@@ -16,11 +16,11 @@
                 <?php $this->lblMensUsua->Render(); ?>
             </div>
         </div>
-        <?php $this->dtrSucuActi->Paginator->Render(); ?>
+        <?php //$this->dtrSucuActi->Paginator->Render(); ?>
         <div style="margin-top: 0.5em"></div>
         <?php $this->dtrSucuActi->Render(); ?>
         <div style="margin-top: 0.5em"></div>
-        <?php $this->dtrSucuActi->PaginatorAlternate->Render(); ?>
+        <?php //$this->dtrSucuActi->PaginatorAlternate->Render(); ?>
     </div>
 </div>
 <style>

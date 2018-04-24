@@ -36,8 +36,7 @@ class DevolverGuia extends FormularioBaseKaizen {
         $this->txtNumeGuia->Placeholder = 'Nros de Guias';
         $this->txtNumeGuia->Required = true;
         $this->txtNumeGuia->TextMode = QTextMode::MultiLine;
-        $this->txtNumeGuia->Height = 250;
-        $this->txtNumeGuia->Width = 250;
+        $this->txtNumeGuia->Rows = 8;
     }
 
     protected function txtTextObse_Create() {
@@ -81,7 +80,7 @@ class DevolverGuia extends FormularioBaseKaizen {
             //-------------------------
             if (!$objGuiaProc) {
                 $intCantErro++;
-                $this->txtNumeGuia->Text .= $strNumeGuia . ' (No Existe)' . chr(13);
+                $this->txtNumeGuia->Text .= $strNumeGuia . ' (1)' . chr(13);
                 $blnTodoOkey = false;
             }
             if ($blnTodoOkey) {
@@ -92,7 +91,7 @@ class DevolverGuia extends FormularioBaseKaizen {
                 $arrResuVali = $objGuiaProc->validarDevolucion($this->objUsuario);
                 if (!$arrResuVali['TodoOkey']) {
                     $intCantErro++;
-                    $this->txtNumeGuia->Text .= $strNumeGuia . ' (' . $arrResuVali['MensUsua'] . ')' . chr(13);
+                    $this->txtNumeGuia->Text .= $strNumeGuia . ' (' . $arrResuVali['CodiErro'] . ')' . chr(13);
                     $blnTodoOkey = false;
                 }
             }
@@ -119,7 +118,7 @@ class DevolverGuia extends FormularioBaseKaizen {
         if ($intCantErro > 0) {
             $strClasMens  = 'w';
             $strImagMens  = __iEXCL__;
-            $strMensUsua .= ' / Guías Erradas: '.$intCantErro;
+            $strMensUsua .= ' | Guías Erradas: '.$intCantErro;
         }
         $this->mensaje($strMensUsua,'',$strClasMens,'',$strImagMens);
     }

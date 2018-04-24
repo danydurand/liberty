@@ -76,19 +76,36 @@ class EstacionListForm extends EstacionListFormBase {
 		$colNombCont = $this->dtgEstacions->MetaAddColumn('NombCont');
 		$colNombCont->Name = 'Contacto';
 
-		$colDireMail = $this->dtgEstacions->MetaAddColumn('DireMail');
+		$colCantRece = new QDataGridColumn('RECEPTORIAS','<?= $_FORM->dtgCantRece_Render($_ITEM); ?>');
+		$this->dtgEstacions->AddColumn($colCantRece);
+
+		$colDireMail = $this->dtgEstacions->MetaAddColumn('DireMailPrincipal');
 		$colDireMail->Name = 'Correo Electrónico';
+		$colDireMail->Width = 200;
 
-		// $colRegiEsta = $this->dtgEstacions->MetaAddColumn(QQN::Estacion()->Region);
-		// $colRegiEsta->Name = 'Región';
+		$colEstaSucu = new QDataGridColumn('ESTADO','<?= $_FORM->dtgEstado_Render($_ITEM); ?>');
+        $this->dtgEstacions->AddColumn($colEstaSucu);
 
-		$colEstaSucu = $this->dtgEstacions->MetaAddColumn(QQN::Estacion()->Estado);
-		$colEstaSucu->Name = 'Estado';
-
-		//$colZonaFact = $this->dtgEstacions->MetaAddColumn(QQN::Estacion()->SeFacturaEnObject);
-		//$colZonaFact->Name = 'Se factura en';
+		$colZonaFact = $this->dtgEstacions->MetaAddColumn(QQN::Estacion()->SeFacturaEnObject);
+		$colZonaFact->Name = 'Se factura en';
 
         $this->btnExpoExce_Create();
+    }
+
+    public function dtgCantRece_Render(Estacion $objEstacion) {
+	    if ($objEstacion) {
+	        return $objEstacion->CountCountersAsSucursal();
+        } else {
+	        null;
+        }
+    }
+
+    public function dtgEstado_Render(Estacion $objEstacion) {
+	    if ($objEstacion->Estado) {
+	        return str_replace('ESTADO','',$objEstacion->Estado->Nombre);
+        } else {
+	        null;
+        }
     }
 
 	public function dtgEstacionsRow_Click($strFormId, $strControlId, $strParameter) {

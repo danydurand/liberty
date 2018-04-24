@@ -75,22 +75,16 @@ class CambioTarifaGuias extends FormularioBaseKaizen {
     protected function btnSave_Click() {
         $arrGuiaProc = explode(',',nl2br2($this->txtNumeSeri->Text));
         $this->txtNumeSeri->Text = '';
-        //---------------------------------------
-        // Aquí se eliminan la líneas en blanco
-        //---------------------------------------
-        $arrGuiaProc = BorrarLineasEnBlanco($arrGuiaProc); 
-        //---------------------------------------------------------------------------
-        // Con array_unique se eliminan las guías repetidas en caso de que las haya
-        //---------------------------------------------------------------------------
-        $arrGuiaProc = array_unique($arrGuiaProc,SORT_STRING);
+        //--------------------------------------------------------
+        // Se eliminan la líneas en blanco y registros repetidos
+        //--------------------------------------------------------
+        $arrGuiaProc = LimpiarArreglo($arrGuiaProc);
         $intCantGuia = count($arrGuiaProc);
-        $intTariNuev = $this->lstCodiTari->SelectedValue;
         //---------------------------------------------------------------
         // Se procesa una a una las Guías proporcionadas por el Usuario
         //---------------------------------------------------------------
         $intContProc = 0;
         foreach ($arrGuiaProc as $strGuiaProc) {
-            $strGuiaProc = trim($strGuiaProc);
             $blnTodoOkey = true;
             $objGuiaProc = Guia::Load($strGuiaProc);
             if (!$objGuiaProc) {

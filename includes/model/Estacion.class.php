@@ -61,21 +61,16 @@
 			return sprintf('%s (%s) (%s)',  $this->strDescEsta, $this->NumeDias, $this->strFrecuenciaDeCobertura);
 		}
 
-		public static function LoadArrayConCantidadDeReceptorias() {
+        public static function LoadArrayConCantidadDeReceptorias() {
 			$objDatabase = Estacion::GetDatabase();
-			// $strCadeSqlx = 'select *,(select count(*)
-			//                        	    from counter
-			//                        	   where counter.sucursal_id = estacion.codi_esta) as __cant_rece
-			//                   from estacion
-			//                 having __cant_rece > 0
-			//                  order by codi_esta';
-			$strCadeSqlx = 'select *,(select count(*)
-			                       	    from counter
-			                       	   where counter.sucursal_id = estacion.codi_esta) as __cant_rece
-			                  from estacion
-			                 where codi_stat = 1
-			                   and es_un_almacen = 0
-			                 order by codi_esta';
+			$strCadeSqlx  = 'select *,(select count(*) ';
+			$strCadeSqlx .= '       	 from counter ';
+			$strCadeSqlx .= '       	where counter.sucursal_id = estacion.codi_esta) as __cant_rece ';
+			$strCadeSqlx .= '  from estacion ';
+			$strCadeSqlx .= ' where codi_stat = 1 ';
+			$strCadeSqlx .= '   and es_un_almacen = 0 ';
+			$strCadeSqlx .= '   and pais_id = 1 ';
+			$strCadeSqlx .= ' order by codi_esta';
 			$objDbResult = $objDatabase->Query($strCadeSqlx);
 			return Estacion::InstantiateDbResult($objDbResult);
 		}

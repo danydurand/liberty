@@ -1,31 +1,31 @@
 <?php
-	require(__MODEL_GEN__ . '/GuiaGen.class.php');
+    require(__MODEL_GEN__ . '/GuiaGen.class.php');
 
-	/**
-	 * The Guia class defined here contains any
-	 * customized code for the Guia class in the
-	 * Object Relational Model.  It represents the "guia" table
-	 * in the database, and extends from the code generated abstract GuiaGen
-	 * class, which contains all the basic CRUD-type functionality as well as
-	 * basic methods to handle relationships and index-based loading.
-	 *
-	 * @package My QCubed Application
-	 * @subpackage DataObjects
-	 *
-	 */
-	class Guia extends GuiaGen {
-		/**
-		 * Default "to string" handler
-		 * Allows pages to _p()/echo()/print() this object, and to define the default
-		 * way this object would be outputted.
-		 *
-		 * Can also be called directly via $objGuia->__toString().
-		 *
-		 * @return string a nicely formatted string representation of this object
-		 */
-		public function __toString() {
-			return sprintf('%s',  $this->strNumeGuia);
-		}
+    /**
+     * The Guia class defined here contains any
+     * customized code for the Guia class in the
+     * Object Relational Model.  It represents the "guia" table
+     * in the database, and extends from the code generated abstract GuiaGen
+     * class, which contains all the basic CRUD-type functionality as well as
+     * basic methods to handle relationships and index-based loading.
+     *
+     * @package My QCubed Application
+     * @subpackage DataObjects
+     *
+     */
+    class Guia extends GuiaGen {
+        /**
+         * Default "to string" handler
+         * Allows pages to _p()/echo()/print() this object, and to define the default
+         * way this object would be outputted.
+         *
+         * Can also be called directly via $objGuia->__toString().
+         *
+         * @return string a nicely formatted string representation of this object
+         */
+        public function __toString() {
+            return sprintf('%s',  $this->strNumeGuia);
+        }
 
         public function tieneCheckpointDeCierre() {
             //-------------------------------------------------------------------
@@ -38,7 +38,7 @@
             return GuiaCkpt::QueryCount(QQ::AndCondition($objClauWher));
         }
 
-		public function verificarTarifa() {
+        public function verificarTarifa() {
             //-------------------------------------------------------------
             // Se asigna codigo de la Tarifa, en caso de que no lo tenga
             //-------------------------------------------------------------
@@ -56,9 +56,10 @@
             }
         }
 
-		public function validarDevolucion(Usuario $objUsuario) {
-		    $blnTodoOkey = true;
-		    $strMensUsua = '';
+        public function validarDevolucion(Usuario $objUsuario) {
+            $blnTodoOkey = true;
+            $strMensUsua = '';
+            $intCodiErro = 0;
             //---------------------------------------------
             // La Guia no debe esta anulada, ni entregada
             //---------------------------------------------
@@ -66,6 +67,7 @@
                 $arrSepuProc = $this->SePuedeProcesar();
                 if (!$arrSepuProc['TodoOkey']) {
                     $strMensUsua = $arrSepuProc['MensUsua'];
+                    $intCodiErro = $arrSepuProc['CodiErro'];
                     $blnTodoOkey = false;
                 }
             }
@@ -75,6 +77,7 @@
             if ($blnTodoOkey) {
                 if ($this->tieneCheckpoint('DR')) {
                     $strMensUsua = 'Ya fue Devuelta';
+                    $intCodiErro = 5;
                     $blnTodoOkey = false;
                 }
             }
@@ -82,17 +85,21 @@
             // El Usuario, debe estar en la Sucursal destino de la Guia
             //------------------------------------------------------------
             if ($blnTodoOkey) {
-                if ($this->EstaDest != $objUsuario->CodiEsta) {
+                $strSucuFact = $this->EstaDestObject->SeFacturaEnObject->Sucursal->CodiEsta;
+                $arrSucuVali = array($strSucuFact,$this->EstaDest);
+                if (!in_array($objUsuario->CodiEsta,$arrSucuVali)) {
                     $strMensUsua = 'Suc. Dest. Diferente';
+                    $intCodiErro = 6;
                     $blnTodoOkey = false;
                 }
             }
             $arrResuVali['TodoOkey'] = $blnTodoOkey;
             $arrResuVali['MensUsua'] = $strMensUsua;
+            $arrResuVali['CodiErro'] = $intCodiErro;
             return $arrResuVali;
         }
 
-		public function Devolver(SdeCheckpoint $objCkptDevo) {
+        public function Devolver(SdeCheckpoint $objCkptDevo) {
             //--------------------------------------------
             // Remitente y Destinatario, se intercambian
             //--------------------------------------------
@@ -176,10 +183,10 @@
             return $mixRegistro['CodiRuta'];
         }
 
-		public static function FechaUltimaGuiaDeCliente($intCodiClie) {
-		    $strCadeSqlx  = 'select fecha_ultima_guia as fech_guia ';
-		    $strCadeSqlx .= '  from fecha_ultima_guia ';
-		    $strCadeSqlx .= ' where cliente_id = '.$intCodiClie;
+        public static function FechaUltimaGuiaDeCliente($intCodiClie) {
+            $strCadeSqlx  = 'select fecha_ultima_guia as fech_guia ';
+            $strCadeSqlx .= '  from fecha_ultima_guia ';
+            $strCadeSqlx .= ' where cliente_id = '.$intCodiClie;
             $objDatabase  = Guia::GetDatabase();
             $objResulSet  = $objDatabase->Query($strCadeSqlx);
             $mixRegistro  = $objResulSet->FetchArray();
@@ -220,25 +227,30 @@
          */
         public function SePuedeProcesar() {
             $strMensUsua = '';
+            $intCodiErro = 0;
             $blnTodoOkey = true;
             if ($this->intAnulada) {
                 $strMensUsua = QApplication::Translate('Guia Eliminada');
+                $intCodiErro = 2;
                 $blnTodoOkey = false;
             }
             if ($blnTodoOkey) {
                 if ($this->strCodiCkpt == 'OK') {
                     $strMensUsua = QApplication::Translate('Guia Entregada');
+                    $intCodiErro = 3;
                     $blnTodoOkey = false;
                 }
             }
             if ($blnTodoOkey) {
                 if ($this->fltMontoTotal == 0) {
                     $strMensUsua = QApplication::Translate('Monto Cero');
+                    $intCodiErro = 4;
                     $blnTodoOkey = false;
                 }
             }
             $arrSepuProc['TodoOkey'] = $blnTodoOkey;
             $arrSepuProc['MensUsua'] = $strMensUsua;
+            $arrSepuProc['CodiErro'] = $intCodiErro;
             return $arrSepuProc;
         }
 
@@ -495,12 +507,12 @@
 
             // Setup the SQL Query
             $strCadeSqlx = sprintf("
-				SELECT
-					*
-				FROM
-					`v_entrega_pendiente`
-				WHERE
-					operacion_id = %s
+                SELECT
+                    *
+                FROM
+                    `v_entrega_pendiente`
+                WHERE
+                    operacion_id = %s
                 LIMIT 25",
                 $intCodiOper);
 
@@ -523,12 +535,12 @@
 
             // Setup the SQL Query
             $strCadeSqlx = sprintf("
-				SELECT
-					*
-				FROM
-					`v_entrega_realizada`
-				WHERE
-					operacion_id = %s
+                SELECT
+                    *
+                FROM
+                    `v_entrega_realizada`
+                WHERE
+                    operacion_id = %s
                 LIMIT 25",
                 $intCodiOper);
 
@@ -607,118 +619,118 @@
             return $strCodiCkpt;
         }
 
-		// Override or Create New Load/Count methods
-		// (For obvious reasons, these methods are commented out...
-		// but feel free to use these as a starting point)
+        // Override or Create New Load/Count methods
+        // (For obvious reasons, these methods are commented out...
+        // but feel free to use these as a starting point)
         /*
-		public static function LoadArrayBySample($strParam1, $intParam2, $objOptionalClauses = null) {
-			// This will return an array of Guia objects
-			return Guia::QueryArray(
-				QQ::AndCondition(
-					QQ::Equal(QQN::Guia()->Param1, $strParam1),
-					QQ::GreaterThan(QQN::Guia()->Param2, $intParam2)
-				),
-				$objOptionalClauses
-			);
-		}
+        public static function LoadArrayBySample($strParam1, $intParam2, $objOptionalClauses = null) {
+            // This will return an array of Guia objects
+            return Guia::QueryArray(
+                QQ::AndCondition(
+                    QQ::Equal(QQN::Guia()->Param1, $strParam1),
+                    QQ::GreaterThan(QQN::Guia()->Param2, $intParam2)
+                ),
+                $objOptionalClauses
+            );
+        }
 
-		public static function LoadBySample($strParam1, $intParam2, $objOptionalClauses = null) {
-			// This will return a single Guia object
-			return Guia::QuerySingle(
-				QQ::AndCondition(
-					QQ::Equal(QQN::Guia()->Param1, $strParam1),
-					QQ::GreaterThan(QQN::Guia()->Param2, $intParam2)
-				),
-				$objOptionalClauses
-			);
-		}
+        public static function LoadBySample($strParam1, $intParam2, $objOptionalClauses = null) {
+            // This will return a single Guia object
+            return Guia::QuerySingle(
+                QQ::AndCondition(
+                    QQ::Equal(QQN::Guia()->Param1, $strParam1),
+                    QQ::GreaterThan(QQN::Guia()->Param2, $intParam2)
+                ),
+                $objOptionalClauses
+            );
+        }
 
-		public static function CountBySample($strParam1, $intParam2, $objOptionalClauses = null) {
-			// This will return a count of Guia objects
-			return Guia::QueryCount(
-				QQ::AndCondition(
-					QQ::Equal(QQN::Guia()->Param1, $strParam1),
-					QQ::Equal(QQN::Guia()->Param2, $intParam2)
-				),
-				$objOptionalClauses
-			);
-		}
+        public static function CountBySample($strParam1, $intParam2, $objOptionalClauses = null) {
+            // This will return a count of Guia objects
+            return Guia::QueryCount(
+                QQ::AndCondition(
+                    QQ::Equal(QQN::Guia()->Param1, $strParam1),
+                    QQ::Equal(QQN::Guia()->Param2, $intParam2)
+                ),
+                $objOptionalClauses
+            );
+        }
 
-		public static function LoadArrayBySample($strParam1, $intParam2, $objOptionalClauses) {
-			// Performing the load manually (instead of using QCubed Query)
+        public static function LoadArrayBySample($strParam1, $intParam2, $objOptionalClauses) {
+            // Performing the load manually (instead of using QCubed Query)
 
-			// Get the Database Object for this Class
-			$objDatabase = Guia::GetDatabase();
+            // Get the Database Object for this Class
+            $objDatabase = Guia::GetDatabase();
 
-			// Properly Escape All Input Parameters using Database->SqlVariable()
-			$strParam1 = $objDatabase->SqlVariable($strParam1);
-			$intParam2 = $objDatabase->SqlVariable($intParam2);
+            // Properly Escape All Input Parameters using Database->SqlVariable()
+            $strParam1 = $objDatabase->SqlVariable($strParam1);
+            $intParam2 = $objDatabase->SqlVariable($intParam2);
 
-			// Setup the SQL Query
-			$strQuery = sprintf('
-				SELECT
-					`guia`.*
-				FROM
-					`guia` AS `guia`
-				WHERE
-					param_1 = %s AND
-					param_2 < %s',
-				$strParam1, $intParam2);
+            // Setup the SQL Query
+            $strQuery = sprintf('
+                SELECT
+                    `guia`.*
+                FROM
+                    `guia` AS `guia`
+                WHERE
+                    param_1 = %s AND
+                    param_2 < %s',
+                $strParam1, $intParam2);
 
-			// Perform the Query and Instantiate the Result
-			$objDbResult = $objDatabase->Query($strQuery);
-			return Guia::InstantiateDbResult($objDbResult);
-		}
+            // Perform the Query and Instantiate the Result
+            $objDbResult = $objDatabase->Query($strQuery);
+            return Guia::InstantiateDbResult($objDbResult);
+        }
 */
 
-		// Override or Create New Properties and Variables
-		// For performance reasons, these variables and __set and __get override methods
-		// are commented out.  But if you wish to implement or override any
-		// of the data generated properties, please feel free to uncomment them.
+        // Override or Create New Properties and Variables
+        // For performance reasons, these variables and __set and __get override methods
+        // are commented out.  But if you wish to implement or override any
+        // of the data generated properties, please feel free to uncomment them.
         /*
-		protected $strSomeNewProperty;
+        protected $strSomeNewProperty;
 
-		public function __get($strName) {
-			switch ($strName) {
-				case 'SomeNewProperty': return $this->strSomeNewProperty;
+        public function __get($strName) {
+            switch ($strName) {
+                case 'SomeNewProperty': return $this->strSomeNewProperty;
 
-				default:
-					try {
-						return parent::__get($strName);
-					} catch (QCallerException $objExc) {
-						$objExc->IncrementOffset();
-						throw $objExc;
-					}
-			}
-		}
+                default:
+                    try {
+                        return parent::__get($strName);
+                    } catch (QCallerException $objExc) {
+                        $objExc->IncrementOffset();
+                        throw $objExc;
+                    }
+            }
+        }
 
-		public function __set($strName, $mixValue) {
-			switch ($strName) {
-				case 'SomeNewProperty':
-					try {
-						return ($this->strSomeNewProperty = QType::Cast($mixValue, QType::String));
-					} catch (QInvalidCastException $objExc) {
-						$objExc->IncrementOffset();
-						throw $objExc;
-					}
+        public function __set($strName, $mixValue) {
+            switch ($strName) {
+                case 'SomeNewProperty':
+                    try {
+                        return ($this->strSomeNewProperty = QType::Cast($mixValue, QType::String));
+                    } catch (QInvalidCastException $objExc) {
+                        $objExc->IncrementOffset();
+                        throw $objExc;
+                    }
 
-				default:
-					try {
-						return (parent::__set($strName, $mixValue));
-					} catch (QCallerException $objExc) {
-						$objExc->IncrementOffset();
-						throw $objExc;
-					}
-			}
-		}
+                default:
+                    try {
+                        return (parent::__set($strName, $mixValue));
+                    } catch (QCallerException $objExc) {
+                        $objExc->IncrementOffset();
+                        throw $objExc;
+                    }
+            }
+        }
 */
 
-		// Initialize each property with default values from database definition
+        // Initialize each property with default values from database definition
         /*
-		public function __construct()
-		{
-			$this->Initialize();
-		}
+        public function __construct()
+        {
+            $this->Initialize();
+        }
 */
-	}
+    }
 ?>

@@ -39,11 +39,14 @@ class DirectorioTelefonico extends FormularioBaseKaizen {
         $objClauWher[] = QQ::Equal(QQN::Estacion()->CodiStat,StatusType::ACTIVO);
         $objClauWher[] = QQ::Equal(QQN::Estacion()->EsUnAlmacen,SinoType::NO);
         $objClauWher[] = QQ::Equal(QQN::Estacion()->PaisId,1);
-
         $arrSucuActi   = Estacion::QueryArray(QQ::AndCondition($objClauWher));
-
-        $this->dtrSucuActi->TotalItemCount = count($arrSucuActi);
-        $this->dtrSucuActi->DataSource = Estacion::QueryArray(QQ::AndCondition($objClauWher),QQ::Clause($this->dtrSucuActi->LimitClause));
+        $arrSucuDefi   = array();
+        foreach ($arrSucuActi as $objSucuActi) {
+            if ($objSucuActi->CountCountersAsSucursal() > 0) {
+                $arrSucuDefi[] = $objSucuActi;
+            }
+        }
+        $this->dtrSucuActi->DataSource     = $arrSucuDefi;
     }
 }
 DirectorioTelefonico::Run('DirectorioTelefonico');

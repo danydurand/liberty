@@ -338,6 +338,7 @@ class CargarGuia extends FormularioBaseKaizen {
         $this->txtNombRemi->Name = 'Nombre/R. Social';
         $this->txtNombRemi->Width = 225;
         $this->txtNombRemi->MaxLength = Guia::NombRemiMaxLength;
+        $this->txtNombRemi->SetCustomAttribute('onblur',"this.value=this.value.toUpperCase()");
         if ($this->blnEditMode) {
             $this->txtNombRemi->Text = $this->objGuia->NombRemi;
         } else {
@@ -363,6 +364,7 @@ class CargarGuia extends FormularioBaseKaizen {
         $this->txtDireRemi->MaxLength = Guia::DireRemiMaxLength;
         $this->txtDireRemi->Width = 225;
         $this->txtDireRemi->Height = 70;
+        $this->txtDireRemi->SetCustomAttribute('onblur',"this.value=this.value.toUpperCase()");
         if ($this->blnEditMode) {
             $this->txtDireRemi->Text = $this->objGuia->DireRemi;
         } else {

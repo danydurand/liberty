@@ -84,6 +84,7 @@ function LimpiarArreglo($arrVectEntr,$blnSoloNume=true) {
     //--------------------------------
     $arrVectSali = array();
     foreach ($arrVectEntr as $strLineEntr) {
+        $strLineEntr = trim($strLineEntr);
         if (strlen($strLineEntr)) {
             $arrVectSali[] = $strLineEntr;
         }
@@ -228,7 +229,7 @@ function t($strTextTraz) {
             $arrLineAudi[] = date('Y-m-d');
             $arrLineAudi[] = date('H:i:s');
             if (isset($_SESSION['NombProg'])) {
-                $arrLineAudi[] = basename($_SESSION['NombProg']);
+                $arrLineAudi[] = str_replace('.php','',basename($_SESSION['NombProg']));
             }
             if (!is_array($strTextTraz)) {
                 $arrLineAudi[] = $strTextTraz;

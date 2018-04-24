@@ -404,6 +404,28 @@ function QuitarAAs($strNumeGuia) {
  * $objGuia: Las guía cuya tarifa se desea calcular
  */
 function CalcularTarifaNacionalDeLaGuia($objGuia) {
+    /**
+     * @var $objRegiTraz Parametro
+     * @var $objUsuario Usuario
+     */
+    $objUsuario  = unserialize($_SESSION['User']);
+    $strLogiUsua = $objUsuario->LogiUsua;
+    $objRegiTraz = BuscarParametro('RegiTraz','CalcTari','TODO',null);
+    $blnRegiTraz = false;
+    if ($objRegiTraz) {
+        if (trim($objRegiTraz->ParaTxt2) == trim($strLogiUsua)) {
+            $blnRegiTraz = $objRegiTraz->ParaVal1;
+        }
+    }
+    if ($blnRegiTraz) {
+        $objRegiTraz->ParaTxt1  = 'Guia Nro: '.$objGuia->NumeGuia."<br>";
+        $objRegiTraz->Save();
+        t('Guia Nro: '.$objGuia->NumeGuia);
+        $objRegiTraz->ParaTxt1 .= "<b>CalcularTarifaNacionalDeLaGuia</b><br>";
+        $objRegiTraz->Save();
+        t('*** CalcularTarifaNacionalDeLaGuia ***');
+    }
+
     //------------------------------------------------------------------------
     // Se establecen los parametros necesarios para el calculo de la tarifa
     //------------------------------------------------------------------------
@@ -415,12 +437,16 @@ function CalcularTarifaNacionalDeLaGuia($objGuia) {
     $arrParaTari['dblPesoGuia'] = $objGuia->PesoGuia;
     $arrParaTari['dblValoDecl'] = $objGuia->ValorDeclarado;
     $arrParaTari['intChecAseg'] = $objGuia->Asegurado;
-    //$arrParaTari['dblPorcSgro'] = $objGuia->PorcentajeSeguro;
-    //$arrParaTari['dblPorcDiva'] = $objGuia->PorcentajeIva;
     $arrParaTari['decSgroClie'] = $objGuia->CodiClieObject->PorcentajeSeguro;
     $arrParaTari['strModaPago'] = TipoGuiaType::ToStringCorto($objGuia->TipoGuia);
 
     $arrValoTari = calcularTarifaParcialNew($arrParaTari);
+
+    if ($blnRegiTraz) {
+        $objRegiTraz->ParaTxt1 .= "<b>Regrese de calcularTarifaParcialNew</b><br>";
+        $objRegiTraz->Save();
+        t('Regrese de calcularTarifaParcialNew');
+    }
 
     $blnTodoOkey = $arrValoTari['blnTodoOkey'];
     $strMensUsua = $arrValoTari['strMensUsua'];
@@ -434,6 +460,21 @@ function CalcularTarifaNacionalDeLaGuia($objGuia) {
         $objGuia->MontoIva         = $arrValoTari['dblMontDiva'];
         $objGuia->MontoTotal       = $arrValoTari['dblMontTota'];
         $objGuia->MontoOtros       = $arrValoTari['dblMontOtro'];
+    }
+    if ($blnRegiTraz) {
+        $objRegiTraz->ParaTxt1 .= "Valores de retorno:<br>";
+        $objRegiTraz->Save();
+        t('Valores de retorno:');
+        $strTextMens = "MB: ".$objGuia->MontoBase.
+                       " FP: ".$objGuia->MontoFranqueo.
+                       " %Sgro: ".$objGuia->PorcentajeSeguro.
+                       " MSgro: ".$objGuia->MontoSeguro.
+                       " %Iva: ".$objGuia->PorcentajeIva.
+                       " MIva: ".$objGuia->MontoIva.
+                       " Total: ".$objGuia->MontoTotal;
+        $objRegiTraz->ParaTxt1 .= $strTextMens."<br>";
+        $objRegiTraz->Save();
+        t($strTextMens);
     }
     $arrCalcTari['blnTodoOkey'] = $blnTodoOkey;
     $arrCalcTari['objGuiaCalc'] = $objGuia;
@@ -937,16 +978,19 @@ function calcularTarifaParcialNew($arrParaTari) {
      */
     $objUsuario  = unserialize($_SESSION['User']);
     $strLogiUsua = $objUsuario->LogiUsua;
-    $objRegiTraz = BuscarParametro('RegiTraz','TariParc','TODO',null);
+    $objRegiTraz = BuscarParametro('RegiTraz','CalcTari','TODO',null);
     $blnRegiTraz = false;
     if ($objRegiTraz) {
-        if ($objRegiTraz->ParaTxt2 == $strLogiUsua) {
+        if (trim($objRegiTraz->ParaTxt2) == trim($strLogiUsua)) {
             $blnRegiTraz = $objRegiTraz->ParaVal1;
         }
     }
     if ($blnRegiTraz) {
-        $objRegiTraz->ParaTxt1 = '';
+        $objRegiTraz->ParaTxt1 .= "<b>CalcularTarifaParcialNew</b><br>";
+        $objRegiTraz->Save();
+        t('*** CalcularTarifaParcialNew ***');
     }
+
 
     $dttFechGuia = $arrParaTari['dttFechGuia'];
     $intCodiTari = $arrParaTari['intCodiTari'];
@@ -975,32 +1019,58 @@ function calcularTarifaParcialNew($arrParaTari) {
     }
 
     $arrParaTari = buscarMontoBaseTarifa($intCodiTari,$intCodiProd,$strCodiOrig,$strCodiDest,$strModaPago,$dblPesoGuia,$dblValoDecl,$dttFechGuia);
+    if ($blnRegiTraz) {
+        $strTextMens = "Regrese de buscarMontoBaseTarifa";
+        t($strTextMens);
+        $objRegiTraz->ParaTxt1 .= $strTextMens."<br>";
+        $objRegiTraz->Save();
+    }
     $blnTodoOkey = $arrParaTari[0];
     $dblPorcDiva = $blnTodoOkey ? $arrParaTari[6] : 0;
     if ($blnTodoOkey) {
         $dblMontBase = str_replace(',','',$arrParaTari[2]);
+        if ($blnRegiTraz) {
+            $strTextMens = "Monto base: $dblMontBase";
+            t($strTextMens);
+            $objRegiTraz->ParaTxt1 .= $strTextMens."<br>";
+            $objRegiTraz->Save();
+        }
         if ($dttFechGuia <= '2016-04-30') {
             $dblFranPost = $arrParaTari[3];
         } else {
             $decPorcFran = $arrParaTari[3];
             $dblFranPost = $dblMontBase * $decPorcFran / 100;
         }
+        if ($blnRegiTraz) {
+            $strTextMens = "Franqueo Postal: $dblFranPost";
+            t($strTextMens);
+            $objRegiTraz->ParaTxt1 .= $strTextMens."<br>";
+            $objRegiTraz->Save();
+        }
         if ($intChecAseg) {
             $dblMontSgro = $dblValoDecl * $dblPorcSgro / 100;
         } else {
             $dblMontSgro = 0;
+        }
+        if ($blnRegiTraz) {
+            $strTextMens = "Monto Seguro: $dblMontSgro";
+            t($strTextMens);
+            $objRegiTraz->ParaTxt1 .= $strTextMens."<br>";
+            $objRegiTraz->Save();
         }
         $dblBaseImpo = $dblMontBase + $dblMontSgro;
         if ($blnRegiTraz) {
             $strTextMens = "Base Imponible: $dblBaseImpo";
             t($strTextMens);
             $objRegiTraz->ParaTxt1 .= $strTextMens."<br>";
+            $objRegiTraz->Save();
         }
         $dblMontDiva = round(($dblMontBase * $dblPorcDiva / 100),2);
         if ($blnRegiTraz) {
             $strTextMens = "Monto del Iva: $dblMontDiva";
             t($strTextMens);
             $objRegiTraz->ParaTxt1 .= $strTextMens."<br>";
+            $objRegiTraz->Save();
         }
         $dblMontTota = $dblBaseImpo + $dblMontDiva + $dblFranPost + $dblMontOtro;
         $dblMontTota = round($dblMontTota,2);
@@ -1008,6 +1078,7 @@ function calcularTarifaParcialNew($arrParaTari) {
             $strTextMens = "Monto Total: $dblMontTota";
             t($strTextMens);
             $objRegiTraz->ParaTxt1 .= $strTextMens."<br>";
+            $objRegiTraz->Save();
         }
         $strMensUsua = '';
     } else {
@@ -1385,6 +1456,40 @@ function buscarMontoBaseTarifaPmn($intDispTari,$decPesoGuia,$strModaPago,$strCod
     return array($blnTodoOkey,$strMensUsua,$dblMontBase,$dblFranPost,$objTarifa->TipoTarifa,$intDispTari,$decPorcIvax);
 }
 
+
+/**
+ * Esta rutina valida que la cadena de caracteres que entra como parametro
+ * tenga un formato de Hora Valida
+ *
+ * @param string $strHoraVali
+ * @return boolean $blnTodoOkey
+ */
+function horaValida($strHoraVali) {
+    $blnTodoOkey = true;
+    if (strlen($strHoraVali) != 5) {
+        $blnTodoOkey = false;
+    }
+    if ($blnTodoOkey) {
+        $strPrimPart = $strHoraVali[0].$strHoraVali[1];
+        if (!is_numeric($strPrimPart) || (convert2Entero($strPrimPart) < 0) || (convert2Entero($strPrimPart) > 23)) {
+            $blnTodoOkey = false;
+        }
+    }
+    if ($blnTodoOkey) {
+        $strDosxPunt = $strHoraVali[2];
+        if ($strDosxPunt != ':') {
+            $blnTodoOkey = false;
+        }
+    }
+    if ($blnTodoOkey) {
+        $strSeguPart = $strHoraVali[3].$strHoraVali[4];
+        if (!is_numeric($strSeguPart) || (convert2Entero($strSeguPart) < 0) || (convert2Entero($strSeguPart) > 59)) {
+            $blnTodoOkey = false;
+        }
+    }
+    return $blnTodoOkey;
+}
+
 /**
  * Esta funcion devuelve un vector con varios elementos dentro de los cuales figura, el monto
  * base de la tarifa y el monto del franqueo postal.  Estos valores sirven para calcular el
@@ -1408,21 +1513,17 @@ function buscarMontoBaseTarifa($intTarifaId,$intCodiProd,$strOrigen,$strDestino,
      */
     $objUsuario  = unserialize($_SESSION['User']);
     $strLogiUsua = $objUsuario->LogiUsua;
-    $objRegiTraz = BuscarParametro('RegiTraz','MontBase','TODO',null);
+    $objRegiTraz = BuscarParametro('RegiTraz','CalcTari','TODO',null);
     $blnRegiTraz = false;
     if ($objRegiTraz) {
-        if ($objRegiTraz->ParaTxt2 == $strLogiUsua) {
+        if (trim($objRegiTraz->ParaTxt2) == trim($strLogiUsua)) {
             $blnRegiTraz = $objRegiTraz->ParaVal1;
         }
     }
     if ($blnRegiTraz) {
-        $objRegiTraz->ParaTxt1 = '';
-    }
-
-    if ($blnRegiTraz) {
-        $strTextMens = "Iniciando la Busqueda del Monto Base de la Tarifa";
-        t($strTextMens);
-        $objRegiTraz->ParaTxt1 .= $strTextMens."<br>";
+        $objRegiTraz->ParaTxt1 .= "<b>Rutina: buscarMontoBaseTarifa</b><br>";
+        $objRegiTraz->Save();
+        t('*** buscarMontoBaseTarifa ***');
     }
 
     $blnTodoOkey = true;
@@ -1436,6 +1537,12 @@ function buscarMontoBaseTarifa($intTarifaId,$intCodiProd,$strOrigen,$strDestino,
         $intDispTari = 1;
     }
     $objTarifa = FacTarifa::Load($intTarifaId);
+    if ($blnRegiTraz) {
+        $strTextMens = "Tarifa asociada a la Guia: ".$objTarifa->Descripcion;
+        t($strTextMens);
+        $objRegiTraz->ParaTxt1 .= $strTextMens."<br>";
+        $objRegiTraz->Save();
+    }
     $decPorcIvax = FacImpuesto::LoadImpuestoVigente('IVA',FechaDeHoy());
 
     if ($objTarifa->TipoTarifa == FacTipoTarifaType::PORPESO) {
@@ -1445,19 +1552,26 @@ function buscarMontoBaseTarifa($intTarifaId,$intCodiProd,$strOrigen,$strDestino,
         //-----------------------------------------------------------------------------------------
         if ($intDispTari == TipoTarifaType::NAC) {
             $decPesoComp = $objTarifa->PesoInicial;
+            $strTextMens = "Tarifa Nacional";
         } else {
             $decPesoComp = $objTarifa->PesoInicialUrbano;
+            $strTextMens = "Tarifa Urbana";
+        }
+        if ($blnRegiTraz) {
+            t($strTextMens);
+            $objRegiTraz->ParaTxt1 .= $strTextMens."<br>";
+            $objRegiTraz->Save();
         }
         if ($dblPeso > $decPesoComp) {
             if ($blnRegiTraz) {
                 $strTextMens = "El peso de la guia, excede el limite de la Tarifa";
                 t($strTextMens);
                 $objRegiTraz->ParaTxt1 .= $strTextMens."<br>";
+                $objRegiTraz->Save();
             }
             //--------------------------------------------------------------------------
             // Se determina en primer lugar el peso maximo contemplado en la tarifa
             //--------------------------------------------------------------------------
-            // $objClausula = QQ::Clause();
             $objClausula = QQ::OrderBy(QQN::TarifaPeso()->PesoInicial);
             $arrTariPeso = TarifaPeso::LoadArrayByTarifaIdTipoId($intTarifaId,$intDispTari,QQ::Clause($objClausula));
             if ($arrTariPeso) {
@@ -1469,6 +1583,7 @@ function buscarMontoBaseTarifa($intTarifaId,$intCodiProd,$strOrigen,$strDestino,
                     $strTextMens = "Peso Final: $dblPesoMaxi, Mto Base: $decBaseMaxi, Tarifa: $dblTariMaxi";
                     t($strTextMens);
                     $objRegiTraz->ParaTxt1 .= $strTextMens."<br>";
+                    $objRegiTraz->Save();
                 }
             } else {
                 $blnTodoOkey = false;
@@ -1478,6 +1593,7 @@ function buscarMontoBaseTarifa($intTarifaId,$intCodiProd,$strOrigen,$strDestino,
                     $strTextMens = $strMensUsua;
                     t($strTextMens);
                     $objRegiTraz->ParaTxt1 .= $strTextMens."<br>";
+                    $objRegiTraz->Save();
                 }
             }
             $dblFranPost = 0;
@@ -1496,6 +1612,7 @@ function buscarMontoBaseTarifa($intTarifaId,$intCodiProd,$strOrigen,$strDestino,
                     $strTextMens = "Peso excedente: $dblPeso";
                     t($strTextMens);
                     $objRegiTraz->ParaTxt1 .= $strTextMens."<br>";
+                    $objRegiTraz->Save();
                 }
                 //------------------------------------------------------------------------
                 // Se calcula el monto de los kilos excedente en funcion del Incremento
@@ -1511,6 +1628,7 @@ function buscarMontoBaseTarifa($intTarifaId,$intCodiProd,$strOrigen,$strDestino,
                     $strTextMens = "Incremento: $dblPeso * $decValoIncr = $dblMontIncr";
                     t($strTextMens);
                     $objRegiTraz->ParaTxt1 .= $strTextMens."<br>";
+                    $objRegiTraz->Save();
                 }
                 //----------------------------------------------------------------------------------
                 // El Valor del Incremento, debe ser sumado al valor maximo de la Tarifa por Peso
@@ -1525,12 +1643,14 @@ function buscarMontoBaseTarifa($intTarifaId,$intCodiProd,$strOrigen,$strDestino,
                     $strTextMens = "Monto Base: $dblMontBase";
                     t($strTextMens);
                     $objRegiTraz->ParaTxt1 .= $strTextMens."<br>";
+                    $objRegiTraz->Save();
                 }
                 $dblMontBase += $dblMontIncr;
                 if ($blnRegiTraz) {
                     $strTextMens = "Monto Base + Incremento: $dblMontBase";
                     t($strTextMens);
                     $objRegiTraz->ParaTxt1 .= $strTextMens."<br>";
+                    $objRegiTraz->Save();
                 }
             }
         } else {
@@ -1538,27 +1658,62 @@ function buscarMontoBaseTarifa($intTarifaId,$intCodiProd,$strOrigen,$strDestino,
             // Si el peso del envio esta en el rango de pesos de la Tarifa, entonces se busca
             // el monto base correspondiente
             //-----------------------------------------------------------------------------------
-            $objTarifaPeso = TarifaPeso::BuscarTarifaPeso($objTarifa->Id,$intDispTari,$dblPeso);
-            if (!$objTarifaPeso) {
+            if ($blnRegiTraz) {
+                $strTextMens = "El peso de la guia (".$dblPeso.") esta en el rango de la definicion de la tarifa";
+                t($strTextMens);
+                $objRegiTraz->ParaTxt1 .= $strTextMens."<br>";
+                $objRegiTraz->Save();
             }
+            $objTarifaPeso = TarifaPeso::BuscarTarifaPeso($objTarifa->Id,$intDispTari,$dblPeso);
             if ($objTarifaPeso) {
                 $dblMontTari = $objTarifaPeso->MontoTarifa;
+                if ($blnRegiTraz) {
+                    $strTextMens = "El monto de la tarifa es: ".$dblMontTari;
+                    t($strTextMens);
+                    $objRegiTraz->ParaTxt1 .= $strTextMens."<br>";
+                    $objRegiTraz->Save();
+                }
                 //-------------------------------------------------
                 // Se Asigna el porcentaje correspondiente de IVA
                 //-------------------------------------------------
                 $decPorcIvax = asignarPorcIVA($strOrigen,$strDestino,$strModaPago,$dblMontTari);
+                if ($blnRegiTraz) {
+                    $strTextMens = "El % de Iva es: ".$decPorcIvax;
+                    t($strTextMens);
+                    $objRegiTraz->ParaTxt1 .= $strTextMens."<br>";
+                    $objRegiTraz->Save();
+                }
 
                 if ($dttFechGuia <= '2016-04-30') {
                     $dblFranPost = $objTarifaPeso->FranqueoPostal;
                 } else {
                     $dblFranPost = $objTarifaPeso->PorcentajeFp;
                 }
+                if ($blnRegiTraz) {
+                    $strTextMens = "El franqueo postal es: ".$dblFranPost;
+                    t($strTextMens);
+                    $objRegiTraz->ParaTxt1 .= $strTextMens."<br>";
+                    $objRegiTraz->Save();
+                }
                 $dblMontBase = $objTarifaPeso->MontoBase;
+                if ($blnRegiTraz) {
+                    $strTextMens = "El monto base es: ".$dblMontBase;
+                    t($strTextMens);
+                    $objRegiTraz->ParaTxt1 .= $strTextMens."<br>";
+                    $objRegiTraz->Save();
+                }
             } else {
                 $blnTodoOkey = false;
                 $strMensUsua = "No existe Tarifa para este Producto, Origen, Destino y Peso";
                 $dblMontBase = 0;
                 $dblFranPost = 0;
+                if ($blnRegiTraz) {
+                    $strTextMens = "No existe Tarifa para este Producto, Origen, Destino y Peso";
+                    t($strTextMens);
+                    $objRegiTraz->ParaTxt1 .= $strTextMens."<br>";
+                    $objRegiTraz->Save();
+                }
+
             }
         }
     } else {

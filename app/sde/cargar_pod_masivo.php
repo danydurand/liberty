@@ -143,6 +143,7 @@ class CargarPodMasivo extends FormularioBaseKaizen {
                             $arrDatoPodx['objChecPodx'] = $objCheckpoint;
                             $arrDatoPodx['calFechPodx'] = new QDateTime(QDateTime::Now);
                             $arrDatoPodx['txtHoraPodx'] = date("H:i");
+                            $arrDatoPodx['objUsuaPodx'] = $this->objUsuario;
                             $arrDatoPodx['txtUsuaPodx'] = $this->objUsuario->CodiUsua;
                             $arrDatoPodx['txtEntrAqui'] = $arrValiGuia['strPersReci'];
                             $arrDatoPodx['calFechEntr'] = new QDateTime($arrValiGuia['strFechEntr']);

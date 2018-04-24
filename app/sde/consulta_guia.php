@@ -26,7 +26,6 @@ class ConsultaGuia extends FormularioBaseKaizen {
     protected $strTipoDocu;
     protected $strNumeDocu;
 
-    // Parte Superior del Formulario //
     // ---- Remitente ---- //
     protected $lblSucuOrig;
     protected $lblNombRemi;
@@ -48,7 +47,6 @@ class ConsultaGuia extends FormularioBaseKaizen {
     protected $lblPorcIvax;
     protected $lblMontIvax;
     protected $lblMontTota;
-    // Parte Inferior del Formulario //
     // ------ Envío ------ //
     protected $lblNumeGuia;
     protected $lblFechGuia;
@@ -72,7 +70,6 @@ class ConsultaGuia extends FormularioBaseKaizen {
     protected $arrDataTabl;
     protected $intCantRegi;
     protected $intPosiRegi;
-    // Botónes de Posición //
     // ---- Medianos ----- //
     protected $btnPrimRegi;
     protected $btnRegiAnte;
@@ -89,6 +86,7 @@ class ConsultaGuia extends FormularioBaseKaizen {
     protected $btnSaveCome;
     protected $btnInfoPodx;
     protected $btnGuiaOrig;
+    protected $btnTrazTari;
     protected $lblComePodx;
 
     // Para cargar el POD
@@ -129,7 +127,7 @@ class ConsultaGuia extends FormularioBaseKaizen {
                     $_SESSION['StatGuia'] = 'La Guía <b>#'.$strNumeGuia.'</b> ha sido eliminada! ';
                     QApplication::Redirect(__SIST__.'/guia_invalida.php');
                 } else {
-                    $this->objGuia->verificarTarifa();
+//                    $this->objGuia->verificarTarifa();
                 }
             }
         } else {
@@ -219,6 +217,7 @@ class ConsultaGuia extends FormularioBaseKaizen {
         $this->btnImprGuia_Create();
         $this->btnSaveCome_Create();
         $this->btnInfoPodx_Create();
+        $this->btnTrazTari_Create();
 
         //------------------------
         // Botónes de Navegacion
@@ -251,6 +250,12 @@ class ConsultaGuia extends FormularioBaseKaizen {
             $strGuiaOrig = substr($this->objGuia->Observacion,20);
             $this->btnGuiaOrig->ActionParameter = $strGuiaOrig;
             $this->btnGuiaOrig->Visible = true;
+        }
+
+        if ($this->objUsuario->LogiUsua == 'ddurand') {
+            $this->btnTrazTari->Visible = true;
+        } else {
+            $this->btnTrazTari->Visible = false;
         }
     }
 
@@ -393,6 +398,12 @@ class ConsultaGuia extends FormularioBaseKaizen {
         $this->btnInfoPodx->Text = TextoIcono(__iCHEC__,'Liq. POD');
         $this->btnInfoPodx->AddAction(new QClickEvent(), new QAjaxAction('btnInfoPodx_Click'));
         $this->btnInfoPodx->ActionParameter = 'POD';
+    }
+
+    protected function btnTrazTari_Create() {
+        $this->btnTrazTari = new QButtonS($this);
+        $this->btnTrazTari->Text = TextoIcono(__iOJOS__,'TT');
+        $this->btnTrazTari->AddAction(new QClickEvent(), new QAjaxAction('btnTrazTari_Click'));
     }
 
     protected function lblSucuOrig_Create() {
@@ -736,6 +747,10 @@ class ConsultaGuia extends FormularioBaseKaizen {
     //-----------------------------------
     // Acciones Asociadas a los Objetos
     //-----------------------------------
+
+    protected function btnTrazTari_Click($strFormId, $strControlId, $strParameter) {
+        QApplication::Redirect(__SIST__.'/traza_tarifa.php');
+    }
 
     protected function btnGuiaOrig_Click($strFormId, $strControlId, $strParameter) {
         QApplication::Redirect(__SIST__.'/consulta_guia.php/'.$strParameter);

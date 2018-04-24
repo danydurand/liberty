@@ -723,8 +723,25 @@ class CargarGuia extends FormularioBaseKaizen {
     }
 
     protected function calcularTarifaNacional() {
-        //$strFormId, $strControlId, $strParameter
-        //Traza('Preparando para calcular tarifa');
+        /**
+         * @var $objRegiTraz Parametro
+         * @var $objUsuario Usuario
+         */
+        $objUsuario  = unserialize($_SESSION['User']);
+        $strLogiUsua = $objUsuario->LogiUsua;
+        $objRegiTraz = BuscarParametro('RegiTraz','CalcTari','TODO',null);
+        $blnRegiTraz = false;
+        if ($objRegiTraz) {
+            if (trim($objRegiTraz->ParaTxt2) == trim($strLogiUsua)) {
+                $blnRegiTraz = $objRegiTraz->ParaVal1;
+            }
+        }
+        if ($blnRegiTraz) {
+            $objRegiTraz->ParaTxt1  = 'Guia Nro: '.$this->objGuia->NumeGuia."<br>";
+            $objRegiTraz->Save();
+            $objRegiTraz->ParaTxt1 .= "Rutina: calcularTarifaNacional (en /sde/cargar_guia.php)<br>";
+            $objRegiTraz->Save();
+        }
 
         $blnCalcOkey = true;
 
@@ -734,11 +751,9 @@ class CargarGuia extends FormularioBaseKaizen {
         $blnSeguMini = $arrEnviSegu['ErroMini'];
         $blnSeguMaxi = $arrEnviSegu['ValoMaxi'];
         $strSeguMens = $arrEnviSegu['MensUsua'];
-
         //--------------------------------------------------------------------------
         // El peso del envio determina cual es la Tarifa que se debe aplicar
         //--------------------------------------------------------------------------
-        //Traza('Valor d. menor al rango: '.$blnSeguMini);
         if ($blnSeguOkey && !$blnSeguMini) {
             //--------------------------------------------------------------------------------------------------
             // Al estar en modo de inserción, a la guía se le asignará la tarifa correspondiente del cliente, y
@@ -751,16 +766,13 @@ class CargarGuia extends FormularioBaseKaizen {
             $objTarifa = FacTarifa::LoadById($this->objGuia->TarifaId);
 
             if ($objTarifa) {
-                //$decPorcIvax = $this->PorcentajeIVA();
-
+                if ($blnRegiTraz) {
+                    $objRegiTraz->ParaTxt1 .= "Tarifa: ".$objTarifa->Descripcion."<br>";
+                    $objRegiTraz->Save();
+                }
                 $strModoPago = $this->lstModaPago->SelectedName;
                 $intPosiPago = strpos($strModoPago, "-");
                 $strNombPago = substr($strModoPago, 0, $intPosiPago);
-
-                //Traza('Porcentaje final de IVA: '.$decPorcIvax);
-                //Traza('--------------------------------------');
-                //Traza('Procediendo a calcular la tarifa');
-                //Traza('Valor declarado final a calcular: '.$this->decValoDecl);
                 //-----------------------------------------------
                 // Se procede ahora al calculo de la Tarifa
                 //-----------------------------------------------
@@ -772,8 +784,6 @@ class CargarGuia extends FormularioBaseKaizen {
                 $arrParaTari['dblPesoGuia'] = $this->txtPesoGuia->Text;
                 $arrParaTari['dblValoDecl'] = $this->decValoDecl;
                 $arrParaTari['intChecAseg'] = $this->chkEnviSegu->Checked;
-                // $arrParaTari['dblPorcSgro'] = $this->decPorcSegu;
-                // $arrParaTari['dblPorcDiva'] = $decPorcIvax;
                 $arrParaTari['decSgroClie'] = $this->objCliente->PorcentajeSeguro;
                 $arrParaTari['strModaPago'] = $strNombPago;
 
@@ -787,11 +797,9 @@ class CargarGuia extends FormularioBaseKaizen {
                 $dblMontSgro = $arrValoTari['dblMontSgro'];
                 $dblMontTota = $arrValoTari['dblMontTota'];
                 $dblPorcSegu = $arrValoTari['dblPorcSgro'];
-                // $dblMontOtro = $arrValoTari['dblMontOtro'];
                 $decPorcIvax = $arrValoTari['dblPorcDiva'];
 
                 $this->decPorcSegu = $dblPorcSegu;
-                //Traza('Porcentaje seguro final: '.$this->decPorcSegu);
 
                 $this->decPorcIvax = $decPorcIvax;
 

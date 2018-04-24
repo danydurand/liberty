@@ -13,6 +13,7 @@ chmod 777 includes/model/generated
 chmod 777 includes/meta_controls
 chmod 777 includes/meta_controls/generated
 find . -name "*.php" -exec chmod 666 {} \;
+find . -name "*.csv" -exec chmod 666 {} \;
 find . -name "*.log" -exec chmod 666 {} \;
 find . -name "*.txt" -exec chmod 666 {} \;
 find . -type d -exec chmod 777 {} \;

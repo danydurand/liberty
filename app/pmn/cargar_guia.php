@@ -21,6 +21,9 @@ class CargarGuia extends FormularioBaseKaizen {
     protected $objDestPmnx;
     protected $objProducto;
     protected $objGuiaOrig;
+    /**
+     * @var $objClieTari MasterCliente
+     */
     protected $objClieTari;
 
     protected $blnEditMode;
@@ -1207,7 +1210,11 @@ class CargarGuia extends FormularioBaseKaizen {
     protected function calcularTarifa() {
         $blnTodoOkey = false;
 
-        $objTarifa = unserialize($_SESSION['TariPmnx']);
+        if (!$this->blnEditMode) {
+            $objTarifa = unserialize($_SESSION['TariPmnx']);
+        } else {
+            $objTarifa = FacTarifa::Load($this->objGuia->TarifaId);
+        }
 
         if ($objTarifa) {
             $arrSucuDest = explode('|',$this->lstSucuDest->SelectedValue);
@@ -1362,6 +1369,7 @@ class CargarGuia extends FormularioBaseKaizen {
             $this->objGuia->SistemaId          = 'cnt';
             $this->objGuia->Anulada            = 0;
             $this->objGuia->EnEfectivo         = 0;
+            $this->objGuia->TarifaId           = $this->objClieTari->TarifaId;
         }
 
         //------------------------------------------------------------------------------------------------
