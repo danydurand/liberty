@@ -770,9 +770,10 @@ class CargarGuia extends FormularioBaseKaizen {
                     $objRegiTraz->ParaTxt1 .= "Tarifa: ".$objTarifa->Descripcion."<br>";
                     $objRegiTraz->Save();
                 }
-                $strModoPago = $this->lstModaPago->SelectedName;
-                $intPosiPago = strpos($strModoPago, "-");
-                $strNombPago = substr($strModoPago, 0, $intPosiPago);
+                //$strModoPago = $this->lstModaPago->SelectedName;
+                //$intPosiPago = strpos($strModoPago, "-");
+                //$strNombPago = substr($strModoPago, 0, $intPosiPago);
+                $strModaPago = TipoGuiaType::ToStringCorto($this->lstModaPago->SelectedValue);
                 //-----------------------------------------------
                 // Se procede ahora al calculo de la Tarifa
                 //-----------------------------------------------
@@ -785,7 +786,7 @@ class CargarGuia extends FormularioBaseKaizen {
                 $arrParaTari['dblValoDecl'] = $this->decValoDecl;
                 $arrParaTari['intChecAseg'] = $this->chkEnviSegu->Checked;
                 $arrParaTari['decSgroClie'] = $this->objCliente->PorcentajeSeguro;
-                $arrParaTari['strModaPago'] = $strNombPago;
+                $arrParaTari['strModaPago'] = $strModaPago;
 
                 $arrValoTari = calcularTarifaParcialNew($arrParaTari);
 
@@ -809,41 +810,24 @@ class CargarGuia extends FormularioBaseKaizen {
                 $this->txtMontIvax->Text = nf($dblMontDiva);
                 $this->txtMontTota->Text = nf($dblMontTota);
 
-                //Traza('--------------------------------------');
-                //Traza('Valores procedentes del calculo de la tarifa');
-                //Traza('Monto Base: '.$dblMontBase);
-                //Traza('Franqueo Postal: '.$dblFranPost);
-                //Traza('Monto Seguro: '.$dblMontSgro);
-                //Traza('Monto IVA: '.$dblMontDiva);
-                //Traza('Monto total: '.$dblMontTota);
-                //Traza('--------------------------------------');
-
                 if ($blnTodoOkey) {
-                    //Traza('Valor d. sobresaliente al rango: '.$blnSeguMaxi);
                     if ($blnSeguMaxi) {
-                        $this->mensaje($strSeguMens,'','d','i','hand-stop-o');
-                        //Traza('Mensaje: '.$this->lblMensUsua->Text);
+                        $this->mensaje($strSeguMens,'','d','i',__iHAND__);
                     } else {
                         $this->mensaje();
                     }
                 } else {
-                    $this->mensaje($strMensUsua,'','d','i','hand-stop-o');
+                    $this->mensaje($strMensUsua,'','d','i',__iHAND__);
                     $blnCalcOkey = false;
-                    //Traza('Falla al calcular la tarifa: '.$this->lblMensUsua->Text);
                 }
             } else {
-                $this->mensaje('No se ha definido la Tarifa Nacional "Por Peso"','','d','i','hand-stop-o');
+                $this->mensaje('No se ha definido la Tarifa Nacional "Por Peso"','','d','',__iHAND__);
                 $blnCalcOkey = false;
-                //Traza('No se puede calcular la tarifa: No se ha definido la Tarifa Nacional "Por Peso"');
             }
         } else {
-            $this->mensaje($strSeguMens,'','d','i','hand-stop-o');
+            $this->mensaje($strSeguMens,'','d','',__iHAND__);
             $blnCalcOkey = false;
-            //Traza('No se puede calcular la tarifa: '.$this->lblMensUsua->Text);
         }
-
-        //Traza('-----------------------------------');
-        //Traza('Fin de calculo de tarifa!!!!');
 
         return $blnCalcOkey;
     }
@@ -1066,7 +1050,6 @@ class CargarGuia extends FormularioBaseKaizen {
         $this->objGuia->HoraCreacion       = $this->lblHoraCrea->Text;
         $this->objGuia->CobroCod           = CobroCod::Load($this->txtNumeGuia->Text);
         $this->objGuia->VendedorId         = $this->objCliente->VendedorId;
-        $this->objGuia->TarifaId           = $this->objCliente->TarifaId;
 
         if (!$this->blnEditMode) {
             //------------------------------------------------------------------------
@@ -1105,6 +1088,7 @@ class CargarGuia extends FormularioBaseKaizen {
             $this->objGuia->SistemaId       = 'sde';
             $this->objGuia->Anulada         = 0;
             $this->objGuia->EnEfectivo      = 0;
+            $this->objGuia->TarifaId        = $this->objCliente->TarifaId;
         }
         //--------------------------------------------------------------------
         // Se compara el objeto que se esta guardando con el objeto original

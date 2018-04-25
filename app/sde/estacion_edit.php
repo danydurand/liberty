@@ -150,6 +150,10 @@ class EstacionEditForm extends EstacionEditFormBase {
 		$this->lstSeFacturaEnObject = $this->mctEstacion->lstSeFacturaEnObject_Create(null,QQ::AndCondition($objClauWher));
 		$this->lstSeFacturaEnObject->Width = $intAnchCamp-40;
 
+		$this->lstExentaDeIva = $this->mctEstacion->lstExentaDeIva_Create();
+		$this->lstExentaDeIva->Name = 'Exenta de IVA ?';
+		$this->lstExentaDeIva->Width = 50;
+
 		$this->dtgReceSucu_Create();
 		$this->intCantRece = Counter::CountBySucursalId($this->mctEstacion->Estacion->CodiEsta);
         //--------------------------

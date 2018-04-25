@@ -62,17 +62,9 @@ function verificarDatosQuePrelan(Guia $objGuiaCadu) {
 
     // Verificar Tipo Guia (tipo_guia)
 
-    // Verificar Checkpoint (codi_ckpt)
-
-    // Verificar Sucursal del Checkpoint (esta_ckpt)
-
     // Verificar Usuario del Checkpoint (usua_ckpt)
 
-    // Verificar Sistema (sistema_id)
-
     // Verificar Vendedor (vendedor_id)
-
-    // Verificar Tarifa (tarifa_id)
 
     return $blnTodoOkey;
 }

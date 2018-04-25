@@ -844,24 +844,14 @@ function asignarPorcSeguro($decValoDecl,$intChecAseg = 0) {
  * @return int
  */
 function asignarPorcIVA($strCodiOrig,$strCodiDest,$strModaPago,$dblMontTari) {
-    // $dblMontTope = 2000000;
     $arrSucuExen = unserialize($_SESSION['SucuExen']);
+    t('Existe(n) '.count($arrSucuExen).' Sucursal(es) exenta(s)');
     $decPorcIvax = FacImpuesto::LoadImpuestoVigente('IVA',FechaDeHoy());
-    //---------------------------------------------------------------------------------------------------------------
-    // Por defecto, como toda operación es electrónica, es decir, a través del Sistema, se asume que toddo monto de
-    // tarifa es inferior a 2.000.000,00 Bs, por lo que al IVA(12%) se le aplica rebaja de un 3%.
-    //---------------------------------------------------------------------------------------------------------------
-    // $decPorcIvax = 9;
-    //-------------------------------------------------------------------------------------------
-    // Si el monto obtenido de la tarifa, es superior a los 2.000.000,00, el IVA se reduce a 5%.
-    //-------------------------------------------------------------------------------------------
-    // if ($dblMontTari > $dblMontTope) {
-    //     $decPorcIvax = 7;
-    // }
     //-------------------------------------------------------------------------
     // Si la Modalida de Pago es PPD ó CRD y el Origen es una Sucursal exenta
     // de IVA, entonces el porcetaje de IVA se hace cero (0).
     //-------------------------------------------------------------------------
+    t('La modalidad de pago es: '.$strModaPago);
     if ($strModaPago == 'PPD' || $strModaPago == 'CRD') {
         if (in_array($strCodiOrig,$arrSucuExen)) {
             $decPorcIvax = 0;
@@ -876,6 +866,7 @@ function asignarPorcIVA($strCodiOrig,$strCodiDest,$strModaPago,$dblMontTari) {
             $decPorcIvax = 0;
         }
     }
+    t('El % de IVA asignado es: '.$decPorcIvax);
     return $decPorcIvax;
 }
 
@@ -963,6 +954,36 @@ function calcularTarifaParcialPmn($arrParaTari) {
 
     return $arrValoTari;
 }
+
+/*
+function porcentajeIVA(Guia $objGuia, $decPorcIvax){
+    $strCodiOrig = $objGuia->EstaOrig;
+    $strCodiDest = $objGuia->EstaDest;
+    $arrSucuExen = unserialize($_SESSION['SucuExen']);
+
+    $strModoPago = TipoGuiaType::ToString($objGuia->TipoGuia);
+    $intPosiPago = strpos($strModoPago, "-");
+    $strNombPago = substr($strModoPago, 0, $intPosiPago);
+    //----------------------------------------------------------------------------------------
+    // Si la guia es PPD ó CRD y el Origen es una Sucursal Exenta, entonces el %IVA es cero
+    //----------------------------------------------------------------------------------------
+    if ($strNombPago == 'PPD' || $strNombPago == 'CRD') {
+        if (in_array($strCodiOrig,$arrSucuExen)) {
+            $decPorcIvax = 0;
+        }
+    }
+    //---------------------------------------------------------------------------------------
+    // Si la guia es COD y el Destino es una Sucursal Exenta, entonces el %IVA se hace cero
+    //---------------------------------------------------------------------------------------
+    if ($strNombPago == 'COD') {
+        if (in_array($strCodiDest,$arrSucuExen)) {
+            $decPorcIvax = 0;
+        }
+    }
+    return $decPorcIvax;
+}
+*/
+
 
 /**
  * Esta rutina devuelve los montos asociados a la Tarifa de un Envio en funcion de los valores
@@ -1149,7 +1170,7 @@ function calcularTarifaParcial($intCodiTari,$intCodiProd,$strCodiOrig,$strCodiDe
     return array($blnTodoOkey,$strMensUsua,$dblMontBase,$dblFranPost,$dblMontDiva,$dblMontSgro,$dblMontTota,$dblMontOtro,$dblPorcDiva);
 }
 
-function crearGuiaRetorno($objGuia) {
+function crearGuiaRetorno(Guia $objGuia) {
     $objUsuario = unserialize($_SESSION['User']);
     //-----------------------------------------------------------------------
     // En la tabla "parametro" del Sistema, se especifica si se debe crear
@@ -1219,53 +1240,53 @@ function crearGuiaRetorno($objGuia) {
         $dblMontTota = $arrValoTari[6];
         $dblPorcDiva = $arrValoTari[8];
 
-        $objGuiaReto->PorcentajeIva = $dblPorcDiva;
-        $objGuiaReto->MontoIva = $dblMontDiva;
-        $objGuiaReto->Asegurado = 0; //$objGuia->Asegurado;
-        $objGuiaReto->PorcentajeSeguro = $objGuia->PorcentajeSeguro;
-        $objGuiaReto->MontoSeguro = $dblMontSgro;
-        $objGuiaReto->MontoBase = $dblMontBase;
-        $objGuiaReto->MontoFranqueo = $dblFranPost;
-        $objGuiaReto->MontoTotal = $dblMontTota;
-
-        $objGuiaReto->EntregadoA = '';
-        $objGuiaReto->FechaEntrega = null;
-        $objGuiaReto->HoraEntrega = '';
-        $objGuiaReto->CodiCkpt = '';
-        $objGuiaReto->EstaCkpt = '';
-        $objGuiaReto->FechCkpt = null;
-        $objGuiaReto->HoraCkpt = '';
-        $objGuiaReto->ObseCkpt = '';
-        $objGuiaReto->UsuaCkpt = '';
-        $objGuiaReto->FechaPod = null;
-        $objGuiaReto->HoraPod = '';
-        $objGuiaReto->UsuarioPod = '';
-        $objGuiaReto->CantAyudantes = 0;
-        $objGuiaReto->ParadasAdicionales = 0;
-        $objGuiaReto->CourierId = $objGuia->CourierId;
-        $objGuiaReto->GuiaExterna = null;
-        $objGuiaReto->FleteDirecto = '';
-        $objGuiaReto->TieneGuiaRetorno = '';
-        $objGuiaReto->GuiaRetorno = '';
-        $objGuiaReto->Observacion = QApplication::Translate('RETORNO DE LA GUIA: ').$objGuia->NumeGuia;
-        $objGuiaReto->Alto = 0;
-        $objGuiaReto->Ancho = 0;
-        $objGuiaReto->Largo = 0;
         $arrOperacion = SdeOperacion::LoadArrayByCodiRuta('R9999',QQ::Clause(QQ::LimitInfo(1)));
-        $objGuiaReto->OperacionId = $arrOperacion[0]->CodiOper;
-        $objGuiaReto->PorcentajeSgroInt = 0;
-        $objGuiaReto->MontoSgroInt = 0;
-        $objGuiaReto->MontoTotalInt = 0;
-        $objGuiaReto->PesoVolumetrico = 0;
-        $objGuiaReto->PesoLibras = 0;
-        $objGuiaReto->TransFac = SinoType::NO;
-        $objGuiaReto->HojaEntrega = '';
-        $objGuiaReto->UsuarioCreacion = $objUsuario->LogiUsua;
-        $objGuiaReto->FechaCreacion = new QDateTime(QDateTime::Now);
-        $objGuiaReto->HoraCreacion = date("H:i");
-        $objGuiaReto->SistemaId = $objGuia->SistemaId;
-        $objGuiaReto->Anulada = 0;
-        $objGuiaReto->EnEfectivo = 0;
+        $objGuiaReto->PorcentajeIva      = $dblPorcDiva;
+        $objGuiaReto->MontoIva           = $dblMontDiva;
+        $objGuiaReto->Asegurado          = 0; //$objGuia->Asegurado;
+        $objGuiaReto->PorcentajeSeguro   = $objGuia->PorcentajeSeguro;
+        $objGuiaReto->MontoSeguro        = $dblMontSgro;
+        $objGuiaReto->MontoBase          = $dblMontBase;
+        $objGuiaReto->MontoFranqueo      = $dblFranPost;
+        $objGuiaReto->MontoTotal         = $dblMontTota;
+        $objGuiaReto->EntregadoA         = '';
+        $objGuiaReto->FechaEntrega       = null;
+        $objGuiaReto->HoraEntrega        = '';
+        $objGuiaReto->CodiCkpt           = '';
+        $objGuiaReto->EstaCkpt           = '';
+        $objGuiaReto->FechCkpt           = null;
+        $objGuiaReto->HoraCkpt           = '';
+        $objGuiaReto->ObseCkpt           = '';
+        $objGuiaReto->UsuaCkpt           = '';
+        $objGuiaReto->FechaPod           = null;
+        $objGuiaReto->HoraPod            = '';
+        $objGuiaReto->UsuarioPod         = '';
+        $objGuiaReto->CantAyudantes      = 0;
+        $objGuiaReto->ParadasAdicionales = 0;
+        $objGuiaReto->CourierId          = $objGuia->CourierId;
+        $objGuiaReto->GuiaExterna        = null;
+        $objGuiaReto->FleteDirecto       = '';
+        $objGuiaReto->TieneGuiaRetorno   = '';
+        $objGuiaReto->GuiaRetorno        = '';
+        $objGuiaReto->Observacion        = QApplication::Translate('RETORNO DE LA GUIA: ').$objGuia->NumeGuia;
+        $objGuiaReto->Alto               = 0;
+        $objGuiaReto->Ancho              = 0;
+        $objGuiaReto->Largo              = 0;
+        $objGuiaReto->OperacionId        = $arrOperacion[0]->CodiOper;
+        $objGuiaReto->PorcentajeSgroInt  = 0;
+        $objGuiaReto->MontoSgroInt       = 0;
+        $objGuiaReto->MontoTotalInt      = 0;
+        $objGuiaReto->PesoVolumetrico    = 0;
+        $objGuiaReto->PesoLibras         = 0;
+        $objGuiaReto->TransFac           = SinoType::NO;
+        $objGuiaReto->HojaEntrega        = '';
+        $objGuiaReto->UsuarioCreacion    = $objUsuario->LogiUsua;
+        $objGuiaReto->FechaCreacion      = new QDateTime(QDateTime::Now);
+        $objGuiaReto->HoraCreacion       = date("H:i");
+        $objGuiaReto->SistemaId          = $objGuia->SistemaId;
+        $objGuiaReto->Anulada            = 0;
+        $objGuiaReto->EnEfectivo         = 0;
+        $objGuiaReto->TarifaId           = $objGuia->TarifaId;
         $objGuiaReto->Save();
         //------------------------------------------------------------------
         // Una vez creada la Guia Retorno, se debe establecer la relacion

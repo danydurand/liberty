@@ -1240,7 +1240,6 @@ class CargarGuia extends FormularioBaseKaizen {
         $this->objGuia->CedulaRif          = limpiarCadena($this->txtCeduDest->Text);
         $this->objGuia->CobroCod           = null;
         $this->objGuia->VendedorId         = $this->objCliente->VendedorId;
-        $this->objGuia->TarifaId           = $this->objCliente->TarifaId;
         if (!$this->blnEditMode) {
             //------------------------------------------------------------------------
             // En caso de Insercion, se asignan valores por defecto ciertos campos
@@ -1297,6 +1296,7 @@ class CargarGuia extends FormularioBaseKaizen {
             $this->objGuia->SistemaId          = 'con';
             $this->objGuia->Anulada            = 0;
             $this->objGuia->EnEfectivo         = 0;
+            $this->objGuia->TarifaId           = $this->objCliente->TarifaId;
         }
     }
 

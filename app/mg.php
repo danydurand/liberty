@@ -127,9 +127,6 @@ class MenuGrafico extends FormularioBaseKaizen {
         foreach ($arrReceOrig as $objReceOrig) {
             $blnSeleRegi = false;
             if ($intCantOrig == 1) {
-                //-----------------------------------------------------------
-                // Si solo existe una receptoria, se cargar esa por defecto
-                //-----------------------------------------------------------
                 $blnSeleRegi = true;
             }
             $this->lstReceOrig->AddItem($objReceOrig->__toString(), $objReceOrig, $blnSeleRegi);

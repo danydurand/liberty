@@ -220,6 +220,16 @@ class Index extends QForm {
         $objProducto = FacProducto::LoadBySiglProd('DOC');
         $arrOperGene = SdeOperacion::LoadArrayByCodiRuta('R9999');
         $intOperGene = $arrOperGene[0]->CodiOper;
+        //---------------------------------------
+        // Vector de Sucursales exentas de Iva
+        //---------------------------------------
+        $objSeleColu   = QQ::Select(QQN::Estacion()->CodiEsta);
+        $arrSucuAuxi   = Estacion::LoadArrayByExentaDeIvaId(SinoType::SI,QQ::Clause($objSeleColu));
+        $arrSucuExen   = array();
+        foreach ($arrSucuAuxi as $objSucuExen) {
+            $arrSucuExen[] = $objSucuExen->CodiEsta;
+        }
+        $_SESSION['SucuExen'] = serialize($arrSucuExen);
 
         if ($strSistPath == 'pmn') {
             //------------------------------------------------
@@ -295,15 +305,6 @@ class Index extends QForm {
             $objClauWher[] = QQ::Equal(QQN::TarifaPeso()->TarifaId,$objTariPmnx->Id);
             $objClauWher[] = QQ::Equal(QQN::TarifaPeso()->TipoId,TipoTarifaType::URB);
             $objLimiUrba   = TarifaPeso::QuerySingle(QQ::AndCondition($objClauWher),$objClauOrde);
-            //---------------------------------------
-            // Vector de Sucursales exentas de Iva
-            //---------------------------------------
-            $objSeleColu   = QQ::Select(QQN::Estacion()->CodiEsta);
-            $arrSucuAuxi   = Estacion::LoadArrayByExentaDeIvaId(SinoType::SI,QQ::Clause($objSeleColu));
-            $arrSucuExen   = array();
-            foreach ($arrSucuAuxi as $objSucuExen) {
-                $arrSucuExen[] = $objSucuExen->CodiEsta;
-            }
             //--------------------------------------------
             // Vector de Receptorias con limite de peso
             //--------------------------------------------
@@ -370,7 +371,6 @@ class Index extends QForm {
             if ($arrCkptTerm) {
                 $_SESSION['CkptTerm'] = serialize($arrCkptTerm);
             }
-            $_SESSION['SucuExen'] = serialize($arrSucuExen);
             $_SESSION['ReceLimi'] = serialize($arrReceLimi);
             $_SESSION['CkptSmsx'] = serialize($arrCkptSmsx);
             $_SESSION['CkptSmsy'] = serialize($arrCkptSmsy);
@@ -407,14 +407,6 @@ class Index extends QForm {
                 $arrPesoFra2[] = $objRangPorc->ParaVal5;
                 $arrPorcFran[] = $objRangPorc->ParaVal3;
             }
-            //---------------------------------------
-            // Vector de Sucursales exentas de Iva
-            //---------------------------------------
-            $arrSucuAuxi   = Estacion::LoadArrayByExentaDeIvaId(SinoType::SI);
-            $arrSucuExen   = array();
-            foreach ($arrSucuAuxi as $objSucuExen) {
-                $arrSucuExen[] = $objSucuExen->CodiEsta;
-            }
             //-------------------------------------------------------------
             // Variables de Session que se usan a lo largo del Sistema SDE
             //-------------------------------------------------------------
@@ -428,7 +420,6 @@ class Index extends QForm {
             $_SESSION['PesoFra1'] = serialize($arrPesoFra1);
             $_SESSION['PesoFra2'] = serialize($arrPesoFra2);
             $_SESSION['PorcFran'] = serialize($arrPorcFran);
-            $_SESSION['SucuExen'] = serialize($arrSucuExen);
         }
     }
 }

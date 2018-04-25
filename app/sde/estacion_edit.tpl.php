@@ -78,6 +78,8 @@ require(__APP_INCLUDES__ . '/botonera_edit.inc.php');
                                     <?php $this->lstVisibleEnRegistro->Render(); ?>
                                     <div class="title">Se factura en ?</div>
                                     <?php $this->lstSeFacturaEnObject->Render(); ?>
+                                    <div class="title">Exenta de IVA ?</div>
+                                    <?php $this->lstExentaDeIva->Render(); ?>
                                 </div>
                                 <div class="col-md-offset-1 col-md-10" style="margin-top: 1em">
                                     <div class="title">Zonas no Cubiertas</div>

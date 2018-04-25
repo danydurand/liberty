@@ -1229,7 +1229,7 @@ class CargarGuia extends FormularioBaseKaizen {
             $arrParaTari['dblValoDecl'] = $this->txtValoDecl->Text;
             $arrParaTari['intChecAseg'] = strlen($this->txtValoDecl->Text);
             $arrParaTari['dblPorcSgro'] = $this->AsigPorcSeguro($this->decValoDecl);
-            $arrParaTari['strModaPago'] = $this->rdbModaPago->SelectedName;
+            $arrParaTari['strModaPago'] = TipoGuiaType::ToStringCorto($this->rdbModaPago->SelectedValue);
             $arrParaTari['strEstaUsua'] = $this->objUsuario->CodiEsta;
             $arrParaTari['decSgroClie'] = $this->objClieTari->PorcentajeSeguro;
             $arrParaTari['objTariGuia'] = $objTarifa;
