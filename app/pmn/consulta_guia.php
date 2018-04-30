@@ -777,7 +777,7 @@ class ConsultaGuia extends FormularioBaseKaizen {
     //-----------------------------------
     protected function dtgGuiaCkpt_Bind() {
         $objClauOrde   = QQ::Clause();
-        $objClauOrde[] = QQ::OrderBy(QQN::GuiaCkpt()->NumeGuia,false);
+        $objClauOrde[] = QQ::OrderBy(QQN::GuiaCkpt()->FechCkpt,false,QQN::GuiaCkpt()->HoraCkpt,false);
 
         $arrAwbxCkpt = GuiaCkpt::LoadArrayByNumeGuia($this->mctGuia->Guia->NumeGuia, $objClauOrde);
         $this->dtgGuiaCkpt->DataSource = $arrAwbxCkpt;

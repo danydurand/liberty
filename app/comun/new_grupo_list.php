@@ -34,8 +34,8 @@ class NewGrupoListForm extends NewGrupoListFormBase {
 
 	protected function Form_Create() {
 		parent::Form_Create();
+        $this->lblTituForm->Text = 'Grupos';
 
-		$this->lblTituForm->Text = 'Grupos';
 
 		// Instantiate the Meta DataGrid
 		$this->dtgNewGrupos = new NewGrupoDataGrid($this);
@@ -60,10 +60,10 @@ class NewGrupoListForm extends NewGrupoListFormBase {
 		$this->dtgNewGrupos->RowActionParameterHtml = '<?= $_ITEM->Id ?>';
 		$this->dtgNewGrupos->AddRowAction(new QClickEvent(), new QAjaxAction('dtgNewGruposRow_Click'));
 
-		$objClauGrup   = QQ::Clause();
-		$objClauGrup[] = QQ::Equal(QQN::NewGrupo()->SistemaId,$_SESSION['Sistema']);
+        $objClauGrup   = QQ::Clause();
+        $objClauGrup[] = QQ::Equal(QQN::NewGrupo()->SistemaId,$_SESSION['Sistema']);
 
-		$this->dtgNewGrupos->AdditionalConditions = QQ::AndCondition($objClauGrup);
+        $this->dtgNewGrupos->AdditionalConditions = QQ::AndCondition($objClauGrup);
 
         // Use the MetaDataGrid functionality to add Columns for this datagrid
 
@@ -75,7 +75,7 @@ class NewGrupoListForm extends NewGrupoListFormBase {
         $colCantUsua->Width = 75;
         $this->dtgNewGrupos->AddColumn($colCantUsua);
 		$this->dtgNewGrupos->MetaAddColumn('Activo');
-//		$this->dtgNewGrupos->MetaAddColumn(QQN::NewGrupo()->Sistema);
+		$this->dtgNewGrupos->MetaAddColumn(QQN::NewGrupo()->Sistema);
 
         $this->btnExpoExce_Create();
 
@@ -89,9 +89,9 @@ class NewGrupoListForm extends NewGrupoListFormBase {
         }
     }
 
-	public function dtgNewGruposRow_Click($strFormId, $strControlId, $strParameter) {
+    public function dtgNewGruposRow_Click($strFormId, $strControlId, $strParameter) {
         $intId = intval($strParameter);
-        QApplication::Redirect("new_grupo_edit.php/$intId");
+        QApplication::Redirect(__COM__."/new_grupo_edit.php/$intId");
 	}		
 
 }

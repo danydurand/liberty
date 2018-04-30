@@ -1,6 +1,8 @@
 <?php
+/**
+ * @var $objUsuario Usuario
+ */
 $objUsuario = unserialize($_SESSION['User']);
-
 //---------------------------------------------------
 // Se identifica el Menu Principal de la Aplicacion
 //---------------------------------------------------
@@ -9,7 +11,6 @@ $objClauWher[] = QQ::Equal(QQN::NewOpcion()->SistemaId,$_SESSION['Sistema']);
 $objClauWher[] = QQ::Equal(QQN::NewOpcion()->Programa,'principal');
 $objClauWher[] = QQ::Equal(QQN::NewOpcion()->EsMenu,true);
 $objMenuPpal   = NewOpcion::QuerySingle(QQ::AndCondition($objClauWher));
-
 //-------------------------------
 // Opciones del Menu Principal 
 //-------------------------------
@@ -19,7 +20,7 @@ $objClauWher   = QQ::Clause();
 $objClauWher[] = QQ::Equal(QQN::NewOpcion()->SistemaId,$_SESSION['Sistema']);
 $objClauWher[] = QQ::Equal(QQN::NewOpcion()->Dependencia,$objMenuPpal->Id);
 $objClauWher[] = QQ::Equal(QQN::NewOpcion()->Activo,true);
-if ($objUsuario->CodiGrup != 1) {
+if (($objUsuario->CodiGrup != 1) && ($_SESSION['Sistema'] == 'sde')) {
     //---------------------------------------------------------
     // Aqui se identifican las Opciones del grupo del Usuario
     //---------------------------------------------------------
@@ -30,11 +31,9 @@ if ($objUsuario->CodiGrup != 1) {
     foreach ($arrOpciGrup as $objOpciGrup) {
         $arrGroupId[] = $objOpciGrup->OpcionId;
     }
-
-    //---------------------------------------------------------------------
-    // Si el Usuario no esta el grupo de los Super-Usuarios entonces
-    // solo se deben cargar las Opciones correspondientes a su grupo.
-    //---------------------------------------------------------------------
+    //--------------------------------------------------------------------------
+    // Solo se deben cargar las Opciones correspondientes al Grupo del Usuario
+    //--------------------------------------------------------------------------
     $objClauWher[] = QQ::In(QQN::NewOpcion()->Id,$arrGroupId);
 }
 $arrOpciMenu = NewOpcion::QueryArray(QQ::AndCondition($objClauWher),$objClauOrde);

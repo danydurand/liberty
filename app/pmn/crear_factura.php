@@ -980,8 +980,8 @@ class CrearFactura extends FormularioBaseKaizen {
 
     protected function UpdateFieldsFactura() {
         $this->objFactPmnx->CedulaRif          = $this->lblCeduRifx->Text;
-        $this->objFactPmnx->RazonSocial        = QuitarAmpersand($this->lblRazoSoci->Text);
-        $this->objFactPmnx->DireccionFiscal    = $this->lblDireFisc->Text;
+        $this->objFactPmnx->RazonSocial        = substr(QuitarAmpersand($this->lblRazoSoci->Text),0,100);
+        $this->objFactPmnx->DireccionFiscal    = substr($this->lblDireFisc->Text,0,300);
         $this->objFactPmnx->Telefono           = $this->lblNumeTele->Text;
         $this->objFactPmnx->Numero             = null;
         $this->objFactPmnx->MaquinaFiscal      = null;

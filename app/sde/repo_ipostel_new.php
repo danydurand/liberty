@@ -40,7 +40,7 @@ $objUser = unserialize($_SESSION['User']);
 //----------------------------------------------------------------------
 // Se determina el nombre del archivo que sera generado
 //----------------------------------------------------------------------
-$strNombArch = __DOCROOT__.__SIST__.'/ipostel_new_'.$objUser->LogiUsua.'.csv';
+$strNombArch = __TEMP__.'/ipostel_new_'.$objUser->LogiUsua.'.csv';
 $mixManeArch = fopen($strNombArch,'w');
 //----------------
 // Encabezados

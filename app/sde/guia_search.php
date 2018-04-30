@@ -386,19 +386,16 @@ class GuiaSearchForm extends FormularioBaseKaizen {
     }
 
     protected function lstCodiDest_Change() {
-        // if ($this->lstCodiDest->SelectedValue == 'CCS') {
-            $this->lstCodiRece->Visible = true;
-            $this->lstCodiRece->RemoveAllItems();
-            $this->lstCodiRece->AddItem("- Seleccione Uno -", null);
-            $arrReceSucu = Counter::LoadArrayBySucursalId($this->lstCodiDest->SelectedValue);
-            foreach ($arrReceSucu as $objReceptoria) {
-                if ($objReceptoria->StatusId == StatusType::ACTIVO) {
-                    $this->lstCodiRece->AddItem($objReceptoria->__toString(), $objReceptoria);
-                }
+        $this->lstCodiRece->Visible = true;
+        $this->lstCodiRece->RemoveAllItems();
+        $this->lstCodiRece->AddItem("- Seleccione Uno -", null);
+        $arrReceSucu = Counter::LoadArrayBySucursalId($this->lstCodiDest->SelectedValue);
+        $this->lstCodiRece->AddItem('DOMICILIO', 'DOM');
+        foreach ($arrReceSucu as $objReceptoria) {
+            if ($objReceptoria->StatusId == StatusType::ACTIVO) {
+                $this->lstCodiRece->AddItem($objReceptoria->__toString(), $objReceptoria);
             }
-        // } else {
-        //     $this->lstCodiRece->Visible = false;
-        // }
+        }
     }
 
     protected function txtCodiInte_Blur() {
@@ -622,8 +619,16 @@ class GuiaSearchForm extends FormularioBaseKaizen {
                 $strCadeSqlx  .= " and g.esta_dest = '".$this->lstCodiDest->SelectedValue."'";
             }
             if (!is_null($this->lstCodiRece->SelectedValue)) {
-                $objClausula[]= QQ::Equal(QQN::Guia()->ReceptoriaDestino,$this->lstCodiRece->SelectedValue->Siglas);
-                $strCadeSqlx  .= " and g.receptoria_destino = '".$this->lstCodiRece->SelectedValue->Siglas."'";
+                if ($this->lstCodiRece->SelectedValue instanceof Counter) {
+                    $strReceDest = $this->lstCodiRece->SelectedValue->Siglas;
+                } else {
+                    $strReceDest = $this->lstCodiRece->SelectedValue;
+                    if ($strReceDest == 'DOM') {
+                        $strReceDest = '';
+                    }
+                }
+                $objClausula[]= QQ::Equal(QQN::Guia()->ReceptoriaDestino,$strReceDest);
+                $strCadeSqlx  .= " and g.receptoria_destino = '".$strReceDest."'";
             }
             if (strlen($this->txtNombRemi->Text)) {
                 $objClausula[] = QQ::Like(QQN::Guia()->NombRemi,trim($this->txtNombRemi->Text).'%');
@@ -749,7 +754,7 @@ class GuiaSearchForm extends FormularioBaseKaizen {
                 $strMensMost = 'Debe proporcionar al menos un Criterio de Búsqueda!';
             }
         }
-        $this->mensaje($strMensMost,'','d','i','hand-stop-o');
+        $this->mensaje($strMensMost,'','d','i',__iHAND__);
     }
 }
 

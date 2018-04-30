@@ -274,7 +274,7 @@ class CargarGuia extends FormularioBaseKaizen {
     }
 
     protected function txtPesoGuia_Create() {
-        $this->txtPesoGuia = new QTextBox($this);
+        $this->txtPesoGuia = new QFloatTextBox($this);
         $this->txtPesoGuia->Width = 60;
         $this->txtPesoGuia->Enabled = true;
         $this->txtPesoGuia->HtmlAfter = ' Kg';
@@ -770,9 +770,6 @@ class CargarGuia extends FormularioBaseKaizen {
                     $objRegiTraz->ParaTxt1 .= "Tarifa: ".$objTarifa->Descripcion."<br>";
                     $objRegiTraz->Save();
                 }
-                //$strModoPago = $this->lstModaPago->SelectedName;
-                //$intPosiPago = strpos($strModoPago, "-");
-                //$strNombPago = substr($strModoPago, 0, $intPosiPago);
                 $strModaPago = TipoGuiaType::ToStringCorto($this->lstModaPago->SelectedValue);
                 //-----------------------------------------------
                 // Se procede ahora al calculo de la Tarifa
@@ -782,8 +779,8 @@ class CargarGuia extends FormularioBaseKaizen {
                 $arrParaTari['intCodiProd'] = $this->objProducto->CodiProd;
                 $arrParaTari['strCodiOrig'] = $this->lstCodiOrig->SelectedValue;
                 $arrParaTari['strCodiDest'] = $this->lstCodiDest->SelectedValue;
-                $arrParaTari['dblPesoGuia'] = $this->txtPesoGuia->Text;
-                $arrParaTari['dblValoDecl'] = $this->decValoDecl;
+                $arrParaTari['dblPesoGuia'] = (float)$this->txtPesoGuia->Text;
+                $arrParaTari['dblValoDecl'] = (float)$this->decValoDecl;
                 $arrParaTari['intChecAseg'] = $this->chkEnviSegu->Checked;
                 $arrParaTari['decSgroClie'] = $this->objCliente->PorcentajeSeguro;
                 $arrParaTari['strModaPago'] = $strModaPago;
@@ -844,26 +841,12 @@ class CargarGuia extends FormularioBaseKaizen {
         $intPosiPago = strpos($strModoPago, "-");
         $strNombPago = substr($strModoPago, 0, $intPosiPago);
 
-        //$blnCalcIvax = BuscarParametro('CalcIvax','ModoCred','Val1',1);
-
-        //Traza('Evluando si hay sede extento de IVA');
-        //Traza('--------------------------------------');
-        //Traza('Porcentaje inicial IVA: '.$decPorcIvax);
-        //Traza('Sucursal origen: '.$strCodiOrig);
-        //Traza('Sucursal destino: '.$strCodiDest);
-        //Traza('Modo Pago: '.$strModoPago);
-        //Traza('Posicion pago: '.$intPosiPago);
-        //Traza('Nombre de pago: '.$strNombPago);
-
         //--------------------------------------------------------------------
         // Si la Modalida de Pago es PPD ó CRD y el Origen es una Sucursal exenta
         // de IVA, entonces el porcetaje de IVA se hace cero (0).
         //--------------------------------------------------------------------
         if ($strNombPago == 'PPD' || $strNombPago == 'CRD') {
-            //Traza('A punto de buscar en lista de sucursales exentos de IVA la Sucursal Origen');
-            //if (in_array($this->objUsuario->CodiEsta,$arrSucuExen)) {
             if (in_array($strCodiOrig,$arrSucuExen)) {
-                //Traza('Sucursal Origen encontrado en la lista');
                 $decPorcIvax = 0;
             }
         }
@@ -872,25 +855,10 @@ class CargarGuia extends FormularioBaseKaizen {
         // de IVA, entonces el porcetaje de IVA se hace cero (0).
         //--------------------------------------------------------------------
         if ($strNombPago == 'COD') {
-            //Traza('A punto de buscar en lista de sucursales exentos de IVA la Sucursal Destino');
             if (in_array($strCodiDest,$arrSucuExen)) {
-                //Traza('Sucursal Destino encontrado en la lista');
                 $decPorcIvax = 0;
             }
         }
-
-        //----------------------------------------------------------------------
-        // Si la Modalida de Pago es CRD, el Destino ó el Origen es una Sucursal
-        // exenta de IVA y se indica que no hay que calcular IVA, entonces el
-        // porcetaje de IVA se hace cero (0).
-        //----------------------------------------------------------------------
-        /*if ($strNombPago == 'CRD') {
-            if ((in_array($strCodiDest,$arrSucuExen) || in_array($strCodiOrig,$arrSucuExen))
-                && !$blnCalcIvax) {
-                $decPorcIvax = 0;
-            }
-        }*/
-
         return $decPorcIvax;
     }
 
@@ -1004,6 +972,7 @@ class CargarGuia extends FormularioBaseKaizen {
     }
 
     protected function UpdateGuiaFields() {
+        t('Peso entrante: '.$this->txtPesoGuia->Text);
         if (strlen($this->objCliente->RutaRecolecta) > 0) {
             $intOperGuia = $this->objCliente->RutaRecolecta;
         } else {
@@ -1014,7 +983,7 @@ class CargarGuia extends FormularioBaseKaizen {
         $this->objGuia->FechGuia           = new QDateTime($this->lblFechGuia->Text);
         $this->objGuia->EstaOrig           = $this->lstCodiOrig->SelectedValue;
         $this->objGuia->EstaDest           = $this->lstCodiDest->SelectedValue;
-        $this->objGuia->PesoGuia           = $this->txtPesoGuia->Text;
+        $this->objGuia->PesoGuia           = (float)$this->txtPesoGuia->Text;
         $this->objGuia->NombRemi           = $this->txtNombRemi->Text;
         $this->objGuia->DireRemi           = $this->txtDireRemi->Text;
         $this->objGuia->TeleRemi           = $this->txtTeleRemi->Text;
@@ -1268,7 +1237,7 @@ class CargarGuia extends FormularioBaseKaizen {
         if (!$blnTodoOkey) {
             $strTextMens .= $strMensErro;
             $strTextMens .= '</b>.';
-            $this->mensaje($strTextMens,'','d','i','hand-stop-o');
+            $this->mensaje($strTextMens,'','d','',__iHAND__);
         }
         return $blnTodoOkey;
     }
@@ -2031,17 +2000,21 @@ class CargarGuia extends FormularioBaseKaizen {
             //------------------------------------------------------------------------------------
             $objGuiaViej = $this->objGuia;
             $this->decPesoInic = $objGuiaViej->PesoGuia;
-            //--------------------------------------------------------
-            // Se procede a actualizar la ficha de la Guía a Guardar
-            //--------------------------------------------------------
-            $this->UpdateGuiaFields();
-            //--------------------
-            // Se guarda la Guía
-            //--------------------
-            $this->objGuia->Save();
-            //---------------------------------------------------------
-            // Se verifica si la Guía se encuentra en modo de edición
-            //---------------------------------------------------------
+            //-------------------------------------
+            // Se suprimen los errores en pantalla
+            //-------------------------------------
+//            $mixErroOrig = error_reporting();
+//            error_reporting(E_ALL);
+//            try {
+                t('Antes del UpdateFields el peso es: '.$this->objGuia->PesoGuia);
+                $this->UpdateGuiaFields();
+                t('Despues del UpdateFields el peso es: '.$this->objGuia->PesoGuia);
+                $this->objGuia->Save();
+                t('Despues del save el peso es: '.$this->objGuia->PesoGuia);
+//            } catch (Exception $e) {
+//                $this->mensaje($e->getMessage(),'','d','',__iHAND__);
+//            }
+//            error_reporting($mixErroOrig);
             if ($this->blnEditMode) {
                 //---------------------------------------------------------------------------------------
                 // Si estamos en Modo Edición, se verificará la existencia de algun cambio en los datos.

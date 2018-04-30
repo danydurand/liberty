@@ -128,32 +128,25 @@ class GuiaListForm extends GuiaListFormBase {
     protected function Form_Create() {
         parent::Form_Create();
 
-        t('B1');
         $this->objUsuario = unserialize($_SESSION['User']);
         $this->SetupValores();
 
         $this->lblTituForm->Text = $this->objSubxClie->strTituForm;
 
-        t('B2');
         $this->txtNumeGuia_Create();
         $this->calFechInic_Create();
         $this->calFechFina_Create();
         $this->txtNombRemi_Create();
         $this->txtNombDest_Create();
 
-        t('B3');
         $this->txtPesoGuia_Create();
         $this->txtCantPiez_Create();
 		$this->lstTipoPago_Create();
 		$this->lstCodiOrig_Create();
 		$this->lstCodiDest_Create();
 
-		t('B4');
         $this->btnBuscRegi_Create();
         $this->btnImprMani_Create();
-
-        t('B5');
-
 
         // Instantiate the Meta DataGrid
         $this->dtgGuias = new GuiaDataGrid($this);
@@ -178,7 +171,6 @@ class GuiaListForm extends GuiaListFormBase {
         $this->dtgGuias->RowActionParameterHtml = '<?= $_ITEM->NumeGuia ?>';
         $this->dtgGuias->AddRowAction(new QClickEvent(), new QAjaxAction('dtgGuiasRow_Click'));
 
-        t('B6');
         //-------------------------------------------------------------
         // Cláusula adicional para ordenar por Fecha y Número de Guía.
         //-------------------------------------------------------------
@@ -224,73 +216,55 @@ class GuiaListForm extends GuiaListFormBase {
             }
         }
 
-        t('B7');
         $this->dtgGuias->AdditionalConditions = QQ::AndCondition($objClauWher);
         $this->dtgGuias->AdditionalClauses = $objClauOrde;
         //----------------------------------------------------------------------
         // Guardo las cláusulas en una variable de sesión para futuros reportes
         //----------------------------------------------------------------------
 
-        t('B8');
 //        $_SESSION['CritXlsx'] = serialize($objClauWher);
         $this->listaDeGuiasParaExportar($objClauWher);
 
-        t('B8.1');
-
         $colStatGuia = new QDataGridColumn('ST', '<?= $_FORM->StatusColumnRender($_ITEM) ?>');
-        $colStatGuia->HtmlEntities         = false;
-        $colStatGuia->Width                = 10;
+        $colStatGuia->HtmlEntities = false;
+        $colStatGuia->Width        = 10;
         $this->dtgGuias->AddColumn($colStatGuia);
 
         $colNumeGuia = $this->dtgGuias->MetaAddColumn('NumeGuia');
-        $colNumeGuia->FilterBoxSize = 6;
         $colNumeGuia->Name = 'Guía';
 
         $colFechGuia = new QDataGridColumn('Fecha','<?= $_ITEM->FechGuia->__toString("DD/MM/YYYY") ?>');
         $colFechGuia->OrderByClause = QQ::OrderBy(QQN::Guia()->FechGuia, false);
         $colFechGuia->ReverseOrderByClause = QQ::OrderBy(QQN::Guia()->FechGuia);
-        $colFechGuia->Filter = QQ::Equal(QQN::Guia()->FechGuia,null);
-        $colFechGuia->FilterBoxSize = 9;
         $this->dtgGuias->AddColumn($colFechGuia);
 
         $colOrigGuia = $this->dtgGuias->MetaAddColumn(QQN::Guia()->EstaOrig);
-        $colOrigGuia->FilterBoxSize = 2;
         $colOrigGuia->Name = 'Orig';
 
         $colDestGuia = $this->dtgGuias->MetaAddColumn(QQN::Guia()->EstaDest);
-        $colDestGuia->FilterBoxSize = 2;
         $colDestGuia->Name = 'Dest';
 
         $colNombDest = new QDataGridColumn('DESTINATARIO','<?= $_FORM->dtgNombDest_Render($_ITEM) ?>');
-        $colNombDest->Filter = QQ::Equal(QQN::Guia()->NombDest, null);
-        $colNombDest->FilterType = QFilterType::TextFilter;
-        $colNombDest->FilterBoxSize = 16;
         $this->dtgGuias->AddColumn($colNombDest);
 
-        $colStatGuia = new QDataGridColumn('ESTATUS','<?= $_FORM->dtgDescStat_Render($_ITEM) ?>');
-        $colStatGuia->Filter = QQ::Equal(QQN::Guia()->ObseCkpt, null);
-        $colStatGuia->FilterType = QFilterType::TextFilter;
-        $colStatGuia->FilterBoxSize = 46;
+        $colStatGuia = new QDataGridColumn('ULTIMO ESTATUS','<?= $_FORM->dtgDescStat_Render($_ITEM) ?>');
         $this->dtgGuias->AddColumn($colStatGuia);
 
-        $colSucCkpt = $this->dtgGuias->MetaAddColumn('EstaCkpt');
-        $colSucCkpt->FilterBoxSize = 2;
-        $colSucCkpt->Name = 'SUC';
+        $colSucuCkpt = new QDataGridColumn('SUC','<?= $_FORM->dtgEstaCkpt_Render($_ITEM); ?>');
+        $colSucuCkpt->Name = 'SUC';
+        $this->dtgGuias->AddColumn($colSucuCkpt);
 
-        $colFechGuia = new QDataGridColumn('FECHA ESTATUS','<?= $_ITEM->FechCkpt->__toString("DD/MM/YYYY") ?>');
+        $colFechGuia = new QDataGridColumn('F. ESTATUS','<?= $_FORM->dtgFechCkpt_Render($_ITEM); ?>');
         $colFechGuia->OrderByClause = QQ::OrderBy(QQN::Guia()->FechCkpt, false);
         $colFechGuia->ReverseOrderByClause = QQ::OrderBy(QQN::Guia()->FechCkpt);
         $this->dtgGuias->AddColumn($colFechGuia);
 
-        $colHoraCkpt = $this->dtgGuias->MetaAddColumn('HoraCkpt');
-        $colHoraCkpt->FilterType = null;
-        $colHoraCkpt->Name = 'HORA ESTATUS';
+        $colHoraCkpt = new QDataGridColumn('H. ESTATUS','<?= $_FORM->dtgHoraCkpt_Render($_ITEM); ?>');
+        $this->dtgGuias->AddColumn($colHoraCkpt);
 
         $colUsuaCrea = $this->dtgGuias->MetaAddColumn('UsuarioCreacion');
-        $colUsuaCrea->FilterBoxSize = 5;
-        $colUsuaCrea->Name = 'USUARIO';
+        $colUsuaCrea->Name = 'CRDA POR';
 
-        t('B9');
         //------------------
         // Botónes Propios
         //------------------
@@ -315,6 +289,54 @@ class GuiaListForm extends GuiaListFormBase {
     //----------------------------
     // Aquí se Crean los Objetos
     //----------------------------
+
+    public function StatusColumnRender(Guia $objGuia) {
+        if (!$objGuia) {
+            return null;
+        }
+        if (is_null($objGuia->CodiCkpt)) {
+            return null;
+        }
+        $objCkptGuia = SdeCheckpoint::Load($objGuia->CodiCkpt);
+        if (!$objCkptGuia) {
+            return null;
+        }
+        if (strlen($objCkptGuia->Imagen) == 0) {
+            return null;
+        }
+        return TextoIconoColor($objCkptGuia->Imagen,'','','lg',$objCkptGuia->Color);
+    }
+
+    public function dtgEstaCkpt_Render(Guia $objGuia) {
+        if (!$objGuia) {
+            return null;
+        }
+        if (is_null($objGuia->EstaCkpt)) {
+            return null;
+        }
+        return $objGuia->EstaCkpt;
+    }
+
+    public function dtgFechCkpt_Render(Guia $objGuia) {
+        if (!$objGuia) {
+            return null;
+        }
+        if (is_null($objGuia->FechCkpt)) {
+            return null;
+        }
+        return $objGuia->FechCkpt->__toString('DD/MM/YYYY');
+    }
+
+    public function dtgHoraCkpt_Render(Guia $objGuia) {
+        if (!$objGuia) {
+            return null;
+        }
+        if (is_null($objGuia->HoraCkpt)) {
+            return null;
+        }
+        return substr($objGuia->HoraCkpt,0,5);
+    }
+
 
     protected function btnCancel_Create() {
         $this->btnCancel = new QButton($this);
@@ -443,19 +465,6 @@ class GuiaListForm extends GuiaListFormBase {
         $this->btnImprMani->Text = TextoIcono('print fa-lg','Imprimir Manifiesto');
         $this->btnImprMani->AddAction(new QClickEvent(), new QServerAction('btnImprMani_Click'));
         $this->btnImprMani->Visible = !$this->blnImprMani;
-    }
-
-    public function StatusColumnRender(Guia $objGuia) {
-        if (!is_null($objGuia->CodiCkpt)) {
-            $objCkptGuia = SdeCheckpoint::Load($objGuia->CodiCkpt);
-            if (strlen($objCkptGuia->Imagen) > 0) {
-                return TextoIconoColor($objCkptGuia->Imagen,'','','lg',$objCkptGuia->Color);
-            } else {
-                return null;
-            }
-        } else {
-            return null;
-        }
     }
 
     protected function btnFiltComu_Create() {

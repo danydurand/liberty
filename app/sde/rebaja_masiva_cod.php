@@ -212,7 +212,7 @@ class RebajaMasivaCod extends FormularioBaseKaizen {
 						if ($this->chkPagoProc->Checked) {
 							$blnTodoOkey = true;
 							if ($objGuia->CodiCkpt == 'OK') {
-								$this->txtNumeSeri->Text .= $strNumeSeri." (La Guía ya cerró su ciclo, no admite mas incidencias)".chr(13);
+								$this->txtNumeSeri->Text .= $strNumeGuia." (La Guía ya cerró su ciclo, no admite mas incidencias)".chr(13);
 								$blnTodoOkey = false;
 							}
 							if ($blnTodoOkey) {
