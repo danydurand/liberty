@@ -198,6 +198,9 @@ class CargarGuia extends FormularioBaseKaizen {
         $this->SetupGuia();
         $this->SetupValues();
 
+        $strTextMens = 'Evite el uso de caracteres especiales (Ej: \\~°#^*+) en <b>los nombres, las direcciones, el contenido, los teléfono y la observación</b>';
+        $this->mensaje($strTextMens,'n','i','',__iINFO__);
+
     }
 
     //----------------------------
@@ -265,7 +268,6 @@ class CargarGuia extends FormularioBaseKaizen {
         $this->lstCodiDest->Width = 200;
         $this->lstCodiDest->AddItem(QApplication::Translate('- Seleccione Uno -'),null);
         $this->CargarDestinos();
-        $this->lstCodiOrig->ForeColor = 'blue';
     }
 
     protected function txtCantPiez_Create() {
@@ -710,15 +712,15 @@ class CargarGuia extends FormularioBaseKaizen {
             $this->lstModaPago->Enabled = false;
             $this->lstModaPago->ForeColor = 'blue';
         } else {
-//            if ($this->blnEditMode) {
-                $blnModaGuia = BuscarParametro("ModaGuia", $this->objUsuario->LogiUsua, "Val1", 0);
-                if ($blnModaGuia) {
-                    $this->lstModaPago->Enabled = true;
-                } else {
-                    $this->lstModaPago->Enabled = false;
-                    $this->lstModaPago->ForeColor = 'blue';
-                }
-//            }
+            //            if ($this->blnEditMode) {
+            $blnModaGuia = BuscarParametro("ModaGuia", $this->objUsuario->LogiUsua, "Val1", 0);
+            if ($blnModaGuia) {
+                $this->lstModaPago->Enabled = true;
+            } else {
+                $this->lstModaPago->Enabled = false;
+                $this->lstModaPago->ForeColor = 'blue';
+            }
+            //            }
         }
     }
 
@@ -972,7 +974,6 @@ class CargarGuia extends FormularioBaseKaizen {
     }
 
     protected function UpdateGuiaFields() {
-        t('Peso entrante: '.$this->txtPesoGuia->Text);
         if (strlen($this->objCliente->RutaRecolecta) > 0) {
             $intOperGuia = $this->objCliente->RutaRecolecta;
         } else {
@@ -1067,179 +1068,115 @@ class CargarGuia extends FormularioBaseKaizen {
         }
     }
 
-    //--- Funciones QCubed ---
+
+    protected function enviarMensajeDeError($strMensErro) {
+        $this->mensaje($strMensErro,'','d','',__iHAND__);
+    }
 
     protected function Form_Validate() {
-        $strTextMens = 'Errores: <b>';
-        $strMensErro = '';
-        $blnTodoOkey = true;
         $this->mensaje();
-        //---------------------------------------
-        // Validando campo de Número de la Guía
-        //---------------------------------------
         if (strlen($this->txtNumeGuia->Text) == 0) {
-            $blnTodoOkey = false;
-            $strMensErro .= 'Número Guía (Requerido)';
+            $strMensErro = 'Número Guía <b>Requerido</b>';
+            $this->enviarMensajeDeError($strMensErro);
+            return false;
+        } else {
+            $this->txtNumeGuia->Text = limpiarCadena($this->txtNumeGuia->Text);
         }
-        //--------------------------------------------
-        // Validando el campo de Cliente (A Facturar)
-        //--------------------------------------------
         if (is_null($this->lstCodiClie->SelectedValue)) {
-            $blnTodoOkey = false;
-            if (strlen($strMensErro) > 0) {
-                $strMensErro .= ', ';
-            }
-            $strMensErro .= 'Cliente (A Facturar)';
+            $strMensErro = 'Cliente A Facturar <b>Requerido</b>';
+            $this->enviarMensajeDeError($strMensErro);
+            return false;
         }
-        //--------------------------------------------
-        // Validando la Forma de Pago
-        //--------------------------------------------
-        if (is_null($this->lstModaPago->SelectedValue)) {
-            $blnTodoOkey = false;
-            if (strlen($strMensErro) > 0) {
-                $strMensErro .= ', ';
-            }
-            $strMensErro .= 'Forma de Pago (Requerida)';
-        }
-        //----------------------------------------------
-        // Validando el campo del Nombre del Remitente
-        //----------------------------------------------
         if (strlen($this->txtNombRemi->Text) == 0) {
-            $blnTodoOkey = false;
-            if (strlen($strMensErro) > 0) {
-                $strMensErro .= ', ';
-            }
-            $strMensErro .= 'Nombre Rem. (Requerido)';
+            $strMensErro = 'Nombre del Remitente <b>Requerido</b>';
+            $this->enviarMensajeDeError($strMensErro);
+            return false;
+        } else {
+            $this->txtNombRemi->Text = limpiarCadena($this->txtNombRemi->Text);
         }
-        //---------------------------------------------------
-        // Validando el campo de la Dirección del Remitente
-        //---------------------------------------------------
-        if (strlen($this->txtDireRemi->Text) == 0) {
-            $blnTodoOkey = false;
-            if (strlen($strMensErro) > 0) {
-                $strMensErro .= ', ';
-            }
-            $strMensErro .= 'Dir. Rem. (Requerida)';
-        }
-        //------------------------------------------------
-        // Validando el campo del Teléfono del Remitente
-        //------------------------------------------------
         if (strlen($this->txtTeleRemi->Text) == 0) {
-            $blnTodoOkey = false;
-            if (strlen($strMensErro) > 0) {
-                $strMensErro .= ', ';
-            }
-            $strMensErro .= 'Tlf Rem. (Requerido)';
+            $strMensErro = 'Teléfono del Remitente <b>Requerido</b>';
+            $this->enviarMensajeDeError($strMensErro);
+            return false;
+        } else {
+            $this->txtTeleRemi->Text = DejarSoloLosNumeros($this->txtTeleRemi->Text);
         }
-        //-------------------------------
-        // Validando el campo de Origen
-        //-------------------------------
+        if (strlen($this->txtDireRemi->Text) == 0) {
+            $strMensErro = 'Dirección de Recolecta <b>Requerida</b>';
+            $this->enviarMensajeDeError($strMensErro);
+            return false;
+        } else {
+            $this->txtDireRemi->Text = limpiarCadena($this->txtDireRemi->Text);
+        }
         if (is_null($this->lstCodiOrig->SelectedValue)) {
-            $blnTodoOkey = false;
-            if (strlen($strMensErro) > 0) {
-                $strMensErro .= ', ';
-            }
-            $strMensErro .= 'Origen (Requerido)';
+            $strMensErro = 'Origen <b>Requerido</b>';
+            $this->enviarMensajeDeError($strMensErro);
+            return false;
         }
-        //--------------------------------
-        // Validando el campo de Destino
-        //--------------------------------
         if (is_null($this->lstCodiDest->SelectedValue)) {
-            $blnTodoOkey = false;
-            if (strlen($strMensErro) > 0) {
-                $strMensErro .= ', ';
-            }
-            $strMensErro .= 'Destino (Requerido)';
+            $strMensErro = 'Destino <b>Requerido</b>';
+            $this->enviarMensajeDeError($strMensErro);
+            return false;
         }
-        //-------------------------------
-        // Validando el campo de Piezas
-        //-------------------------------
         if (strlen($this->txtCantPiez->Text) == 0 || ($this->txtCantPiez->Text == 0)) {
-            $blnTodoOkey = false;
-            if (strlen($strMensErro) > 0) {
-                $strMensErro .= ', ';
-            }
-            $strMensErro .= 'Cant. Pzas (Requerida)';
+            $strMensErro = 'La Cantidad de Piezas <b>Requerida y Mayor a Cero (0)</b>';
+            $this->enviarMensajeDeError($strMensErro);
+            return false;
         }
-        //-----------------------------
-        // Validando el campo de Peso
-        //-----------------------------
         if ((strlen($this->txtPesoGuia->Text) == 0) || ($this->txtPesoGuia->Text == 0)) {
-            $blnTodoOkey = false;
-            if (strlen($strMensErro) > 0) {
-                $strMensErro .= ', ';
-            }
-            $strMensErro .= 'Peso (Requerido)';
+            $strMensErro = 'Peso <b>Requerido y Mayor a Cero (0)</b>';
+            $this->enviarMensajeDeError($strMensErro);
+            return false;
         }
-        //----------------------------------------
-        // Validando el campo de Valor Declarado
-        //----------------------------------------
         if (strlen($this->txtValoDecl->Text) == 0) {
-            $blnTodoOkey = false;
-            if (strlen($strMensErro) > 0) {
-                $strMensErro .= ', ';
-            }
-            $strMensErro .= 'Valor Decl. (Requerido)';
+            $strMensErro = 'Valor Declarado <b>Requerido</b>';
+            $this->enviarMensajeDeError($strMensErro);
+            return false;
         }
-        //----------------------------------------------------------------------------
-        // Validando el campo de Guía Externa en caso de haber seleccionado el mismo
-        //----------------------------------------------------------------------------
         if ($this->chkGuiaInte->Checked && strlen($this->txtGuiaInte->Text) == 0) {
-            $blnTodoOkey = false;
-            if (strlen($strMensErro) > 0) {
-                $strMensErro .= ', ';
-            }
-            $strMensErro .= 'Guía Externa (Requerida)';
+            $strMensErro = 'Guía Externa <b>Requerida</b>';
+            $this->enviarMensajeDeError($strMensErro);
+            return false;
         }
-        //-------------------------------------------------
-        // Validando el campo del Nombre del Destinatario
-        //-------------------------------------------------
+        if (strlen($this->txtDescCont->Text) == 0) {
+            $strMensErro = 'Contenido del Envío <b>Requerido</b>';
+            $this->enviarMensajeDeError($strMensErro);
+            return false;
+        } else {
+            $this->txtDescCont->Text = limpiarCadena($this->txtDescCont->Text);
+        }
         if (strlen($this->txtNombDest->Text) == 0) {
-            $blnTodoOkey = false;
-            if (strlen($strMensErro) > 0) {
-                $strMensErro .= ', ';
-            }
-            $strMensErro .= 'Nombre Dest. (Requerido)';
+            $strMensErro = 'Nombre del Destinatario <b>Requerido</b>';
+            $this->enviarMensajeDeError($strMensErro);
+            return false;
+        } else {
+            $this->txtNombDest->Text = limpiarCadena($this->txtNombDest->Text);
         }
-        //------------------------------------------------------
-        // Validando el campo de la Dirección del Destinatario
-        //------------------------------------------------------
-        if (strlen($this->txtDireDest->Text) == 0) {
-            $blnTodoOkey = false;
-            if (strlen($strMensErro) > 0) {
-                $strMensErro .= ', ';
-            }
-            $strMensErro .= 'Dir. Destinatario (Requerida)';
-        }
-        //---------------------------------------------------
-        // Validando el campo del Teléfono del Destinatario
-        //---------------------------------------------------
         if (strlen($this->txtTeleDest->Text) == 0) {
-            $blnTodoOkey = false;
-            if (strlen($strMensErro) > 0) {
-                $strMensErro .= ', ';
-            }
-            $strMensErro .= 'Tlf Dest (Requerido)';
+            $strMensErro = 'Teléfono del Destinatario <b>Requerido</b>';
+            $this->enviarMensajeDeError($strMensErro);
+            return false;
+        } else {
+            $this->txtTeleDest->Text = DejarSoloLosNumeros($this->txtTeleDest->Text);
         }
-        //--------------------------------------------------------------------------------------
-        // Validando el campo de Vehículo Sugerido en caso de haber seleccionado Flete Directo
-        //--------------------------------------------------------------------------------------
+        if (strlen($this->txtDireDest->Text) == 0) {
+            $strMensErro = 'Dirección de Entrega <b>Requerida</b>';
+            $this->enviarMensajeDeError($strMensErro);
+            return false;
+        } else {
+            $this->txtDireDest->Text = limpiarCadena($this->txtDireDest->Text);
+        }
         if ($this->chkFletDire->Checked && is_null($this->lstVehiSuge->SelectedValue)) {
-            $blnTodoOkey = false;
-            if (strlen($strMensErro) > 0) {
-                $strMensErro .= ', ';
-            }
-            $strMensErro .= 'Tipo Veh. (Requerido)';
+            $strMensErro = 'Tipo Vehículo <b>Requerido</b>';
+            $this->enviarMensajeDeError($strMensErro);
+            return false;
         }
-        //------------------------------------------------------------------------------------------
-        // Si hay uno o más errores, se notifican al usuario y no se permite la gestión de la guía.
-        //------------------------------------------------------------------------------------------
-        if (!$blnTodoOkey) {
-            $strTextMens .= $strMensErro;
-            $strTextMens .= '</b>.';
-            $this->mensaje($strTextMens,'','d','',__iHAND__);
+        if (is_null($this->lstModaPago->SelectedValue)) {
+            $strMensErro = 'Forma de Pago <b>Requerida</b>';
+            $this->enviarMensajeDeError($strMensErro);
+            return false;
         }
-        return $blnTodoOkey;
+        return true;
     }
 
     protected function txtNumeGuia_Blur() {
@@ -1937,7 +1874,7 @@ class CargarGuia extends FormularioBaseKaizen {
             if (strlen($strMensErro) > 0) {
                 $strMensErro .= ', ';
             }
-            $strMensErro .= 'Origen (Requerido)';
+            $strMensErro .= 'Origen <b>Requerido</b>';
         }
         //--------------------------------
         // Validando el campo de Destino
@@ -1947,7 +1884,7 @@ class CargarGuia extends FormularioBaseKaizen {
             if (strlen($strMensErro) > 0) {
                 $strMensErro .= ', ';
             }
-            $strMensErro .= 'Destino (Requerido)';
+            $strMensErro .= 'Destino <b>Requerido</b>';
         }
         //-----------------------------------------------------
         // Si hay uno o más errores, se notifican al usuario
@@ -2000,21 +1937,17 @@ class CargarGuia extends FormularioBaseKaizen {
             //------------------------------------------------------------------------------------
             $objGuiaViej = $this->objGuia;
             $this->decPesoInic = $objGuiaViej->PesoGuia;
-            //-------------------------------------
-            // Se suprimen los errores en pantalla
-            //-------------------------------------
-//            $mixErroOrig = error_reporting();
-//            error_reporting(E_ALL);
-//            try {
-                t('Antes del UpdateFields el peso es: '.$this->objGuia->PesoGuia);
-                $this->UpdateGuiaFields();
-                t('Despues del UpdateFields el peso es: '.$this->objGuia->PesoGuia);
-                $this->objGuia->Save();
-                t('Despues del save el peso es: '.$this->objGuia->PesoGuia);
-//            } catch (Exception $e) {
-//                $this->mensaje($e->getMessage(),'','d','',__iHAND__);
-//            }
-//            error_reporting($mixErroOrig);
+            //--------------------------------------------------------
+            // Se procede a actualizar la ficha de la Guía a Guardar
+            //--------------------------------------------------------
+            $this->UpdateGuiaFields();
+            //--------------------
+            // Se guarda la Guía
+            //--------------------
+            $this->objGuia->Save();
+            //---------------------------------------------------------
+            // Se verifica si la Guía se encuentra en modo de edición
+            //---------------------------------------------------------
             if ($this->blnEditMode) {
                 //---------------------------------------------------------------------------------------
                 // Si estamos en Modo Edición, se verificará la existencia de algun cambio en los datos.

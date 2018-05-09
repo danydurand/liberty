@@ -219,6 +219,10 @@ class CargarGuia extends FormularioBaseKaizen {
         if (!$this->blnEditMode) {
             $this->btnCancel->Visible = false;
         }
+
+        $strTextMens = 'Evite el uso de caracteres especiales (Ej: \\~°#^*+) en <b>los nombres, la dirección, el contenido, el teléfono y la persona contacto</b>';
+        $this->mensaje($strTextMens,'n','i','',__iINFO__);
+
     }
 
     //----------------------------
@@ -544,15 +548,20 @@ class CargarGuia extends FormularioBaseKaizen {
     }
 
     protected function Form_Validate() {
+        $this->mensaje();
         if (strlen($this->txtNombRemi->Text) == 0) {
             $strMensErro = 'Nombre/R.Social del Remitente (Requerido)';
             $this->enviarMensajeDeError($strMensErro);
             return false;
+        } else {
+            $this->txtNombRemi->Text = limpiarCadena($this->txtNombRemi->Text);
         }
         if (strlen($this->txtTeleRemi->Text) == 0) {
             $strMensErro = 'Teléfono del Remitente (Requerido)';
             $this->enviarMensajeDeError($strMensErro);
             return false;
+        } else {
+            $this->txtTeleRemi->Text = DejarSoloLosNumeros($this->txtTeleRemi->Text);
         }
         if (strlen($this->txtTeleRemi->Text) > 11) {
             $strMensErro = 'Teléfono Remitente (No debe tener más de 11 caracteres numéricos)';
@@ -563,6 +572,8 @@ class CargarGuia extends FormularioBaseKaizen {
             $strMensErro = 'Dirección de Recolecta (Requerida)';
             $this->enviarMensajeDeError($strMensErro);
             return false;
+        } else {
+            $this->txtDireRemi->Text = limpiarCadena($this->txtDireRemi->Text);
         }
         if (strlen($this->txtDireRemi->Text) < 10) {
             $strMensErro = 'Dirección de Remitente (Muy corta)';
@@ -573,6 +584,8 @@ class CargarGuia extends FormularioBaseKaizen {
             $strMensErro = 'Contenido del Envío (Requerido)';
             $this->enviarMensajeDeError($strMensErro);
             return false;
+        } else {
+            $this->txtDescCont->Text = limpiarCadena($this->txtDescCont->Text);
         }
         if (strlen($this->txtCantPiez->Text) == 0) {
             $strMensErro = 'Cantidad de Piezas (Requerida)';
@@ -613,31 +626,43 @@ class CargarGuia extends FormularioBaseKaizen {
             $strMensErro = 'Nombre/Razón Social del Destinatario (Requerido)';
             $this->enviarMensajeDeError($strMensErro);
             return false;
+        } else {
+            $this->txtNombDest->Text = limpiarCadena($this->txtNombDest->Text);
         }
         if (strlen($this->txtNombDest->Text) > 100) {
             $strMensErro = 'Nombre/Razón Social del Destinatario (Max. 100 caracteres)';
             $this->enviarMensajeDeError($strMensErro);
             return false;
+        } else {
+            $this->txtNombDest->Text = limpiarCadena($this->txtNombDest->Text);
         }
         if (strlen($this->txtTeleDest->Text) == 0) {
             $strMensErro = 'Nro de Teléfono del Destinatario (Requerido)';
             $this->enviarMensajeDeError($strMensErro);
             return false;
+        } else {
+            $this->txtTeleDest->Text = DejarSoloLosNumeros($this->txtTeleDest->Text);
         }
         if (strlen($this->txtTeleDest->Text) > 11) {
             $strMensErro = 'El Teléfono del Destinatario (No debe tener más de 11 caracteres numéricos)';
             $this->enviarMensajeDeError($strMensErro);
             return false;
+        } else {
+            $this->txtTeleDest->Text = DejarSoloLosNumeros($this->txtTeleDest->Text);
         }
         if (strlen($this->txtDireDest->Text) == 0) {
             $strMensErro = 'Dirección de Entrega (Requerida)';
             $this->enviarMensajeDeError($strMensErro);
             return false;
+        } else {
+            $this->txtDireDest->Text = limpiarCadena($this->txtDireDest->Text);
         }
         if (strlen($this->txtDireDest->Text) < 20) {
             $strMensErro = 'Dirección de Entrega (Muy corta)';
             $this->enviarMensajeDeError($strMensErro);
             return false;
+        } else {
+            $this->txtDireDest->Text = limpiarCadena($this->txtDireDest->Text);
         }
         $strModoPago = $this->lstModaPago->SelectedName;
         $intPosiPago = strpos($strModoPago, "-");
@@ -647,6 +672,8 @@ class CargarGuia extends FormularioBaseKaizen {
                 $strMensErro = 'Cédula/RIF del Destinatario (Requerido)';
                 $this->enviarMensajeDeError($strMensErro);
                 return false;
+            } else {
+                $this->txtCeduDest->Text = DejarSoloLosNumeros($this->txtCeduDest->Text);
             }
         }
         return true;
@@ -994,7 +1021,7 @@ class CargarGuia extends FormularioBaseKaizen {
 
     protected function btnBorrGuia_Click() {
         BorrarGuia($this->txtNumeGuia->Text);
-        QApplication::Redirect(__SIST__.'/guia_list.php');
+        QApplication::Redirect(__SIST__.'/guia_list_new.php');
     }
 
     protected function btnImprGuia_Click() {

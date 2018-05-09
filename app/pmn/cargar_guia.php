@@ -318,6 +318,10 @@ class CargarGuia extends FormularioBaseKaizen {
         //---------
         $this->controlDeBotones();
         $this->lstSucuDest_Change();
+
+        $strTextMens = 'Evite el uso de caracteres especiales (Ej: \\~°#^*+) en <b>los nombres, las direcciones, el contenido y los teléfonos</b>';
+        $this->mensaje($strTextMens,'n','i','',__iINFO__);
+
     }
 
     //-------------------------
@@ -1648,112 +1652,128 @@ class CargarGuia extends FormularioBaseKaizen {
     }
 
     protected function Form_Validate() {
-        //--------------------------------------------------------------------------------------
-        // Se ha colocado aquí todas las validaciones, para prestar mayor elegancia al proceso
-        //--------------------------------------------------------------------------------------
         $this->mensaje();
         if (strlen($this->txtNumeCedu->Text) == 0) {
-            $strTextMens = 'La Cédula/RIF del Remitente, es requerida';
+            $strTextMens = 'Cédula/RIF del Remitente <b>Requerida</b>';
             $this->enviarMensajeDeError($strTextMens);
             return false;
+        } else {
+            $this->txtNumeCedu->Text = DejarNumerosVJGuion($this->txtNumeCedu->Text);
         }
         if (strlen($this->txtNombClie->Text) == 0) {
-            $strTextMens = 'El Nombre del Remitente, es requerido';
+            $strTextMens = 'Nombre del Remitente <b>Requerido</b>';
             $this->enviarMensajeDeError($strTextMens);
             return false;
+        } else {
+            $this->txtNombClie->Text = limpiarCadena($this->txtNombClie->Text);
         }
         if (strlen($this->txtTeleFijo->Text) == 0) {
-            $strTextMens = 'El Teléfono Fijo del Remitente, es requerido';
+            $strTextMens = 'Teléfono Fijo del Remitente <b>Requerido</b>';
             $this->enviarMensajeDeError($strTextMens);
             return false;
+        } else {
+            $this->txtTeleFijo->Text = DejarSoloLosNumeros($this->txtTeleFijo->Text);
         }
         if (strlen($this->txtTeleFijo->Text) > 11) {
-            $strTextMens = 'El Teléfono Fijo del Remitente, no debe tener más de 11 caracteres numéricos';
+            $strTextMens = 'Teléfono Fijo del Remitente <b>No debe tener más de 11 caracteres numéricos</b>';
             $this->enviarMensajeDeError($strTextMens);
             return false;
+        } else {
+            $this->txtTeleFijo->Text = DejarSoloLosNumeros($this->txtTeleFijo->Text);
         }
         if (strlen($this->txtTeleMovi->Text) == 0) {
-            $strTextMens = 'El Teléfono Movil del Remitente, es requerido';
+            $strTextMens = 'Teléfono Movil del Remitente <b>Requerido</b>';
             $this->enviarMensajeDeError($strTextMens);
             return false;
+        } else {
+            $this->txtTeleMovi->Text = DejarSoloLosNumeros($this->txtTeleMovi->Text);
         }
         if (strlen($this->txtTeleMovi->Text) > 11) {
-            $strTextMens = 'El Teléfono Movil del Remitente, no debe tener más de 11 caracteres numéricos';
+            $strTextMens = 'Teléfono Movil del Remitente <b>No debe tener más de 11 caracteres numéricos</b>';
             $this->enviarMensajeDeError($strTextMens);
             return false;
+        } else {
+            $this->txtTeleMovi->Text = DejarSoloLosNumeros($this->txtTeleMovi->Text);
         }
         if (strlen($this->txtDireClie->Text) == 0) {
-            $strTextMens = 'La Dirección de Remitente, es requerida';
+            $strTextMens = 'Dirección del Remitente <b>Requerida</b>';
             $this->enviarMensajeDeError($strTextMens);
             return false;
+        } else {
+            $this->txtDireClie->Text = limpiarCadena($this->txtDireClie->Text);
         }
         if (is_null($this->lstSucuDest->SelectedValue)) {
-            $strTextMens = 'La Sucursal Destino, es requerida';
-            $this->enviarMensajeDeError($strTextMens);
-            return false;
-        }
-        /*
-        if (is_null($this->lstReceDest->SelectedValue)) {
-            $strTextMens = 'La Receptoria Destino, es requerida';
-            $this->enviarMensajeDeError($strTextMens);
-            return false;
-        }
-        */
-        if (is_null($this->lstSucuDest->SelectedValue)) {
-            $strTextMens = 'La Sucursal Destino, es requerida';
+            $strTextMens = 'Sucursal Destino <b>Requerida</b>';
             $this->enviarMensajeDeError($strTextMens);
             return false;
         }
         if (strlen($this->txtCeduDest->Text) == 0) {
-            $strTextMens = 'La Cédula del Destinario, es requerida';
+            $strTextMens = 'Cédula del Destinario <b>Requerida</b>';
             $this->enviarMensajeDeError($strTextMens);
             return false;
+        } else {
+            $this->txtCeduDest->Text = DejarNumerosVJGuion($this->txtCeduDest->Text);
         }
         if (strlen($this->txtNombDest->Text) == 0) {
-            $strTextMens = 'El Nombre del Destinario, es requerido';
+            $strTextMens = 'Nombre del Destinario <b>Requerido</b>';
             $this->enviarMensajeDeError($strTextMens);
             return false;
+        } else {
+            $this->txtNombDest->Text = limpiarCadena($this->txtNombDest->Text);
         }
         if (strlen($this->txtTeleDest->Text) == 0) {
-            $strTextMens = 'El Teléfono Movil del Destinario, es requerido';
+            $strTextMens = 'Teléfono Movil del Destinario <b>Requerido</b>';
             $this->enviarMensajeDeError($strTextMens);
             return false;
+        } else {
+            $this->txtTeleDest->Text = DejarSoloLosNumeros($this->txtTeleDest->Text);
         }
         if (strlen($this->txtTeleDest->Text) > 11) {
-            $strTextMens = 'El Teléfono Movil del Destinatario, no debe tener más de 11 caracteres numéricos';
+            $strTextMens = 'Teléfono Movil del Destinatario <b>No debe tener más de 11 caracteres numéricos</b>';
             $this->enviarMensajeDeError($strTextMens);
             return false;
+        } else {
+            $this->txtTeleDest->Text = DejarSoloLosNumeros($this->txtTeleDest->Text);
+        }
+        if (strlen($this->txtDireDest->Text) == 0) {
+            $strTextMens = 'Dirección del Destinatario <b>Requerida</b>';
+            $this->enviarMensajeDeError($strTextMens);
+            return false;
+        } else {
+            $this->txtDireDest->Text = limpiarCadena($this->txtDireDest->Text);
         }
         if (strlen($this->txtCantPiez->Text) == 0) {
-            $strTextMens = 'La Cantidad de Piezas, es requerida';
+            $strTextMens = 'Cantidad de Piezas <b>Requerida</b>';
             $this->enviarMensajeDeError($strTextMens);
             return false;
         }
         if ($this->txtCantPiez->Text <= 0) {
-            $strTextMens = 'La Cantidad de Piezas debe ser Mayor a Cero (0)';
+            $strTextMens = 'Cantidad de Piezas <b>Debe ser Mayor a Cero (0)</b>';
             $this->enviarMensajeDeError($strTextMens);
             return false;
         }
         if (strlen($this->txtPesoGuia->Text) == 0) {
-            $strTextMens = 'El Peso, es requerido';
+            $strTextMens = 'Peso <b>Requerido</b>';
             $this->enviarMensajeDeError($strTextMens);
             return false;
         }
         if ($this->txtPesoGuia->Text <= 0) {
-            $strTextMens = 'El Peso debe ser Mayor a Cero (0)';
+            $strTextMens = 'Peso <b>Debe ser Mayor a Cero (0)</b>';
             $this->enviarMensajeDeError($strTextMens);
             return false;
         }
         if (strlen($this->txtDescCont->Text) == 0) {
-            $strTextMens = 'La Descripción del Contenido, es requerida';
+            $strTextMens = 'Descripción del Contenido <b>Requerida</b>';
             $this->enviarMensajeDeError($strTextMens);
             return false;
+        } else {
+            $this->txtDescCont->Text = limpiarCadena($this->txtDescCont->Text);
         }
         if (strlen($this->txtValoDecl->Text) == 0) {
             $this->txtValoDecl->Text = 0;
         }
         if (is_null($this->rdbModaPago->SelectedValue)) {
-            $strTextMens = 'La Modalidad de Pago, es requerida';
+            $strTextMens = 'Modalidad de Pago <b>Requerida</b>';
             $this->enviarMensajeDeError($strTextMens);
             return false;
         }

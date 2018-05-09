@@ -4,14 +4,18 @@ require_once(__APP_INCLUDES__.'/barcodelib.php');
 
 $blnTodoOkey = true;
 if (isset($_SESSION['Dato'])) {
-	$arrNumeGuia = unserialize($_SESSION['Dato']);
+	t('La variable si esta seteada');
+//	$arrNumeGuia = unserialize($_SESSION['Dato']);
+	$arrNumeGuia = $_SESSION['Dato'];
+    t('Aqui vector tiene: '.count($arrNumeGuia).' elementos');
+
 } else {
 	$blnTodoOkey = false;
 	echo "No se especificaron las Guias<br>\n"; 
 }
 
 if ($blnTodoOkey) {
-	function Bloque($pdf,$intX,$intY,$objGuia,$objCliente,$objUsuario) {
+	function Bloque($pdf,$intX,$intY,Guia $objGuia,MasterCliente $objCliente,$objUsuario) {
 
 		$pdf->Image(__DOCROOT__.__IMAGE_ASSETS__."/LogoEmpresa.jpg",$intX,$intY,40,22);
 
@@ -85,7 +89,7 @@ if ($blnTodoOkey) {
 
 		$intY += 4;
 		$pdf->SetXY($intX,$intY);
-		//		$pdf->Cell(30,5,"CI/RIF: ".$objGuia->CodiClieObject->NumeDrif,0);
+		$pdf->Cell(30,5,"CI/RIF: ".$objGuia->CedulaRif,0);
 
 		$pdf->SetFont('Times','',10);
 		$intY += 4;

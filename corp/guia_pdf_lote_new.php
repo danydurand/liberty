@@ -1,18 +1,17 @@
 <?php
 require_once('qcubed.inc.php');
 require_once(__APP_INCLUDES__.'/barcodelib.php');
-//require_once('/appl/lib/fpdf153/fpdf.php');
 
 $blnTodoOkey = true;
-if (isset($_GET['strNumeGuia'])) {
-	$strNumeGuia = $_GET['strNumeGuia'];
+if (isset($_SESSION['NrosGuia'])) {
+	$arrNumeGuia = $_SESSION['NrosGuia'];
+
 } else {
 	$blnTodoOkey = false;
-	echo "No se especifico la Guia<br>\n";
+	echo "No se especificaron las Guias<br>\n"; 
 }
 
 if ($blnTodoOkey) {
-
 	function Bloque($pdf,$intX,$intY,Guia $objGuia,MasterCliente $objCliente,$objUsuario) {
 
 		$pdf->Image(__DOCROOT__.__IMAGE_ASSETS__."/LogoEmpresa.jpg",$intX,$intY,40,22);
@@ -28,23 +27,24 @@ if ($blnTodoOkey) {
 		$intY += 26;
 		$pdf->SetFont('Times','',10);
 		$pdf->SetXY($intX,$intY);
-		$pdf->Cell(30,5,'Remitente: '.$objGuia->NombRemi,0);
+		$pdf->Cell(30,5,'Remitente: '.substr($objGuia->NombRemi,0,30),0);
 
 		$intY += 4;
 		$pdf->SetXY($intX,$intY);
+		$pdf->Cell(30,5,substr($objGuia->NombRemi,30,40),0);
 		//		$pdf->Cell(30,5,'CI/RIF: '.$objCliente->NumeDrif,0);
 
 		$intY += 4;
 		$pdf->SetXY($intX,$intY);
-		$pdf->Cell(30,5,'Direccion: '.substr($objGuia->DireRemi,0,20),0);
+		$pdf->Cell(30,5,'Direccion: '.substr($objGuia->DireRemi,0,30),0);
 
 		$intY += 4;
 		$pdf->SetXY($intX,$intY);
-		$pdf->Cell(30,5,substr($objGuia->DireRemi,20,30),0);
+		$pdf->Cell(30,5,substr($objGuia->DireRemi,30,40),0);
 
 		$intY += 4;
 		$pdf->SetXY($intX,$intY);
-		$pdf->Cell(30,5,substr($objGuia->DireRemi,50,30),0);
+		$pdf->Cell(30,5,substr($objGuia->DireRemi,70,40),0);
 
 		$intY += 4;
 		$pdf->SetXY($intX,$intY);
@@ -86,40 +86,36 @@ if ($blnTodoOkey) {
 
 		$intY += 4;
 		$pdf->SetXY($intX,$intY);
-		$pdf->Cell(30,5,"CI/RIF: ".$objGuia->CedulaRif,0);
+		$pdf->Cell(30,5,"C.I./R.I.F: ".$objGuia->CedulaRif,0);
 
 		$pdf->SetFont('Times','',10);
 		$intY += 4;
 		$pdf->SetXY($intX,$intY);
-		$pdf->Cell(30,5,substr($objGuia->DireDest,0,60),0);
+		$pdf->Cell(30,5,substr($objGuia->DireDest,0,65),0);
 
 		$intY += 4;
 		$pdf->SetXY($intX,$intY);
-		$pdf->Cell(30,5,substr($objGuia->DireDest,60,60),0);
+		$pdf->Cell(30,5,substr($objGuia->DireDest,65,65),0);
 
 		$intY += 4;
 		$pdf->SetXY($intX,$intY);
-		$pdf->Cell(30,5,substr($objGuia->DireDest,120,60),0);
-
-		$intY += 4;
-		$pdf->SetXY($intX,$intY);
-		$pdf->Cell(30,5,substr($objGuia->DireDest,180,60),0);
+		$pdf->Cell(30,5,substr($objGuia->DireDest,130,65),0);
 
 		$intY += 4;
 		$pdf->SetXY($intX,$intY);
 		$pdf->Cell(30,5,'Telefonos: '.$objGuia->TeleDest,0);
 
 		$pdf->SetFont('Times','B',10);
-		$intY += 4;
+		$intY += 8;
 		$pdf->SetXY($intX+45,$intY);
 		$pdf->Cell(30,5,'Guia #'.$objGuia->NumeGuia.' '.$objGuia->EstaOrig.' - '.$objGuia->EstaDest,0);
 
-		$pdf->SetFont('Times','',9);
+		$pdf->SetFont('Times','',8);
 		$intY += 4;
-		$intTamaText = strlen($objGuia->DescCont);
-		$intPosiCont = ((135 - $intTamaText)/2) - 5;
+		$intTamaText = strlen(substr($objGuia->DescCont,0,80));
+		$intPosiCont = ((80 - $intTamaText)/2) - 5;
 		$pdf->SetXY($intX+$intPosiCont,$intY);
-		$pdf->Cell(30,5,$objGuia->DescCont,0);
+		$pdf->Cell(30,5,substr($objGuia->DescCont,0,80),0);
 
 		$pdf->SetFont('Times','',7);
 		$intY += 4;
@@ -189,15 +185,35 @@ if ($blnTodoOkey) {
 		$pdf->SetFont('Times','',9);
 		$intY += 4;
 		$pdf->SetXY($intX,$intY);
-		$pdf->Cell(30,5,'Transporte Nacional',0);
-		$pdf->SetXY($intX+50,$intY);
-		$pdf->Cell(30,5,'BsF: ',0);
-		$pdf->SetXY($intX+58,$intY);
-		$pdf->Cell(12,5,$objGuia->MontoBase,0,0,'R');
+		$pdf->Cell(30,5,'Transporte',0);
 
 		$intY += 4;
 		$pdf->SetXY($intX,$intY);
-		$pdf->Cell(30,5,'Monto del Seguro',0);
+		$pdf->Cell(30,5,'Nacional',0);
+		$pdf->SetXY($intX+50,$intY);
+		$pdf->Cell(30,5,'BsF: ',0);
+		$pdf->SetXY($intX+58,$intY);
+		$pdf->Cell(12,5,$objGuia->MontoTotal,0,0,'R');
+
+		$intY += 4;
+		$pdf->SetXY($intX,$intY);
+		$pdf->Cell(30,5,'Transporte',0);
+
+		$intY += 4;
+		$pdf->SetXY($intX,$intY);
+		$pdf->Cell(30,5,'Internacional Aereo:',0);
+		$pdf->SetXY($intX+50,$intY);
+		$pdf->Cell(30,5,'BsF: ');
+		$pdf->SetXY($intX+58,$intY);
+		$pdf->Cell(12,5,$objGuia->MontoTotalInt,0,0,'R');
+
+		$intY += 4;
+		$pdf->SetXY($intX,$intY);
+		$pdf->Cell(30,5,'Seguro',0);
+
+		$intY += 4;
+		$pdf->SetXY($intX,$intY);
+		$pdf->Cell(30,5,'Sobre Valor FOB, Cobertura 80%:',0);
 		$pdf->SetXY($intX+50,$intY);
 		$pdf->Cell(30,5,'BsF: ',0);
 		$pdf->SetXY($intX+58,$intY);
@@ -205,23 +221,23 @@ if ($blnTodoOkey) {
 
 		$intY += 4;
 		$pdf->SetXY($intX,$intY);
-		$pdf->Cell(30,5,'Monto I.V.A.',0);
+		$pdf->Cell(30,5,'Impuestos',0);
+
+		$intY += 4;
+		$pdf->SetXY($intX,$intY);
+		$pdf->Cell(30,5,'Iva:',0);
 		$pdf->SetXY($intX+50,$intY);
 		$pdf->Cell(30,5,'BsF: ',0);
 		$pdf->SetXY($intX+58,$intY);
 		$pdf->Cell(12,5,$objGuia->MontoIva,0,0,'R');
 
 		$intY += 4;
-		$pdf->SetXY($intX,$intY);
-		$pdf->Cell(30,5,'Monto Total a Cancelar',0);
-		$pdf->SetXY($intX+50,$intY);
-		$pdf->Cell(30,5,'BsF: ',0);
+		$pdf->SetXY($intX+38,$intY);
+		$pdf->Cell(30,5,'Efectivo BsF: ',0);
 		$pdf->SetXY($intX+58,$intY);
 		$pdf->Cell(12,5,$objGuia->MontoTotal,0,0,'R');
 
-		$intY += 20;
-		
-		$pdf->Codabar($intX+25,$intY+8,$objGuia->NumeGuia,'A','A',1,10);
+		$pdf->Codabar($intX+25,$intY+8,$objGuia->NumeGuia,'A','A',0.5,11);
 
 		$pdf->SetFont('Times','B',38);
 		$intY -= 40;
@@ -239,12 +255,8 @@ if ($blnTodoOkey) {
 			$pdf->SetXY($intX+90,$intY);
 			$pdf->Cell(30,5,"RTR",0);
 		}
-		
-
 	}
 
-	$objGuia = Guia::Load($strNumeGuia);
-	$objCliente = MasterCliente::Load($objGuia->CodiClie);
 	$objUsuario = unserialize($_SESSION['User']);
 
 	$objLogoEmpr = BuscarParametro('88888','logos','TODO',-1);
@@ -257,20 +269,24 @@ if ($blnTodoOkey) {
 
 	$pdf = new PDF_Codabar('L','mm','Letter');
 	$pdf->AliasNbPages();
-	$pdf->AddPage();
-	//-------------------------------------------
-	// Se imprimen los bloques de informacion
-	//-------------------------------------------
-	Bloque($pdf,5,4,$objGuia,$objCliente,$objUsuario);
-	Bloque($pdf,142,4,$objGuia,$objCliente,$objUsuario);
-	//------------------------------------------------
-	// Se imprimen las lineas divisorias del formato
-	//------------------------------------------------
-	$pdf->Line(140,4,140,210);
-	$pdf->Line(5,132,270,132);
-	$pdf->Line(5,197,270,197);
-	$pdf->Line(80,102,80,197);
-	$pdf->Line(217,102,217,197);
+	foreach ($arrNumeGuia as $strNumeGuia) {
+		$objGuia = Guia::Load($strNumeGuia);
+		$objCliente = MasterCliente::Load($objGuia->CodiClie);
+		$pdf->AddPage();
+		//-------------------------------------------
+		// Se imprimen los bloques de informacion
+		//-------------------------------------------
+		Bloque($pdf,5,4,$objGuia,$objCliente,$objUsuario);
+		Bloque($pdf,142,4,$objGuia,$objCliente,$objUsuario);
+		//------------------------------------------------
+		// Se imprimen las lineas divisorias del formato
+		//------------------------------------------------
+		$pdf->Line(140,4,140,210);
+		$pdf->Line(5,132,270,132);
+		$pdf->Line(5,197,270,197);
+		$pdf->Line(80,102,80,197);
+		$pdf->Line(217,102,217,197);
+	}
 	$pdf->Output();
 }
 ?>

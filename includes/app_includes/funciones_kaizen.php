@@ -392,8 +392,7 @@ function BuscarDiaFeriadoEstandar($strCodiPara) {
 }
 
 function DejarNumerosVJGuion($strCadeProc) {
-    //   $strNuevCade = QuitarCaracteresEspeciales($strCadeProc);
-    $strNuevCade = preg_replace("[^0-9JV-]", "", $strCadeProc);
+    $strNuevCade = preg_replace("/[^0-9JV-]/", "", $strCadeProc);
     return $strNuevCade;
 }
 
@@ -433,6 +432,38 @@ function quitaCaracter($strQuitCara,$strCadeProc) {
 }
 
 function QuitarCaracteresEspeciales2($strCadeProc) {
+    $strCadeProc = str_replace("ñ","N",$strCadeProc);
+    $strCadeProc = str_replace("á","A",$strCadeProc);
+    $strCadeProc = str_replace("é","E",$strCadeProc);
+    $strCadeProc = str_replace("í","I",$strCadeProc);
+    $strCadeProc = str_replace("ó","O",$strCadeProc);
+    $strCadeProc = str_replace("ú","U",$strCadeProc);
+    $strCadeProc = str_replace("Ñ","N",$strCadeProc);
+    $strCadeProc = str_replace("Á","A",$strCadeProc);
+    $strCadeProc = str_replace("É","E",$strCadeProc);
+    $strCadeProc = str_replace("Í","I",$strCadeProc);
+    $strCadeProc = str_replace("Í","I",$strCadeProc);
+    $strCadeProc = str_replace("Ó","O",$strCadeProc);
+    $strCadeProc = str_replace("Ú","U",$strCadeProc);
+    $strCadeProc = str_replace("\"","",$strCadeProc);
+    $strCadeProc = str_replace("&","",$strCadeProc);
+    $strCadeProc = str_replace(chr(13),"",$strCadeProc);
+    $strNuevLine = array("\r\n", "\n", "\r");
+    return str_replace($strNuevLine, "", $strCadeProc);
+}
+
+function limpiarCadena($strCadeLimp,$strCadeQuit='') {
+    $strCadeLimp = QuitarCaracteresEspeciales2($strCadeLimp);
+    $strCadeLimp = preg_replace("/[^a-zA-Z0-9\s]/", "", $strCadeLimp);
+    if (strlen($strCadeLimp) > 0) {
+        $strCadeLimp = quitaCaracter($strCadeQuit,$strCadeLimp);
+    }
+    $strCadeLimp = utf8_encode($strCadeLimp);
+    return $strCadeLimp;
+}
+
+/*
+function QuitarCaracteresEspeciales2($strCadeProc) {
     $strCadeProc = preg_replace("[^A-Za-z0-9 ]", "", $strCadeProc);
     $strCadeProc = str_replace('ñ','N',$strCadeProc);
     $strCadeProc = str_replace('á','A',$strCadeProc);
@@ -459,6 +490,7 @@ function limpiarCadena($strCadeLimp,$strCadeQuit='') {
     }
     return utf8_decode($strCadeLimp);
 }
+*/
 
 function QuitarAmpersand($strCadeProc) {
     return str_replace('&','y',$strCadeProc);

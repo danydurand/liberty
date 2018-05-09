@@ -50,22 +50,28 @@ class DestinatarioFrecuenteEditForm extends DestinatarioFrecuenteEditFormBase {
 
 		$this->txtNombre = $this->mctDestinatarioFrecuente->txtNombre_Create();
         $this->txtNombre->Width = 240;
+        $this->txtNombre->Required = false;
 
 		$this->txtDireccion = $this->mctDestinatarioFrecuente->txtDireccion_Create();
 		$this->txtDireccion->TextMode = QTextMode::MultiLine;
 		$this->txtDireccion->Width = 240;
 		$this->txtDireccion->Height = 100;
+		$this->txtDireccion->Required = false;
 
         $this->txtTelefono = $this->mctDestinatarioFrecuente->txtTelefono_Create();
         $this->txtTelefono->Width = 240;
+        $this->txtTelefono->Required = false;
 
 		$this->txtEmail = $this->mctDestinatarioFrecuente->txtEmail_Create();
 		$this->txtEmail->Width = 240;
+		$this->txtEmail->Required = false;
 
         $this->txtCedulaRif = $this->mctDestinatarioFrecuente->txtCedulaRif_Create();
+        $this->txtCedulaRif->Required = false;
 
 		$this->txtPersonaContacto = $this->mctDestinatarioFrecuente->txtPersonaContacto_Create();
 		$this->txtPersonaContacto->Width = 240;
+		$this->txtPersonaContacto->Required = false;
 
 		$this->txtCodigoPostal = $this->mctDestinatarioFrecuente->txtCodigoPostal_Create();
 		$this->txtCodigoPostal->Width = 70;
@@ -73,6 +79,8 @@ class DestinatarioFrecuenteEditForm extends DestinatarioFrecuenteEditFormBase {
 		$objClauWher = Estacion::CriteriosDeSucusalesActivas();
 		$this->lstDestino = $this->mctDestinatarioFrecuente->lstDestino_Create(null,QQ::AndCondition($objClauWher));
 
+		$strTextMens = 'Evite el uso de caracteres especiales (Ej: \\~°#^*+) en <b>el nombre, la dirección, el teléfono y la persona contacto</b>';
+		$this->mensaje($strTextMens,'n','i',__iINFO__);
 	}
 
 	//----------------------------
@@ -180,7 +188,55 @@ class DestinatarioFrecuenteEditForm extends DestinatarioFrecuenteEditFormBase {
         QApplication::Redirect(__SIST__.'/destinatario_frecuente_edit.php/'.$objRegiTabl->Id);
     }
 
+    protected function mensajeDeError($strTextMens) {
+        if (strlen($strTextMens) > 0) {
+            $this->mensaje($strTextMens,'','d',__iHAND__);
+        }
+    }
 
+    protected function Form_Validate() {
+        if (strlen($this->txtNombre->Text) == 0) {
+            $strTextMens = 'El Nombre es requerido !';
+            $this->mensajeDeError($strTextMens);
+            return false;
+        } else {
+            $this->txtNombre->Text = limpiarCadena($this->txtNombre->Text);
+        }
+        if (strlen($this->txtDireccion->Text) == 0) {
+            $strTextMens = 'La Dirección es requerida !';
+            $this->mensajeDeError($strTextMens);
+            return false;
+        } else {
+            $this->txtDireccion->Text = limpiarCadena($this->txtDireccion->Text);
+        }
+        if (strlen($this->txtTelefono->Text) == 0) {
+            $strTextMens = 'El Teléfono es requerido !';
+            $this->mensajeDeError($strTextMens);
+            return false;
+        } else {
+            $this->txtTelefono->Text = DejarSoloLosNumeros($this->txtTelefono->Text);
+        }
+        if (strlen($this->txtCedulaRif->Text) == 0) {
+            $strTextMens = 'Cédula/RIF es requerido !';
+            $this->mensajeDeError($strTextMens);
+            return false;
+        } else {
+            $this->txtCedulaRif->Text = DejarNumerosVJGuion($this->txtCedulaRif->Text);
+        }
+        if (strlen($this->txtPersonaContacto->Text) == 0) {
+            $strTextMens = 'La Persona Contacto es requerida !';
+            $this->mensajeDeError($strTextMens);
+            return false;
+        } else {
+            $this->txtPersonaContacto->Text = limpiarCadena($this->txtPersonaContacto->Text);
+        }
+        if (is_null($this->lstDestino->SelectedValue)) {
+            $strTextMens = 'El Destino es requerido !';
+            $this->mensajeDeError($strTextMens);
+            return false;
+        }
+        return true;
+    }
 
     protected function btnSave_Click($strFormId, $strControlId, $strParameter) {
 		//--------------------------------------------
