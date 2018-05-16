@@ -81,59 +81,26 @@ class Incidencias extends FormularioBaseKaizen {
         //----------------------------------------------------------------------------------
         $strCkptNadi = BuscarParametro("CtrlCkpt","Nadie","Txt1","'OK','TR','AR','ER','PU','BG','SR','CS','NR'");
         $arrCkptNadi = explode(",",$strCkptNadi);
-        //-----------------------------------------------------------------------------------
-        // Aparte de estos checkpoints, aquellos que determinan la antiguedad de las piezas
-        // tampoco deben ser usuados manualmente por nadie
-        //-----------------------------------------------------------------------------------
-        // $objClasula   = QQ::Clause();
-        // $objClasula[] = QQ::Equal(QQN::Counter()->PaisId, 1);
-        // $objClasula[] = QQ::Equal(QQN::Counter()->EsRuta, SinoType::NO);
-        // $arrRecePago  = Counter::QueryArray(QQ::AndCondition($objClasula));
-        // foreach ($arrRecePago as $objReceptoria) {
-        //     if (!is_null($objReceptoria->CkptAntiguedad0)) {
-        //         $arrCkptNadi[] = $objReceptoria->CkptAntiguedad0;
-        //     }
-        //     if (!is_null($objReceptoria->CkptAntiguedad1)) {
-        //         $arrCkptNadi[] = $objReceptoria->CkptAntiguedad1;
-        //     }
-        //     if (!is_null($objReceptoria->CkptAntiguedad2)) {
-        //         $arrCkptNadi[] = $objReceptoria->CkptAntiguedad2;
-        //     }
-        // }
-        //echo "Los que nadie puede usar son:\n";
-        //print_r($arrCkptNadi);
-        //echo "\n";
         //-------------------------------------------------------------------------------
         // Existen otros checkpoints que solo pueden ser usados por "algunos" Usuarios.
         //-------------------------------------------------------------------------------
         $strCkptAlgu = BuscarParametro("CtrlCkpt","Algunos","Txt1","'PP'");
         $arrCkptAlgu = explode(",",$strCkptAlgu);
-        //echo "Los que algunos pueden usar son:\n";
-        //print_r($arrCkptAlgu);
-        //echo "\n";
-        // foreach (SdeCheckpoint::LoadArrayByCodiStat(1) as $objCkpt) {
         foreach (SdeCheckpoint::LoadCheckpointsActivos() as $objCkpt) {
             if (!in_array($objCkpt->CodiCkpt,$arrCkptNadi)) {
                 if (in_array($objCkpt->CodiCkpt,$arrCkptAlgu)) {
-                    //echo "Este checkpoint esta en el grupo de 'algunos': ".$objCkpt->CodiCkpt."\n";
                     //------------------------------------------------------------------
                     // Si el checkpoint solo puede ser usado por algunos Usuarios, se
                     // verifica si el Usuario actual es uno de esos
                     //------------------------------------------------------------------
                     $strUsuaCkpt = BuscarParametro("CtrlCkpt",$objCkpt->CodiCkpt,"Txt1","ddurand");
                     $arrUsuaCkpt = explode(",",$strUsuaCkpt);
-                    // echo "Esto son los usuarios que lo pueden usar:\n";
-                    // print_r($strUsuaCkpt);
-                    // echo "\n";
                     if (count($arrUsuaCkpt)) {
                         if (in_array($this->objUsuario->LogiUsua,$arrUsuaCkpt)) {
-                            //echo "Yo estoy en grupo de los Usuarios autorizados\n";
                             //-----------------------------------------------------------------------------
                             // Si el Usuario esta autorizado a usarlo, el checkpoint se agrega al ListBox
                             //-----------------------------------------------------------------------------
                             $this->lstListCkpt->AddItem($objCkpt->__toString(),$objCkpt->CodiCkpt);
-                        } else {
-                            //echo "Yo NO estoy autorizado\n";
                         }
                     }
                 } else {
@@ -177,12 +144,27 @@ class Incidencias extends FormularioBaseKaizen {
         $this->lblMensUsua->Text = "";
     }
 
+    protected function validarGuia(Guia $objGuiaEval) {
+        $strTextVali = '';
+        $arrSepuProc = $objGuiaEval->SePuedeProcesar();
+        if (!$arrSepuProc['TodoOkey']) {
+            $strTextVali = $arrSepuProc['MensUsua'];
+            return $strTextVali;
+        }
+        if ($objGuiaEval->CodiCkpt == 'TR') {
+            $strTextVali = '(No se ha Recibido/Auditado)';
+            return $strTextVali;
+        }
+        return $strTextVali;
+    }
+
     protected function btnSave_Click() {
         $this->objDataBase = QApplication::$Database[1];
-        $this->objUsuario = unserialize($_SESSION['User']);
+        $this->objUsuario  = unserialize($_SESSION['User']);
         $this->arrGuiaSina = array();
 
         $arrGuiaOkey = explode(',',nl2br2($this->txtNumeSeri->Text));
+        $arrGuiaOkey = LimpiarArreglo($arrGuiaOkey);
         $strCodiCkpt = $this->lstListCkpt->SelectedValue;
         $this->txtNumeSeri->Text = '';
         //---------------------------------------------------------------------------------------------
@@ -205,60 +187,64 @@ class Incidencias extends FormularioBaseKaizen {
         $intContVali = 0;
         $intContGuia = 0;
         $intContCkpt = 0;
+        //-----------------------------------------------------------------------
+        // Se procesan una a una las Guias proporcionadas por el Usuario
+        //-----------------------------------------------------------------------
         foreach ($arrGuiaOkey as $strNumeSeri) {
-            if (strlen($strNumeSeri)) {
-                $blnTodoOkey = true;
-                //-----------------------------------------------------------------------
-                // Se procesa una a una las Guias proporcionadas por el Usuario
-                //-----------------------------------------------------------------------
-                $objGuia = Guia::Load($strNumeSeri);
-                if (!$objGuia) {
-                    $this->txtNumeSeri->Text .= $strNumeSeri." (No Existe Guia)".chr(13);
+            $blnTodoOkey = true;
+            $objGuia = Guia::Load($strNumeSeri);
+            if (!$objGuia) {
+                $this->txtNumeSeri->Text .= $strNumeSeri." (No Existe)".chr(13);
+                $blnTodoOkey = false;
+            } else {
+                $strTextVali = $this->validarGuia($objGuia);
+                if (strlen($strTextVali) > 0) {
+                    $this->txtNumeSeri->Text .= $strNumeSeri.' '.$strTextVali.chr(13);
                     $blnTodoOkey = false;
                 } else {
                     $intContGuia++;
                 }
-                if ($blnTodoOkey) {
-                    if ($this->rdbTipoInci->SelectedValue == 'R') {
-                        //------------------------------------
-                        // Incidencia de Registro de Trabajo
-                        //------------------------------------
-                        $arrParaRegi['CodiCkpt'] = $strCodiCkpt;
-                        $arrParaRegi['TextMens'] = "INCIDENCIAS: ".strtoupper($this->txtTextObse->Text);
-                        $arrParaRegi['NumeGuia'] = $strNumeSeri;
-                        $arrParaRegi['CodiUsua'] = $this->objUsuario->CodiUsua;
-                        $arrParaRegi['CodiEsta'] = $this->objUsuario->CodiEsta;
-                        CrearRegistroDeTrabajo($arrParaRegi);
-                        $intContCkpt ++;
-                    } else {
-                        //-------------------------
-                        // Incidencia Operativa
-                        //-------------------------
-                        $arrDatoCkpt = array();
-                        $arrDatoCkpt['NumeGuia'] = $objGuia->NumeGuia;
-                        $arrDatoCkpt['UltiCkpt'] = '';
-                        $arrDatoCkpt['GuiaAnul'] = $objGuia->Anulada;
-                        $arrDatoCkpt['CodiCkpt'] = $strCodiCkpt;
-                        $arrDatoCkpt['TextCkpt'] = $this->txtTextObse->Text;
-                        $arrDatoCkpt['CodiRuta'] = '';
+            }
+            if ($blnTodoOkey) {
+                if ($this->rdbTipoInci->SelectedValue == 'R') {
+                    //------------------------------------
+                    // Incidencia de Registro de Trabajo
+                    //------------------------------------
+                    $arrParaRegi['CodiCkpt'] = $strCodiCkpt;
+                    $arrParaRegi['TextMens'] = "INCIDENCIAS: ".strtoupper($this->txtTextObse->Text);
+                    $arrParaRegi['NumeGuia'] = $strNumeSeri;
+                    $arrParaRegi['CodiUsua'] = $this->objUsuario->CodiUsua;
+                    $arrParaRegi['CodiEsta'] = $this->objUsuario->CodiEsta;
+                    CrearRegistroDeTrabajo($arrParaRegi);
+                    $intContCkpt ++;
+                } else {
+                    //-------------------------
+                    // Incidencia Operativa
+                    //-------------------------
+                    $arrDatoCkpt = array();
+                    $arrDatoCkpt['NumeGuia'] = $objGuia->NumeGuia;
+                    $arrDatoCkpt['UltiCkpt'] = '';
+                    $arrDatoCkpt['GuiaAnul'] = $objGuia->Anulada;
+                    $arrDatoCkpt['CodiCkpt'] = $strCodiCkpt;
+                    $arrDatoCkpt['TextCkpt'] = $this->txtTextObse->Text;
+                    $arrDatoCkpt['CodiRuta'] = '';
 
-                        $arrResuGrab = GrabarCheckpointOptimizado($arrDatoCkpt);
-                        if ($arrResuGrab['TodoOkey']) {
-                            $intContCkpt ++;
-                            //-----------------------------------------------------------------------------------
-                            // Si se trata del checkpoint "PP", se deben cargar la informacion del "pago" en la
-                            // tabla de Cobros Cod
-                            //-----------------------------------------------------------------------------------
-                            if ($strCodiCkpt == "PP") {
-                                $this->cargarDatosDeCobro($strNumeSeri);
-                            }
-                        } else {
-                            if ($arrResuGrab['MotiNook'] == "Alto Valor sin Monto de Aduana") {
-                                $this->arrGuiaSina[] = array($strNumeSeri);
-                            }
-                            $blnTodoOkey = false;
-                            $this->txtNumeSeri->Text .= $strNumeSeri." (".$arrResuGrab['MotiNook'].")".chr(13);
+                    $arrResuGrab = GrabarCheckpointOptimizado($arrDatoCkpt);
+                    if ($arrResuGrab['TodoOkey']) {
+                        $intContCkpt ++;
+                        //-----------------------------------------------------------------------------------
+                        // Si se trata del checkpoint "PP", se deben cargar la informacion del "pago" en la
+                        // tabla de Cobros Cod
+                        //-----------------------------------------------------------------------------------
+                        if ($strCodiCkpt == "PP") {
+                            $this->cargarDatosDeCobro($strNumeSeri);
                         }
+                    } else {
+                        if ($arrResuGrab['MotiNook'] == "Alto Valor sin Monto de Aduana") {
+                            $this->arrGuiaSina[] = array($strNumeSeri);
+                        }
+                        $blnTodoOkey = false;
+                        $this->txtNumeSeri->Text .= $strNumeSeri." (".$arrResuGrab['MotiNook'].")".chr(13);
                     }
                 }
             }
