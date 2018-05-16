@@ -275,7 +275,11 @@ class MasterClienteEditForm extends FormularioBaseKaizen {
         if ($this->objUsuario->CodiGrup == 1) {
             $this->chkGuiaReto->Visible = true;
         }
-	}
+
+        $strTextMens = 'Evite el uso de caracteres especiales (Ej: \\~°#^*+) en <b>los nombres, las direcciones y los teléfonos</b>';
+        $this->mensaje($strTextMens,'n','i','',__iINFO__);
+
+    }
 
 	//----------------------------
 	// Aquí se Crean los Objetos 
@@ -517,7 +521,7 @@ class MasterClienteEditForm extends FormularioBaseKaizen {
     protected function txtNombClie_Create() {
         $this->txtNombClie = new QTextBox($this);
         $this->txtNombClie->Name = 'Nombre o Razón Social';
-        $this->txtNombClie->Width = 200;
+        $this->txtNombClie->Width = 250;
         $this->txtNombClie->Required = true;
         if ($this->blnEditMode) {
             $this->txtNombClie->Text = $this->objMasterCliente->NombClie;
@@ -555,7 +559,7 @@ class MasterClienteEditForm extends FormularioBaseKaizen {
         $this->txtDireFisc->Required = true;
         $this->txtDireFisc->TextMode = QTextMode::MultiLine;
         $this->txtDireFisc->Width = 250;
-        $this->txtDireFisc->Height = 80;
+        $this->txtDireFisc->Rows = 4;
         if ($this->blnEditMode) {
             $this->txtDireFisc->Text = $this->objMasterCliente->DireFisc;
         }
@@ -1064,6 +1068,11 @@ class MasterClienteEditForm extends FormularioBaseKaizen {
         $this->txtBuscCodi->Visible = $this->chkEsunSubc->Checked;
         $this->txtNombBusc->Visible = $this->chkEsunSubc->Checked;
         $this->lstCodiDepe->Visible = $this->chkEsunSubc->Checked;
+        if ($this->chkEsunSubc->Checked) {
+            $this->txtDireFisc->Rows = 3;
+        } else {
+            $this->txtDireFisc->Rows = 4;
+        }
     }
 
     protected function txtBuscCodi_Blur() {
@@ -1382,13 +1391,121 @@ class MasterClienteEditForm extends FormularioBaseKaizen {
         QApplication::Redirect(__SIST__.'/'.$objUltiAcce->__toString());
     }
 
-    // protected function btnCancel_Click() {
-    //     QApplication::Redirect(__SIST__.'/master_cliente_list.php');
-    // }
-
     protected function btnNuevClie_Click() {
         QApplication::Redirect(__SIST__.'/master_cliente_edit.php');
     }
+
+    /*
+    protected function enviarMensajeDeError($strMensErro) {
+        $this->mensaje($strMensErro,'','d','',__iHAND__);
+    }
+
+    protected function Form_Validate() {
+        $this->mensaje();
+        if (strlen($this->txtNumeGuia->Text) == 0) {
+            $strMensErro = 'Número Guía <b>Requerido</b>';
+            $this->enviarMensajeDeError($strMensErro);
+            return false;
+        } else {
+            $this->txtNumeGuia->Text = limpiarCadena($this->txtNumeGuia->Text);
+        }
+        if (is_null($this->lstCodiClie->SelectedValue)) {
+            $strMensErro = 'Cliente A Facturar <b>Requerido</b>';
+            $this->enviarMensajeDeError($strMensErro);
+            return false;
+        }
+        if (strlen($this->txtNombRemi->Text) == 0) {
+            $strMensErro = 'Nombre del Remitente <b>Requerido</b>';
+            $this->enviarMensajeDeError($strMensErro);
+            return false;
+        } else {
+            $this->txtNombRemi->Text = limpiarCadena($this->txtNombRemi->Text);
+        }
+        if (strlen($this->txtTeleRemi->Text) == 0) {
+            $strMensErro = 'Teléfono del Remitente <b>Requerido</b>';
+            $this->enviarMensajeDeError($strMensErro);
+            return false;
+        } else {
+            $this->txtTeleRemi->Text = DejarSoloLosNumeros($this->txtTeleRemi->Text);
+        }
+        if (strlen($this->txtDireRemi->Text) == 0) {
+            $strMensErro = 'Dirección de Recolecta <b>Requerida</b>';
+            $this->enviarMensajeDeError($strMensErro);
+            return false;
+        } else {
+            $this->txtDireRemi->Text = limpiarCadena($this->txtDireRemi->Text);
+        }
+        if (is_null($this->lstCodiOrig->SelectedValue)) {
+            $strMensErro = 'Origen <b>Requerido</b>';
+            $this->enviarMensajeDeError($strMensErro);
+            return false;
+        }
+        if (is_null($this->lstCodiDest->SelectedValue)) {
+            $strMensErro = 'Destino <b>Requerido</b>';
+            $this->enviarMensajeDeError($strMensErro);
+            return false;
+        }
+        if (strlen($this->txtCantPiez->Text) == 0 || ($this->txtCantPiez->Text == 0)) {
+            $strMensErro = 'La Cantidad de Piezas <b>Requerida y Mayor a Cero (0)</b>';
+            $this->enviarMensajeDeError($strMensErro);
+            return false;
+        }
+        if ((strlen($this->txtPesoGuia->Text) == 0) || ($this->txtPesoGuia->Text == 0)) {
+            $strMensErro = 'Peso <b>Requerido y Mayor a Cero (0)</b>';
+            $this->enviarMensajeDeError($strMensErro);
+            return false;
+        }
+        if (strlen($this->txtValoDecl->Text) == 0) {
+            $strMensErro = 'Valor Declarado <b>Requerido</b>';
+            $this->enviarMensajeDeError($strMensErro);
+            return false;
+        }
+        if ($this->chkGuiaInte->Checked && strlen($this->txtGuiaInte->Text) == 0) {
+            $strMensErro = 'Guía Externa <b>Requerida</b>';
+            $this->enviarMensajeDeError($strMensErro);
+            return false;
+        }
+        if (strlen($this->txtDescCont->Text) == 0) {
+            $strMensErro = 'Contenido del Envío <b>Requerido</b>';
+            $this->enviarMensajeDeError($strMensErro);
+            return false;
+        } else {
+            $this->txtDescCont->Text = limpiarCadena($this->txtDescCont->Text);
+        }
+        if (strlen($this->txtNombDest->Text) == 0) {
+            $strMensErro = 'Nombre del Destinatario <b>Requerido</b>';
+            $this->enviarMensajeDeError($strMensErro);
+            return false;
+        } else {
+            $this->txtNombDest->Text = limpiarCadena($this->txtNombDest->Text);
+        }
+        if (strlen($this->txtTeleDest->Text) == 0) {
+            $strMensErro = 'Teléfono del Destinatario <b>Requerido</b>';
+            $this->enviarMensajeDeError($strMensErro);
+            return false;
+        } else {
+            $this->txtTeleDest->Text = DejarSoloLosNumeros($this->txtTeleDest->Text);
+        }
+        if (strlen($this->txtDireDest->Text) == 0) {
+            $strMensErro = 'Dirección de Entrega <b>Requerida</b>';
+            $this->enviarMensajeDeError($strMensErro);
+            return false;
+        } else {
+            $this->txtDireDest->Text = limpiarCadena($this->txtDireDest->Text);
+        }
+        if ($this->chkFletDire->Checked && is_null($this->lstVehiSuge->SelectedValue)) {
+            $strMensErro = 'Tipo Vehículo <b>Requerido</b>';
+            $this->enviarMensajeDeError($strMensErro);
+            return false;
+        }
+        if (is_null($this->lstModaPago->SelectedValue)) {
+            $strMensErro = 'Forma de Pago <b>Requerida</b>';
+            $this->enviarMensajeDeError($strMensErro);
+            return false;
+        }
+        return true;
+    }
+    */
 
     protected function btnSave_Click() {
         $blnTodoOkey = true;

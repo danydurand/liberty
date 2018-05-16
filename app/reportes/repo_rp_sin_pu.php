@@ -11,9 +11,6 @@ use PHPMailer\PHPMailer\PHPMailer;
 $dttFechDhoy = date('Y-m-d');
 $arrSucuSele = Estacion::LoadSucursalesActivasSinAlmacenes();
 foreach ($arrSucuSele as $objSucursal) {
-    //if (!in_array($objSucursal->CodiEsta, array('CCS'))) {
-    //    continue;
-    //}
     //--------------------------------------------------------
     // Selecciono los registros que satisfagan la condicion
     //--------------------------------------------------------
@@ -30,7 +27,6 @@ foreach ($arrSucuSele as $objSucursal) {
     $strCadeSqlx .= "  from guia g ";
     $strCadeSqlx .= " where (fn_diastrans(fech_guia, now()) - (fn_cantsados(fech_guia, now()) + fn_cantferiados(fech_guia, now()))) > 1  ";
     $strCadeSqlx .= "   and g.esta_orig  = '".$objSucursal->CodiEsta."'";
-    $strCadeSqlx .= "   and g.esta_ckpt  = g.esta_orig";
     $strCadeSqlx .= "   and g.codi_ckpt  = 'RP'";
     $strCadeSqlx .= "   and g.anulada    = 0";
     $strCadeSqlx .= "   and g.fech_ckpt >= date_sub(now(), INTERVAL 30 DAY) ";

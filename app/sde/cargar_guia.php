@@ -406,18 +406,16 @@ class CargarGuia extends FormularioBaseKaizen {
 
     protected function txtMontBase_Create() {
         $this->txtMontBase = new QTextBox($this);
-        $this->txtMontBase->Width = 80;
+        $this->txtMontBase->Width = 90;
         $this->txtMontBase->Enabled = false;
         $this->txtMontBase->ForeColor = 'blue';
-        $this->txtMontBase->HtmlAfter = ' Bs';
     }
 
     protected function txtMontIvax_Create() {
         $this->txtMontIvax = new QTextBox($this);
-        $this->txtMontIvax->Width = 80;
+        $this->txtMontIvax->Width = 90;
         $this->txtMontIvax->Enabled = false;
         $this->txtMontIvax->ForeColor = 'blue';
-        $this->txtMontIvax->HtmlAfter = ' Bs';
     }
 
     protected function txtMontFran_Create() {
@@ -425,15 +423,13 @@ class CargarGuia extends FormularioBaseKaizen {
         $this->txtMontFran->Width = 80;
         $this->txtMontFran->Enabled = false;
         $this->txtMontFran->ForeColor = 'blue';
-        $this->txtMontFran->HtmlAfter = ' Bs';
     }
 
     protected function txtMontSegu_Create() {
         $this->txtMontSegu = new QTextBox($this);
-        $this->txtMontSegu->Width = 80;
+        $this->txtMontSegu->Width = 90;
         $this->txtMontSegu->Enabled = false;
         $this->txtMontSegu->ForeColor = 'blue';
-        $this->txtMontSegu->HtmlAfter = ' Bs';
     }
 
     protected function chkFletDire_Create() {
@@ -448,10 +444,9 @@ class CargarGuia extends FormularioBaseKaizen {
 
     protected function txtMontTota_Create() {
         $this->txtMontTota = new QTextBox($this);
-        $this->txtMontTota->Width = 80;
+        $this->txtMontTota->Width = 105;
         $this->txtMontTota->Enabled = false;
         $this->txtMontTota->ForeColor = 'blue';
-        $this->txtMontTota->HtmlAfter = ' Bs';
         $this->txtMontTota->AddAction(new QBlurEvent(), new QAjaxAction('txtMontTota_Blur'));
     }
 
@@ -1913,13 +1908,22 @@ class CargarGuia extends FormularioBaseKaizen {
         //---------------------------------------------
         // Se verifica si la Guía tiene Flete Directo
         //---------------------------------------------
+        $blnCalcTari = true;
         if ($this->chkFletDire->Checked || $this->chkPesoVolu->Checked) {
             $blnTodoOkey = true;
         } else {
-            //-----------------------
-            // Se calcula la Tarifa
-            //-----------------------
-            $blnTodoOkey = $this->calcularTarifaNacional();
+            //--------------------------------------------------------------------------------------------
+            // Si la guia fue "Devuelta al Remitente", entonces no se debe hacer re-calculo de la Tarifa
+            //--------------------------------------------------------------------------------------------
+            if ($this->blnEditMode) {
+                if ($this->objGuia->tieneCheckpoint('DR')) {
+                    $blnCalcTari = false;
+                    $blnTodoOkey = true;
+                }
+            }
+            if ($blnCalcTari) {
+                $blnTodoOkey = $this->calcularTarifaNacional();
+            }
         }
         //--------------------------------------------------------------------------------------------------
         // Si se superan todas las validaciones anteriores, se procede con la siguiente fase de la gestión

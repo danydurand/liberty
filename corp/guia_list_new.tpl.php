@@ -10,6 +10,7 @@ require(__YAMAGUCHI__APP_INCLUDES__ . '/header.inc.php');
             <?php $this->btnCancel->Render(); ?>
             <?php $this->btnMostFilt->Render(); ?>
             <?php $this->btnMostImpr->Render(); ?>
+            <?php $this->btnFiltAvan->Render(); ?>
             <?php $this->btnImprMani->Render(); ?>
             <?php $this->btnImprLote->Render(); ?>
             <?php $this->btnExpoExce->Render(); ?>
@@ -25,6 +26,19 @@ require(__YAMAGUCHI__APP_INCLUDES__ . '/header.inc.php');
             <div class="row">
                 <div class="col-sm-12" style="min-height: 1.4em; text-align: left; margin-top: 0.5em; margin-left: -1em;">
                     <?php $this->lblMensUsua->Render(); ?>
+                </div>
+            </div>
+            <div class="row" style="margin-bottom: 0.5em">
+                <div class="col-lg-2 visible-lg"></div>
+                <div class="col-xs-12 col-md-6 col-lg-7">
+                    <?php $this->txtNumeGuia->Render(); ?>
+                    <?php $this->calFechInic->Render(); ?>
+                    <?php $this->calFechFina->Render(); ?>
+                    <?php $this->lstCodiOrig->Render(); ?>
+                    <?php $this->lstCodiDest->Render(); ?>
+                </div>
+                <div class="col-md-2 col-lg-3" style="text-align: left">
+                    <?php $this->btnApliFilt->Render(); ?>
                 </div>
             </div>
             <div class="row">

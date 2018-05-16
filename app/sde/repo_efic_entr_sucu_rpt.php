@@ -57,37 +57,32 @@ foreach ($arrSucuSele as $objSucursal) {
         // Se seleccionan los registros que satisfagan la condición
         //-----------------------------------------------------------
         $objDatabase = Guia::GetDatabase();
-        //------------------------------------------------------
-        // Se arma el query para obtener la cantidad de Guías
-        // entregadas cada día dentro del rango de fechas dado
-        //------------------------------------------------------
+        //---------------------------------------------------------------------------------------------------------
+        // Se arma el query para obtener la cantidad de Guías entregadas cada día dentro del rango de fechas dado
+        //---------------------------------------------------------------------------------------------------------
         $strCadeSql3  = "select fecha_pod, count(*) ";
-        $strCadeSql3 .= "  from guia g, guia_ckpt k";
-        $strCadeSql3 .= " where g.nume_guia = k.nume_guia ";
-        $strCadeSql3 .= "   and g.fecha_pod between '$dttFechInic' and '$dttFechFina'";
-        $strCadeSql3 .= "   and g.codi_ckpt = 'OK' ";
-        $strCadeSql3 .= "   and g.sistema_id != 'int'";
-        $strCadeSql3 .= "   and g.anulada = 0";
-        $strCadeSql3 .= "   and esta_dest = '".$objSucursal->CodiEsta."'";
-        $strCadeSql3 .= "   and esta_dest not in ( 'TODOS','EXP' ) ";
+        $strCadeSql3 .= "  from guia g inner join guia_ckpt k";
+        $strCadeSql3 .= "    on g.nume_guia = k.nume_guia ";
+        $strCadeSql3 .= " where g.fecha_pod between '$dttFechInic' and '$dttFechFina'";
+        $strCadeSql3 .= "   and k.codi_ckpt = 'OK' ";
+        $strCadeSql3 .= "   and g.anulada   = 0";
+        $strCadeSql3 .= "   and esta_dest   = '".$objSucursal->CodiEsta."'";
         $strCadeSql3 .= " group by 1 ";
         $objDbResult3  = $objDatabase->Query($strCadeSql3);
         while ($mixRegistro3 = $objDbResult3->FetchArray()) {
             $arrDatoRep3[] = array(''.$mixRegistro3[0],''.$mixRegistro3[1]);
         }
-        //------------------------------------------------------------
-        // Se arma el query para obtener la información del Reporte,
-        // de la Guía, la Estación, la Fecha Entrega y la Fecha POD.
-        //------------------------------------------------------------
-        $strCadeSqlx  = "select g.nume_guia, g.esta_orig, g.esta_dest, g.nomb_remi, g.nomb_dest, k.fech_ckpt, g.fecha_pod, g.fecha_entrega, g.fech_guia ";
-        $strCadeSqlx .= "  from guia g, guia_ckpt k";
-        $strCadeSqlx .= " where g.nume_guia = k.nume_guia ";
-        $strCadeSqlx .= "   and g.fecha_pod between '$dttFechInic' and '$dttFechFina'";
-        $strCadeSqlx .= "   and g.codi_ckpt = 'OK' ";
-        $strCadeSqlx .= "   and g.sistema_id != 'int'";
-        $strCadeSqlx .= "   and g.anulada = 0";
-        $strCadeSqlx .= "   and esta_dest = '".$objSucursal->CodiEsta."'";
-        $strCadeSqlx .= "   and esta_dest not in ( 'TODOS','EXP' ) ";
+        //--------------------------------------------------------------------------------------------------------
+        // Se arma el query para obtener la información de la Guía, la Estación, la Fecha Entrega y la Fecha POD.
+        //---------------------------------------------------------------------------------------------------------
+        $strCadeSqlx  = "select g.nume_guia, g.esta_orig, g.esta_dest, g.nomb_remi, g.nomb_dest, k.fech_ckpt, ";
+        $strCadeSqlx .= "       g.fecha_pod, g.fecha_entrega, g.fech_guia ";
+        $strCadeSqlx .= "  from guia g inner join guia_ckpt k";
+        $strCadeSqlx .= "    on g.nume_guia = k.nume_guia ";
+        $strCadeSqlx .= " where g.fecha_pod between '$dttFechInic' and '$dttFechFina'";
+        $strCadeSqlx .= "   and k.codi_ckpt = 'OK' ";
+        $strCadeSqlx .= "   and g.anulada   = 0";
+        $strCadeSqlx .= "   and esta_dest   = '".$objSucursal->CodiEsta."'";
         $objDbResult  = $objDatabase->Query($strCadeSqlx);
         //--------------------------------
         // Se inicializan los Contadores
@@ -192,8 +187,8 @@ foreach ($arrSucuSele as $objSucursal) {
         }
         $arrDatoRepo = ordenar_array($arrDatoRepo,'6',SORT_DESC);
         //------------------------------------------------------------
-        // Si Algún Contador Quedó en Cero, este pasa a ser uno,
-        // ya que la Librería no Admite Ceros en el Gráfico de Torta
+        // Si Algún contador quedó en cero, este pasa a ser uno,
+        // ya que la librería no sdmite ceros en el gráfico de torta
         //------------------------------------------------------------
         if ($intDent24hr == 0) {
             $intDent24hr = 1;
@@ -264,12 +259,12 @@ foreach ($arrSucuSele as $objSucursal) {
         //---------------------------------------------
         $arrEncaColu = array('Guia','Ori-Des','Remitente','Destinatario','F.Pick-Up','Fecha POD','Dias', 'Dias Entr');
         $arrJustColu = array('C','C','L','L','C','C','C', ' C');
-        $arrAnchColu = array(17,18,48,48,20,20,10,15);
+        $arrAnchColu = array(25,18,48,48,20,20,10,15);
         //-----------------------
         // Se Inicia el Reporte
         //-----------------------
         $pdf=new mygraf('L','mm','Letter');
-        $pdf->setVariables($arrEncaColu,$arrJustColu,$arrAnchColu,40,$strLogoComp);
+        $pdf->setVariables($arrEncaColu,$arrJustColu,$arrAnchColu,38,$strLogoComp);
         $pdf->setEmpresa($strNombEmpr,$strDireEmpr,$strTituRepo);
         $pdf->SetTitle('Eficiencia en Entrega por Sucursal');
         $pdf->AliasNbPages();
@@ -295,10 +290,9 @@ foreach ($arrSucuSele as $objSucursal) {
         $pdf->PieChart(150,40,$arrDatoTort,'%l (%p)',$arrColoMoti);
         $pdf->setXY(135,90);
         $pdf->PieChart(150,40,$arrDatoTor1,'%l (%p)',$arrColoMoti);
-        //-------------------------------------------------------
-        // Se arma el arreglo que mostrará la Cantidad de Guías
-        // Entregadas cada día dentro del rango de fechas dado
-        //-------------------------------------------------------
+        //-----------------------------------------------------------------------------------------------------------
+        // Se arma el arreglo que mostrará la Cantidad de Guías Entregadas cada día dentro del rango de fechas dado
+        //-----------------------------------------------------------------------------------------------------------
         $arrEncaColu = array('Fecha','Guias Entregadas');
         $arrJustColu = array('C','C');
         $arrAnchColu = array(60,50);
@@ -311,7 +305,6 @@ foreach ($arrSucuSele as $objSucursal) {
         $pdf->AliasNbPages();
         $pdf->AddPage();
         $pdf->FancyTable($arrEncaColu,$arrDatoRep3,$arrAnchColu,$arrJustColu);
-        //----------------------------------------------------------------------
         //----------------------------------------------------------------------
         //----------------------------------------------------------------------
         if ($strModoEjec == 'MENU') {

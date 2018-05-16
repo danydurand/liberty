@@ -29,14 +29,14 @@ foreach ($arrSucuSele as $objSucursal) {
         //-----------------------------------------------------------------------------------------------------
         // Se arma el query para obtener la información del reporte, guía, estación, fecha entrega, fecha pod
         //-----------------------------------------------------------------------------------------------------
-        $strCadeSqlx  = "select g.nume_guia, g.esta_orig, g.esta_dest, g.nomb_remi, g.nomb_dest, k.fech_ckpt, g.fecha_pod, g.fecha_entrega, g.fech_guia ";
-        $strCadeSqlx .= "  from guia g, guia_ckpt k";
-        $strCadeSqlx .= " where g.nume_guia = k.nume_guia ";
-        $strCadeSqlx .= "   and g.fecha_pod between '$dttFechInic' and '$dttFechFina'";
-        $strCadeSqlx .= "   and g.codi_ckpt = 'OK' ";
-        $strCadeSqlx .= "   and g.sistema_id != 'int'";
-        $strCadeSqlx .= "   and esta_dest = '".$objSucursal->CodiEsta."'";
-        $strCadeSqlx .= "   and esta_dest not in ( 'TODOS','EXP' ) ";
+        $strCadeSqlx  = "select g.nume_guia, g.esta_orig, g.esta_dest, g.nomb_remi, g.nomb_dest, ";
+        $strCadeSqlx .= "       k.fech_ckpt, g.fecha_pod, g.fecha_entrega, g.fech_guia ";
+        $strCadeSqlx .= "  from guia g inner join guia_ckpt k";
+        $strCadeSqlx .= "    on g.nume_guia = k.nume_guia ";
+        $strCadeSqlx .= " where g.fecha_pod between '$dttFechInic' and '$dttFechFina'";
+        $strCadeSqlx .= "   and k.codi_ckpt = 'OK' ";
+        $strCadeSqlx .= "   and g.anulada   = 0 ";
+        $strCadeSqlx .= "   and esta_dest   = '".$objSucursal->CodiEsta."'";
         $objDbResult  = $objDatabase->Query($strCadeSqlx);
         while ($mixRegistro = $objDbResult->FetchArray()) {
             // ----------------------------------------------------------------------------------------------------
@@ -52,15 +52,15 @@ foreach ($arrSucuSele as $objSucursal) {
             if (strlen($mixRegistro['fecha_entrega']) > 0) {
                 $intDiasHabi2 = diasHabilesTranscurridos($mixRegistro['fecha_pod'],$mixRegistro['fecha_entrega']);
             } else {
-                $strCadeSql2 = "select fech_ckpt
-                              from guia_ckpt 
-                             where nume_guia = '".$mixRegistro['nume_guia']."'
-                               and codi_ckpt = 'OK'
-                             order by fech_ckpt desc,
-                                      hora_ckpt desc
-                             limit 1";
+                $strCadeSql2  = "select fech_ckpt ";
+                $strCadeSql2 .= "  from guia_ckpt ";
+                $strCadeSql2 .= " where nume_guia = '".$mixRegistro['nume_guia']."' ";
+                $strCadeSql2 .= "   and codi_ckpt = 'OK' ";
+                $strCadeSql2 .= " order by fech_ckpt desc, ";
+                $strCadeSql2 .= "          hora_ckpt desc ";
+                $strCadeSql2 .= " limit 1";
                 $objDbResulx  = $objDatabase->Query($strCadeSql2);
-                $mixRegistr1 = $objDbResult->FetchArray();
+                $mixRegistr1  = $objDbResult->FetchArray();
                 $intDiasHabi2 = diasHabilesTranscurridos($mixRegistro['fecha_pod'],$mixRegistr1['fech_ckpt']);
             }
             //----------------------------------

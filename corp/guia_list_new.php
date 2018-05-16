@@ -25,6 +25,14 @@ class GuiaListNew extends FormularioBaseKaizen {
 
     protected $objWaitIcon;
 
+    protected $btnFiltAvan;
+    protected $btnApliFilt;
+    protected $txtNumeGuia;
+    protected $calFechInic;
+    protected $calFechFina;
+    protected $lstCodiOrig;
+    protected $lstCodiDest;
+
     protected function Form_Create() {
         parent::Form_Create();
 
@@ -49,6 +57,14 @@ class GuiaListNew extends FormularioBaseKaizen {
         $this->btnImprLote_Create();
         $this->btnExpoExce_Create();
 
+        $this->btnFiltAvan_Create();
+        $this->btnApliFilt_Create();
+        $this->txtNumeGuia_Create();
+        $this->calFechInic_Create();
+        $this->calFechFina_Create();
+        $this->lstCodiOrig_Create();
+        $this->lstCodiDest_Create();
+
         $this->dtgGuiaClie_Create();
 
         $this->btnCancel->Visible = false;
@@ -59,6 +75,81 @@ class GuiaListNew extends FormularioBaseKaizen {
     //----------------------------
     // Aquí se Crean los Objetos
     //----------------------------
+
+    protected function btnFiltAvan_Create() {
+        $this->btnFiltAvan = new QButtonD($this);
+        $this->btnFiltAvan->Text = TextoIcono('filter','Filtro Avanzado');
+        $this->btnFiltAvan->AddAction(new QClickEvent(), new QServerAction('btnFiltAvan_Click'));
+        $this->btnFiltAvan->HtmlEntities = 'false';
+        $this->btnFiltAvan->Visible = true;
+        $this->btnFiltAvan->CausesValidation = false;
+    }
+
+    protected function btnApliFilt_Create() {
+        $this->btnApliFilt = new QButton($this);
+        $this->btnApliFilt->Text = TextoIcono('cogs','Buscar');
+        $this->btnApliFilt->AddAction(new QClickEvent(), new QServerAction('btnApliFilt_Click'));
+        $this->btnApliFilt->HtmlEntities = 'false';
+        $this->btnApliFilt->CssClass = 'btn btn-primary btn-sm';
+        $this->btnApliFilt->Visible = false;
+        $this->btnApliFilt->CausesValidation = false;
+        $this->btnApliFilt->PrimaryButton = true;
+    }
+
+    protected function txtNumeGuia_Create() {
+        $this->txtNumeGuia = new QTextBox($this);
+        $this->txtNumeGuia->Name = 'Nro de Guía';
+        $this->txtNumeGuia->Width = 100;
+        $this->txtNumeGuia->Visible = false;
+        $this->txtNumeGuia->Placeholder = 'Nro de Guía';
+    }
+
+    protected function calFechInic_Create() {
+        $this->calFechInic = new QCalendar($this);
+        $this->calFechInic->Name = QApplication::Translate('Fecha Inicial');
+        $this->calFechInic->Width = 120;
+        $this->calFechInic->Visible = false;
+        $this->calFechInic->Placeholder = 'Fecha Inicial';
+    }
+
+    protected function calFechFina_Create() {
+        $this->calFechFina = new QCalendar($this);
+        $this->calFechFina->Name = QApplication::Translate('Fecha Final');
+        $this->calFechFina->Width = 120;
+        $this->calFechFina->Visible = false;
+        $this->calFechFina->Placeholder = 'Fecha Final';
+    }
+
+    protected function lstCodiOrig_Create() {
+        $this->lstCodiOrig = new QListBox($this);
+        $this->lstCodiOrig->Name = 'Origen';
+        $this->lstCodiOrig->Width = 120;
+        $this->lstCodiOrig->Visible = false;
+        $objClauOrde   = QQ::Clause();
+        $objClauOrde[] = QQ::OrderBy(QQN::Estacion()->DescEsta);
+        $objClauWher   = Estacion::CriteriosDeSucusalesActivas();
+        $arrCodiOrig   = Estacion::QueryArray(QQ::AndCondition($objClauWher),$objClauOrde);
+        $this->lstCodiOrig->AddItem('Origen',null);
+        foreach ($arrCodiOrig as $objSucursal) {
+            $this->lstCodiOrig->AddItem($objSucursal->__toString(),$objSucursal->CodiEsta);
+        }
+    }
+
+    protected function lstCodiDest_Create() {
+        $this->lstCodiDest = new QListBox($this);
+        $this->lstCodiDest->Name = 'Destino';
+        $this->lstCodiDest->Width = 120;
+        $this->lstCodiDest->Visible = false;
+        $objClauOrde   = QQ::Clause();
+        $objClauOrde[] = QQ::OrderBy(QQN::Estacion()->DescEsta);
+        $objClauWher   = Estacion::CriteriosDeSucusalesActivas();
+        $arrCodiDest   = Estacion::QueryArray(QQ::AndCondition($objClauWher),$objClauOrde);
+        $intCantDest   = count($arrCodiDest);
+        $this->lstCodiDest->AddItem('Destino',null);
+        foreach ($arrCodiDest as $objSucursal) {
+            $this->lstCodiDest->AddItem($objSucursal->__toString(),$objSucursal->CodiEsta);
+        }
+    }
 
     protected function btnCancel_Create() {
         $this->btnCancel = new QButton($this);
@@ -72,7 +163,7 @@ class GuiaListNew extends FormularioBaseKaizen {
 
     protected function btnMostFilt_Create() {
         $this->btnMostFilt = new QButtonS($this);
-        $this->btnMostFilt->Text = TextoIcono('filter fa-lg','Filtros','F','lg');
+        $this->btnMostFilt->Text = TextoIcono('filter fa-lg','Filtros Predeterminados','F','lg');
         $this->btnMostFilt->AddAction(new QClickEvent(), new QAjaxAction('btnMostFilt_Click'));
     }
 
@@ -125,7 +216,7 @@ class GuiaListNew extends FormularioBaseKaizen {
 
     protected function btnImprMani_Create() {
         $this->btnImprMani = new QButtonS($this);
-        $this->btnImprMani->Text = TextoIcono('file fa-lg','Manifiesto');
+        $this->btnImprMani->Text = TextoIcono('file fa-lg','Formato Manifiesto');
         $this->btnImprMani->AddAction(new QClickEvent(), new QServerAction('btnImprMani_Click'));
         $this->btnImprMani->Visible = false;
     }
@@ -218,23 +309,46 @@ class GuiaListNew extends FormularioBaseKaizen {
                 case 'H':   // De Hoy
                     $objClauWher[] = QQ::Equal(QQN::Guia()->FechGuia,date("Y-m-d"));
                     $strTituFilt = ' (DE HOY)';
+                    $this->limpiarFiltroAvanzado();
                     break;
                 case 'P':   // Pendientes por Recolectar
                     $arrCodiCkpt = array('NR','RP');
                     $objClauWher[] = QQ::In(QQN::Guia()->CodiCkpt,$arrCodiCkpt);
                     $strTituFilt = ' (POR RECOLECTAR)';
+                    $this->limpiarFiltroAvanzado();
                     break;
                 case 'T':   // Guias En Transito
                     $arrCodiCkpt   = array('NR','RP','OK');
                     $objClauWher[] = QQ::NotIn(QQN::Guia()->CodiCkpt,$arrCodiCkpt);
                     $strTituFilt = ' (EN TRÁNSITO)';
+                    $this->limpiarFiltroAvanzado();
                     break;
                 case 'E':   // Entregadas
                     $objClauWher[] = QQ::Equal(QQN::Guia()->CodiCkpt,'OK');
                     $strTituFilt = ' (ENTREGADAS)';
+                    $this->limpiarFiltroAvanzado();
+                    break;
+                case 'Z':   // Filtro Avanzado
+                    $strTituFilt = ' (AVANZADO)';
+                    if (strlen($this->txtNumeGuia->Text) > 0) {
+                        $objClauWher[] = QQ::Equal(QQN::Guia()->NumeGuia,$this->txtNumeGuia->Text);
+                    }
+                    if (!is_null($this->calFechInic->DateTime)) {
+                        $objClauWher[] = QQ::GreaterOrEqual(QQN::Guia()->FechGuia,$this->calFechInic->DateTime);
+                    }
+                    if (!is_null($this->calFechFina->DateTime)) {
+                        $objClauWher[] = QQ::LessOrEqual(QQN::Guia()->FechGuia,$this->calFechFina->DateTime);
+                    }
+                    if (!is_null($this->lstCodiOrig->SelectedValue)) {
+                        $objClauWher[] = QQ::Equal(QQN::Guia()->EstaOrig,$this->lstCodiOrig->SelectedValue);
+                    }
+                    if (!is_null($this->lstCodiDest->SelectedValue)) {
+                        $objClauWher[] = QQ::Equal(QQN::Guia()->EstaDest,$this->lstCodiDest->SelectedValue);
+                    }
                     break;
                 default:   // Todas las Guias
                     $strTituFilt = ' (TODAS)';
+                    $this->limpiarFiltroAvanzado();
             }
         }
         $this->lblTituForm->Text .= $strTituFilt;
@@ -326,7 +440,35 @@ class GuiaListNew extends FormularioBaseKaizen {
     // Acciones de los objetos
     //--------------------------
 
-    public function dtgGuiaRowx_Click($strFormId, $strControlId, $strParameter) {
+    protected function btnApliFilt_Click() {
+        $_SESSION['FiltGuia'] = 'Z';
+        $this->btnFiltAvan_Click('','','');
+        $this->dtgGuiaClie->Refresh();
+    }
+
+    protected function btnFiltAvan_Click($strFormId, $strControlId, $strParameter) {
+        $this->mostrarFiltroAvanzado(!$this->txtNumeGuia->Visible);
+    }
+
+    protected function limpiarFiltroAvanzado() {
+        $this->txtNumeGuia->Text          = '';
+        $this->calFechInic->DateTime      = null;
+        $this->calFechFina->DateTime      = null;
+        $this->lstCodiOrig->SelectedIndex = 0;
+        $this->lstCodiDest->SelectedIndex = 0;
+    }
+
+    protected function mostrarFiltroAvanzado($blnMostFilt) {
+        $this->txtNumeGuia->Visible = $blnMostFilt;
+        $this->calFechInic->Visible = $blnMostFilt;
+        $this->calFechFina->Visible = $blnMostFilt;
+        $this->lstCodiOrig->Visible = $blnMostFilt;
+        $this->lstCodiDest->Visible = $blnMostFilt;
+        $this->btnApliFilt->Visible = $blnMostFilt;
+    }
+
+
+    protected function dtgGuiaRowx_Click($strFormId, $strControlId, $strParameter) {
         $strNumeGuia = strval($strParameter);
         QApplication::Redirect(__SIST__."/consulta_guia.php/$strNumeGuia");
     }
@@ -337,17 +479,21 @@ class GuiaListNew extends FormularioBaseKaizen {
 
     protected function btnMostImpr_Click() {
         $this->mostrarFiltros(false);
+        $this->mostrarFiltroAvanzado(false);
         $this->mostrarOpcionesDeImpresion(true);
     }
 
     protected function btnCancel_Click() {
         $this->mostrarFiltros(false);
+        $this->mostrarFiltroAvanzado(false);
         $this->mostrarOpcionesDeImpresion(false);
         $this->btnExpoExce->Visible = true;
+        $this->btnFiltAvan->Visible = true;
     }
 
     protected function btnMostFilt_Click() {
         $this->mostrarFiltros(true);
+        $this->mostrarFiltroAvanzado(false);
         $this->mostrarOpcionesDeImpresion(false);
     }
 
@@ -355,6 +501,7 @@ class GuiaListNew extends FormularioBaseKaizen {
         $this->btnCancel->Visible   = !$this->btnCancel->Visible;
         $this->btnMostFilt->Visible = !$this->btnMostFilt->Visible;
         $this->btnExpoExce->Visible = false;
+        $this->btnFiltAvan->Visible = false;
         $this->btnFiltDhoy->Visible = $blnMostFilt;
         $this->btnFiltPend->Visible = $blnMostFilt;
         $this->btnFiltTran->Visible = $blnMostFilt;
@@ -370,6 +517,7 @@ class GuiaListNew extends FormularioBaseKaizen {
     protected function mostrarOpcionesDeImpresion($blnMostImpr) {
         $this->btnMostImpr->Visible = !$this->btnMostImpr->Visible;
         $this->btnExpoExce->Visible = false;
+        $this->btnFiltAvan->Visible = false;
         $this->btnImprMani->Visible = $blnMostImpr;
         $this->btnImprLote->Visible = $blnMostImpr;
     }

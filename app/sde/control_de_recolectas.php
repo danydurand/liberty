@@ -400,40 +400,40 @@ class ControlDeRecolectas extends FormularioBaseKaizen {
         // de los correos
         //-------------------------------------------------------------------------------------
         $strCadeSqlx = "select g.nume_guia,
-                        g.guia_externa,
-                        m.codigo_interno,
-                        date_format(g.fech_guia, '%d/%m/%Y') fech_guia,
-                        g.esta_orig, 
-                        g.esta_dest,
-                        substring(t.descripcion,1,3) modalidad_pago,
-                        if (g.sistema_id = 'int', g.dire_remi, g.nomb_remi) remitente,
-                        g.nomb_dest,
-                        g.peso_guia,
-                        g.cant_piez,
-                        g.valor_declarado,
-                        g.entregado_a,
-                        date_format(g.fecha_entrega, '%d/%m/%Y') fecha_entrega,
-                        g.hora_entrega,
-                        g.codi_ckpt,
-                        g.esta_ckpt,
-                        date_format(g.fech_ckpt, '%d/%m/%Y') fech_ckpt,
-                        g.hora_ckpt, u.logi_usua usua_ckpt,
-                        if (g.flete_directo, 'X', '') flete_directo,
-                        g.guia_retorno,
-                        g.desc_cont
-                   from guia g
-                   left join cliente_i c
-                    on g.cliente_id = c.id
-                   left join cobro_cod e
-                     on g.nume_guia = e.nume_guia
-                   left join master_cliente m
-                     on m.codi_clie = g.codi_clie
-                   inner join tipo_guia_type t
-                     on g.tipo_guia = t.id
-                   left join usuario u
-                     on g.usua_ckpt = u.codi_usua
-                  where g.codi_ckpt in ('NR','RP')
-                    and g.anulada = 0";
+                               g.guia_externa,
+                               m.codigo_interno,
+                               date_format(g.fech_guia, '%d/%m/%Y') fech_guia,
+                               g.esta_orig, 
+                               g.esta_dest,
+                               substring(t.descripcion,1,3) modalidad_pago,
+                               if (g.sistema_id = 'int', g.dire_remi, g.nomb_remi) remitente,
+                               g.nomb_dest,
+                               g.peso_guia,
+                               g.cant_piez,
+                               g.valor_declarado,
+                               g.entregado_a,
+                               date_format(g.fecha_entrega, '%d/%m/%Y') fecha_entrega,
+                               g.hora_entrega,
+                               g.codi_ckpt,
+                               g.esta_ckpt,
+                               date_format(g.fech_ckpt, '%d/%m/%Y') fech_ckpt,
+                               g.hora_ckpt, u.logi_usua usua_ckpt,
+                               if (g.flete_directo, 'X', '') flete_directo,
+                               g.guia_retorno,
+                               g.desc_cont
+                          from guia g
+                               left join cliente_i c
+                            on g.cliente_id = c.id
+                               left join cobro_cod e
+                            on g.nume_guia = e.nume_guia
+                               left join master_cliente m
+                            on m.codi_clie = g.codi_clie
+                               inner join tipo_guia_type t
+                            on g.tipo_guia = t.id
+                               left join usuario u
+                            on g.usua_ckpt = u.codi_usua
+                         where g.codi_ckpt in ('NR','RP')
+                           and g.anulada = 0";
         //-----------------------------------------------------------------------------------------------------
         // Paso toda la lista de sucursales a un vector, para luego el contenido del mismo unirlo en un string.
         //-----------------------------------------------------------------------------------------------------
@@ -447,9 +447,6 @@ class ControlDeRecolectas extends FormularioBaseKaizen {
         $strCadeSucu = implode("','",$arrSucuCons);
         $strCadeSqlx .= " and g.esta_orig in ('$strCadeSucu')";
 
-        // $intCortReco = $this->rdbCortReco->SelectedValue;
-        // $dttFechHoyx = FechaDeHoy();
-
         $txtRangInic = $this->txtRangInic->Text;
         $txtRangFina = $this->txtRangFina->Text;
 
@@ -458,25 +455,6 @@ class ControlDeRecolectas extends FormularioBaseKaizen {
         $dttFechFina = SumaRestaDiasAFecha(Date('Y-m-d'),0,'-');
         $strCadeSqlx .= " and g.fech_ckpt between '$dttFechInic' and '$dttFechFina'";
         $strCadeSqlx .= " and g.hora_ckpt >= '$txtRangInic' and g.hora_ckpt <= '$txtRangFina'";
-
-        // switch ($intCortReco) {
-        //     case 1:
-        //         $intCantDias = $this->txtRangFech->Text;
-        //         $dttFechInic = SumaRestaDiasAFecha(Date('Y-m-d'),$intCantDias,'-');
-        //         $dttFechFina = SumaRestaDiasAFecha(Date('Y-m-d'),1,'-');
-        //
-        //         $strCadeSqlx .= " and g.fech_ckpt >= '$dttFechInic' and '$dttFechFina'";
-        //         $strCadeSqlx .= " and (g.fech_ckpt = '$dttFechHoyx' and g.hora_ckpt <= '10:00')";
-        //         break;
-        //     case 2:
-        //         $strCadeSqlx .= " and g.fech_ckpt = '$dttFechHoyx'";
-        //         $strCadeSqlx .= " and g.hora_ckpt = '$txtRangInic' and g.hora_ckpt <= '$txtRangFina'";
-        //         break;
-        //     case 3:
-        //         $strCadeSqlx .= " and g.fech_ckpt = '$dttFechHoyx'";
-        //         $strCadeSqlx .= " and g.hora_ckpt = '$txtRangInic' and g.hora_ckpt <= '$txtRangFina'";
-        //         break;
-        // }
 
         $strCadeSqlx .= "  order by g.nume_guia desc";
 
