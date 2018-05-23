@@ -35,7 +35,7 @@ class CambioSucuReceGuia extends FormularioBaseKaizen {
         $this->lstReceDest_Create();
 
         $this->btnSave->Visible = false;
-        $arrUsuaAuto = array('ddurand','ynoriega','jlaya','judithrz');
+        $arrUsuaAuto = array('ddurand','ynoriega','jlaya','judithrz','alvarado');
         if (in_array($this->objUsuario->LogiUsua,$arrUsuaAuto)) {
             $this->btnSave->Visible = true;
         }

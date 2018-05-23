@@ -144,16 +144,20 @@ class Incidencias extends FormularioBaseKaizen {
         $this->lblMensUsua->Text = "";
     }
 
-    protected function validarGuia(Guia $objGuiaEval) {
+    protected function validarGuia(Guia $objGuiaEval, $strTipoInci='O', $strCodiCkpt) {
         $strTextVali = '';
-        $arrSepuProc = $objGuiaEval->SePuedeProcesar();
-        if (!$arrSepuProc['TodoOkey']) {
-            $strTextVali = $arrSepuProc['MensUsua'];
-            return $strTextVali;
-        }
-        if ($objGuiaEval->CodiCkpt == 'TR') {
-            $strTextVali = '(No se ha Recibido/Auditado)';
-            return $strTextVali;
+        if ($strTipoInci == 'O') {   // Incidencia Operativa
+            if ($strCodiCkpt != 'CF') {  // El Cierre Forzado, no requiere validaciones
+                $arrSepuProc = $objGuiaEval->SePuedeProcesar();
+                if (!$arrSepuProc['TodoOkey']) {
+                    $strTextVali = $arrSepuProc['MensUsua'];
+                    return $strTextVali;
+                }
+                if ($objGuiaEval->CodiCkpt == 'TR') {
+                    $strTextVali = '(No se ha Recibido/Auditado)';
+                    return $strTextVali;
+                }
+            }
         }
         return $strTextVali;
     }
@@ -190,6 +194,7 @@ class Incidencias extends FormularioBaseKaizen {
         //-----------------------------------------------------------------------
         // Se procesan una a una las Guias proporcionadas por el Usuario
         //-----------------------------------------------------------------------
+        $strTipoInci = $this->rdbTipoInci->SelectedValue;
         foreach ($arrGuiaOkey as $strNumeSeri) {
             $blnTodoOkey = true;
             $objGuia = Guia::Load($strNumeSeri);
@@ -197,7 +202,7 @@ class Incidencias extends FormularioBaseKaizen {
                 $this->txtNumeSeri->Text .= $strNumeSeri." (No Existe)".chr(13);
                 $blnTodoOkey = false;
             } else {
-                $strTextVali = $this->validarGuia($objGuia);
+                $strTextVali = $this->validarGuia($objGuia,$strTipoInci,$strCodiCkpt);
                 if (strlen($strTextVali) > 0) {
                     $this->txtNumeSeri->Text .= $strNumeSeri.' '.$strTextVali.chr(13);
                     $blnTodoOkey = false;
@@ -206,7 +211,7 @@ class Incidencias extends FormularioBaseKaizen {
                 }
             }
             if ($blnTodoOkey) {
-                if ($this->rdbTipoInci->SelectedValue == 'R') {
+                if ($strTipoInci == 'R') {
                     //------------------------------------
                     // Incidencia de Registro de Trabajo
                     //------------------------------------

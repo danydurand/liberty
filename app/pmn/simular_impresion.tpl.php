@@ -6,7 +6,7 @@
 // Proyecto       : newliberty
 // Descripcion    : 
 //----------------------------------------------------------
-$strPageTitle = 'Simular Impresión Fiscal';
+$strPageTitle = 'Capturar Datos Fiscales';
 require(__APP_INCLUDES__ . '/header.inc.php');
 ?>
 <div class="titulo-formulario">

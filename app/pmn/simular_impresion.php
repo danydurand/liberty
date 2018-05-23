@@ -25,7 +25,7 @@ class SimularImpresion extends FormularioBaseKaizen {
     protected function Form_Create() {
         parent::Form_Create();
 
-        $this->lblTituForm->Text = 'Simular Impresion Fiscal';
+        $this->lblTituForm->Text = 'Capturar Datos Fiscales';
 
         $this->rdbTipoDocu_Create();
         $this->txtNumeDocu_Create();
@@ -64,8 +64,8 @@ class SimularImpresion extends FormularioBaseKaizen {
         $this->txtDocuFisc->Name = 'Doc. Fiscal';
         $this->txtDocuFisc->Width = 100;
         $this->txtDocuFisc->Required = true;
-        $this->txtDocuFisc->Enabled = false;
-        $this->txtDocuFisc->ForeColor = 'blue';
+//        $this->txtDocuFisc->Enabled = false;
+//        $this->txtDocuFisc->ForeColor = 'blue';
     }
 
     protected function txtMaquFisc_Create() {
@@ -73,8 +73,8 @@ class SimularImpresion extends FormularioBaseKaizen {
         $this->txtMaquFisc->Name = 'Maquina Fiscal';
         $this->txtMaquFisc->Width = 100;
         $this->txtMaquFisc->Required = true;
-        $this->txtMaquFisc->Enabled = false;
-        $this->txtMaquFisc->ForeColor = 'blue';
+//        $this->txtMaquFisc->Enabled = false;
+//        $this->txtMaquFisc->ForeColor = 'blue';
     }
 
     protected function txtFechImpr_Create() {
@@ -83,8 +83,8 @@ class SimularImpresion extends FormularioBaseKaizen {
         $this->txtFechImpr->Text = date('ymd');
         $this->txtFechImpr->Width = 100;
         $this->txtFechImpr->Required = true;
-        $this->txtFechImpr->Enabled = false;
-        $this->txtFechImpr->ForeColor = 'blue';
+//        $this->txtFechImpr->Enabled = false;
+//        $this->txtFechImpr->ForeColor = 'blue';
     }
 
     protected function txtHoraImpr_Create() {
@@ -93,8 +93,8 @@ class SimularImpresion extends FormularioBaseKaizen {
         $this->txtHoraImpr->Text = date('His');
         $this->txtHoraImpr->Width = 100;
         $this->txtHoraImpr->Required = true;
-        $this->txtHoraImpr->Enabled = false;
-        $this->txtHoraImpr->ForeColor = 'blue';
+//        $this->txtHoraImpr->Enabled = false;
+//        $this->txtHoraImpr->ForeColor = 'blue';
     }
 
     //----------------------------------
@@ -103,15 +103,16 @@ class SimularImpresion extends FormularioBaseKaizen {
 
     protected function rdbTipoDocu_Change() {
         $this->mensaje();
-        $strCadeSqlx = 'select numero + 1 as nume_fisc,
-   		                       maquina_fiscal as maqu_fisc
-                           from nota_credito
-                          where numero = (select max(numero)
-                                            from nota_credito
-                                           where length(numero) > 1)';
-        $objDataBase = NotaCredito::GetDatabase();
-        $objDbResult = $objDataBase->Query($strCadeSqlx);
-        $mixRegistro = $objDbResult->FetchArray();
+        /*
+        $strCadeSqlx  = 'select numero + 1 as nume_fisc, ';
+   		$strCadeSqlx .= '       maquina_fiscal as maqu_fisc ';
+        $strCadeSqlx .= '  from nota_credito ';
+        $strCadeSqlx .= ' where numero = (select max(numero) ';
+        $strCadeSqlx .= '                   from nota_credito ';
+        $strCadeSqlx .= '                  where length(numero) > 1)';
+        $objDataBase  = NotaCredito::GetDatabase();
+        $objDbResult  = $objDataBase->Query($strCadeSqlx);
+        $mixRegistro  = $objDbResult->FetchArray();
         if ($mixRegistro) {
             $this->txtDocuFisc->Text = '00'.$mixRegistro['nume_fisc'];
             $this->txtMaquFisc->Text = $mixRegistro['maqu_fisc'] ? $mixRegistro['maqu_fisc'] : 'EOB0019164';
@@ -119,6 +120,7 @@ class SimularImpresion extends FormularioBaseKaizen {
             $this->txtDocuFisc->Text = '0010000';
             $this->txtMaquFisc->Text = 'EOB0019164';
         }
+        */
         $this->txtNumeDocu->Text = '';
         $this->txtFechImpr->Text = date('ymd');
         $this->txtHoraImpr->Text = date('His');
@@ -151,11 +153,11 @@ class SimularImpresion extends FormularioBaseKaizen {
                     }
                 }
                 if ($blnTodoOkey) {
-                    $objFactPmnx->Numero = $this->txtDocuFisc->Text;
-                    $objFactPmnx->MaquinaFiscal = $this->txtMaquFisc->Text;
+                    $objFactPmnx->Numero         = $this->txtDocuFisc->Text;
+                    $objFactPmnx->MaquinaFiscal  = $this->txtMaquFisc->Text;
                     $objFactPmnx->FechaImpresion = $this->txtFechImpr->Text;
-                    $objFactPmnx->HoraImpresion = $this->txtHoraImpr->Text;
-                    $objFactPmnx->ImpresaId = SinoType::SI;
+                    $objFactPmnx->HoraImpresion  = $this->txtHoraImpr->Text;
+                    $objFactPmnx->ImpresaId      = SinoType::SI;
                     $objFactPmnx->Save();
 
                     $this->mensaje('Transacción Exitosa !','','s','',__iCHEC__);
@@ -172,11 +174,11 @@ class SimularImpresion extends FormularioBaseKaizen {
                     $blnTodoOkey = false;
                 }
                 if ($blnTodoOkey) {
-                    $objNotaCred->Numero = $this->txtDocuFisc->Text;
-                    $objNotaCred->MaquinaFiscal = $this->txtMaquFisc->Text;
+                    $objNotaCred->Numero         = $this->txtDocuFisc->Text;
+                    $objNotaCred->MaquinaFiscal  = $this->txtMaquFisc->Text;
                     $objNotaCred->FechaImpresion = new QDateTime($this->txtFechImpr->Text);
-                    $objNotaCred->HoraImpresion = $this->txtHoraImpr->Text;
-                    $objNotaCred->ImpresaId = SinoType::SI;
+                    $objNotaCred->HoraImpresion  = $this->txtHoraImpr->Text;
+                    $objNotaCred->ImpresaId      = SinoType::SI;
                     $objNotaCred->Save();
 
                     $objFactPmnx = FacturaPmn::Load($objNotaCred->FacturaId);
