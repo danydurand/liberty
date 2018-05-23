@@ -680,7 +680,7 @@ class ConsultaGuia extends FormularioBaseKaizen {
         $this->btnMasxAcci->HtmlEntities = false;
         $this->btnMasxAcci->CssClass = '';
 
-        $strTextBoto   = TextoIcono('cog fa-fw','Mas Acciones');
+        $strTextBoto   = TextoIcono('plus','Acciones');
         $arrOpciDrop   = array();
         $arrOpciDrop[] = OpcionDropDown(__SIST__.'/guia_pdf.php?strNumeGuia='.$this->objGuia->NumeGuia,TextoIcono('print','Imprimir'));
 
@@ -694,9 +694,11 @@ class ConsultaGuia extends FormularioBaseKaizen {
             $arrOpciDrop[] = OpcionDropDown(__SIST__.'/crear_factura.php?'.$mixParaFact,TextoIcono('credit-card','Facturar'));
         }
 
+        /*
         if ($this->habilitarBotonCupon()) {
             $arrOpciDrop[] = OpcionDropDown(__SIST__.'/asignar_cupon.php/'.$this->objGuia->NumeGuia,TextoIcono('ticket','Asignar Cupón'));
         }
+        */
 
         if ($this->blnConsCupo) {
             $arrOpciDrop[] = OpcionDropDown(__SIST__.'/cupon_guia_edit.php/'.$this->intIdxxCupo,TextoIcono('ticket','Consultar Cupón'));

@@ -16,12 +16,13 @@ require(__APP_INCLUDES__ . '/header.inc.php');
     <!-- ------- -->
     <!-- Botones -->
     <!-- ------- -->
-    <div class="hidden-xs hidden-sm col-md-5 col-lg-5" style="text-align: center; margin-top: -0.25em;">
+    <div class="hidden-xs hidden-sm col-md-6 col-lg-6" style="text-align: center; margin-top: -0.25em;">
         <?php $this->btnCancel->Render(); ?>
         <?php $this->btnSave->Render(); ?>
         <?php $this->btnAnulFact->Render(); ?>
         <?php $this->btnCobrFact->Render(); ?>
         <?php $this->btnImprFact->Render(); ?>
+        <?php $this->btnMostDxml->Render(); ?>
     </div>
 </div>
 <div class="form-controls">
@@ -38,10 +39,10 @@ require(__APP_INCLUDES__ . '/header.inc.php');
                 </div>
                 <div class="row">
                     <?php $this->lblNumeFact->RenderWithName(); ?>
-                    <?php $this->lblCeduRifx->RenderWithName(); ?>
-                    <?php $this->lblRazoSoci->RenderWithName(); ?>
-                    <?php $this->lblDireFisc->RenderWithName(); ?>
-                    <?php $this->lblNumeTele->RenderWithName(); ?>
+                    <?php $this->txtCeduRifx->RenderWithName(); ?>
+                    <?php $this->txtRazoSoci->RenderWithName(); ?>
+                    <?php $this->txtDireFisc->RenderWithName(); ?>
+                    <?php $this->txtNumeTele->RenderWithName(); ?>
                 </div>
             </div>
             <div class="col-md-6" style="margin-top: 0.5em; ">

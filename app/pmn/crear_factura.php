@@ -11,34 +11,24 @@ require_once(__APP_INCLUDES__.'/protected.inc.php');
 require_once(__APP_INCLUDES__.'/FormularioBaseKaizen.class.php');
 
 class CrearFactura extends FormularioBaseKaizen {
-    //-----------------------
-    // Parámetros de objetos
-    //-----------------------
     protected $objGuia;
     protected $objCliePmnx;
     /**
      * @var $objFactPmnx FacturaPmn
      */
     protected $objFactPmnx;
-    //----------------------
-    // Parámetros regulares
-    //----------------------
     protected $blnEditMode;
     protected $strNumeGuia;
     protected $strModaPago;
     protected $strTipoServ;
     protected $intNumeFact;
 
-    //---------------------------
-    // Parametros de informacion
-    //---------------------------
-
     //---- Pre-Factura y Datos Fiscales ----
     protected $lblNumeFact;
-    protected $lblCeduRifx;
-    protected $lblRazoSoci;
-    protected $lblDireFisc;
-    protected $lblNumeTele;
+    protected $txtCeduRifx;
+    protected $txtRazoSoci;
+    protected $txtDireFisc;
+    protected $txtNumeTele;
     //---- Factura ----
     protected $chkTienRete;
     protected $lblFechFact;
@@ -76,14 +66,10 @@ class CrearFactura extends FormularioBaseKaizen {
     //---- Items ----
     protected $dtgItemFact;
 
-    //---------
-    // Botones
-    //---------
-
-    //---- Regulares ----
     protected $btnAnulFact;
     protected $btnCobrFact;
     protected $btnImprFact;
+    protected $btnMostDxml;
 
     protected function SetupFactura() {
         $this->strNumeGuia = QApplication::QueryString('strNumeGuia');
@@ -101,10 +87,9 @@ class CrearFactura extends FormularioBaseKaizen {
                 $this->objFactPmnx = FacturaPmn::Load($this->objGuia->FacturaId);
                 $this->blnEditMode = true;
             } else {
-                //----------------------------------------------------------------------------
-                // Si la guia no esta previamente asociada a una Factura, se crea un nuevo
-                // registro en la tabla.
-                //----------------------------------------------------------------------------
+                //-----------------------------------------------------------------------------------
+                // Si la guia no esta previamente asociada a una Factura, se crea un nuevo registro
+                //-----------------------------------------------------------------------------------
                 $this->blnEditMode = false;
                 $this->objFactPmnx = new FacturaPmn();
             }
@@ -142,10 +127,10 @@ class CrearFactura extends FormularioBaseKaizen {
 
         //---- Pre-Factura y Datos Fiscales ----
         $this->lblNumeFact_Create();
-        $this->lblCeduRifx_Create();
-        $this->lblRazoSoci_Create();
-        $this->lblDireFisc_Create();
-        $this->lblNumeTele_Create();
+        $this->txtCeduRifx_Create();
+        $this->txtRazoSoci_Create();
+        $this->txtDireFisc_Create();
+        $this->txtNumeTele_Create();
         //---- Factura ----
         $this->chkTienRete_Create();
         $this->lblFechFact_Create();
@@ -189,6 +174,7 @@ class CrearFactura extends FormularioBaseKaizen {
         $this->btnAnulFact_Create();
         $this->btnCobrFact_Create();
         $this->btnImprFact_Create();
+        $this->btnMostDxml_Create();
 
         if (!$this->blnEditMode) {
             //-------------------------------------------
@@ -201,17 +187,12 @@ class CrearFactura extends FormularioBaseKaizen {
         }
 
         $this->controlDeStatus();
+        $this->controlDeBotones();
     }
 
     //---------------------
     // Creando objetos ...
     //---------------------
-
-    //------------------------------
-    //---- ... para Información ----
-    //------------------------------
-
-    //---- Pre-Factura y Datos Fiscales ----
 
     protected function lblNumeFact_Create() {
         $this->lblNumeFact = new QLabel($this);
@@ -224,70 +205,73 @@ class CrearFactura extends FormularioBaseKaizen {
         $this->lblNumeFact->ForeColor = 'red';
     }
 
-    protected function lblCeduRifx_Create() {
-        $this->lblCeduRifx = new QLabel($this);
-        $this->lblCeduRifx->Name = 'Cedula/RIF';
-        $this->lblCeduRifx->Width = 90;
-        $this->lblCeduRifx->Required = true;
-        $this->lblCeduRifx->SetCustomAttribute('onblur', "this.value=this.value.toUpperCase()");
+    protected function txtCeduRifx_Create() {
+        $this->txtCeduRifx = new QTextBox($this);
+        $this->txtCeduRifx->Name = 'Cedula/RIF';
+        $this->txtCeduRifx->Width = 90;
+        $this->txtCeduRifx->Required = true;
+        $this->txtCeduRifx->SetCustomAttribute('onblur', "this.value=this.value.toUpperCase()");
         if (!$this->blnEditMode) {
             if ($this->strModaPago == 'PPD') {
-                $this->lblCeduRifx->Text = $this->objCliePmnx->CedulaRif;
+                $this->txtCeduRifx->Text = $this->objCliePmnx->CedulaRif;
             } else {
-                $this->lblCeduRifx->Text = $this->objGuia->CedulaDestinatario;
+                $this->txtCeduRifx->Text = $this->objGuia->CedulaDestinatario;
             }
         } else {
-            $this->lblCeduRifx->Text = $this->objFactPmnx->CedulaRif;
+            $this->txtCeduRifx->Text = $this->objFactPmnx->CedulaRif;
         }
     }
 
-    protected function lblRazoSoci_Create() {
-        $this->lblRazoSoci = new QLabel($this);
-        $this->lblRazoSoci->Name = 'Razon Social';
-        $this->lblRazoSoci->Width = 180;
-        $this->lblRazoSoci->Required = true;
-        $this->lblRazoSoci->SetCustomAttribute('onblur', "this.value=this.value.toUpperCase()");
+    protected function txtRazoSoci_Create() {
+        $this->txtRazoSoci = new QTextBox($this);
+        $this->txtRazoSoci->Name = 'Razón Social';
+        $this->txtRazoSoci->Width = 180;
+        $this->txtRazoSoci->Required = true;
+        $this->txtRazoSoci->Placeholder = 'Razón Social';
+        $this->txtRazoSoci->SetCustomAttribute('onblur', "this.value=this.value.toUpperCase()");
         if (!$this->blnEditMode) {
             if ($this->strModaPago == 'PPD') {
-                $this->lblRazoSoci->Text = $this->objCliePmnx->__toString();
+                $this->txtRazoSoci->Text = $this->objCliePmnx->__toString();
             } else {
-                $this->lblRazoSoci->Text = $this->objGuia->NombDest;
+                $this->txtRazoSoci->Text = $this->objGuia->NombDest;
             }
         } else {
-            $this->lblRazoSoci->Text = $this->objFactPmnx->RazonSocial;
+            $this->txtRazoSoci->Text = $this->objFactPmnx->RazonSocial;
         }
     }
 
-    protected function lblDireFisc_Create() {
-        $this->lblDireFisc = new QLabel($this);
-        $this->lblDireFisc->Name = 'Direccion Fisc.';
-        $this->lblDireFisc->Width = 250;
-        $this->lblDireFisc->Required = true;
-        $this->lblDireFisc->SetCustomAttribute('onblur', "this.value=this.value.toUpperCase()");
+    protected function txtDireFisc_Create() {
+        $this->txtDireFisc = new QTextBox($this);
+        $this->txtDireFisc->Name = 'Direccion Fisc.';
+        $this->txtDireFisc->Width = 250;
+        $this->txtDireFisc->Required = true;
+        $this->txtDireFisc->Placeholder = 'Dirección Fiscal';
+        $this->txtDireFisc->SetCustomAttribute('onblur', "this.value=this.value.toUpperCase()");
         if (!$this->blnEditMode) {
             if ($this->strModaPago == 'PPD') {
-                $this->lblDireFisc->Text = $this->objCliePmnx->Direccion;
+                $this->txtDireFisc->Text = $this->objCliePmnx->Direccion;
             } else {
-                $this->lblDireFisc->Text = $this->objGuia->DireDest;
+                $this->txtDireFisc->Text = $this->objGuia->DireDest;
             }
         } else {
-            $this->lblDireFisc->Text = $this->objFactPmnx->DireccionFiscal;
+            $this->txtDireFisc->Text = $this->objFactPmnx->DireccionFiscal;
         }
     }
 
-    protected function lblNumeTele_Create() {
-        $this->lblNumeTele = new QLabel($this);
-        $this->lblNumeTele->Name = 'Telefono';
-        $this->lblNumeTele->Width = 100;
-        $this->lblNumeTele->Required = true;
+    protected function txtNumeTele_Create() {
+        $this->txtNumeTele = new QTextBox($this);
+        $this->txtNumeTele->Name = 'Telefono';
+        $this->txtNumeTele->Width = 100;
+        $this->txtNumeTele->Required = true;
+        $this->txtNumeTele->Placeholder = 'Solo números';
         if (!$this->blnEditMode) {
             if ($this->strModaPago == 'PPD') {
-                $this->lblNumeTele->Text = $this->objCliePmnx->TelefonoMovil;
+                $this->txtNumeTele->Text = $this->objCliePmnx->TelefonoMovil;
             } else {
-                $this->lblNumeTele->Text = $this->objGuia->TeleDest;
+                $this->txtNumeTele->Text = $this->objGuia->TeleDest;
             }
         } else {
-            $this->lblNumeTele->Text = $this->objFactPmnx->Telefono;
+            $this->txtNumeTele->Text = $this->objFactPmnx->Telefono;
         }
     }
 
@@ -632,7 +616,7 @@ class CrearFactura extends FormularioBaseKaizen {
         $colItemGuia->HtmlEntities = false;
         $this->dtgItemFact->AddColumn($colItemGuia);
 
-        $colItemBase = new QDataGridColumn('Mto Base', '<?= $_ITEM->MontoBase ?>');
+        $colItemBase = new QDataGridColumn('Monto Base', '<?= $_ITEM->MontoBase ?>');
         $colItemBase->Width = 150;
         $colItemBase->HtmlEntities = false;
         $this->dtgItemFact->AddColumn($colItemBase);
@@ -647,7 +631,7 @@ class CrearFactura extends FormularioBaseKaizen {
         $colItemMdes->HtmlEntities = false;
         $this->dtgItemFact->AddColumn($colItemMdes);
 
-        $colItemFran = new QDataGridColumn('F.Post', '<?= $_ITEM->MontoFranqueo ?>');
+        $colItemFran = new QDataGridColumn('Franq Post', '<?= $_ITEM->MontoFranqueo ?>');
         $colItemFran->Width = 150;
         $colItemFran->HtmlEntities = false;
         $this->dtgItemFact->AddColumn($colItemFran);
@@ -662,12 +646,12 @@ class CrearFactura extends FormularioBaseKaizen {
         $colItemMiva->HtmlEntities = false;
         $this->dtgItemFact->AddColumn($colItemMiva);
 
-        $colItemSgro = new QDataGridColumn('Sgro', '<?= $_ITEM->MontoSeguro ?>');
+        $colItemSgro = new QDataGridColumn('Seguro', '<?= $_ITEM->MontoSeguro ?>');
         $colItemSgro->Width = 150;
         $colItemSgro->HtmlEntities = false;
         $this->dtgItemFact->AddColumn($colItemSgro);
 
-        $colitemTota = new QDataGridColumn('Total', '<?= $_ITEM->MontoTotal ?>');
+        $colitemTota = new QDataGridColumn('Monto Total', '<?= $_ITEM->MontoTotal ?>');
         $colitemTota->Width = 150;
         $colitemTota->HtmlEntities = false;
         $this->dtgItemFact->AddColumn($colitemTota);
@@ -679,10 +663,6 @@ class CrearFactura extends FormularioBaseKaizen {
         // Specify the DataBinder method for the DataGrid
         $this->dtgItemFact->SetDataBinder('dtgItemFact_Bind');
     }
-
-    //---------------------------
-    //---- .... para botones ----
-    //---------------------------
 
     protected function btnAnulFact_Create() {
         $this->btnAnulFact = new QButtonD($this);
@@ -709,9 +689,34 @@ class CrearFactura extends FormularioBaseKaizen {
         $this->btnImprFact->AddAction(new QClickEvent(), new QAjaxAction('btnImprFact_Click'));
     }
 
+    protected function btnMostDxml_Create() {
+        $this->btnMostDxml = new QButtonW($this);
+        $this->btnMostDxml->Text = TextoIcono('eye','XML','F','lg');
+        $this->btnMostDxml->AddAction(new QClickEvent(), new QAjaxAction('btnMostDxml_Click'));
+        $this->btnMostDxml->Visible = false;
+        if (in_array($this->objUsuario->LogiUsua,array('ddurand','lmartinez'))) {
+            $this->btnMostDxml->Visible = true;
+        }
+    }
+
     //-----------------------------------
     // Funciones asociadas a los objetos
     //-----------------------------------
+
+    protected function controlDeBotones() {
+        if (!$this->blnEditMode) {
+            $this->btnAnulFact->Visible = false;
+            $this->btnCobrFact->Visible = false;
+        } else {
+            $this->btnAnulFact->Visible = true;
+            $this->btnCobrFact->Visible = true;
+        }
+    }
+
+    protected function btnMostDxml_Click() {
+        $strDurlDxml = 'http://app-libertyexpress.com/liberty/ws/cliente.php?NombRuti=factura&id='.$this->lblNumeFact->Text;
+        QApplication::Redirect($strDurlDxml);
+    }
 
     protected function chkTienRete_Change() {
         if ($this->chkTienRete->Checked) {
@@ -760,15 +765,20 @@ class CrearFactura extends FormularioBaseKaizen {
     }
 
     protected function btnSave_Click() {
+        $strCeduRifx = DejarNumerosVJGuion($this->txtCeduRifx->Text);
+        $strRazoSoci = limpiarCadena($this->txtRazoSoci->Text);
+        $strDireFisc = limpiarCadena($this->txtDireFisc->Text);
+        $strNumeTele = DejarSoloLosNumeros($this->txtNumeTele->Text);
+
         $strNombProc = 'Creando Factura Expreso Nacional';
         $objProcEjec = CrearProceso($strNombProc);
         $mixErroOrig = error_reporting();
         error_reporting(0);
         try {
-            $this->objFactPmnx->CedulaRif        = $this->lblCeduRifx->Text;
-            $this->objFactPmnx->RazonSocial      = QuitarAmpersand($this->lblRazoSoci->Text);
-            $this->objFactPmnx->DireccionFiscal  = $this->lblDireFisc->Text;
-            $this->objFactPmnx->Telefono         = $this->lblNumeTele->Text;
+            $this->objFactPmnx->CedulaRif        = $strCeduRifx;
+            $this->objFactPmnx->RazonSocial      = $strRazoSoci;
+            $this->objFactPmnx->DireccionFiscal  = $strDireFisc;
+            $this->objFactPmnx->Telefono         = $strNumeTele;
             $this->objFactPmnx->TieneRetencion   = $this->chkTienRete->Checked ? 1 : 0;
             $this->objFactPmnx->Save();
         } catch (Exception $e) {
@@ -780,12 +790,11 @@ class CrearFactura extends FormularioBaseKaizen {
             GrabarError($arrParaErro);
             return;
         }
-        //------------------------------------------------------------------
-        // La razon social de la factura, puede ser diferente al remitente
-        // y al destinatario de la guia, por ese motivo, se revisa la
-        // existencia en la base de datos y en caso de no existir, se crea
-        //------------------------------------------------------------------
-        $objCliePmnx = ClientePmn::Load($this->lblCeduRifx->Text);
+        //------------------------------------------------------------------------------------------------
+        // La razon social de la factura, puede ser diferente al remitente y al destinatario de la guia,
+        // por ese motivo, se revisa la existencia en la base de datos y en caso de no existir, se crea
+        //------------------------------------------------------------------------------------------------
+        $objCliePmnx = ClientePmn::Load($this->txtCeduRifx->Text);
         try {
             if (!$objCliePmnx) {
                 $objCliePmnx = new ClientePmn();
@@ -793,11 +802,11 @@ class CrearFactura extends FormularioBaseKaizen {
                 $objCliePmnx->RegistradoPor = $this->objUsuario->CodiUsua;
                 $objCliePmnx->RegistradoEl  = new QDateTime(QDateTime::Now);
             }
-            $objCliePmnx->CedulaRif     = $this->lblCeduRifx->Text;
-            $objCliePmnx->Nombre        = $this->lblRazoSoci->Text;
-            $objCliePmnx->TelefonoFijo  = $this->lblNumeTele->Text;
-            $objCliePmnx->TelefonoMovil = $this->lblNumeTele->Text;
-            $objCliePmnx->Direccion     = $this->lblDireFisc->Text;
+            $objCliePmnx->CedulaRif     = $strCeduRifx;
+            $objCliePmnx->Nombre        = $strRazoSoci;
+            $objCliePmnx->TelefonoFijo  = $strNumeTele;
+            $objCliePmnx->TelefonoMovil = $strNumeTele;
+            $objCliePmnx->Direccion     = $strDireFisc;
             $objCliePmnx->Save();
         } catch (Exception $e) {
             $this->mensaje($e->getMessage(),'m','d','',__iHAND__);
@@ -819,17 +828,13 @@ class CrearFactura extends FormularioBaseKaizen {
         //----------------------------------------------------------------
         $this->btnAnulFact->Visible = true;
         $this->btnCobrFact->Visible = true;
-        //-------------------------------------------------------------
-        // Una regla de negocio establece que, si la guia es COD, con
-        // Entrega a Domicilio y con un monto inferior a Bs. 2000
-        // entonces se podra imprimir la Factura, sin haberla cobrado
-        //-------------------------------------------------------------
-        // $this->btnImprFact->Visible = $this->FacturaValidaParaImprimir();
         //-----------------------------------------------------------
         // Se activa el boton que permite agregar nuevos Items
         //-----------------------------------------------------------
         $this->blnEditMode = true;
         error_reporting($mixErroOrig);
+        $this->mensaje('Transacción Exitosa !','','','',__iCHEC__);
+        $this->controlDeBotones();
     }
 
     protected function btnAnulFact_Click($strFormId, $strControlId, $strParameter) {
@@ -884,14 +889,14 @@ class CrearFactura extends FormularioBaseKaizen {
             //----------------------------------------------------------------------
             // Si la Factura esta Impresa, no se podran alterar los datos fiscales
             //----------------------------------------------------------------------
-            $this->lblCeduRifx->Enabled = false;
-            $this->lblCeduRifx->ForeColor = 'blue';
-            $this->lblRazoSoci->Enabled = false;
-            $this->lblRazoSoci->ForeColor = 'blue';
-            $this->lblDireFisc->Enabled = false;
-            $this->lblDireFisc->ForeColor = 'blue';
-            $this->lblNumeTele->Enabled = false;
-            $this->lblNumeTele->ForeColor = 'blue';
+            $this->txtCeduRifx->Enabled = false;
+            $this->txtCeduRifx->ForeColor = 'blue';
+            $this->txtRazoSoci->Enabled = false;
+            $this->txtRazoSoci->ForeColor = 'blue';
+            $this->txtDireFisc->Enabled = false;
+            $this->txtDireFisc->ForeColor = 'blue';
+            $this->txtNumeTele->Enabled = false;
+            $this->txtNumeTele->ForeColor = 'blue';
             $this->btnSave->Visible = false;
             $this->btnAnulFact->Text = TextoIcono('exclamation-circle','NDC','F','lg');
         }
@@ -899,14 +904,14 @@ class CrearFactura extends FormularioBaseKaizen {
             //----------------------------------------------------------------------
             // Si la Factura esta Anulada, no se podran alterar los datos fiscales
             //----------------------------------------------------------------------
-            $this->lblCeduRifx->Enabled = false;
-            $this->lblCeduRifx->ForeColor = 'blue';
-            $this->lblRazoSoci->Enabled = false;
-            $this->lblRazoSoci->ForeColor = 'blue';
-            $this->lblDireFisc->Enabled = false;
-            $this->lblDireFisc->ForeColor = 'blue';
-            $this->lblNumeTele->Enabled = false;
-            $this->lblNumeTele->ForeColor = 'blue';
+            $this->txtCeduRifx->Enabled = false;
+            $this->txtCeduRifx->ForeColor = 'blue';
+            $this->txtRazoSoci->Enabled = false;
+            $this->txtRazoSoci->ForeColor = 'blue';
+            $this->txtDireFisc->Enabled = false;
+            $this->txtDireFisc->ForeColor = 'blue';
+            $this->txtNumeTele->Enabled = false;
+            $this->txtNumeTele->ForeColor = 'blue';
             //------------------------------------------------------
             // Tampoco se podra Guardar, Anular, Imprimir o Cobrar
             //------------------------------------------------------
@@ -979,10 +984,15 @@ class CrearFactura extends FormularioBaseKaizen {
     }
 
     protected function UpdateFieldsFactura() {
-        $this->objFactPmnx->CedulaRif          = $this->lblCeduRifx->Text;
-        $this->objFactPmnx->RazonSocial        = substr(QuitarAmpersand($this->lblRazoSoci->Text),0,100);
-        $this->objFactPmnx->DireccionFiscal    = substr($this->lblDireFisc->Text,0,300);
-        $this->objFactPmnx->Telefono           = $this->lblNumeTele->Text;
+        $strCeduRifx = DejarNumerosVJGuion($this->txtCeduRifx->Text);
+        $strRazoSoci = limpiarCadena($this->txtRazoSoci->Text);
+        $strDireFisc = limpiarCadena($this->txtDireFisc->Text);
+        $strNumeTele = DejarSoloLosNumeros($this->txtNumeTele->Text);
+
+        $this->objFactPmnx->CedulaRif          = $strCeduRifx;
+        $this->objFactPmnx->RazonSocial        = substr($strRazoSoci,0,100);
+        $this->objFactPmnx->DireccionFiscal    = substr($strDireFisc,0,300);
+        $this->objFactPmnx->Telefono           = $strNumeTele;
         $this->objFactPmnx->Numero             = null;
         $this->objFactPmnx->MaquinaFiscal      = null;
         $this->objFactPmnx->FechaImpresion     = null;

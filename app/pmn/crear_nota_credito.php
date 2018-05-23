@@ -455,16 +455,16 @@ class CrearNotaCredito extends FormularioBaseKaizen {
         //----------------------------------------------
         // Se guardan los datos de la Nota de Credito 
         //----------------------------------------------
-        $this->objNotaCred->FacturaId = $this->objFactPmnx->Id;
-        $this->objNotaCred->CedulaRif = $this->lblCeduRifx->Text;
-        $this->objNotaCred->RazonSocial = $this->lblRazoSoci->Text;
+        $this->objNotaCred->FacturaId       = $this->objFactPmnx->Id;
+        $this->objNotaCred->CedulaRif       = $this->lblCeduRifx->Text;
+        $this->objNotaCred->RazonSocial     = $this->lblRazoSoci->Text;
         $this->objNotaCred->DireccionFiscal = $this->lblDireFisc->Text;
-        $this->objNotaCred->Telefono = $this->lblNumeTele->Text;
-        $this->objNotaCred->Concepto = $this->txtConcNota->Text;
+        $this->objNotaCred->Telefono        = $this->lblNumeTele->Text;
+        $this->objNotaCred->Concepto        = limpiarCadena($this->txtConcNota->Text);
         $this->objNotaCred->Save();
 
         $this->lblNumeNota->Text = $this->objNotaCred->Id;
-        $this->mensaje('Nota de Crédito Registrada','','s','check');
+        $this->mensaje('Nota de Crédito Registrada','','s','',__iCHEC__);
         $this->btnImprNota->Visible = true;
     }
 
@@ -511,47 +511,47 @@ class CrearNotaCredito extends FormularioBaseKaizen {
     }
     
     protected function UpdateFieldsNota() {
-        $this->objNotaCred->FacturaId = $this->objFactPmnx->Id;
-        $this->objNotaCred->CedulaRif = $this->lblCeduRifx->Text;
-        $this->objNotaCred->RazonSocial = $this->lblRazoSoci->Text;
+        $this->objNotaCred->FacturaId       = $this->objFactPmnx->Id;
+        $this->objNotaCred->CedulaRif       = $this->lblCeduRifx->Text;
+        $this->objNotaCred->RazonSocial     = $this->lblRazoSoci->Text;
         $this->objNotaCred->DireccionFiscal = $this->lblDireFisc->Text;
-        $this->objNotaCred->Telefono = $this->lblNumeTele->Text;
-        $this->objNotaCred->Concepto = '';
-        $this->objNotaCred->Numero = null;
-        $this->objNotaCred->MaquinaFiscal = null;
-        $this->objNotaCred->FechaImpresion = null;
-        $this->objNotaCred->HoraImpresion = null;
-        $this->objNotaCred->MontoBase = 0;
-        $this->objNotaCred->MontoFranqueo = 0;
-        $this->objNotaCred->MontoIva = 0;
-        $this->objNotaCred->MontoSeguro = 0;
-        $this->objNotaCred->MontoOtros = 0;
-        $this->objNotaCred->MontoTotal = 0;
-        $this->objNotaCred->SucursalId = $this->objUsuario->CodiEsta;
-        $this->objNotaCred->ReceptoriaId = unserialize($_SESSION['CodiRece']);
-        $this->objNotaCred->CajaId = 1;
-        $this->objNotaCred->CreadaPor = $this->objUsuario->CodiUsua;
-        $this->objNotaCred->CreadaEl = $this->calFechNota->DateTime;
-        $this->objNotaCred->Estatus = 'P';
-        $this->objNotaCred->ImpresaId = SinoType::NO;
-        $this->objNotaCred->MontoDscto = 0;
+        $this->objNotaCred->Telefono        = $this->lblNumeTele->Text;
+        $this->objNotaCred->Concepto        = '';
+        $this->objNotaCred->Numero          = null;
+        $this->objNotaCred->MaquinaFiscal   = null;
+        $this->objNotaCred->FechaImpresion  = null;
+        $this->objNotaCred->HoraImpresion   = null;
+        $this->objNotaCred->MontoBase       = 0;
+        $this->objNotaCred->MontoFranqueo   = 0;
+        $this->objNotaCred->MontoIva        = 0;
+        $this->objNotaCred->MontoSeguro     = 0;
+        $this->objNotaCred->MontoOtros      = 0;
+        $this->objNotaCred->MontoTotal      = 0;
+        $this->objNotaCred->SucursalId      = $this->objUsuario->CodiEsta;
+        $this->objNotaCred->ReceptoriaId    = unserialize($_SESSION['CodiRece']);
+        $this->objNotaCred->CajaId          = 1;
+        $this->objNotaCred->CreadaPor       = $this->objUsuario->CodiUsua;
+        $this->objNotaCred->CreadaEl        = $this->calFechNota->DateTime;
+        $this->objNotaCred->Estatus         = 'P';
+        $this->objNotaCred->ImpresaId       = SinoType::NO;
+        $this->objNotaCred->MontoDscto      = 0;
     }
 
     protected function AgregarItemsNotaCredito() {
         $arrItemFact = $this->objFactPmnx->GetItemFacturaPmnAsFacturaArray();
         foreach ($arrItemFact as $objItemFact) {
             $objItemNota = new ItemNotaCredito();
-            $objItemNota->NotaCreditoId = $this->objNotaCred->Id;
-            $objItemNota->GuiaId = $objItemFact->GuiaId;
-            $objItemNota->MontoBase = $objItemFact->MontoBase;
+            $objItemNota->NotaCreditoId   = $this->objNotaCred->Id;
+            $objItemNota->GuiaId          = $objItemFact->GuiaId;
+            $objItemNota->MontoBase       = $objItemFact->MontoBase;
             $objItemNota->PorcentajeDscto = $objItemFact->PorcentajeDscto;
-            $objItemNota->MontoDscto = $objItemFact->MontoDscto;
-            $objItemNota->MontoFranqueo = $objItemFact->MontoFranqueo;
-            $objItemNota->PorcentajeIva = $objItemFact->PorcentajeIva;
-            $objItemNota->MontoIva = $objItemFact->MontoIva;
-            $objItemNota->MontoSeguro = $objItemFact->MontoSeguro;
-            $objItemNota->MontoOtros = $objItemFact->MontoOtros;
-            $objItemNota->MontoTotal = $objItemFact->MontoTotal;
+            $objItemNota->MontoDscto      = $objItemFact->MontoDscto;
+            $objItemNota->MontoFranqueo   = $objItemFact->MontoFranqueo;
+            $objItemNota->PorcentajeIva   = $objItemFact->PorcentajeIva;
+            $objItemNota->MontoIva        = $objItemFact->MontoIva;
+            $objItemNota->MontoSeguro     = $objItemFact->MontoSeguro;
+            $objItemNota->MontoOtros      = $objItemFact->MontoOtros;
+            $objItemNota->MontoTotal      = $objItemFact->MontoTotal;
             $objItemNota->Save();
         }
     }

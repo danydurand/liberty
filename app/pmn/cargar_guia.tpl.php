@@ -69,10 +69,16 @@ require(__APP_INCLUDES__ . '/header.inc.php');
                     <div class="titulo">Facturacion</div>
                 </div>
             </div>
-            <div class="row">
+            <div class="row" style="margin-bottom: 1em">
                 <div class="col-md-6">
-                    <?php $this->txtCantPiez->RenderWithName(); ?>
-                    <?php $this->txtPesoGuia->RenderWithName(); ?>
+                    <div class="row">
+                        <div class="col-md-offset-2 col-md-4" style="margin-left: 8.5em">
+                            <?php $this->txtCantPiez->RenderWithName(); ?>
+                        </div>
+                        <div class="col-md-4">
+                            <?php $this->txtPesoGuia->RenderWithName(); ?>
+                        </div>
+                    </div>
                     <?php $this->txtDescCont->RenderWithName(); ?>
                     <?php $this->txtValoDecl->RenderWithName(); ?>
                     <?php $this->rdbModaPago->RenderWithName(); ?>
@@ -83,9 +89,6 @@ require(__APP_INCLUDES__ . '/header.inc.php');
                     <?php $this->lblMontFran->RenderWithName(); ?>
                     <?php $this->lblMontSegu->RenderWithName(); ?>
                     <?php $this->lblMontTota->RenderWithName(); ?>
-                </div>
-                <div class="col-md-3">
-
                 </div>
             </div>
             <?php $this->lblPopuModa->Render(); ?>

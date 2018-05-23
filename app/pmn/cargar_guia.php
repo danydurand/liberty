@@ -597,7 +597,7 @@ class CargarGuia extends FormularioBaseKaizen {
         $this->btnMasxAcci->HtmlEntities = false;
         $this->btnMasxAcci->CssClass = '';
 
-        $strTextBoto   = TextoIcono('cog fa-fw','Mas Acciones');
+        $strTextBoto   = TextoIcono('plus','Acciones');
         $arrOpciDrop   = array();
         $arrOpciDrop[] = OpcionDropDown(__SIST__.'/guia_pdf.php?strNumeGuia='.$this->txtNumeGuia->Text,TextoIcono('print','Imprimir'));
 
@@ -1489,17 +1489,17 @@ class CargarGuia extends FormularioBaseKaizen {
             //-----------------------------------------------------------
             if (trim($this->objGuia->UsuarioCreacion) != trim($this->objUsuario->LogiUsua)) {
                 $this->btnSave->Visible = false;
+                $this->mensaje('Guia creada por otro Usuario.  No admite cambios','',
+                    'w','',__iEXCL__);
             }
-
             //--------------------------------------------------------------------------
             // Si la guia tiene un status diferente al Pick-Up, ya no podra modificarse
             //--------------------------------------------------------------------------
             if ($this->objGuia->CodiCkpt != 'PU') {
                 $this->btnSave->Visible = false;
-                $this->mensaje('Esta guia no admite cambios','',
+                $this->mensaje('Guía en Gestión de Entrega. No admite cambios','',
                               'w','',__iEXCL__);
             }
-
             //------------------------------------------------------------------------
             // Si se trata de un Super-Usuario, se podrá modificar la guia únicamente
             // bajo la condicion de que la misma no haya sido entregada

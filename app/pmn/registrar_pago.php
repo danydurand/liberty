@@ -407,8 +407,8 @@ class RegistrarPago extends FormularioBaseKaizen {
         $decMontCobr = $decMontCobr - $objPagoFact->MontoPago;
         $decMontAcob = floatval($this->lblMontAcob->Text);
         $decMontRest = $decMontAcob - $decMontCobr;
-        $this->lblMontCobr->Text = $decMontCobr;
-        $this->lblMontRest->Text = $decMontRest;
+        $this->lblMontCobr->Text = (string)$decMontCobr;
+        $this->lblMontRest->Text = (string)$decMontRest;
 
         $this->lstFormPago->RemoveAllItems();
         $objClauWher   = QQ::Clause();

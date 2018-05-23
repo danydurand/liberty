@@ -127,7 +127,8 @@ class GuiaListForm extends GuiaListFormBase {
 
         // Create the Other Columns (note that you can use strings for guia's properties, or you
         // can traverse down QQN::guia() to display fields that are down the hierarchy)
-        $this->dtgGuias->MetaAddColumn('NumeGuia');
+        $colNumeGuia = $this->dtgGuias->MetaAddColumn('NumeGuia');
+        $colNumeGuia->Name = 'Guia';
 
         $colFechGuia = new QDataGridColumn('Fecha','<?= $_ITEM->FechGuia->__toString("DD/MM/YYYY") ?>');
         $colFechGuia->OrderByClause = QQ::OrderBy(QQN::Guia()->FechGuia, false);
