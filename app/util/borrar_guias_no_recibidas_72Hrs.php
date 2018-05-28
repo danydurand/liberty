@@ -71,7 +71,7 @@ foreach ($arrRecoPend as $objGuia) {
 	//--------------------------------------------------------------
 	// Se define por defecto la cantidad límite de días de vigencia
 	//--------------------------------------------------------------
-	$intDiasLimi = 3;
+	$intDiasLimi = 10;
 	//--------------------------------------------------------------------------------------------
 	// Se obtiene la cantidad de días transcurridos entre la fecha actual, y la fecha de la guía,
 	// excluyendo los Sabados, Domingos y Feriados.

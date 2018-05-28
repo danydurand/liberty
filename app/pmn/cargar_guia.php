@@ -1777,6 +1777,27 @@ class CargarGuia extends FormularioBaseKaizen {
             $this->enviarMensajeDeError($strTextMens);
             return false;
         }
+        if ($this->rdbReceDomi->SelectedValue == 'R') {
+            $strSiglRece = $this->lstReceDest->SelectedValue;
+            if (strlen($strSiglRece) == 0) {
+                $strTextMens = 'Receptoría Destino <b>Requerida</b>';
+                $this->enviarMensajeDeError($strTextMens);
+                return false;
+            }
+            $objReceDest = Counter::LoadBySiglas($strSiglRece);
+            if (!$objReceDest) {
+                $strTextMens = 'Receptoría Destino <b>Requerida</b>';
+                $this->enviarMensajeDeError($strTextMens);
+                return false;
+            }
+            $arrSucuDest = explode('|',$this->lstSucuDest->SelectedValue);
+            $strSucuDest = $arrSucuDest[0];
+            if ($objReceDest->SucursalId != $strSucuDest) {
+                $strTextMens = 'La Receptoría <b>No pertenece a la Sucursal '.$strSucuDest.'</b>';
+                $this->enviarMensajeDeError($strTextMens);
+                return false;
+            }
+        }
         return true;
     }
 

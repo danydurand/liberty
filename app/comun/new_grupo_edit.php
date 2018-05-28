@@ -64,7 +64,7 @@ class NewGrupoEditForm extends NewGrupoEditFormBase {
 
     protected function lblTituForm_Create() {
         $this->lblTituForm = new QLabel($this);
-        $this->lblTituForm->Text = 'Grupo';
+        $this->lblTituForm->Text  = 'Grupo';
         $this->lblTituForm->Text .= ' ('.($this->intPosiRegi+1).'/'.$this->intCantRegi.')';
     }
 

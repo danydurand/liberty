@@ -136,10 +136,11 @@ class ConsultaGuia extends FormularioBaseKaizen {
 
         //------------------------------------------------------------------------------------------------------------
         // Si el cliente de la guía no se localiza en el registro de clientes del Expreso Nacional, entonces el mismo
-        // es un cliente del Sistema Connect, por lo que la Guía es un COD Nacional (originada desde el SDE o desde
-        // Connect.)
+        // es un cliente del Sistema CORP, por lo que la Guía es un COD Nacional (originada desde el SicCO o desde
+        // CORP)
         //------------------------------------------------------------------------------------------------------------
         if (!$this->objCliePmnx) {
+            t('No es un Cliente Exp Nac');
             $this->objMastClie = MasterCliente::Load($this->objGuia->CodiClie);
         }
 
@@ -169,7 +170,7 @@ class ConsultaGuia extends FormularioBaseKaizen {
             //--------------------------------------------------------------------
             if (trim($this->objGuia->ReceptoriaDestino) == trim($this->strReceOrig)) {
                 $this->blnGuiaFact = true;
-            } elseif ($this->objMastClie) {
+            } elseif ($this->objGuia->SistemaId == 'sde') {
                 //------------------------------------
                 // Se trata de una Guía SDE o CORP
                 //------------------------------------
@@ -309,17 +310,17 @@ class ConsultaGuia extends FormularioBaseKaizen {
         $this->btnProxSmal_Create();
         $this->btnUltiSmal_Create();
 
-        //-----------------
-        // Otras funciones
-        //-----------------
         $this->verificarNavegacion();
+
+        if (TipoGuiaType::ToStringCorto($this->objGuia->TipoGuia) == 'COD') {
+            $this->corregirReceptoriaDestino();
+        }
+
     }
 
     //---------------------
     // Creando objetos ...
     //---------------------
-
-    //-------- Información del Remitente --------
 
     protected function lblNumeGuia_Create() {
         $this->lblNumeGuia = new QLabel($this);
@@ -515,7 +516,9 @@ class ConsultaGuia extends FormularioBaseKaizen {
         $this->lblTickFisc = new QLabel($this);
         $this->lblTickFisc->Name = 'Doc. Fisc';
         if ($this->blnEstaFact) {
-            $this->lblTickFisc->Text = $this->objFactPmnx->Numero;
+            $this->lblTickFisc->Text = $this->objFactPmnx->Numero.' / '.
+                                       $this->objFactPmnx->FechaImpresion.' / '.
+                                       $this->objFactPmnx->HoraImpresion;
         } else {
             $this->lblTickFisc->Text = '';
         }
@@ -832,6 +835,39 @@ class ConsultaGuia extends FormularioBaseKaizen {
     //------------------------------
     // Otras funciones del programa
     //------------------------------
+
+    protected function corregirReceptoriaDestino() {
+        /**
+         * @var $objReceDest Counter
+         */
+        $strSucuDest = $this->objGuia->EstaDest;
+        $strReceDest = $this->lblReceDest->Text;
+        $objReceDest = Counter::LoadBySiglas($strReceDest);
+        if ($objReceDest) {
+            if ($strSucuDest != $objReceDest->SucursalId) {
+                $arrReceDest = Counter::LoadArrayBySucursalId($strSucuDest);
+                $intReceDest = count($arrReceDest);
+                if ($intReceDest == 1) {
+                    $objReceDest = $arrReceDest[0];
+                    $this->objGuia->ReceptoriaDestino = $objReceDest->Siglas;
+                    $this->objGuia->Save();
+                    //----------------------------------------------
+                    // Se deja registro de la transacción realizada
+                    //----------------------------------------------
+                    $arrLogxCamb['strNombTabl'] = 'Guia';
+                    $arrLogxCamb['intRefeRegi'] = $this->objGuia->NumeGuia;
+                    $arrLogxCamb['strNombRegi'] = $this->objGuia->NombDest;
+                    $arrLogxCamb['strDescCamb'] = 'Correccion Receptoria Destino '.$strReceDest.' --> '.$objReceDest->Siglas;
+                    LogDeCambios($arrLogxCamb);
+                    //------------------------------------
+                    // Se cambia el valor en la pantalla
+                    //------------------------------------
+                    $this->lblReceDest->Text = $objReceDest->Siglas;
+                }
+            }
+        }
+    }
+
     protected function verificarNavegacion() {
         $this->btnRegiAnte->Enabled = !($this->intPosiRegi == 0);
         $this->btnPrimRegi->Enabled = !($this->intPosiRegi == 0);
