@@ -184,6 +184,10 @@ class ConsultaGuia extends FormularioBaseKaizen {
             if (trim($this->objGuia->ReceptoriaDestino) == trim($this->strSucuOrig)) {
                 $this->blnGuiaFact = true;
             }
+            if ((trim($this->objGuia->EstaDest) == trim($this->strSucuOrig)) &&
+                (strlen(trim($this->objGuia->ReceptoriaDestino)) == 0)) {
+                $this->blnGuiaFact = true;
+            }
 
             if (!$this->blnGuiaFact) {
                 //-----------------------------------------------------------------------------------------------
@@ -195,7 +199,7 @@ class ConsultaGuia extends FormularioBaseKaizen {
                         $this->blnGuiaFact = true;
                     } elseif ($this->objMastClie) {
                         //------------------------------------
-                        // Se trata de una Guía SDE o CONNECT
+                        // Se trata de una Guía SDE o CORP
                         //------------------------------------
                         if (trim($this->objGuia->EstaDestObject->SeFacturaEnObject->Siglas) == trim($this->strReceOrig)) {
                             $this->blnGuiaFact = true;
@@ -693,7 +697,6 @@ class ConsultaGuia extends FormularioBaseKaizen {
             } else {
                 $mixParaFact = 'strNumeGuia='.$this->objGuia->NumeGuia;
             }
-
             $arrOpciDrop[] = OpcionDropDown(__SIST__.'/crear_factura.php?'.$mixParaFact,TextoIcono('credit-card','Facturar'));
         }
 
@@ -701,11 +704,10 @@ class ConsultaGuia extends FormularioBaseKaizen {
         if ($this->habilitarBotonCupon()) {
             $arrOpciDrop[] = OpcionDropDown(__SIST__.'/asignar_cupon.php/'.$this->objGuia->NumeGuia,TextoIcono('ticket','Asignar Cupón'));
         }
-        */
-
         if ($this->blnConsCupo) {
             $arrOpciDrop[] = OpcionDropDown(__SIST__.'/cupon_guia_edit.php/'.$this->intIdxxCupo,TextoIcono('ticket','Consultar Cupón'));
         }
+        */
 
         $this->btnMasxAcci->Text = CrearDropDownButton($strTextBoto, $arrOpciDrop);
     }

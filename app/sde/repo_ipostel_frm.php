@@ -16,7 +16,7 @@ class RepoIpostelFrm extends FormularioBaseKaizen {
 		parent::Form_Create();
 
 		$this->lblTituForm->Text = 'Criterios para Reporte Ipostel';
-        $this->btnSave->Text = TextoIcono('search fa-lg','Generar');
+        $this->btnSave->Text = TextoIcono('cogs fa-lg','Generar');
 
 		$this->calFechInic_Create();
 		$this->calFechFina_Create();

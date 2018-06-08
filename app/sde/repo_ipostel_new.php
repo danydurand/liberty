@@ -9,11 +9,10 @@
 require_once('qcubed.inc.php');
 require_once(__APP_INCLUDES__.'/protected.inc.php');
 require_once(__APP_INCLUDES__.'/FormularioBaseKaizen.class.php');
-//------------------------------------------------------------------
-// La variable de Sesion llamada 'CritImpr' contiene los valores
-// que definen el conjunto de registros que debe salir en el
-// Reporte
-//------------------------------------------------------------------
+//-----------------------------------------------------------------------------------------------------
+// La variable de Sesion llamada 'Criterio' contiene los valores que definen el conjunto de registros
+// que debe salir en el Reporte
+//-----------------------------------------------------------------------------------------------------
 $objCondWher = unserialize($_SESSION['Criterio']);
 $strTituRepo = 'Ipostel';
 if (isset($_SESSION['FechInic']) && isset($_SESSION['FechFina'])) {
@@ -27,19 +26,18 @@ if (isset($_SESSION['FechInic']) && isset($_SESSION['FechFina'])) {
 $intCant0500 = 0;
 $intCant1000 = 0;
 $intCant2000 = 0;
-//--------------------------------------------------------------
-// Recorro la lista de registros, armando el vector de datos
-// que requiere la rutina PDF
-//--------------------------------------------------------------
+//---------------------------------------------------------------------------------------
+// Recorro la lista de registros, armando el vector de datos que requiere la rutina PDF
+//---------------------------------------------------------------------------------------
 $blnHayxDato = true;
 $dblAcumPeso = 0;
 $dblAcumFran = 0;
 $dblAcumMont = 0;
 $dblAcumSgro = 0;
 $objUser = unserialize($_SESSION['User']);
-//----------------------------------------------------------------------
+//--------------------------------------------------------
 // Se determina el nombre del archivo que sera generado
-//----------------------------------------------------------------------
+//--------------------------------------------------------
 $strNombArch = __TEMP__.'/ipostel_new_'.$objUser->LogiUsua.'.csv';
 $mixManeArch = fopen($strNombArch,'w');
 //----------------
@@ -47,23 +45,21 @@ $mixManeArch = fopen($strNombArch,'w');
 //----------------
 $arrDato2PDF = array();
 $arrLineArch = array('Codigo','Remitente','Destinatario','Guia No.','Fecha','Peso','F.Postal','Monto Bs','Tipo','ORI-DES');
-//----------------------------------------------------------------------
-// El vector de encabezados, se lleva al archivo plano
-//----------------------------------------------------------------------
 $strCadeAudi = implode(';',$arrLineArch);
 fputs($mixManeArch,$strCadeAudi.";\n");
 //--------------------------------------------------------
 // Selecciono los registros que satisfagan la condicion
 //--------------------------------------------------------
-$strCadeSqlx = "select guia.*, master_cliente.*
-                  from guia, master_cliente 
-                 where guia.codi_clie = master_cliente.codi_clie
-                   and guia.fech_guia between '".$dttFechInic."' and '".$dttFechFina."' 
-                   and guia.monto_franqueo > 0 
-                   and master_cliente.codigo_interno not in ('IMP01','CCS03') ";
+$strCadeSqlx  = "select guia.*, master_cliente.* ";
+$strCadeSqlx .= "  from guia inner join master_cliente ";
+$strCadeSqlx .= "    on guia.codi_clie = master_cliente.codi_clie ";
+$strCadeSqlx .= " where guia.fech_guia between '".$dttFechInic."' and '".$dttFechFina."' ";
+$strCadeSqlx .= "   and guia.monto_franqueo > 0 ";
+$strCadeSqlx .= "   and master_cliente.codigo_interno not in ('IMP01','CCS03') ";
 if (isset($_SESSION['SucuDest'])) {
-    $strCadeSqlx = " guia.esta_dest = '".$_SESSION['SucuDest']."'";
+    $strCadeSqlx .= " guia.esta_dest = '".$_SESSION['SucuDest']."'";
 }
+$strCadeSqlx .= " order by guia.nume_guia ";
 $objDatabase = Guia::GetDatabase();
 $objDbResult = $objDatabase->Query($strCadeSqlx);
 $intCantRegi = 0;
@@ -71,19 +67,18 @@ while ($mixRegistro = $objDbResult->FetchArray()) {
     $decMontParc = round($mixRegistro['monto_base'] + $mixRegistro['monto_franqueo'] + $mixRegistro['monto_iva'],2);
     $decMontParc = str_replace(",","",$decMontParc);
     $decMontParc = str_replace(".",",",$decMontParc);
-
     $arrLineArch = array(
         $mixRegistro['codigo_interno'],
         substr($mixRegistro['nomb_remi'],0,23),
-        substr($mixRegistro['nomb_remi'],0,23),
+        substr($mixRegistro['nomb_dest'],0,23),
         $mixRegistro['nume_guia'],
         $mixRegistro['fech_guia'],
         str_replace(".",",",$mixRegistro['peso_guia']),
         str_replace(".",",",$mixRegistro['monto_franqueo']),
         $decMontParc,
         TipoGuiaType::ToStringCorto($mixRegistro['tipo_guia']),
-        $mixRegistro['esta_orig']."-".$mixRegistro['esta_dest']);
-
+        $mixRegistro['esta_orig']."-".$mixRegistro['esta_dest']
+    );
     $dblAcumPeso = $dblAcumPeso + $mixRegistro['peso_guia'];
     $dblAcumFran = $dblAcumFran + $mixRegistro['monto_franqueo'];
     $dblAcumMont = $dblAcumMont + ($mixRegistro['monto_base']+$mixRegistro['monto_iva']);
