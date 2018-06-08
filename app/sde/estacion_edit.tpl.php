@@ -92,6 +92,9 @@ require(__APP_INCLUDES__ . '/botonera_edit.inc.php');
                         <div class="media">
                             <div class="media-body"><br>
                                 <div class="col-md-12">
+                                    <div class="text-center" style="margin-bottom: .8em">
+                                        <?php $this->btnNuevRece->Render(); ?>
+                                    </div>
                                     <?php $this->dtgReceSucu->Render(); ?>
                                 </div>
                             </div>

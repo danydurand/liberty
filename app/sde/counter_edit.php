@@ -45,7 +45,17 @@ class CounterEditForm extends CounterEditFormBase {
 		// Call MetaControl's methods to create qcontrols based on Counter's data fields
 		$this->lblId = $this->mctCounter->lblId_Create();
 		$this->txtDescripcion = $this->mctCounter->txtDescripcion_Create();
-		$this->lstSucursal = $this->mctCounter->lstSucursal_Create();
+        $this->lstSucursal = $this->mctCounter->lstSucursal_Create();
+		if (isset($_SESSION['CodiSucu'])) {
+            $this->lstSucursal->RemoveAllItems();
+            $objSucuSele = Estacion::Load($_SESSION['CodiSucu']);
+            if ($objSucuSele) {
+                $this->lstSucursal->AddItem($objSucuSele->__toString(),$objSucuSele->CodiEsta,true);
+            }
+            $this->lstSucursal->Enabled = false;
+            $this->lstSucursal->ForeColor = 'blue';
+            unset($_SESSION['CodiSucu']);
+        }
 		$this->lstRuta = $this->mctCounter->lstRuta_Create();
 		$this->lstRuta->Width = 350;
 		$this->lstEntregaInmediataObject = $this->mctCounter->lstEntregaInmediataObject_Create();
@@ -78,6 +88,7 @@ class CounterEditForm extends CounterEditFormBase {
 		$this->chkDomOrigen->Name = 'Serv. Domic. Origen ?';
 		$this->chkDomDestino = $this->mctCounter->chkDomDestino_Create();
 		$this->chkDomDestino->Name = 'Serv. Domic. Destino ?';
+
 
 	}
 

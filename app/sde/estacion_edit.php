@@ -28,6 +28,8 @@ class EstacionEditForm extends EstacionEditFormBase {
     protected $intCantRece;
     protected $chkVisiClie;
 
+    protected $btnNuevRece;
+
 	// Override Form Event Handlers as Needed
 	protected function Form_Run() {
 		parent::Form_Run();
@@ -167,11 +169,19 @@ class EstacionEditForm extends EstacionEditFormBase {
             $this->btnSave->Visible = false;
             $this->btnDelete->Visible = false;
         }
+
+        $this->btnNuevRece_Create();
 	}
 
 	//----------------------------
 	// Aqui se crean los objetos 
 	//----------------------------
+
+    protected function btnNuevRece_Create() {
+	    $this->btnNuevRece = new QButtonS($this);
+	    $this->btnNuevRece->Text = TextoIcono('plus','Crear Receptoria');
+	    $this->btnNuevRece->AddAction(new QClickEvent(), new QAjaxAction('btnNuevRece_Click'));
+    }
 
     protected function dtgReceSucu_Create() {
         $this->dtgReceSucu = new CounterDataGrid($this);
@@ -195,8 +205,10 @@ class EstacionEditForm extends EstacionEditFormBase {
         $this->dtgReceSucu->MetaAddColumn('Siglas');
         $this->dtgReceSucu->MetaAddColumn('Descripcion');
 
+        /*
         $colNombSuce = $this->dtgReceSucu->MetaAddColumn(QQN::Counter()->Sucursal->DescEsta);
         $colNombSuce->Name = 'Sucursal';
+        */
 
         $colReceStat = $this->dtgReceSucu->MetaAddTypeColumn('StatusId', 'StatusType');
         $colReceStat->Name = 'Estatus';
@@ -245,6 +257,13 @@ class EstacionEditForm extends EstacionEditFormBase {
     //-----------------------------------
 	// Acciones relativas a los objetos 
 	//-----------------------------------
+
+    protected function btnNuevRece_Click() {
+	    if (strlen($this->txtCodiEsta->Text) > 0) {
+            $_SESSION['CodiSucu'] = $this->txtCodiEsta->Text;
+            QApplication::Redirect(__SIST__.'/counter_edit.php');
+        }
+    }
 
     protected function btnLogxCamb_Click() {
         $_SESSION['RegiRefe'] = $this->mctEstacion->Estacion->CodiEsta;
