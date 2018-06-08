@@ -21,6 +21,9 @@ require_once(__FORMBASE_CLASSES__ . '/CounterEditFormBase.class.php');
  * @subpackage Drafts
  */
 class CounterEditForm extends CounterEditFormBase {
+    protected $intCantCaja;
+    protected $btnNuevCaja;
+    protected $dtgCajaRece;
 
 	// Override Form Event Handlers as Needed
 	protected function Form_Run() {
@@ -89,12 +92,79 @@ class CounterEditForm extends CounterEditFormBase {
 		$this->chkDomDestino = $this->mctCounter->chkDomDestino_Create();
 		$this->chkDomDestino->Name = 'Serv. Domic. Destino ?';
 
+        $this->intCantCaja = Caja::CountByCounterId($this->mctCounter->Counter->Id);
+        $this->btnNuevCaja_Create();
+        $this->dtgCajaRece_Create();
 
-	}
+    }
 
 	//----------------------------
 	// Aqui se crean los objetos 
 	//----------------------------
+
+    protected function dtgCajaRece_Create() {
+        // Instantiate the Meta DataGrid
+        $this->dtgCajaRece = new CajaDataGrid($this);
+        $this->dtgCajaRece->ShowFilter = false;
+
+        // Style the DataGrid (if desired)
+        $this->dtgCajaRece->CssClass = 'datagrid';
+        $this->dtgCajaRece->AlternateRowStyle->CssClass = 'alternate';
+        $this->dtgCajaRece->FontSize = 13;
+
+        $objClauWher   = QQ::Clause();
+        $objClauWher[] = QQ::Equal(QQN::Caja()->CounterId,$this->mctCounter->Counter->Id);
+        $this->dtgCajaRece->AdditionalConditions = QQ::AndCondition($objClauWher);
+
+        // Add Pagination (if desired)
+//        $this->dtgCajaRece->Paginator = new QPaginator($this->dtgCajaRece);
+//        $this->dtgCajaRece->ItemsPerPage = __FORM_DRAFTS_FORM_LIST_ITEMS_PER_PAGE__;
+
+        // Higlight the datagrid rows when mousing over them
+        $this->dtgCajaRece->AddRowAction(new QMouseOverEvent(), new QCssClassAction('selectedStyle'));
+        $this->dtgCajaRece->AddRowAction(new QMouseOutEvent(), new QCssClassAction());
+
+        // Add a click handler for the rows.
+        // We can use $_CONTROL->CurrentRowIndex to pass the row index to dtgPersonsRow_Click()
+        // or $_ITEM->Id to pass the object's id, or any other data grid variable
+        $this->dtgCajaRece->RowActionParameterHtml = '<?= $_ITEM->Id ?>';
+        $this->dtgCajaRece->AddRowAction(new QClickEvent(), new QAjaxAction('dtgCajaReceRow_Click'));
+
+        //-------------------------------------------------
+        // Defino las columnas que aparecerán en mi lista
+        //-------------------------------------------------
+        $colCajaIdxx = $this->dtgCajaRece->MetaAddColumn('Id');
+        $colCajaIdxx->FilterType = null;
+
+        $this->dtgCajaRece->MetaAddColumn('Descripcion');
+
+        /*
+        $colReceCaja = $this->dtgCajaRece->MetaAddColumn(QQN::Caja()->Counter->Descripcion);
+        $colReceCaja->Name = 'Receptoria';
+        $colReceCaja->Filter = QQ::Like(QQN::Caja()->Counter->Descripcion,null);
+        $colReceCaja->FilterType = QFilterType::TextFilter;
+        */
+
+        //$this->dtgCajaRece->MetaAddColumn('ControlSeniat');
+        $this->dtgCajaRece->MetaAddTypeColumn('TipoId', 'TipoCajaType');
+        $this->dtgCajaRece->MetaAddColumn('ImpresoraId');
+
+        $colCajaSeri = $this->dtgCajaRece->MetaAddColumn('Serie');
+        $colCajaSeri->FilterType = null;
+        //$this->dtgCajaRece->MetaAddColumn('ConseFactura');
+
+    }
+
+    public function dtgCajaReceRow_Click($strFormId, $strControlId, $strParameter) {
+        $intId = intval($strParameter);
+        QApplication::Redirect(__SIST__."/caja_edit.php/$intId");
+    }
+
+    protected function btnNuevCaja_Create() {
+	    $this->btnNuevCaja = new QButtonS($this);
+	    $this->btnNuevCaja->Text = TextoIcono('plus','Crear Nueva Caja');
+	    $this->btnNuevCaja->AddAction(new QClickEvent(), new QAjaxAction('btnNuevCaja_Click'));
+    }
 
     protected function determinarPosicion() {
         if ($this->mctCounter->Counter && !isset($_SESSION['DataCounter'])) {
@@ -134,6 +204,13 @@ class CounterEditForm extends CounterEditFormBase {
     //-----------------------------------
 	// Acciones relativas a los objetos 
 	//-----------------------------------
+
+    protected function btnNuevCaja_Click() {
+        if (strlen($this->lblId->Text) > 0) {
+            $_SESSION['CodiRece'] = $this->lblId->Text;
+            QApplication::Redirect(__SIST__.'/caja_edit.php');
+        }
+    }
 
     protected function btnProxRegi_Click() {
         $objRegiTabl = $this->arrDataTabl[$this->intPosiRegi+1];
