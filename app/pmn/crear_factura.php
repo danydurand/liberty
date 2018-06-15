@@ -11,6 +11,9 @@ require_once(__APP_INCLUDES__.'/protected.inc.php');
 require_once(__APP_INCLUDES__.'/FormularioBaseKaizen.class.php');
 
 class CrearFactura extends FormularioBaseKaizen {
+    /**
+     * @var $objGuia Guia
+     */
     protected $objGuia;
     protected $objCliePmnx;
     /**
@@ -105,7 +108,7 @@ class CrearFactura extends FormularioBaseKaizen {
             if ($objReceDest) {
                 $this->strTipoServ = $objReceDest->EsRuta == SinoType::SI ? 'DOM' : 'REC';
             } else {
-                $this->strTipoServ = 'REC';
+                $this->strTipoServ = 'REC';   // Receptoria
             }
         } else {
             //-------------------------------------------------------------------
@@ -142,7 +145,6 @@ class CrearFactura extends FormularioBaseKaizen {
         //---- Ret. ISLR ----
         $this->txtCoreIslr_Create();
         $this->txtPorcIslr_Create();
-
         $this->lblCoreIslr_Create();
         $this->calCoreIslr_Create();
         $this->lblPorcIslr_Create();
@@ -153,7 +155,6 @@ class CrearFactura extends FormularioBaseKaizen {
         //---- Ret. IVA ----
         $this->txtCompRete_Create();
         $this->txtPorcRete_Create();
-
         $this->lblCompRete_Create();
         $this->calCompRete_Create();
         $this->lblPorcRete_Create();
@@ -161,7 +162,7 @@ class CrearFactura extends FormularioBaseKaizen {
         $this->lblMontSgro_Create();
         $this->lblMontMiva_Create();
         $this->lblMontTota_Create();
-        //---- cobro ----
+        //---- Cobro ----
         $this->lblMontACob_Create();
         $this->lblMontCobr_Create();
         $this->lblMontRest_Create();
@@ -508,17 +509,6 @@ class CrearFactura extends FormularioBaseKaizen {
         }
     }
 
-//    protected function calCompRete_Create() {
-//        $this->calCompRete = new QCalendar($this);
-//        $this->calCompRete->Name = 'Fec. Comp.';
-//        $this->calCompRete->Width = 90;
-//        if (!$this->blnEditMode) {
-//            $this->calCompRete->DateTime = null;
-//        } else {
-//            $this->calCompRete->DateTime = $this->objFactPmnx->FechaComprobante;
-//        }
-//    }
-
     protected function lblPorcRete_Create() {
         $this->lblPorcRete = new QLabel($this);
         $this->lblPorcRete->Name = '% Ret.';
@@ -769,6 +759,8 @@ class CrearFactura extends FormularioBaseKaizen {
         $strRazoSoci = limpiarCadena($this->txtRazoSoci->Text);
         $strDireFisc = limpiarCadena($this->txtDireFisc->Text);
         $strNumeTele = DejarSoloLosNumeros($this->txtNumeTele->Text);
+        $blnHuboErro = false;
+        $strMensErro = '';
 
         $strNombProc = 'Creando Factura Expreso Nacional';
         $objProcEjec = CrearProceso($strNombProc);
@@ -809,12 +801,14 @@ class CrearFactura extends FormularioBaseKaizen {
             $objCliePmnx->Direccion     = $strDireFisc;
             $objCliePmnx->Save();
         } catch (Exception $e) {
-            $this->mensaje($e->getMessage(),'m','d','',__iHAND__);
+            //$this->mensaje($e->getMessage(),'m','d','',__iHAND__);
+            $strMensErro .= $e->getMessage();
             $arrParaErro['ProcIdxx'] = $objProcEjec->Id;
             $arrParaErro['NumeRefe'] = 'Cliente Exp Nac: '.$this->lblCeduRifx->Text;
             $arrParaErro['MensErro'] = $e->getMessage();
             $arrParaErro['ComeErro'] = 'Falló el Save del Cliente Exp Nac';
             GrabarError($arrParaErro);
+            $blnHuboErro = true;
         }
         //---------------------------------------------------------------
         // Se actualiza la guia asociandola con el Id de la Pre-Factura
@@ -822,6 +816,37 @@ class CrearFactura extends FormularioBaseKaizen {
         if (!$this->blnEditMode) {
             $this->objGuia->FacturaId = $this->objFactPmnx->Id;
             $this->objGuia->Save();
+            if (TipoGuiaType::ToStringCorto($this->objGuia->TipoGuia) == 'COD') {
+                //-----------------------------------------
+                // La guia facturada, se da por entregada
+                //-----------------------------------------
+                try {
+                    $objCkptOkey = SdeCheckpoint::Load('OK');
+                    $calFechEntr = new QDateTime(QDateTime::Now);
+                    $arrDatoPodx['objGuiaPodx'] = $this->objGuia;
+                    $arrDatoPodx['objChecPodx'] = $objCkptOkey;
+                    $arrDatoPodx['calFechPodx'] = $calFechEntr;
+                    $arrDatoPodx['txtHoraPodx'] = date('H:i');
+                    $arrDatoPodx['txtUsuaPodx'] = $this->objUsuario->CodiUsua;
+                    $arrDatoPodx['txtEntrAqui'] = $strRazoSoci;
+                    $arrDatoPodx['calFechEntr'] = $calFechEntr;
+                    $arrDatoPodx['txtFechEntr'] = date('d/m/Y');
+                    $arrDatoPodx['txtHoraEntr'] = date('H:i');
+                    $arrResuPodx = GrabarPODEnLaGuia($arrDatoPodx);
+                    if (!$arrResuPodx['blnTodoOkey']) {
+                        throw new Exception($arrResuPodx['strMensUsua']);
+                    }
+                } catch (Exception $e) {
+                    //$this->mensaje($e->getMessage(),'m','d','',__iHAND__);
+                    $strMensErro .= $e->getMessage();
+                    $arrParaErro['ProcIdxx'] = $objProcEjec->Id;
+                    $arrParaErro['NumeRefe'] = $this->objGuia->NumeGuia;
+                    $arrParaErro['MensErro'] = $e->getMessage();
+                    $arrParaErro['ComeErro'] = 'Falló el POD automático en la Facturación';
+                    GrabarError($arrParaErro);
+                    $blnHuboErro = true;
+                }
+            }
         }
         //----------------------------------------------------------------
         // Se activan los botones que permiten operar con la Pre-Factura
@@ -833,7 +858,11 @@ class CrearFactura extends FormularioBaseKaizen {
         //-----------------------------------------------------------
         $this->blnEditMode = true;
         error_reporting($mixErroOrig);
-        $this->mensaje('Transacción Exitosa !','','','',__iCHEC__);
+        if (!$blnHuboErro) {
+            $this->mensaje('Transacción Exitosa !','','','',__iCHEC__);
+        } else {
+            $this->mensaje($strMensErro,'','w','',__iEXCL__);
+        }
         $this->controlDeBotones();
     }
 
@@ -876,9 +905,9 @@ class CrearFactura extends FormularioBaseKaizen {
     }
 
     protected function dtgItemFact_Bind() {
-        $objClauWher = QQ::Clause();
+        $objClauWher   = QQ::Clause();
         $objClauWher[] = QQ::Equal(QQN::ItemFacturaPmn()->FacturaId, $this->lblNumeFact->Text);
-        $arrItemFact = ItemFacturaPmn::QueryArray(QQ::AndCondition($objClauWher));
+        $arrItemFact   = ItemFacturaPmn::QueryArray(QQ::AndCondition($objClauWher));
 
         // Bind the datasource to the datagrid
         $this->dtgItemFact->DataSource = $arrItemFact;
@@ -944,37 +973,50 @@ class CrearFactura extends FormularioBaseKaizen {
     //------------------------------
     // Otras funciones del programa
     //------------------------------
+
     protected function CrearNuevaFactura() {
-        //----------------------------------------------------
-        // Se recalcula el IVA y Tarifa de la Guía a asociar.
-        //----------------------------------------------------
-//        $arrCalcTari   = CalcularTarifaPmnDeLaGuia($this->objGuia);
-//        $blnTodoOkey   = $arrCalcTari['blnTodoOkey'];
-//        $this->objGuia = $arrCalcTari['objGuiaCalc'];
-        $blnTodoOkey = true;
-        if ($blnTodoOkey) {
-            //---------------------------------------------
-            // Se crea un registro en la tabla factura
-            //---------------------------------------------
-            $this->UpdateFieldsFactura();
-            $this->objFactPmnx->Save();
-            $this->lblNumeFact->Text = $this->objFactPmnx->Id;
-            //-----------------------------------------------------------------------------
-            // La guia que entra como parametro, se agrega como primer item de la factura
-            //-----------------------------------------------------------------------------
-            $this->AgregarPrimerItemFactura();
-            $this->dtgItemFact_Create();
-            //---------------------------------------------------------------
-            // Se actualiza la guia asociandola con el Id de la Pre-Factura
-            //---------------------------------------------------------------
-            $this->objGuia->FacturaId = $this->objFactPmnx->Id;
-            $this->objGuia->Save();
-            //-----------------------------------------------------
-            // Se actualizan y muestran los montos de la factura
-            //-----------------------------------------------------
-            $this->objFactPmnx->ActualizarMontos();
-            $this->MostrarMontos();
-        }
+        //---------------------------------------------
+        // Se crea un registro en la tabla factura
+        //---------------------------------------------
+//        t('Los montos de la Guia son: (M0)');
+//        t('Monto Base    :'.$this->objGuia->MontoBase);
+//        t('Monto Franqueo:'.$this->objGuia->MontoFranqueo);
+//        t('Monto Iva     :'.$this->objGuia->MontoIva);
+//        t('Monto Seguro  :'.$this->objGuia->MontoSeguro);
+//        t('Monto Otros   :'.$this->objGuia->MontoOtros);
+//        t('Monto Total   :'.$this->objGuia->MontoTotal);
+        $this->UpdateFieldsFactura();
+        $this->objFactPmnx->Save();
+//        t('Los montos de la Factura son: (M1)');
+//        t('Monto Base    :'.$this->objFactPmnx->MontoBase);
+//        t('Monto Franqueo:'.$this->objFactPmnx->MontoFranqueo);
+//        t('Monto Iva     :'.$this->objFactPmnx->MontoIva);
+//        t('Monto Seguro  :'.$this->objFactPmnx->MontoSeguro);
+//        t('Monto Otros   :'.$this->objFactPmnx->MontoOtros);
+//        t('Monto Total   :'.$this->objFactPmnx->MontoTotal);
+        $this->lblNumeFact->Text = $this->objFactPmnx->Id;
+        //-----------------------------------------------------------------------------
+        // La guia que entra como parametro, se agrega como primer item de la factura
+        //-----------------------------------------------------------------------------
+        $this->AgregarPrimerItemFactura();
+        $this->dtgItemFact_Create();
+        //---------------------------------------------------------------
+        // Se actualiza la guia asociandola con el Id de la Pre-Factura
+        //---------------------------------------------------------------
+        $this->objGuia->FacturaId = $this->objFactPmnx->Id;
+        $this->objGuia->Save();
+        //-----------------------------------------------------
+        // Se actualizan y muestran los montos de la factura
+        //-----------------------------------------------------
+        $this->objFactPmnx->ActualizarMontos();
+//        t('Los montos de la Factura son: (M2)');
+//        t('Monto Base    :'.$this->objFactPmnx->MontoBase);
+//        t('Monto Franqueo:'.$this->objFactPmnx->MontoFranqueo);
+//        t('Monto Iva     :'.$this->objFactPmnx->MontoIva);
+//        t('Monto Seguro  :'.$this->objFactPmnx->MontoSeguro);
+//        t('Monto Otros   :'.$this->objFactPmnx->MontoOtros);
+//        t('Monto Total   :'.$this->objFactPmnx->MontoTotal);
+        $this->MostrarMontos();
     }
 
     protected function CargarDatosDeLaFactura() {
@@ -1042,11 +1084,9 @@ class CrearFactura extends FormularioBaseKaizen {
         $this->lblMontSgro->Text = (string) $this->objFactPmnx->MontoSeguro;
         $this->lblMontMiva->Text = (string) $this->objFactPmnx->MontoIva;
         $this->lblMontTota->Text = (string) $this->objFactPmnx->MontoTotal;
-
         $this->lblMontAcob->Text = (string) $this->objFactPmnx->MontoTotal;
         $this->lblMontCobr->Text = (string) $this->objFactPmnx->MontoCobrado;
-        $decMontRest = $this->objFactPmnx->MontoTotal - $this->objFactPmnx->MontoCobrado;
-        // $this->lblMontRest->Text = str_replace('.', ',', $decMontRest);
+        $decMontRest             = $this->objFactPmnx->MontoTotal - $this->objFactPmnx->MontoCobrado;
         $this->lblMontRest->Text = (string) $decMontRest;
 
         if ($this->lblMontRest->Text == 0 && $this->objFactPmnx->ImpresaId == SinoType::NO) {

@@ -25,6 +25,7 @@ class ConsultaGuia extends FormularioBaseKaizen {
     protected $strFechPago;
     protected $strTipoDocu;
     protected $strNumeDocu;
+    protected $lblSistGuia;
 
     // ---- Remitente ---- //
     protected $lblSucuOrig;
@@ -146,6 +147,7 @@ class ConsultaGuia extends FormularioBaseKaizen {
 
         $this->lblTituForm->Text = 'Consulta de la Guía';
 
+        $this->lblSistGuia_Create();
         //---- Remitente ---- //
         $this->lblSucuOrig_Create();
         $this->lblNombRemi_Create();
@@ -262,6 +264,11 @@ class ConsultaGuia extends FormularioBaseKaizen {
     //----------------------------
     // Aquí se Crean los Objetos
     //----------------------------
+
+    protected function lblSistGuia_Create() {
+        $this->lblSistGuia = new QLabel($this);
+        $this->lblSistGuia->Text = $this->objGuia->sistema();
+    }
 
     protected function btnGuiaOrig_Create() {
         $this->btnGuiaOrig = new QButtonI($this);

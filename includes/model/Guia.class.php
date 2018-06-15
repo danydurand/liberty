@@ -27,6 +27,22 @@
             return sprintf('%s',  $this->strNumeGuia);
         }
 
+        public function sistema() {
+            switch ($this->SistemaId) {
+                case 'sde':
+                    return 'SisCO';
+                    break;
+                case 'cnt':
+                    return 'ExpNac';
+                    break;
+                case 'con':
+                    return 'CORP';
+                    break;
+                default:
+                    return 'N/A';
+            }
+        }
+
         public function tieneCheckpointDeCierre() {
             //-------------------------------------------------------------------
             // Esta rutina verifica la existencia de algún checkpoint de cierre

@@ -54,6 +54,7 @@
 			foreach ($arrItemFact as $objItemFact) {
 				$objItemFact->Guia->FacturaId = null;
 				$objItemFact->Guia->Save();
+				$objItemFact->Guia->EliminarPOD();
 				//------------------------------------
 				// Se elimina el item de la Factura
 				//------------------------------------
@@ -63,9 +64,9 @@
 			// Se eliminan los pagos asociados a la Factura
 			//------------------------------------------------
 			$this->DeleteAllPagoFacturaPmnsAsFactura();
-			//--------------------------------------------
+			//----------------------------------
 			// Se elimina la Factura como tal
-			//--------------------------------------------
+			//----------------------------------
 			$this->Delete();
 		}
 

@@ -1679,16 +1679,17 @@ class CargarGuia extends FormularioBaseKaizen {
         $this->decPorcSegu = 0;
         $decBaseImpo = $this->txtMontTota->Text - $this->txtMontSegu->Text;
         $decPorcIvay = $this->PorcentajeIVA();
-        //Traza('Calculando montos de la Guía al tratarse de un Flete Directo');
-        //Traza('Peso Guía: '.$this->txtPesoGuia->Text);
-        //Traza('Franqueo: '.$this->txtMontFran->Text);
-        //Traza('Seguro: '.$this->txtMontSegu->Text);
-        //Traza('Porcentaje Seguro: '.$this->decPorcSegu);
-        //Traza('Base Imponible: '.$decBaseImpo);
-        //Traza('Porcentaje IVA Prev.: '.$decPorcIvay);
+        //t('Calculando montos de la Guía al tratarse de un Flete Directo');
+        //t('Peso Guía: '.$this->txtPesoGuia->Text);
+        //t('Franqueo: '.$this->txtMontFran->Text);
+        //t('Seguro: '.$this->txtMontSegu->Text);
+        //t('Porcentaje Seguro: '.$this->decPorcSegu);
+        //t('Base Imponible: '.$decBaseImpo);
+        //t('Porcentaje IVA Prev.: '.$decPorcIvay);
         if ($decPorcIvay == 0) {
             $this->txtMontIvax->Text = 0;
         } else {
+            /*
             //-----------------------------------------------------------------------------------
             // Si el monto de la tarifa, es superior a los 2.000.000,00, el IVA se reduce a 5%.
             // De lo contrario, se reduce a un 3%.
@@ -1699,13 +1700,14 @@ class CargarGuia extends FormularioBaseKaizen {
             } else {
                 $this->decPorcIvax = 9;
             }
+            */
             $decPorcIvax = 1 + ($this->decPorcIvax / 100);
             $this->txtMontIvax->Text = str_replace('.','',nf0($this->txtMontTota->Text - ($decBaseImpo / $decPorcIvax)));
-            //Traza('Porcentaje IVA: '.$decPorcIvax);
+            //t('Porcentaje IVA: '.$decPorcIvax);
         }
         $this->txtMontBase->Text = str_replace(',','',nfp($this->txtMontTota->Text - $this->txtMontSegu->Text - $this->txtMontIvax->Text));
-        //Traza('Monto IVA: '.$this->txtMontIvax->Text);
-        //Traza('Monto Base: '.$this->txtMontBase->Text);
+        //t('Monto IVA: '.$this->txtMontIvax->Text);
+        //t('Monto Base: '.$this->txtMontBase->Text);
     }
 
     protected function lstCodiClie_Change() {
@@ -1936,9 +1938,9 @@ class CargarGuia extends FormularioBaseKaizen {
             $strIconMens = 'check';
             $strMensUsua = 'Transacción Exitosa';
             $strMensErro = '';
-            //------------------------------------------------------------------------------------
-            // Antes de actualizar la ficha de la Guía a guardar, se clona el objeto de la misma
-            //------------------------------------------------------------------------------------
+            //------------------------------------------------------------------------
+            // Antes de actualizar la Guía a guardar, se clona el objeto de la misma
+            //------------------------------------------------------------------------
             $objGuiaViej = $this->objGuia;
             $this->decPesoInic = $objGuiaViej->PesoGuia;
             //--------------------------------------------------------

@@ -136,7 +136,7 @@ require(__APP_INCLUDES__ . '/header.inc.php');
                 <div class="col-md-6">
                     <div class="row">
                         <div class="col-md-3">
-                            <div class="titulo-c">Guía #</div>
+                            <div class="titulo-c">Guía (<?= $this->lblSistGuia->Text ?>)#</div>
                         </div>
                         <div class="col-md-3">
                             <?php $this->lblNumeGuia->Render(); ?>
