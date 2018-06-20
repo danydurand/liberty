@@ -190,9 +190,37 @@ class CambioSucuReceGuia extends FormularioBaseKaizen {
                     $this->decPorcIvax = 0;
                 }
             }
+            //-----------------------
+            // Se calcula la Tarifa
+            //-----------------------
+            /*
+            $arrParaTari['dttFechGuia'] = $this->objGuiaAjus->FechGuia->__toString("YYYY-MM-DD");
+            $arrParaTari['intCodiTari'] = $this->objGuiaAjus->TarifaId;
+            $arrParaTari['intCodiProd'] = $this->objGuiaAjus->ProductoId;
+            $arrParaTari['strCodiOrig'] = $this->objGuiaAjus->EstaOrig;
+            $arrParaTari['strCodiDest'] = $strSucuDest;
+            $arrParaTari['dblPesoGuia'] = $this->objGuiaAjus->PesoGuia;
+            $arrParaTari['dblValoDecl'] = $this->objGuiaAjus->ValorDeclarado;
+            $arrParaTari['intChecAseg'] = intval($this->objGuiaAjus->Asegurado);
+            $arrParaTari['decSgroClie'] = $this->decPorcSegu;
+            $arrParaTari['strModaPago'] = TipoGuiaType::ToStringCorto($this->objGuiaAjus->TipoGuia);
+
+            $arrValoTari = calcularTarifaParcialNew($arrParaTari);
+
+            $blnTodoOkey = $arrValoTari['blnTodoOkey'];
+            $strMensUsua = $arrValoTari['strMensUsua'];
+            $dblMontBase = $arrValoTari['dblMontBase'];
+            $dblFranPost = $arrValoTari['dblFranPost'];
+            $dblMontDiva = $arrValoTari['dblMontDiva'];
+            $dblMontSgro = $arrValoTari['dblMontSgro'];
+            $dblMontTota = $arrValoTari['dblMontTota'];
+            $dblPorcSegu = $arrValoTari['dblPorcSgro'];
+            $decPorcIvax = $arrValoTari['dblPorcDiva'];
+            */
             //------------------------------------------
             // Se procede ahora al calculo de la Tarifa
             //------------------------------------------
+
             $arrParaTari['dttFechGuia'] = $this->objGuiaAjus->FechGuia->__toString("YYYY-MM-DD");
             $arrParaTari['strCodiOrig'] = $this->objGuiaAjus->EstaOrig;
             $arrParaTari['strCodiDest'] = $strSucuDest;
@@ -204,6 +232,7 @@ class CambioSucuReceGuia extends FormularioBaseKaizen {
             $arrParaTari['strModaPago'] = TipoGuiaType::ToStringCorto($this->objGuiaAjus->TipoGuia);
             $arrParaTari['strEstaUsua'] = $this->objUsuario->CodiEsta;
             $arrParaTari['decSgroClie'] = $this->objGuiaAjus->CodiClieObject->PorcentajeSeguro;
+            $arrParaTari['objTariGuia'] = FacTarifa::Load($this->objGuiaAjus->TarifaId);
 
             $arrValoTari = calcularTarifaParcialPmn($arrParaTari);
 
@@ -214,6 +243,7 @@ class CambioSucuReceGuia extends FormularioBaseKaizen {
             $dblMontDiva = nfp($arrValoTari['dblMontDiva']);
             $dblMontSgro = nfp($arrValoTari['dblMontSgro']);
             $dblMontTota = nfp($arrValoTari['dblMontTota']);
+
             if ($blnTodoOkey) {
                 //----------------------
                 // Se actualiza la Guía
