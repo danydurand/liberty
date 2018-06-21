@@ -41,7 +41,8 @@ if ($objCheckpoint) {
 		$arrDatoCkpt = array();
 		$arrDatoCkpt['NumeGuia'] = $objGuia->NumeGuia;
 		$arrDatoCkpt['CodiCkpt'] = $objCheckpoint->CodiCkpt;
-		$arrDatoCkpt['TextObse'] = $objCheckpoint->DescCkpt;
+		$arrDatoCkpt['TextCkpt'] = $objCheckpoint->DescCkpt;
+		$arrDatoCkpt['CodiSucu'] = $objGuia->EstaOrig;
 		$arrDatoCkpt['CodiRuta'] = '';
 		$arrResuGrab = GrabarCheckpointOptimizado($arrDatoCkpt);
 		$intCantReco ++;

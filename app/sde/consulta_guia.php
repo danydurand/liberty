@@ -105,6 +105,7 @@ class ConsultaGuia extends FormularioBaseKaizen {
     protected $lblBotoPopu;
     protected $lblPopuModa;
     protected $strErroProc;
+    protected $btnMasxAcci;
 
 
     protected function SetupValores() {
@@ -234,6 +235,8 @@ class ConsultaGuia extends FormularioBaseKaizen {
         $this->btnProxSmal_Create();
         $this->btnUltiSmal_Create();
 
+        $this->btnMasxAcci_Create();
+
         $this->verificarNavegacion();
 
         if (isset($_SESSION['MostPodx'])) {
@@ -254,16 +257,37 @@ class ConsultaGuia extends FormularioBaseKaizen {
             $this->btnGuiaOrig->Visible = true;
         }
 
+        /*
         if ($this->objUsuario->LogiUsua == 'ddurand') {
             $this->btnTrazTari->Visible = true;
         } else {
             $this->btnTrazTari->Visible = false;
         }
+        */
     }
 
     //----------------------------
     // Aquí se Crean los Objetos
     //----------------------------
+
+    protected function btnMasxAcci_Create() {
+        $this->btnMasxAcci = new QLabel($this);
+        $this->btnMasxAcci->HtmlEntities = false;
+        $this->btnMasxAcci->CssClass = '';
+
+        $_SESSION['GuiaCamb'] = $this->objGuia->NumeGuia;
+        $_SESSION['GuiaCalc'] = $this->objGuia->NumeGuia;
+
+        $strTextBoto   = TextoIcono('plus','Acciones');
+        $arrOpciDrop   = array();
+//        $arrOpciDrop[] = OpcionDropDown(__SIST__.'/ver_calculos.php',TextoIcono(__iOJOS__,'Ver Calculos'));
+        if ($this->objGuia->sistema() == 'ExpNac') {
+            $arrOpciDrop[] = OpcionDropDown(__SIST__.'/cambio_sucu_rece_guia.php',TextoIcono(__iEDIT__,'Cambiar Receptoria'));
+        }
+
+        $this->btnMasxAcci->Text = CrearDropDownButton($strTextBoto, $arrOpciDrop);
+
+    }
 
     protected function lblSistGuia_Create() {
         $this->lblSistGuia = new QLabel($this);
@@ -416,7 +440,12 @@ class ConsultaGuia extends FormularioBaseKaizen {
     protected function lblSucuOrig_Create() {
         $this->lblSucuOrig = new QLabel($this);
         $this->lblSucuOrig->Name = 'Origen';
-        $this->lblSucuOrig->Text = $this->objGuia->EstaOrigObject->DescEsta;
+        //$this->lblSucuOrig->Text = $this->objGuia->EstaOrigObject->DescEsta;
+        $strSucuOrig = $this->objGuia->EstaOrig;
+        if ($this->objGuia->sistema() == 'ExpNac') {
+            $strSucuOrig .= ' ('.$this->objGuia->receptoria('O').')';
+        }
+        $this->lblSucuOrig->Text = $strSucuOrig;
     }
 
     protected function lblNombRemi_Create() {
@@ -446,7 +475,12 @@ class ConsultaGuia extends FormularioBaseKaizen {
     protected function lblSucuDest_Create() {
         $this->lblSucuDest = new QLabel($this);
         $this->lblSucuDest->Name = 'Destino';
-        $this->lblSucuDest->Text = $this->objGuia->EstaDestObject->DescEsta;
+        //$this->lblSucuDest->Text = $this->objGuia->EstaDestObject->DescEsta;
+        $strSucuDest = $this->objGuia->EstaDest;
+        if ($this->objGuia->sistema() == 'ExpNac') {
+            $strSucuDest .= ' ('.$this->objGuia->receptoria('D').')';
+        }
+        $this->lblSucuDest->Text = $strSucuDest;
     }
 
     protected function lblNombDest_Create() {
@@ -667,7 +701,7 @@ class ConsultaGuia extends FormularioBaseKaizen {
 
     protected function btnEditGuia_Create() {
         $this->btnEditGuia = new QButtonP($this);
-        $this->btnEditGuia->Text = TextoIcono('pencil-square-o','Edtr');
+        $this->btnEditGuia->Text = TextoIcono(__iEDIT__,'Edtr');
         $this->btnEditGuia->AddAction(new QClickEvent(), new QAjaxAction('btnEditGuia_Click'));
     }
 
@@ -687,7 +721,8 @@ class ConsultaGuia extends FormularioBaseKaizen {
 
     protected function btnProxRegi_Create() {
         $this->btnProxRegi = new QButton($this);
-        $this->btnProxRegi->Text = TextoIcono('angle-right fa-lg','Proximo','P');
+        //$this->btnProxRegi->Text = TextoIcono('angle-right fa-lg','Proximo','P');
+        $this->btnProxRegi->Text = TextoIcono('angle-right fa-lg','','P');
         $this->btnProxRegi->CssClass = 'btn btn-outline-primary btn-sm';
         $this->btnProxRegi->HtmlEntities = false;
         $this->btnProxRegi->AddAction(new QClickEvent(), new QServerAction('btnProxRegi_Click'));
@@ -695,7 +730,8 @@ class ConsultaGuia extends FormularioBaseKaizen {
 
     protected function btnRegiAnte_Create() {
         $this->btnRegiAnte = new QButton($this);
-        $this->btnRegiAnte->Text = TextoIcono('angle-left fa-lg','Anterior');
+        //$this->btnRegiAnte->Text = TextoIcono('angle-left fa-lg','Anterior');
+        $this->btnRegiAnte->Text = TextoIcono('angle-left fa-lg','');
         $this->btnRegiAnte->CssClass = 'btn btn-outline-primary btn-sm';
         $this->btnRegiAnte->HtmlEntities = false;
         $this->btnRegiAnte->AddAction(new QClickEvent(), new QServerAction('btnRegiAnte_Click'));
@@ -703,7 +739,8 @@ class ConsultaGuia extends FormularioBaseKaizen {
 
     protected function btnPrimRegi_Create() {
         $this->btnPrimRegi = new QButton($this);
-        $this->btnPrimRegi->Text = TextoIcono('angle-double-left fa-lg','Primero');
+        //$this->btnPrimRegi->Text = TextoIcono('angle-double-left fa-lg','Primero');
+        $this->btnPrimRegi->Text = TextoIcono('angle-double-left fa-lg','');
         $this->btnPrimRegi->CssClass = 'btn btn-outline-primary btn-sm';
         $this->btnPrimRegi->HtmlEntities = false;
         $this->btnPrimRegi->AddAction(new QClickEvent(), new QServerAction('btnPrimRegi_Click'));
@@ -711,7 +748,8 @@ class ConsultaGuia extends FormularioBaseKaizen {
 
     protected function btnUltiRegi_Create() {
         $this->btnUltiRegi = new QButton($this);
-        $this->btnUltiRegi->Text = TextoIcono('angle-double-right fa-lg','Ultimo','P');
+        //$this->btnUltiRegi->Text = TextoIcono('angle-double-right fa-lg','Ultimo','P');
+        $this->btnUltiRegi->Text = TextoIcono('angle-double-right fa-lg','','P');
         $this->btnUltiRegi->CssClass = 'btn btn-outline-primary btn-sm';
         $this->btnUltiRegi->HtmlEntities = false;
         $this->btnUltiRegi->AddAction(new QClickEvent(), new QServerAction('btnUltiRegi_Click'));

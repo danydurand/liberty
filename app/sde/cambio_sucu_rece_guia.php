@@ -28,7 +28,7 @@ class CambioSucuReceGuia extends FormularioBaseKaizen {
     protected function Form_Create() {
         parent::Form_Create();
 
-        $this->lblTituForm->Text = 'Cambio Sucursal y/o Receptoría de Guía';
+        $this->lblTituForm->Text = 'Cambio de Receptoría de Guía';
 
         $this->txtNumeGuia_Create();
         $this->lstSucuDest_Create();
@@ -40,6 +40,11 @@ class CambioSucuReceGuia extends FormularioBaseKaizen {
             $this->btnSave->Visible = true;
         }
 
+        if ($_SESSION['GuiaCamb']) {
+            $this->txtNumeGuia->Text = $_SESSION['GuiaCamb'];
+            $this->txtNumeGuia_Blur();
+            unset($_SESSION['GuiaCamb']);
+        }
     }
 
     //---------------------------
@@ -52,6 +57,8 @@ class CambioSucuReceGuia extends FormularioBaseKaizen {
         $this->txtNumeGuia->Width = 100;
         $this->txtNumeGuia->Required = true;
         $this->txtNumeGuia->AddAction(new QBlurEvent(), new QAjaxAction('txtNumeGuia_Blur'));
+        $this->txtNumeGuia->Enabled = false;
+        $this->txtNumeGuia->ForeColor = 'blue';
     }
 
     protected function lstSucuDest_Create() {
@@ -60,6 +67,8 @@ class CambioSucuReceGuia extends FormularioBaseKaizen {
         $this->lstSucuDest->Width = 200;
         $this->lstSucuDest->Required = true;
         $this->lstSucuDest->AddAction(new QChangeEvent(), new QAjaxAction('lstSucuDest_Change'));
+        $this->lstSucuDest->Enabled = false;
+        $this->lstSucuDest->ForeColor = 'blue';
     }
 
     protected function lstReceDest_Create() {

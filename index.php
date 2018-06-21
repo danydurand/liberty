@@ -230,6 +230,12 @@ class Index extends QForm {
             $arrSucuExen[] = $objSucuExen->CodiEsta;
         }
         $_SESSION['SucuExen'] = serialize($arrSucuExen);
+        //------------------------------
+        // Tarifa del Expreso Nacional
+        //------------------------------
+        $objClieTari = MasterCliente::LoadByCodigoInterno('PMN01');
+        $objTariPmnx = $objClieTari->Tarifa;
+        $_SESSION['TariPmnx'] = serialize($objTariPmnx);
 
         if ($strSistPath == 'pmn') {
             //------------------------------------------------
@@ -279,8 +285,6 @@ class Index extends QForm {
             //-----------------------------------------------------------------------------
             // Hasta aquí lo de la nueva configuración para el seguro del Expeso Nacional
             //-----------------------------------------------------------------------------
-            $objClieTari = MasterCliente::LoadByCodigoInterno('PMN01');
-            $objTariPmnx = $objClieTari->Tarifa;
             //-----------------------------------------------
             // Checkpoints de Cierre del Ciclo de un envio
             //-----------------------------------------------
@@ -349,7 +353,6 @@ class Index extends QForm {
             $_SESSION['CkptReci'] = serialize($objCkptReci);
             $_SESSION['CkptAudi'] = serialize($objCkptAudi);
             $_SESSION['ClieTari'] = serialize($objClieTari);
-            $_SESSION['TariPmnx'] = serialize($objTariPmnx);
             $_SESSION['ChecPick'] = serialize($objChecPick);
             $_SESSION['IvaxDhoy'] = serialize($decIvaxDhoy);
             $_SESSION['ProdGuia'] = serialize($objProducto);

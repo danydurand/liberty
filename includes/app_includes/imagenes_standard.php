@@ -30,6 +30,7 @@ define('__iINFO__', 'info-circle');
 define('__iHIST__', 'file-text-o');
 define('__iRESE__', 'recycle');
 define('__iFLOP__', 'floppy-o');
+define('__iEDIT__', 'pencil-square-o');
 
 
 // Colores

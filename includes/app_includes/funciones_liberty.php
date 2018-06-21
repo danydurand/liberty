@@ -2018,6 +2018,7 @@ function GrabarCheckpointOptimizado($arrDatoCkpt) {
     $strCodiCkpt = $arrDatoCkpt['CodiCkpt'];
     $strTextCkpt = $arrDatoCkpt['TextCkpt'];
     $strCodiRuta = $arrDatoCkpt['CodiRuta'];
+    $strCodiSucu = isset($arrDatoCkpt['CodiSucu']) ? $arrDatoCkpt['CodiSucu'] : '';
 
     $arrResuGrab = array();
     $arrResuGrab['TodoOkey'] = true;
@@ -2028,6 +2029,12 @@ function GrabarCheckpointOptimizado($arrDatoCkpt) {
     $arrDatoUsua = DeterminarUsuario();
     $strCodiEsta = $arrDatoUsua['CodiEsta'];
     $intCodiUsua = $arrDatoUsua['CodiUsua'];
+    //------------------------------------------------------------------------------------------------------
+    // Si en los parametros se especifica una Sucursal, esta se antepone a la Sucursal asociada al Usuario
+    //------------------------------------------------------------------------------------------------------
+    if (strlen($strCodiSucu) > 0) {
+        $strCodiEsta = $strCodiSucu;
+    }
 
     $objGuiaProc = Guia::Load($strNumeGuia);
 
