@@ -92,7 +92,6 @@
 		 * @var string strObservacion
 		 */
 		protected $strObservacion;
-		const ObservacionMaxLength = 50;
 		const ObservacionDefault = null;
 
 
@@ -675,7 +674,7 @@
 			$objToReturn->strHora = $objDbRow->GetColumn($strAliasName, 'VarChar');
 			$strAlias = $strAliasPrefix . 'observacion';
 			$strAliasName = !empty($strColumnAliasArray[$strAlias]) ? $strColumnAliasArray[$strAlias] : $strAlias;
-			$objToReturn->strObservacion = $objDbRow->GetColumn($strAliasName, 'VarChar');
+			$objToReturn->strObservacion = $objDbRow->GetColumn($strAliasName, 'Blob');
 			$strAlias = $strAliasPrefix . 'usuario';
 			$strAliasName = !empty($strColumnAliasArray[$strAlias]) ? $strColumnAliasArray[$strAlias] : $strAlias;
 			$objToReturn->intUsuario = $objDbRow->GetColumn($strAliasName, 'Integer');
@@ -1805,7 +1804,7 @@
 				case 'Hora':
 					return new QQNode('hora', 'Hora', 'VarChar', $this);
 				case 'Observacion':
-					return new QQNode('observacion', 'Observacion', 'VarChar', $this);
+					return new QQNode('observacion', 'Observacion', 'Blob', $this);
 				case 'Usuario':
 					return new QQNode('usuario', 'Usuario', 'Integer', $this);
 				case 'UsuarioObject':

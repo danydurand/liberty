@@ -68,9 +68,9 @@ class SdeCheckpointEditForm extends SdeCheckpointEditFormBase {
         $this->lstTipoCkptObject->Name = 'Tipo (Visibilidad)';
         if ($this->lstTipoCkptObject) {
             if ($this->lstTipoCkptObject->SelectedValue == 'PRIVADO') {
-                $this->lstTipoCkptObject->HtmlAfter = ' Uso Interno';
+                $this->lstTipoCkptObject->HtmlAfter = ' Solo para uso interno';
             } else {
-                $this->lstTipoCkptObject->HtmlAfter = ' Visible en Extranet';
+                $this->lstTipoCkptObject->HtmlAfter = ' Visible en CORP';
             }
         }
         $this->lstTipoCkptObject->AddAction(new QChangeEvent(), new QAjaxAction('lstTipoCkptObject_Change'));
@@ -163,9 +163,9 @@ class SdeCheckpointEditForm extends SdeCheckpointEditFormBase {
     protected function lstTipoCkptObject_Change() {
         if ($this->lstTipoCkptObject->SelectedValue) {
             if ($this->lstTipoCkptObject->SelectedName == 'PRIVADO') {
-                $this->lstTipoCkptObject->HtmlAfter = 'Solo para uso interno.';
+                $this->lstTipoCkptObject->HtmlAfter = ' Solo para uso interno';
             } else {
-                $this->lstTipoCkptObject->HtmlAfter = 'Visible en Extranet.';
+                $this->lstTipoCkptObject->HtmlAfter = ' Visible en CORP';
             }
         }
     }

@@ -68,16 +68,10 @@
 	 * @property-read Counter[] $_CounterAsSucursalArray the value for the private _objCounterAsSucursalArray (Read-Only) if set due to an ExpandAsArray on the counter.sucursal_id reverse relationship
 	 * @property-read DestinatarioFrecuente $_DestinatarioFrecuenteAsDestino the value for the private _objDestinatarioFrecuenteAsDestino (Read-Only) if set due to an expansion on the destinatario_frecuente.destino_id reverse relationship
 	 * @property-read DestinatarioFrecuente[] $_DestinatarioFrecuenteAsDestinoArray the value for the private _objDestinatarioFrecuenteAsDestinoArray (Read-Only) if set due to an ExpandAsArray on the destinatario_frecuente.destino_id reverse relationship
-	 * @property-read Documento $_DocumentoAsOrigen the value for the private _objDocumentoAsOrigen (Read-Only) if set due to an expansion on the documento.origen_id reverse relationship
-	 * @property-read Documento[] $_DocumentoAsOrigenArray the value for the private _objDocumentoAsOrigenArray (Read-Only) if set due to an ExpandAsArray on the documento.origen_id reverse relationship
-	 * @property-read Documento $_DocumentoAsDestino the value for the private _objDocumentoAsDestino (Read-Only) if set due to an expansion on the documento.destino_id reverse relationship
-	 * @property-read Documento[] $_DocumentoAsDestinoArray the value for the private _objDocumentoAsDestinoArray (Read-Only) if set due to an ExpandAsArray on the documento.destino_id reverse relationship
 	 * @property-read DspDespacho $_DspDespachoAsCodiOrig the value for the private _objDspDespachoAsCodiOrig (Read-Only) if set due to an expansion on the dsp_despacho.codi_orig reverse relationship
 	 * @property-read DspDespacho[] $_DspDespachoAsCodiOrigArray the value for the private _objDspDespachoAsCodiOrigArray (Read-Only) if set due to an ExpandAsArray on the dsp_despacho.codi_orig reverse relationship
 	 * @property-read DspDespacho $_DspDespachoAsCodiDest the value for the private _objDspDespachoAsCodiDest (Read-Only) if set due to an expansion on the dsp_despacho.codi_dest reverse relationship
 	 * @property-read DspDespacho[] $_DspDespachoAsCodiDestArray the value for the private _objDspDespachoAsCodiDestArray (Read-Only) if set due to an ExpandAsArray on the dsp_despacho.codi_dest reverse relationship
-	 * @property-read Estadistica $_EstadisticaAsSucursal the value for the private _objEstadisticaAsSucursal (Read-Only) if set due to an expansion on the estadistica.sucursal_id reverse relationship
-	 * @property-read Estadistica[] $_EstadisticaAsSucursalArray the value for the private _objEstadisticaAsSucursalArray (Read-Only) if set due to an ExpandAsArray on the estadistica.sucursal_id reverse relationship
 	 * @property-read FacTarifaPeso $_FacTarifaPesoAsOrigen the value for the private _objFacTarifaPesoAsOrigen (Read-Only) if set due to an expansion on the fac_tarifa_peso.origen reverse relationship
 	 * @property-read FacTarifaPeso[] $_FacTarifaPesoAsOrigenArray the value for the private _objFacTarifaPesoAsOrigenArray (Read-Only) if set due to an ExpandAsArray on the fac_tarifa_peso.origen reverse relationship
 	 * @property-read FacTarifaPeso $_FacTarifaPesoAsDestino the value for the private _objFacTarifaPesoAsDestino (Read-Only) if set due to an expansion on the fac_tarifa_peso.destino reverse relationship
@@ -533,38 +527,6 @@
 		private $_objDestinatarioFrecuenteAsDestinoArray = null;
 
 		/**
-		 * Private member variable that stores a reference to a single DocumentoAsOrigen object
-		 * (of type Documento), if this Estacion object was restored with
-		 * an expansion on the documento association table.
-		 * @var Documento _objDocumentoAsOrigen;
-		 */
-		private $_objDocumentoAsOrigen;
-
-		/**
-		 * Private member variable that stores a reference to an array of DocumentoAsOrigen objects
-		 * (of type Documento[]), if this Estacion object was restored with
-		 * an ExpandAsArray on the documento association table.
-		 * @var Documento[] _objDocumentoAsOrigenArray;
-		 */
-		private $_objDocumentoAsOrigenArray = null;
-
-		/**
-		 * Private member variable that stores a reference to a single DocumentoAsDestino object
-		 * (of type Documento), if this Estacion object was restored with
-		 * an expansion on the documento association table.
-		 * @var Documento _objDocumentoAsDestino;
-		 */
-		private $_objDocumentoAsDestino;
-
-		/**
-		 * Private member variable that stores a reference to an array of DocumentoAsDestino objects
-		 * (of type Documento[]), if this Estacion object was restored with
-		 * an ExpandAsArray on the documento association table.
-		 * @var Documento[] _objDocumentoAsDestinoArray;
-		 */
-		private $_objDocumentoAsDestinoArray = null;
-
-		/**
 		 * Private member variable that stores a reference to a single DspDespachoAsCodiOrig object
 		 * (of type DspDespacho), if this Estacion object was restored with
 		 * an expansion on the dsp_despacho association table.
@@ -595,22 +557,6 @@
 		 * @var DspDespacho[] _objDspDespachoAsCodiDestArray;
 		 */
 		private $_objDspDespachoAsCodiDestArray = null;
-
-		/**
-		 * Private member variable that stores a reference to a single EstadisticaAsSucursal object
-		 * (of type Estadistica), if this Estacion object was restored with
-		 * an expansion on the estadistica association table.
-		 * @var Estadistica _objEstadisticaAsSucursal;
-		 */
-		private $_objEstadisticaAsSucursal;
-
-		/**
-		 * Private member variable that stores a reference to an array of EstadisticaAsSucursal objects
-		 * (of type Estadistica[]), if this Estacion object was restored with
-		 * an ExpandAsArray on the estadistica association table.
-		 * @var Estadistica[] _objEstadisticaAsSucursalArray;
-		 */
-		private $_objEstadisticaAsSucursalArray = null;
 
 		/**
 		 * Private member variable that stores a reference to a single FacTarifaPesoAsOrigen object
@@ -1880,36 +1826,6 @@
 				}
 			}
 
-			// Check for DocumentoAsOrigen Virtual Binding
-			$strAlias = $strAliasPrefix . 'documentoasorigen__id';
-			$strAliasName = !empty($strColumnAliasArray[$strAlias]) ? $strColumnAliasArray[$strAlias] : $strAlias;
-			$objExpansionNode = (empty($objExpansionAliasArray['documentoasorigen']) ? null : $objExpansionAliasArray['documentoasorigen']);
-			$blnExpanded = ($objExpansionNode && $objExpansionNode->ExpandAsArray);
-			if ($blnExpanded && null === $objToReturn->_objDocumentoAsOrigenArray)
-				$objToReturn->_objDocumentoAsOrigenArray = array();
-			if (!is_null($objDbRow->GetColumn($strAliasName))) {
-				if ($blnExpanded) {
-					$objToReturn->_objDocumentoAsOrigenArray[] = Documento::InstantiateDbRow($objDbRow, $strAliasPrefix . 'documentoasorigen__', $objExpansionNode, null, $strColumnAliasArray);
-				} elseif (is_null($objToReturn->_objDocumentoAsOrigen)) {
-					$objToReturn->_objDocumentoAsOrigen = Documento::InstantiateDbRow($objDbRow, $strAliasPrefix . 'documentoasorigen__', $objExpansionNode, null, $strColumnAliasArray);
-				}
-			}
-
-			// Check for DocumentoAsDestino Virtual Binding
-			$strAlias = $strAliasPrefix . 'documentoasdestino__id';
-			$strAliasName = !empty($strColumnAliasArray[$strAlias]) ? $strColumnAliasArray[$strAlias] : $strAlias;
-			$objExpansionNode = (empty($objExpansionAliasArray['documentoasdestino']) ? null : $objExpansionAliasArray['documentoasdestino']);
-			$blnExpanded = ($objExpansionNode && $objExpansionNode->ExpandAsArray);
-			if ($blnExpanded && null === $objToReturn->_objDocumentoAsDestinoArray)
-				$objToReturn->_objDocumentoAsDestinoArray = array();
-			if (!is_null($objDbRow->GetColumn($strAliasName))) {
-				if ($blnExpanded) {
-					$objToReturn->_objDocumentoAsDestinoArray[] = Documento::InstantiateDbRow($objDbRow, $strAliasPrefix . 'documentoasdestino__', $objExpansionNode, null, $strColumnAliasArray);
-				} elseif (is_null($objToReturn->_objDocumentoAsDestino)) {
-					$objToReturn->_objDocumentoAsDestino = Documento::InstantiateDbRow($objDbRow, $strAliasPrefix . 'documentoasdestino__', $objExpansionNode, null, $strColumnAliasArray);
-				}
-			}
-
 			// Check for DspDespachoAsCodiOrig Virtual Binding
 			$strAlias = $strAliasPrefix . 'dspdespachoascodiorig__codi_desp';
 			$strAliasName = !empty($strColumnAliasArray[$strAlias]) ? $strColumnAliasArray[$strAlias] : $strAlias;
@@ -1937,21 +1853,6 @@
 					$objToReturn->_objDspDespachoAsCodiDestArray[] = DspDespacho::InstantiateDbRow($objDbRow, $strAliasPrefix . 'dspdespachoascodidest__', $objExpansionNode, null, $strColumnAliasArray);
 				} elseif (is_null($objToReturn->_objDspDespachoAsCodiDest)) {
 					$objToReturn->_objDspDespachoAsCodiDest = DspDespacho::InstantiateDbRow($objDbRow, $strAliasPrefix . 'dspdespachoascodidest__', $objExpansionNode, null, $strColumnAliasArray);
-				}
-			}
-
-			// Check for EstadisticaAsSucursal Virtual Binding
-			$strAlias = $strAliasPrefix . 'estadisticaassucursal__sucursal_id';
-			$strAliasName = !empty($strColumnAliasArray[$strAlias]) ? $strColumnAliasArray[$strAlias] : $strAlias;
-			$objExpansionNode = (empty($objExpansionAliasArray['estadisticaassucursal']) ? null : $objExpansionAliasArray['estadisticaassucursal']);
-			$blnExpanded = ($objExpansionNode && $objExpansionNode->ExpandAsArray);
-			if ($blnExpanded && null === $objToReturn->_objEstadisticaAsSucursalArray)
-				$objToReturn->_objEstadisticaAsSucursalArray = array();
-			if (!is_null($objDbRow->GetColumn($strAliasName))) {
-				if ($blnExpanded) {
-					$objToReturn->_objEstadisticaAsSucursalArray[] = Estadistica::InstantiateDbRow($objDbRow, $strAliasPrefix . 'estadisticaassucursal__', $objExpansionNode, null, $strColumnAliasArray);
-				} elseif (is_null($objToReturn->_objEstadisticaAsSucursal)) {
-					$objToReturn->_objEstadisticaAsSucursal = Estadistica::InstantiateDbRow($objDbRow, $strAliasPrefix . 'estadisticaassucursal__', $objExpansionNode, null, $strColumnAliasArray);
 				}
 			}
 
@@ -3614,38 +3515,6 @@
 					 */
 					return $this->_objDestinatarioFrecuenteAsDestinoArray;
 
-				case '_DocumentoAsOrigen':
-					/**
-					 * Gets the value for the private _objDocumentoAsOrigen (Read-Only)
-					 * if set due to an expansion on the documento.origen_id reverse relationship
-					 * @return Documento
-					 */
-					return $this->_objDocumentoAsOrigen;
-
-				case '_DocumentoAsOrigenArray':
-					/**
-					 * Gets the value for the private _objDocumentoAsOrigenArray (Read-Only)
-					 * if set due to an ExpandAsArray on the documento.origen_id reverse relationship
-					 * @return Documento[]
-					 */
-					return $this->_objDocumentoAsOrigenArray;
-
-				case '_DocumentoAsDestino':
-					/**
-					 * Gets the value for the private _objDocumentoAsDestino (Read-Only)
-					 * if set due to an expansion on the documento.destino_id reverse relationship
-					 * @return Documento
-					 */
-					return $this->_objDocumentoAsDestino;
-
-				case '_DocumentoAsDestinoArray':
-					/**
-					 * Gets the value for the private _objDocumentoAsDestinoArray (Read-Only)
-					 * if set due to an ExpandAsArray on the documento.destino_id reverse relationship
-					 * @return Documento[]
-					 */
-					return $this->_objDocumentoAsDestinoArray;
-
 				case '_DspDespachoAsCodiOrig':
 					/**
 					 * Gets the value for the private _objDspDespachoAsCodiOrig (Read-Only)
@@ -3677,22 +3546,6 @@
 					 * @return DspDespacho[]
 					 */
 					return $this->_objDspDespachoAsCodiDestArray;
-
-				case '_EstadisticaAsSucursal':
-					/**
-					 * Gets the value for the private _objEstadisticaAsSucursal (Read-Only)
-					 * if set due to an expansion on the estadistica.sucursal_id reverse relationship
-					 * @return Estadistica
-					 */
-					return $this->_objEstadisticaAsSucursal;
-
-				case '_EstadisticaAsSucursalArray':
-					/**
-					 * Gets the value for the private _objEstadisticaAsSucursalArray (Read-Only)
-					 * if set due to an ExpandAsArray on the estadistica.sucursal_id reverse relationship
-					 * @return Estadistica[]
-					 */
-					return $this->_objEstadisticaAsSucursalArray;
 
 				case '_FacTarifaPesoAsOrigen':
 					/**
@@ -4702,20 +4555,11 @@
 			if ($this->CountDestinatarioFrecuentesAsDestino()) {
 				$arrTablRela[] = 'destinatario_frecuente';
 			}
-			if ($this->CountDocumentosAsOrigen()) {
-				$arrTablRela[] = 'documento';
-			}
-			if ($this->CountDocumentosAsDestino()) {
-				$arrTablRela[] = 'documento';
-			}
 			if ($this->CountDspDespachosAsCodiOrig()) {
 				$arrTablRela[] = 'dsp_despacho';
 			}
 			if ($this->CountDspDespachosAsCodiDest()) {
 				$arrTablRela[] = 'dsp_despacho';
-			}
-			if ($this->CountEstadisticasAsSucursal()) {
-				$arrTablRela[] = 'estadistica';
 			}
 			if ($this->CountFacTarifaPesosAsOrigen()) {
 				$arrTablRela[] = 'fac_tarifa_peso';
@@ -5988,304 +5832,6 @@
 		}
 
 
-		// Related Objects' Methods for DocumentoAsOrigen
-		//-------------------------------------------------------------------
-
-		/**
-		 * Gets all associated DocumentosAsOrigen as an array of Documento objects
-		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
-		 * @return Documento[]
-		*/
-		public function GetDocumentoAsOrigenArray($objOptionalClauses = null) {
-			if ((is_null($this->strCodiEsta)))
-				return array();
-
-			try {
-				return Documento::LoadArrayByOrigenId($this->strCodiEsta, $objOptionalClauses);
-			} catch (QCallerException $objExc) {
-				$objExc->IncrementOffset();
-				throw $objExc;
-			}
-		}
-
-		/**
-		 * Counts all associated DocumentosAsOrigen
-		 * @return int
-		*/
-		public function CountDocumentosAsOrigen() {
-			if ((is_null($this->strCodiEsta)))
-				return 0;
-
-			return Documento::CountByOrigenId($this->strCodiEsta);
-		}
-
-		/**
-		 * Associates a DocumentoAsOrigen
-		 * @param Documento $objDocumento
-		 * @return void
-		*/
-		public function AssociateDocumentoAsOrigen(Documento $objDocumento) {
-			if ((is_null($this->strCodiEsta)))
-				throw new QUndefinedPrimaryKeyException('Unable to call AssociateDocumentoAsOrigen on this unsaved Estacion.');
-			if ((is_null($objDocumento->Id)))
-				throw new QUndefinedPrimaryKeyException('Unable to call AssociateDocumentoAsOrigen on this Estacion with an unsaved Documento.');
-
-			// Get the Database Object for this Class
-			$objDatabase = Estacion::GetDatabase();
-
-			// Perform the SQL Query
-			$objDatabase->NonQuery('
-				UPDATE
-					`documento`
-				SET
-					`origen_id` = ' . $objDatabase->SqlVariable($this->strCodiEsta) . '
-				WHERE
-					`id` = ' . $objDatabase->SqlVariable($objDocumento->Id) . '
-			');
-		}
-
-		/**
-		 * Unassociates a DocumentoAsOrigen
-		 * @param Documento $objDocumento
-		 * @return void
-		*/
-		public function UnassociateDocumentoAsOrigen(Documento $objDocumento) {
-			if ((is_null($this->strCodiEsta)))
-				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateDocumentoAsOrigen on this unsaved Estacion.');
-			if ((is_null($objDocumento->Id)))
-				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateDocumentoAsOrigen on this Estacion with an unsaved Documento.');
-
-			// Get the Database Object for this Class
-			$objDatabase = Estacion::GetDatabase();
-
-			// Perform the SQL Query
-			$objDatabase->NonQuery('
-				UPDATE
-					`documento`
-				SET
-					`origen_id` = null
-				WHERE
-					`id` = ' . $objDatabase->SqlVariable($objDocumento->Id) . ' AND
-					`origen_id` = ' . $objDatabase->SqlVariable($this->strCodiEsta) . '
-			');
-		}
-
-		/**
-		 * Unassociates all DocumentosAsOrigen
-		 * @return void
-		*/
-		public function UnassociateAllDocumentosAsOrigen() {
-			if ((is_null($this->strCodiEsta)))
-				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateDocumentoAsOrigen on this unsaved Estacion.');
-
-			// Get the Database Object for this Class
-			$objDatabase = Estacion::GetDatabase();
-
-			// Perform the SQL Query
-			$objDatabase->NonQuery('
-				UPDATE
-					`documento`
-				SET
-					`origen_id` = null
-				WHERE
-					`origen_id` = ' . $objDatabase->SqlVariable($this->strCodiEsta) . '
-			');
-		}
-
-		/**
-		 * Deletes an associated DocumentoAsOrigen
-		 * @param Documento $objDocumento
-		 * @return void
-		*/
-		public function DeleteAssociatedDocumentoAsOrigen(Documento $objDocumento) {
-			if ((is_null($this->strCodiEsta)))
-				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateDocumentoAsOrigen on this unsaved Estacion.');
-			if ((is_null($objDocumento->Id)))
-				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateDocumentoAsOrigen on this Estacion with an unsaved Documento.');
-
-			// Get the Database Object for this Class
-			$objDatabase = Estacion::GetDatabase();
-
-			// Perform the SQL Query
-			$objDatabase->NonQuery('
-				DELETE FROM
-					`documento`
-				WHERE
-					`id` = ' . $objDatabase->SqlVariable($objDocumento->Id) . ' AND
-					`origen_id` = ' . $objDatabase->SqlVariable($this->strCodiEsta) . '
-			');
-		}
-
-		/**
-		 * Deletes all associated DocumentosAsOrigen
-		 * @return void
-		*/
-		public function DeleteAllDocumentosAsOrigen() {
-			if ((is_null($this->strCodiEsta)))
-				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateDocumentoAsOrigen on this unsaved Estacion.');
-
-			// Get the Database Object for this Class
-			$objDatabase = Estacion::GetDatabase();
-
-			// Perform the SQL Query
-			$objDatabase->NonQuery('
-				DELETE FROM
-					`documento`
-				WHERE
-					`origen_id` = ' . $objDatabase->SqlVariable($this->strCodiEsta) . '
-			');
-		}
-
-
-		// Related Objects' Methods for DocumentoAsDestino
-		//-------------------------------------------------------------------
-
-		/**
-		 * Gets all associated DocumentosAsDestino as an array of Documento objects
-		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
-		 * @return Documento[]
-		*/
-		public function GetDocumentoAsDestinoArray($objOptionalClauses = null) {
-			if ((is_null($this->strCodiEsta)))
-				return array();
-
-			try {
-				return Documento::LoadArrayByDestinoId($this->strCodiEsta, $objOptionalClauses);
-			} catch (QCallerException $objExc) {
-				$objExc->IncrementOffset();
-				throw $objExc;
-			}
-		}
-
-		/**
-		 * Counts all associated DocumentosAsDestino
-		 * @return int
-		*/
-		public function CountDocumentosAsDestino() {
-			if ((is_null($this->strCodiEsta)))
-				return 0;
-
-			return Documento::CountByDestinoId($this->strCodiEsta);
-		}
-
-		/**
-		 * Associates a DocumentoAsDestino
-		 * @param Documento $objDocumento
-		 * @return void
-		*/
-		public function AssociateDocumentoAsDestino(Documento $objDocumento) {
-			if ((is_null($this->strCodiEsta)))
-				throw new QUndefinedPrimaryKeyException('Unable to call AssociateDocumentoAsDestino on this unsaved Estacion.');
-			if ((is_null($objDocumento->Id)))
-				throw new QUndefinedPrimaryKeyException('Unable to call AssociateDocumentoAsDestino on this Estacion with an unsaved Documento.');
-
-			// Get the Database Object for this Class
-			$objDatabase = Estacion::GetDatabase();
-
-			// Perform the SQL Query
-			$objDatabase->NonQuery('
-				UPDATE
-					`documento`
-				SET
-					`destino_id` = ' . $objDatabase->SqlVariable($this->strCodiEsta) . '
-				WHERE
-					`id` = ' . $objDatabase->SqlVariable($objDocumento->Id) . '
-			');
-		}
-
-		/**
-		 * Unassociates a DocumentoAsDestino
-		 * @param Documento $objDocumento
-		 * @return void
-		*/
-		public function UnassociateDocumentoAsDestino(Documento $objDocumento) {
-			if ((is_null($this->strCodiEsta)))
-				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateDocumentoAsDestino on this unsaved Estacion.');
-			if ((is_null($objDocumento->Id)))
-				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateDocumentoAsDestino on this Estacion with an unsaved Documento.');
-
-			// Get the Database Object for this Class
-			$objDatabase = Estacion::GetDatabase();
-
-			// Perform the SQL Query
-			$objDatabase->NonQuery('
-				UPDATE
-					`documento`
-				SET
-					`destino_id` = null
-				WHERE
-					`id` = ' . $objDatabase->SqlVariable($objDocumento->Id) . ' AND
-					`destino_id` = ' . $objDatabase->SqlVariable($this->strCodiEsta) . '
-			');
-		}
-
-		/**
-		 * Unassociates all DocumentosAsDestino
-		 * @return void
-		*/
-		public function UnassociateAllDocumentosAsDestino() {
-			if ((is_null($this->strCodiEsta)))
-				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateDocumentoAsDestino on this unsaved Estacion.');
-
-			// Get the Database Object for this Class
-			$objDatabase = Estacion::GetDatabase();
-
-			// Perform the SQL Query
-			$objDatabase->NonQuery('
-				UPDATE
-					`documento`
-				SET
-					`destino_id` = null
-				WHERE
-					`destino_id` = ' . $objDatabase->SqlVariable($this->strCodiEsta) . '
-			');
-		}
-
-		/**
-		 * Deletes an associated DocumentoAsDestino
-		 * @param Documento $objDocumento
-		 * @return void
-		*/
-		public function DeleteAssociatedDocumentoAsDestino(Documento $objDocumento) {
-			if ((is_null($this->strCodiEsta)))
-				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateDocumentoAsDestino on this unsaved Estacion.');
-			if ((is_null($objDocumento->Id)))
-				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateDocumentoAsDestino on this Estacion with an unsaved Documento.');
-
-			// Get the Database Object for this Class
-			$objDatabase = Estacion::GetDatabase();
-
-			// Perform the SQL Query
-			$objDatabase->NonQuery('
-				DELETE FROM
-					`documento`
-				WHERE
-					`id` = ' . $objDatabase->SqlVariable($objDocumento->Id) . ' AND
-					`destino_id` = ' . $objDatabase->SqlVariable($this->strCodiEsta) . '
-			');
-		}
-
-		/**
-		 * Deletes all associated DocumentosAsDestino
-		 * @return void
-		*/
-		public function DeleteAllDocumentosAsDestino() {
-			if ((is_null($this->strCodiEsta)))
-				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateDocumentoAsDestino on this unsaved Estacion.');
-
-			// Get the Database Object for this Class
-			$objDatabase = Estacion::GetDatabase();
-
-			// Perform the SQL Query
-			$objDatabase->NonQuery('
-				DELETE FROM
-					`documento`
-				WHERE
-					`destino_id` = ' . $objDatabase->SqlVariable($this->strCodiEsta) . '
-			');
-		}
-
-
 		// Related Objects' Methods for DspDespachoAsCodiOrig
 		//-------------------------------------------------------------------
 
@@ -6580,161 +6126,6 @@
 					`dsp_despacho`
 				WHERE
 					`codi_dest` = ' . $objDatabase->SqlVariable($this->strCodiEsta) . '
-			');
-		}
-
-
-		// Related Objects' Methods for EstadisticaAsSucursal
-		//-------------------------------------------------------------------
-
-		/**
-		 * Gets all associated EstadisticasAsSucursal as an array of Estadistica objects
-		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
-		 * @return Estadistica[]
-		*/
-		public function GetEstadisticaAsSucursalArray($objOptionalClauses = null) {
-			if ((is_null($this->strCodiEsta)))
-				return array();
-
-			try {
-				return Estadistica::LoadArrayBySucursalId($this->strCodiEsta, $objOptionalClauses);
-			} catch (QCallerException $objExc) {
-				$objExc->IncrementOffset();
-				throw $objExc;
-			}
-		}
-
-		/**
-		 * Counts all associated EstadisticasAsSucursal
-		 * @return int
-		*/
-		public function CountEstadisticasAsSucursal() {
-			if ((is_null($this->strCodiEsta)))
-				return 0;
-
-			return Estadistica::CountBySucursalId($this->strCodiEsta);
-		}
-
-		/**
-		 * Associates a EstadisticaAsSucursal
-		 * @param Estadistica $objEstadistica
-		 * @return void
-		*/
-		public function AssociateEstadisticaAsSucursal(Estadistica $objEstadistica) {
-			if ((is_null($this->strCodiEsta)))
-				throw new QUndefinedPrimaryKeyException('Unable to call AssociateEstadisticaAsSucursal on this unsaved Estacion.');
-			if ((is_null($objEstadistica->SucursalId)) || (is_null($objEstadistica->Fecha)) || (is_null($objEstadistica->Medicion)))
-				throw new QUndefinedPrimaryKeyException('Unable to call AssociateEstadisticaAsSucursal on this Estacion with an unsaved Estadistica.');
-
-			// Get the Database Object for this Class
-			$objDatabase = Estacion::GetDatabase();
-
-			// Perform the SQL Query
-			$objDatabase->NonQuery('
-				UPDATE
-					`estadistica`
-				SET
-					`sucursal_id` = ' . $objDatabase->SqlVariable($this->strCodiEsta) . '
-				WHERE
-					`sucursal_id` = ' . $objDatabase->SqlVariable($objEstadistica->SucursalId) . ' AND
-					`fecha` = ' . $objDatabase->SqlVariable($objEstadistica->Fecha) . ' AND
-					`medicion` = ' . $objDatabase->SqlVariable($objEstadistica->Medicion) . '
-			');
-		}
-
-		/**
-		 * Unassociates a EstadisticaAsSucursal
-		 * @param Estadistica $objEstadistica
-		 * @return void
-		*/
-		public function UnassociateEstadisticaAsSucursal(Estadistica $objEstadistica) {
-			if ((is_null($this->strCodiEsta)))
-				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateEstadisticaAsSucursal on this unsaved Estacion.');
-			if ((is_null($objEstadistica->SucursalId)) || (is_null($objEstadistica->Fecha)) || (is_null($objEstadistica->Medicion)))
-				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateEstadisticaAsSucursal on this Estacion with an unsaved Estadistica.');
-
-			// Get the Database Object for this Class
-			$objDatabase = Estacion::GetDatabase();
-
-			// Perform the SQL Query
-			$objDatabase->NonQuery('
-				UPDATE
-					`estadistica`
-				SET
-					`sucursal_id` = null
-				WHERE
-					`sucursal_id` = ' . $objDatabase->SqlVariable($objEstadistica->SucursalId) . ' AND
-					`fecha` = ' . $objDatabase->SqlVariable($objEstadistica->Fecha) . ' AND
-					`medicion` = ' . $objDatabase->SqlVariable($objEstadistica->Medicion) . ' AND
-					`sucursal_id` = ' . $objDatabase->SqlVariable($this->strCodiEsta) . '
-			');
-		}
-
-		/**
-		 * Unassociates all EstadisticasAsSucursal
-		 * @return void
-		*/
-		public function UnassociateAllEstadisticasAsSucursal() {
-			if ((is_null($this->strCodiEsta)))
-				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateEstadisticaAsSucursal on this unsaved Estacion.');
-
-			// Get the Database Object for this Class
-			$objDatabase = Estacion::GetDatabase();
-
-			// Perform the SQL Query
-			$objDatabase->NonQuery('
-				UPDATE
-					`estadistica`
-				SET
-					`sucursal_id` = null
-				WHERE
-					`sucursal_id` = ' . $objDatabase->SqlVariable($this->strCodiEsta) . '
-			');
-		}
-
-		/**
-		 * Deletes an associated EstadisticaAsSucursal
-		 * @param Estadistica $objEstadistica
-		 * @return void
-		*/
-		public function DeleteAssociatedEstadisticaAsSucursal(Estadistica $objEstadistica) {
-			if ((is_null($this->strCodiEsta)))
-				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateEstadisticaAsSucursal on this unsaved Estacion.');
-			if ((is_null($objEstadistica->SucursalId)) || (is_null($objEstadistica->Fecha)) || (is_null($objEstadistica->Medicion)))
-				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateEstadisticaAsSucursal on this Estacion with an unsaved Estadistica.');
-
-			// Get the Database Object for this Class
-			$objDatabase = Estacion::GetDatabase();
-
-			// Perform the SQL Query
-			$objDatabase->NonQuery('
-				DELETE FROM
-					`estadistica`
-				WHERE
-					`sucursal_id` = ' . $objDatabase->SqlVariable($objEstadistica->SucursalId) . ' AND
-					`fecha` = ' . $objDatabase->SqlVariable($objEstadistica->Fecha) . ' AND
-					`medicion` = ' . $objDatabase->SqlVariable($objEstadistica->Medicion) . ' AND
-					`sucursal_id` = ' . $objDatabase->SqlVariable($this->strCodiEsta) . '
-			');
-		}
-
-		/**
-		 * Deletes all associated EstadisticasAsSucursal
-		 * @return void
-		*/
-		public function DeleteAllEstadisticasAsSucursal() {
-			if ((is_null($this->strCodiEsta)))
-				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateEstadisticaAsSucursal on this unsaved Estacion.');
-
-			// Get the Database Object for this Class
-			$objDatabase = Estacion::GetDatabase();
-
-			// Perform the SQL Query
-			$objDatabase->NonQuery('
-				DELETE FROM
-					`estadistica`
-				WHERE
-					`sucursal_id` = ' . $objDatabase->SqlVariable($this->strCodiEsta) . '
 			');
 		}
 
@@ -10673,11 +10064,8 @@
      * @property-read QQReverseReferenceNodeContenedorCkpt $ContenedorCkptAsSucursal
      * @property-read QQReverseReferenceNodeCounter $CounterAsSucursal
      * @property-read QQReverseReferenceNodeDestinatarioFrecuente $DestinatarioFrecuenteAsDestino
-     * @property-read QQReverseReferenceNodeDocumento $DocumentoAsOrigen
-     * @property-read QQReverseReferenceNodeDocumento $DocumentoAsDestino
      * @property-read QQReverseReferenceNodeDspDespacho $DspDespachoAsCodiOrig
      * @property-read QQReverseReferenceNodeDspDespacho $DspDespachoAsCodiDest
-     * @property-read QQReverseReferenceNodeEstadistica $EstadisticaAsSucursal
      * @property-read QQReverseReferenceNodeFacTarifaPeso $FacTarifaPesoAsOrigen
      * @property-read QQReverseReferenceNodeFacTarifaPeso $FacTarifaPesoAsDestino
      * @property-read QQReverseReferenceNodeFactura $FacturaAsSucursal
@@ -10798,16 +10186,10 @@
 					return new QQReverseReferenceNodeCounter($this, 'counterassucursal', 'reverse_reference', 'sucursal_id', 'CounterAsSucursal');
 				case 'DestinatarioFrecuenteAsDestino':
 					return new QQReverseReferenceNodeDestinatarioFrecuente($this, 'destinatariofrecuenteasdestino', 'reverse_reference', 'destino_id', 'DestinatarioFrecuenteAsDestino');
-				case 'DocumentoAsOrigen':
-					return new QQReverseReferenceNodeDocumento($this, 'documentoasorigen', 'reverse_reference', 'origen_id', 'DocumentoAsOrigen');
-				case 'DocumentoAsDestino':
-					return new QQReverseReferenceNodeDocumento($this, 'documentoasdestino', 'reverse_reference', 'destino_id', 'DocumentoAsDestino');
 				case 'DspDespachoAsCodiOrig':
 					return new QQReverseReferenceNodeDspDespacho($this, 'dspdespachoascodiorig', 'reverse_reference', 'codi_orig', 'DspDespachoAsCodiOrig');
 				case 'DspDespachoAsCodiDest':
 					return new QQReverseReferenceNodeDspDespacho($this, 'dspdespachoascodidest', 'reverse_reference', 'codi_dest', 'DspDespachoAsCodiDest');
-				case 'EstadisticaAsSucursal':
-					return new QQReverseReferenceNodeEstadistica($this, 'estadisticaassucursal', 'reverse_reference', 'sucursal_id', 'EstadisticaAsSucursal');
 				case 'FacTarifaPesoAsOrigen':
 					return new QQReverseReferenceNodeFacTarifaPeso($this, 'factarifapesoasorigen', 'reverse_reference', 'origen', 'FacTarifaPesoAsOrigen');
 				case 'FacTarifaPesoAsDestino':
@@ -10915,11 +10297,8 @@
      * @property-read QQReverseReferenceNodeContenedorCkpt $ContenedorCkptAsSucursal
      * @property-read QQReverseReferenceNodeCounter $CounterAsSucursal
      * @property-read QQReverseReferenceNodeDestinatarioFrecuente $DestinatarioFrecuenteAsDestino
-     * @property-read QQReverseReferenceNodeDocumento $DocumentoAsOrigen
-     * @property-read QQReverseReferenceNodeDocumento $DocumentoAsDestino
      * @property-read QQReverseReferenceNodeDspDespacho $DspDespachoAsCodiOrig
      * @property-read QQReverseReferenceNodeDspDespacho $DspDespachoAsCodiDest
-     * @property-read QQReverseReferenceNodeEstadistica $EstadisticaAsSucursal
      * @property-read QQReverseReferenceNodeFacTarifaPeso $FacTarifaPesoAsOrigen
      * @property-read QQReverseReferenceNodeFacTarifaPeso $FacTarifaPesoAsDestino
      * @property-read QQReverseReferenceNodeFactura $FacturaAsSucursal
@@ -11040,16 +10419,10 @@
 					return new QQReverseReferenceNodeCounter($this, 'counterassucursal', 'reverse_reference', 'sucursal_id', 'CounterAsSucursal');
 				case 'DestinatarioFrecuenteAsDestino':
 					return new QQReverseReferenceNodeDestinatarioFrecuente($this, 'destinatariofrecuenteasdestino', 'reverse_reference', 'destino_id', 'DestinatarioFrecuenteAsDestino');
-				case 'DocumentoAsOrigen':
-					return new QQReverseReferenceNodeDocumento($this, 'documentoasorigen', 'reverse_reference', 'origen_id', 'DocumentoAsOrigen');
-				case 'DocumentoAsDestino':
-					return new QQReverseReferenceNodeDocumento($this, 'documentoasdestino', 'reverse_reference', 'destino_id', 'DocumentoAsDestino');
 				case 'DspDespachoAsCodiOrig':
 					return new QQReverseReferenceNodeDspDespacho($this, 'dspdespachoascodiorig', 'reverse_reference', 'codi_orig', 'DspDespachoAsCodiOrig');
 				case 'DspDespachoAsCodiDest':
 					return new QQReverseReferenceNodeDspDespacho($this, 'dspdespachoascodidest', 'reverse_reference', 'codi_dest', 'DspDespachoAsCodiDest');
-				case 'EstadisticaAsSucursal':
-					return new QQReverseReferenceNodeEstadistica($this, 'estadisticaassucursal', 'reverse_reference', 'sucursal_id', 'EstadisticaAsSucursal');
 				case 'FacTarifaPesoAsOrigen':
 					return new QQReverseReferenceNodeFacTarifaPeso($this, 'factarifapesoasorigen', 'reverse_reference', 'origen', 'FacTarifaPesoAsOrigen');
 				case 'FacTarifaPesoAsDestino':

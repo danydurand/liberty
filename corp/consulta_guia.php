@@ -25,9 +25,6 @@ class ConsultaGuia extends FormularioBaseKaizen {
     //---------------------------
     // Parámetros de información
     //---------------------------
-    //        *   *   *   *
-    // Lado Izquierdo del Formulario
-    //        *   *   *   *
     // ---- Remitente ----
     protected $lblNumeGuia;
     protected $lblFechGuia;

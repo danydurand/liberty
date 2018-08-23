@@ -95,13 +95,35 @@ class CargarGuia extends FormularioBaseKaizen {
 
     protected function setupValues() {
         $this->objCliente = unserialize($_SESSION['ClieMast']);
-
         //--------------------------------------------------------------------------------------------
         // Si la Guía se encuentra en modo de edición, la misma se queda con su Peso correspondiente.
         //--------------------------------------------------------------------------------------------
         if ($this->blnEditMode) {
             $this->strPesoGuia = $this->objGuia->PesoGuia;
+            //-------------------------------------------------------------------------------------
+            // Si la guia tiene la tarifa nueva (con reconversion monteria) entonces los valores
+            // limites de Valor Declarado, deben estar reconvertidos
+            //-------------------------------------------------------------------------------------
+            /**
+             * @var $objConfReco Parametro
+             */
+            $objConfReco = BuscarParametro('ConfReco','RecoMone','TODO',null);
+            if ($this->objGuia->TarifaId >= (int)$objConfReco->ParaVal3) {
+                $this->arrValoMini = unserialize($_SESSION['RecoMin1']);
+                $this->arrValoMaxi = unserialize($_SESSION['RecoMax1']);
+                $this->intCantLimi = count($this->arrValoMaxi)-1;
+            } else {
+                $this->arrValoMini = unserialize($_SESSION['ValoMin1']);
+                $this->arrValoMaxi = unserialize($_SESSION['ValoMax1']);
+                $this->intCantLimi = count($this->arrValoMaxi)-1;
+            }
         } else {
+            //--------------------------------------------------------
+            // Limites de Valor Declarado para asegurar la mercancia
+            //--------------------------------------------------------
+            $this->arrValoMini = unserialize($_SESSION['RecoMin1']);
+            $this->arrValoMaxi = unserialize($_SESSION['RecoMax1']);
+            $this->intCantLimi = count($this->arrValoMaxi)-1;
             //------------------------------------------------------------------------------------------------------
             // Si la Tarifa del Cliente es por Valor de la Mercancía, entonces el Peso de la Guía tendrá como valor
             // 2.5 K. En caso contrario, el valor del Peso de la Guía tendrá como valor cero (0).
@@ -112,7 +134,6 @@ class CargarGuia extends FormularioBaseKaizen {
                 $this->strPesoGuia = 0;
             }
         }
-
         //-----------------------------------------------------------------------------------------------------
         // Si el Peso de la Guía es Menor o Igual a 2 K., entonces se obtiene Documento Nacional como Producto
         // de la guía. En caso contrario, se obtiene Paquete Nacional como Producto de la guía.
@@ -122,12 +143,10 @@ class CargarGuia extends FormularioBaseKaizen {
         } else {
             $this->objProducto = FacProducto::LoadBySiglProd('APX');
         }
-
         //----------------------------------------------------------------------
         // Vector con las Sucursales activas de Venezuela, que no sean almacén.
         //----------------------------------------------------------------------
         $this->arrSucuActi = unserialize($_SESSION['SucuActi']);
-
         //------------------------------------------------------
         // Vector con los Destinatarios Frecuentes del Cliente.
         //------------------------------------------------------
@@ -141,14 +160,6 @@ class CargarGuia extends FormularioBaseKaizen {
             );
             $_SESSION['DestFrec'] = serialize($this->arrDestFrec);
         }
-
-        //-----------------------------------------------------
-        // Vectores que definen rango reglamentario del Seguro
-        //-----------------------------------------------------
-        $this->arrValoMini = unserialize($_SESSION['ValoMin1']);
-        $this->arrValoMaxi = unserialize($_SESSION['ValoMax1']);
-        $this->intCantLimi = count($this->arrValoMaxi)-1;
-
         //------------------------------------------------------------
         // Se identifica la hora Tope para realizar una Recolecta
         //------------------------------------------------------------

@@ -237,13 +237,6 @@
 		QApplicationBase::$ClassFile['divisametacontrol'] = __META_CONTROLS__ . '/DivisaMetaControl.class.php';
 		QApplicationBase::$ClassFile['divisadatagrid'] = __META_CONTROLS__ . '/DivisaDataGrid.class.php';
 
-	// ClassPaths for the Documento class
-		QApplicationBase::$ClassFile['documento'] = __MODEL__ . '/Documento.class.php';
-		QApplicationBase::$ClassFile['qqnodedocumento'] = __MODEL__ . '/Documento.class.php';
-		QApplicationBase::$ClassFile['qqreversereferencenodedocumento'] = __MODEL__ . '/Documento.class.php';
-		QApplicationBase::$ClassFile['documentometacontrol'] = __META_CONTROLS__ . '/DocumentoMetaControl.class.php';
-		QApplicationBase::$ClassFile['documentodatagrid'] = __META_CONTROLS__ . '/DocumentoDataGrid.class.php';
-
 	// ClassPaths for the DspDespacho class
 		QApplicationBase::$ClassFile['dspdespacho'] = __MODEL__ . '/DspDespacho.class.php';
 		QApplicationBase::$ClassFile['qqnodedspdespacho'] = __MODEL__ . '/DspDespacho.class.php';
@@ -279,13 +272,6 @@
 		QApplicationBase::$ClassFile['estacionmetacontrol'] = __META_CONTROLS__ . '/EstacionMetaControl.class.php';
 		QApplicationBase::$ClassFile['estaciondatagrid'] = __META_CONTROLS__ . '/EstacionDataGrid.class.php';
 
-	// ClassPaths for the Estadistica class
-		QApplicationBase::$ClassFile['estadistica'] = __MODEL__ . '/Estadistica.class.php';
-		QApplicationBase::$ClassFile['qqnodeestadistica'] = __MODEL__ . '/Estadistica.class.php';
-		QApplicationBase::$ClassFile['qqreversereferencenodeestadistica'] = __MODEL__ . '/Estadistica.class.php';
-		QApplicationBase::$ClassFile['estadisticametacontrol'] = __META_CONTROLS__ . '/EstadisticaMetaControl.class.php';
-		QApplicationBase::$ClassFile['estadisticadatagrid'] = __META_CONTROLS__ . '/EstadisticaDataGrid.class.php';
-
 	// ClassPaths for the EstadisticaDeClientes class
 		QApplicationBase::$ClassFile['estadisticadeclientes'] = __MODEL__ . '/EstadisticaDeClientes.class.php';
 		QApplicationBase::$ClassFile['qqnodeestadisticadeclientes'] = __MODEL__ . '/EstadisticaDeClientes.class.php';
@@ -307,26 +293,12 @@
 		QApplicationBase::$ClassFile['estadometacontrol'] = __META_CONTROLS__ . '/EstadoMetaControl.class.php';
 		QApplicationBase::$ClassFile['estadodatagrid'] = __META_CONTROLS__ . '/EstadoDataGrid.class.php';
 
-	// ClassPaths for the FacAudiCierre class
-		QApplicationBase::$ClassFile['facaudicierre'] = __MODEL__ . '/FacAudiCierre.class.php';
-		QApplicationBase::$ClassFile['qqnodefacaudicierre'] = __MODEL__ . '/FacAudiCierre.class.php';
-		QApplicationBase::$ClassFile['qqreversereferencenodefacaudicierre'] = __MODEL__ . '/FacAudiCierre.class.php';
-		QApplicationBase::$ClassFile['facaudicierremetacontrol'] = __META_CONTROLS__ . '/FacAudiCierreMetaControl.class.php';
-		QApplicationBase::$ClassFile['facaudicierredatagrid'] = __META_CONTROLS__ . '/FacAudiCierreDataGrid.class.php';
-
 	// ClassPaths for the FacCategoriaProd class
 		QApplicationBase::$ClassFile['faccategoriaprod'] = __MODEL__ . '/FacCategoriaProd.class.php';
 		QApplicationBase::$ClassFile['qqnodefaccategoriaprod'] = __MODEL__ . '/FacCategoriaProd.class.php';
 		QApplicationBase::$ClassFile['qqreversereferencenodefaccategoriaprod'] = __MODEL__ . '/FacCategoriaProd.class.php';
 		QApplicationBase::$ClassFile['faccategoriaprodmetacontrol'] = __META_CONTROLS__ . '/FacCategoriaProdMetaControl.class.php';
 		QApplicationBase::$ClassFile['faccategoriaproddatagrid'] = __META_CONTROLS__ . '/FacCategoriaProdDataGrid.class.php';
-
-	// ClassPaths for the FacDocTemp class
-		QApplicationBase::$ClassFile['facdoctemp'] = __MODEL__ . '/FacDocTemp.class.php';
-		QApplicationBase::$ClassFile['qqnodefacdoctemp'] = __MODEL__ . '/FacDocTemp.class.php';
-		QApplicationBase::$ClassFile['qqreversereferencenodefacdoctemp'] = __MODEL__ . '/FacDocTemp.class.php';
-		QApplicationBase::$ClassFile['facdoctempmetacontrol'] = __META_CONTROLS__ . '/FacDocTempMetaControl.class.php';
-		QApplicationBase::$ClassFile['facdoctempdatagrid'] = __META_CONTROLS__ . '/FacDocTempDataGrid.class.php';
 
 	// ClassPaths for the FacImpuesto class
 		QApplicationBase::$ClassFile['facimpuesto'] = __MODEL__ . '/FacImpuesto.class.php';
@@ -335,40 +307,12 @@
 		QApplicationBase::$ClassFile['facimpuestometacontrol'] = __META_CONTROLS__ . '/FacImpuestoMetaControl.class.php';
 		QApplicationBase::$ClassFile['facimpuestodatagrid'] = __META_CONTROLS__ . '/FacImpuestoDataGrid.class.php';
 
-	// ClassPaths for the FacPeriFact class
-		QApplicationBase::$ClassFile['facperifact'] = __MODEL__ . '/FacPeriFact.class.php';
-		QApplicationBase::$ClassFile['qqnodefacperifact'] = __MODEL__ . '/FacPeriFact.class.php';
-		QApplicationBase::$ClassFile['qqreversereferencenodefacperifact'] = __MODEL__ . '/FacPeriFact.class.php';
-		QApplicationBase::$ClassFile['facperifactmetacontrol'] = __META_CONTROLS__ . '/FacPeriFactMetaControl.class.php';
-		QApplicationBase::$ClassFile['facperifactdatagrid'] = __META_CONTROLS__ . '/FacPeriFactDataGrid.class.php';
-
 	// ClassPaths for the FacProducto class
 		QApplicationBase::$ClassFile['facproducto'] = __MODEL__ . '/FacProducto.class.php';
 		QApplicationBase::$ClassFile['qqnodefacproducto'] = __MODEL__ . '/FacProducto.class.php';
 		QApplicationBase::$ClassFile['qqreversereferencenodefacproducto'] = __MODEL__ . '/FacProducto.class.php';
 		QApplicationBase::$ClassFile['facproductometacontrol'] = __META_CONTROLS__ . '/FacProductoMetaControl.class.php';
 		QApplicationBase::$ClassFile['facproductodatagrid'] = __META_CONTROLS__ . '/FacProductoDataGrid.class.php';
-
-	// ClassPaths for the FacProfit class
-		QApplicationBase::$ClassFile['facprofit'] = __MODEL__ . '/FacProfit.class.php';
-		QApplicationBase::$ClassFile['qqnodefacprofit'] = __MODEL__ . '/FacProfit.class.php';
-		QApplicationBase::$ClassFile['qqreversereferencenodefacprofit'] = __MODEL__ . '/FacProfit.class.php';
-		QApplicationBase::$ClassFile['facprofitmetacontrol'] = __META_CONTROLS__ . '/FacProfitMetaControl.class.php';
-		QApplicationBase::$ClassFile['facprofitdatagrid'] = __META_CONTROLS__ . '/FacProfitDataGrid.class.php';
-
-	// ClassPaths for the FacResumenFact class
-		QApplicationBase::$ClassFile['facresumenfact'] = __MODEL__ . '/FacResumenFact.class.php';
-		QApplicationBase::$ClassFile['qqnodefacresumenfact'] = __MODEL__ . '/FacResumenFact.class.php';
-		QApplicationBase::$ClassFile['qqreversereferencenodefacresumenfact'] = __MODEL__ . '/FacResumenFact.class.php';
-		QApplicationBase::$ClassFile['facresumenfactmetacontrol'] = __META_CONTROLS__ . '/FacResumenFactMetaControl.class.php';
-		QApplicationBase::$ClassFile['facresumenfactdatagrid'] = __META_CONTROLS__ . '/FacResumenFactDataGrid.class.php';
-
-	// ClassPaths for the FacTariMasi class
-		QApplicationBase::$ClassFile['factarimasi'] = __MODEL__ . '/FacTariMasi.class.php';
-		QApplicationBase::$ClassFile['qqnodefactarimasi'] = __MODEL__ . '/FacTariMasi.class.php';
-		QApplicationBase::$ClassFile['qqreversereferencenodefactarimasi'] = __MODEL__ . '/FacTariMasi.class.php';
-		QApplicationBase::$ClassFile['factarimasimetacontrol'] = __META_CONTROLS__ . '/FacTariMasiMetaControl.class.php';
-		QApplicationBase::$ClassFile['factarimasidatagrid'] = __META_CONTROLS__ . '/FacTariMasiDataGrid.class.php';
 
 	// ClassPaths for the FacTarifa class
 		QApplicationBase::$ClassFile['factarifa'] = __MODEL__ . '/FacTarifa.class.php';
@@ -495,6 +439,13 @@
 		QApplicationBase::$ClassFile['qqreversereferencenodeguiacacesa'] = __MODEL__ . '/GuiaCacesa.class.php';
 		QApplicationBase::$ClassFile['guiacacesametacontrol'] = __META_CONTROLS__ . '/GuiaCacesaMetaControl.class.php';
 		QApplicationBase::$ClassFile['guiacacesadatagrid'] = __META_CONTROLS__ . '/GuiaCacesaDataGrid.class.php';
+
+	// ClassPaths for the GuiaCalculos class
+		QApplicationBase::$ClassFile['guiacalculos'] = __MODEL__ . '/GuiaCalculos.class.php';
+		QApplicationBase::$ClassFile['qqnodeguiacalculos'] = __MODEL__ . '/GuiaCalculos.class.php';
+		QApplicationBase::$ClassFile['qqreversereferencenodeguiacalculos'] = __MODEL__ . '/GuiaCalculos.class.php';
+		QApplicationBase::$ClassFile['guiacalculosmetacontrol'] = __META_CONTROLS__ . '/GuiaCalculosMetaControl.class.php';
+		QApplicationBase::$ClassFile['guiacalculosdatagrid'] = __META_CONTROLS__ . '/GuiaCalculosDataGrid.class.php';
 
 	// ClassPaths for the GuiaCheckpoints class
 		QApplicationBase::$ClassFile['guiacheckpoints'] = __MODEL__ . '/GuiaCheckpoints.class.php';

@@ -22,6 +22,7 @@
         <script src=<?= __APP_JS_ASSETS__ ."/bower_components/metisMenu/dist/metisMenu.min.js" ?>></script>
         <!-- Custom Theme JavaScript -->
         <script src=<?= __APP_JS_ASSETS__ ."/dist/js/sb-admin-2.js" ?>></script>
+
         <?php $this->RenderEnd() ?>
     </body>
 </html>

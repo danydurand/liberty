@@ -86,15 +86,17 @@ foreach ($arrSucuSele as $objSucursal) {
         //--------------------------------
         // Envio el reporte por e-mail
         //--------------------------------
+        $mail = new PHPMailer();
+        $mail->setFrom('SisCO@libertyexpress.com', 'Medicion y Control');
+
         $arrDestCorr = array();
         $arrDireMail = explode(',',$objSucursal->DireMail);
         foreach ($arrDireMail as $strDireMail) {
-            array_push($arrDestCorr,$strDireMail);
+            //array_push($arrDestCorr,$strDireMail);
+            $mail->addAddress($strDireMail);
         }
         $strDireMail = $arrDestCorr;
 
-        $mail = new PHPMailer();
-        $mail->setFrom('SisCO@libertyexpress.com', 'Medicion y Control');
         if ($objSucursal->CodiEsta == 'CCS') {
             $mail->addAddress('soportelufeman@gmail.com');
         }

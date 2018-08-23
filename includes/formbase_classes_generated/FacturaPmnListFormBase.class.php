@@ -113,6 +113,7 @@
 			$this->dtgFacturaPmns->MetaAddColumn('FechaComprobanteIslr');
 			$this->dtgFacturaPmns->MetaAddColumn('TieneRetencion');
 			$this->dtgFacturaPmns->MetaAddColumn('FormaPagoId');
+			$this->dtgFacturaPmns->MetaAddColumn(QQN::FacturaPmn()->NotaCreditoAsFactura);
 
             $this->btnExpoExce_Create();
 

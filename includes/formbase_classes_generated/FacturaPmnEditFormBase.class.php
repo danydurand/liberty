@@ -90,6 +90,7 @@ abstract class FacturaPmnEditFormBase extends QForm {
 	protected $txtFormaPagoId;
 
 	// Other ListBoxes (if applicable) via Unique ReverseReferences and ManyToMany References
+	protected $lstNotaCreditoAsFactura;
 
 	// Other Controls
 	/**
@@ -190,6 +191,7 @@ abstract class FacturaPmnEditFormBase extends QForm {
 		$this->calFechaComprobanteIslr = $this->mctFacturaPmn->calFechaComprobanteIslr_Create();
 		$this->txtTieneRetencion = $this->mctFacturaPmn->txtTieneRetencion_Create();
 		$this->txtFormaPagoId = $this->mctFacturaPmn->txtFormaPagoId_Create();
+			$this->lstNotaCreditoAsFactura = $this->mctFacturaPmn->lstNotaCreditoAsFactura_Create();
 
 		$this->btnSave_Create();
 		$this->btnCancel_Create();

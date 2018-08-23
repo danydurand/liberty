@@ -236,6 +236,14 @@ class Index extends QForm {
         $objClieTari = MasterCliente::LoadByCodigoInterno('PMN01');
         $objTariPmnx = $objClieTari->Tarifa;
         $_SESSION['TariPmnx'] = serialize($objTariPmnx);
+        //-------------------------
+        // Reconversion Monetaria
+        //-------------------------
+        $decFactReco = 100000;
+        $objConfReco = BuscarParametro('ConfReco','RecoMone','TODO',null);
+        if ($objConfReco) {
+            $decFactReco = (float)$objConfReco->ParaVal2;
+        }
 
         if ($strSistPath == 'pmn') {
             //------------------------------------------------
@@ -244,11 +252,12 @@ class Index extends QForm {
             $objCkptAlma = SdeCheckpoint::Load('EA');
             $objCkptReci = SdeCheckpoint::Load('AR');
             $objCkptAudi = SdeCheckpoint::Load('AV');
-            //------------------------------------------------------------------------------
-            // Aqui se establecen algunos valores de interes para el calculo de la tarifa
-            // en el Sistema Counter.  Estos valores son referenciados en el programa
-            // "cargar_guia_pmn.prod.php"
-            //------------------------------------------------------------------------------
+            //-------------------------------------------------------------------
+            // Valores de interes para el calculo de la tarifa en el Exp. Nac
+            //-------------------------------------------------------------------
+            /**
+             * @var $objSeguPmnx Parametro
+             */
             $objSeguPmnx = BuscarParametro('SeguPmnx','ValoSegu','TODO',null);
 
             // Este es para la configuracion antigua de seguro de Expreso Nacional
@@ -265,15 +274,22 @@ class Index extends QForm {
                 $decPorcSegu = 10;
                 $decRutaMaxi = 2000;
             }
-            /*
-             * A continuación, lo demás pertenece a la nueva configuración para el seguro
-             * del Expreso Nacional
-             */
+            //--------------------------------
+            // Valor Max y Min Reconvertidos
+            //--------------------------------
+            $decRecoMini = $decValoMini / $decFactReco;
+            $decRecoMaxi = $decValoMaxi / $decFactReco;
+            //---------------------------------------------
+            // Nueva configuracion del Seguro del Exp Nac
+            //---------------------------------------------
             $objClauOrde   = QQ::Clause();
             $objClauOrde[] = QQ::OrderBy(QQN::Parametro()->ParaVal1);
             $objClauWher   = QQ::Clause();
-            $objClauWher[] = QQ::Equal(QQN::Parametro()->IndiPara, 'SeguPmns');
+            $objClauWher[] = QQ::Equal(QQN::Parametro()->IndiPara, 'SeguYama');
+            $objClauWher[] = QQ::IsNotNull(QQN::Parametro()->ParaVal1);
             $arrReceAuxi   = Parametro::QueryArray(QQ::AndCondition($objClauWher),$objClauOrde);
+            $arrRecoMini   = array();
+            $arrRecoMaxi   = array();
             $arrValoMini   = array();
             $arrValoMaxi   = array();
             $arrValoPorc   = array();
@@ -281,10 +297,10 @@ class Index extends QForm {
                 $arrValoMini[] = $objParaSegu->ParaVal1;
                 $arrValoMaxi[] = $objParaSegu->ParaVal2;
                 $arrValoPorc[] = $objParaSegu->ParaVal3;
+
+                $arrRecoMini[] = $objParaSegu->ParaVal1 / $decFactReco;
+                $arrRecoMaxi[] = $objParaSegu->ParaVal2 / $decFactReco;
             }
-            //-----------------------------------------------------------------------------
-            // Hasta aquí lo de la nueva configuración para el seguro del Expeso Nacional
-            //-----------------------------------------------------------------------------
             //-----------------------------------------------
             // Checkpoints de Cierre del Ciclo de un envio
             //-----------------------------------------------
@@ -367,6 +383,11 @@ class Index extends QForm {
             $_SESSION['ValoMax1'] = serialize($arrValoMaxi);
             $_SESSION['PorcSeg1'] = serialize($arrValoPorc);
 
+            $_SESSION['RecoMini'] = serialize($decRecoMini);
+            $_SESSION['RecoMaxi'] = serialize($decRecoMaxi);
+            $_SESSION['RecoMin1'] = serialize($arrRecoMini);
+            $_SESSION['RecoMax1'] = serialize($arrRecoMaxi);
+
             $_SESSION['FechDhoy'] = serialize($dteFechDhoy);
             $_SESSION['LimiNaci'] = serialize($objLimiNaci);
             $_SESSION['LimiUrba'] = serialize($objLimiUrba);
@@ -388,11 +409,16 @@ class Index extends QForm {
             $arrReceAuxi = Parametro::QueryArray(QQ::AndCondition($objClauWher),$objClaoOrde);
             $arrValoMini = array();
             $arrValoMaxi = array();
+            $arrRecoMini = array();
+            $arrRecoMaxi = array();
             $arrValoPorc = array();
             foreach ($arrReceAuxi as $objParaSegu) {
                 $arrValoMini[] = $objParaSegu->ParaVal1;
                 $arrValoMaxi[] = $objParaSegu->ParaVal2;
                 $arrValoPorc[] = $objParaSegu->ParaVal3;
+
+                $arrRecoMini[] = $objParaSegu->ParaVal1 / $decFactReco;
+                $arrRecoMaxi[] = $objParaSegu->ParaVal2 / $decFactReco;
             }
             //----------------------------------------------------------------------------
             // Obteniendo valores de rango de peso y porcentaje para el  Franqueo Postal.
@@ -419,6 +445,8 @@ class Index extends QForm {
             $_SESSION['OperGene'] = serialize($intOperGene);
             $_SESSION['ValoMin1'] = serialize($arrValoMini);
             $_SESSION['ValoMax1'] = serialize($arrValoMaxi);
+            $_SESSION['RecoMin1'] = serialize($arrRecoMini);
+            $_SESSION['RecoMax1'] = serialize($arrRecoMaxi);
             $_SESSION['PorcSeg1'] = serialize($arrValoPorc);
             $_SESSION['PesoFra1'] = serialize($arrPesoFra1);
             $_SESSION['PesoFra2'] = serialize($arrPesoFra2);

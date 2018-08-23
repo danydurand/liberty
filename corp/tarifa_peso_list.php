@@ -21,18 +21,10 @@ require_once(__FORMBASE_CLASSES__ . '/TarifaPesoListFormBase.class.php');
  * @subpackage Drafts
  */
 class TarifaPesoListForm extends TarifaPesoListFormBase {
-	//------------------------
-	// Propiedades de Objetos
-	//------------------------
 	protected $objUsuario;
-	//----------------------------
-	// Propiedades de Información
-	//----------------------------
-	// ---- DataGrid Tarifa Nacional ----
 	protected $dtgTariNaci;
-	// ---- Meta Control FacTarifa ----
 	protected $mctTariDefi;
-	// ---- Cabecera ----
+
 	protected $lblDescTari;
 	protected $lblTipoTari;
 	protected $lblPesoInic;
@@ -53,7 +45,6 @@ class TarifaPesoListForm extends TarifaPesoListFormBase {
 		QApplication::CheckRemoteAdmin();		    
 	}
 
-//		protected function Form_Load() {}
 
 	protected function Form_Create() {
 		parent::Form_Create();
@@ -140,9 +131,6 @@ class TarifaPesoListForm extends TarifaPesoListFormBase {
 	// Eventos asociados a los objetos
 	//---------------------------------
 
-	//---------------------------------
-
-	// ---- DataGrid: Tarifa Peso. ----
 
 	protected function dtgTarifaPesos_Bind() {
 		$objClauWher = QQ::Clause();

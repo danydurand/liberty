@@ -176,14 +176,14 @@ class Incidencias extends FormularioBaseKaizen {
         // de una variable llamada $_SERVER['CkptConf'] la cual debe contener un arreglo con los
         // checkpoints de confirmacion; por lo tanto, aqui se genera y almacena dicho vector
         //---------------------------------------------------------------------------------------------
-        $arrVectRece = Counter::LoadArrayByStatusId(1);
+        $arrVectRece = Counter::LoadArrayByStatusId(StatusType::ACTIVO);
         $arrCkptConf = array();
         foreach ($arrVectRece as $objReceptoria) {
             $arrCkptConf[] = $objReceptoria->CkptConfirmacion;
         }
         $_SERVER['CkptConf'] = $arrCkptConf;
 
-        if ($this->rdbTipoInci->SelectedValue == "O") {
+        if ($this->rdbTipoInci->SelectedValue == "O") {   // Incidencia Operativa
             $strCodiCkpt = $this->lstListCkpt->SelectedValue;
         } else {
             $strCodiCkpt = "CG";

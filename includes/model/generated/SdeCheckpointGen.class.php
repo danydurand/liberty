@@ -1292,102 +1292,6 @@
 
 		/**
 		 * Load an array of SdeCheckpoint objects,
-		 * by CodiCcat Index(es)
-		 * @param integer $intCodiCcat
-		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
-		 * @return SdeCheckpoint[]
-		*/
-		public static function LoadArrayByCodiCcat($intCodiCcat, $objOptionalClauses = null) {
-			// Call SdeCheckpoint::QueryArray to perform the LoadArrayByCodiCcat query
-			try {
-				return SdeCheckpoint::QueryArray(
-					QQ::Equal(QQN::SdeCheckpoint()->CodiCcat, $intCodiCcat),
-					$objOptionalClauses);
-			} catch (QCallerException $objExc) {
-				$objExc->IncrementOffset();
-				throw $objExc;
-			}
-		}
-
-		/**
-		 * Count SdeCheckpoints
-		 * by CodiCcat Index(es)
-		 * @param integer $intCodiCcat
-		 * @return int
-		*/
-		public static function CountByCodiCcat($intCodiCcat) {
-			// Call SdeCheckpoint::QueryCount to perform the CountByCodiCcat query
-			return SdeCheckpoint::QueryCount(
-				QQ::Equal(QQN::SdeCheckpoint()->CodiCcat, $intCodiCcat)
-			);
-		}
-
-		/**
-		 * Load an array of SdeCheckpoint objects,
-		 * by CodiInad Index(es)
-		 * @param integer $intCodiInad
-		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
-		 * @return SdeCheckpoint[]
-		*/
-		public static function LoadArrayByCodiInad($intCodiInad, $objOptionalClauses = null) {
-			// Call SdeCheckpoint::QueryArray to perform the LoadArrayByCodiInad query
-			try {
-				return SdeCheckpoint::QueryArray(
-					QQ::Equal(QQN::SdeCheckpoint()->CodiInad, $intCodiInad),
-					$objOptionalClauses);
-			} catch (QCallerException $objExc) {
-				$objExc->IncrementOffset();
-				throw $objExc;
-			}
-		}
-
-		/**
-		 * Count SdeCheckpoints
-		 * by CodiInad Index(es)
-		 * @param integer $intCodiInad
-		 * @return int
-		*/
-		public static function CountByCodiInad($intCodiInad) {
-			// Call SdeCheckpoint::QueryCount to perform the CountByCodiInad query
-			return SdeCheckpoint::QueryCount(
-				QQ::Equal(QQN::SdeCheckpoint()->CodiInad, $intCodiInad)
-			);
-		}
-
-		/**
-		 * Load an array of SdeCheckpoint objects,
-		 * by Notificar Index(es)
-		 * @param integer $intNotificar
-		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
-		 * @return SdeCheckpoint[]
-		*/
-		public static function LoadArrayByNotificar($intNotificar, $objOptionalClauses = null) {
-			// Call SdeCheckpoint::QueryArray to perform the LoadArrayByNotificar query
-			try {
-				return SdeCheckpoint::QueryArray(
-					QQ::Equal(QQN::SdeCheckpoint()->Notificar, $intNotificar),
-					$objOptionalClauses);
-			} catch (QCallerException $objExc) {
-				$objExc->IncrementOffset();
-				throw $objExc;
-			}
-		}
-
-		/**
-		 * Count SdeCheckpoints
-		 * by Notificar Index(es)
-		 * @param integer $intNotificar
-		 * @return int
-		*/
-		public static function CountByNotificar($intNotificar) {
-			// Call SdeCheckpoint::QueryCount to perform the CountByNotificar query
-			return SdeCheckpoint::QueryCount(
-				QQ::Equal(QQN::SdeCheckpoint()->Notificar, $intNotificar)
-			);
-		}
-
-		/**
-		 * Load an array of SdeCheckpoint objects,
 		 * by PaisId Index(es)
 		 * @param integer $intPaisId
 		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
@@ -1447,6 +1351,102 @@
 			// Call SdeCheckpoint::QueryCount to perform the CountByDeleteAt query
 			return SdeCheckpoint::QueryCount(
 				QQ::Equal(QQN::SdeCheckpoint()->DeleteAt, $dttDeleteAt)
+			);
+		}
+
+		/**
+		 * Load an array of SdeCheckpoint objects,
+		 * by Notificar Index(es)
+		 * @param integer $intNotificar
+		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
+		 * @return SdeCheckpoint[]
+		*/
+		public static function LoadArrayByNotificar($intNotificar, $objOptionalClauses = null) {
+			// Call SdeCheckpoint::QueryArray to perform the LoadArrayByNotificar query
+			try {
+				return SdeCheckpoint::QueryArray(
+					QQ::Equal(QQN::SdeCheckpoint()->Notificar, $intNotificar),
+					$objOptionalClauses);
+			} catch (QCallerException $objExc) {
+				$objExc->IncrementOffset();
+				throw $objExc;
+			}
+		}
+
+		/**
+		 * Count SdeCheckpoints
+		 * by Notificar Index(es)
+		 * @param integer $intNotificar
+		 * @return int
+		*/
+		public static function CountByNotificar($intNotificar) {
+			// Call SdeCheckpoint::QueryCount to perform the CountByNotificar query
+			return SdeCheckpoint::QueryCount(
+				QQ::Equal(QQN::SdeCheckpoint()->Notificar, $intNotificar)
+			);
+		}
+
+		/**
+		 * Load an array of SdeCheckpoint objects,
+		 * by CodiCcat Index(es)
+		 * @param integer $intCodiCcat
+		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
+		 * @return SdeCheckpoint[]
+		*/
+		public static function LoadArrayByCodiCcat($intCodiCcat, $objOptionalClauses = null) {
+			// Call SdeCheckpoint::QueryArray to perform the LoadArrayByCodiCcat query
+			try {
+				return SdeCheckpoint::QueryArray(
+					QQ::Equal(QQN::SdeCheckpoint()->CodiCcat, $intCodiCcat),
+					$objOptionalClauses);
+			} catch (QCallerException $objExc) {
+				$objExc->IncrementOffset();
+				throw $objExc;
+			}
+		}
+
+		/**
+		 * Count SdeCheckpoints
+		 * by CodiCcat Index(es)
+		 * @param integer $intCodiCcat
+		 * @return int
+		*/
+		public static function CountByCodiCcat($intCodiCcat) {
+			// Call SdeCheckpoint::QueryCount to perform the CountByCodiCcat query
+			return SdeCheckpoint::QueryCount(
+				QQ::Equal(QQN::SdeCheckpoint()->CodiCcat, $intCodiCcat)
+			);
+		}
+
+		/**
+		 * Load an array of SdeCheckpoint objects,
+		 * by CodiInad Index(es)
+		 * @param integer $intCodiInad
+		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
+		 * @return SdeCheckpoint[]
+		*/
+		public static function LoadArrayByCodiInad($intCodiInad, $objOptionalClauses = null) {
+			// Call SdeCheckpoint::QueryArray to perform the LoadArrayByCodiInad query
+			try {
+				return SdeCheckpoint::QueryArray(
+					QQ::Equal(QQN::SdeCheckpoint()->CodiInad, $intCodiInad),
+					$objOptionalClauses);
+			} catch (QCallerException $objExc) {
+				$objExc->IncrementOffset();
+				throw $objExc;
+			}
+		}
+
+		/**
+		 * Count SdeCheckpoints
+		 * by CodiInad Index(es)
+		 * @param integer $intCodiInad
+		 * @return int
+		*/
+		public static function CountByCodiInad($intCodiInad) {
+			// Call SdeCheckpoint::QueryCount to perform the CountByCodiInad query
+			return SdeCheckpoint::QueryCount(
+				QQ::Equal(QQN::SdeCheckpoint()->CodiInad, $intCodiInad)
 			);
 		}
 

@@ -84,7 +84,7 @@ class CargaMasivaGuias extends FormularioBaseKaizen {
         //---- Atributos y funciones ----
 
         $dteFechDhoy = FechaDeHoy();
-        $this->decPorcIvax = FacImpuesto::LoadImpuestoVigente('IVA',$dteFechDhoy);
+        $this->decPorcIvax = FacImpuesto::LoadImpuestoVigente('IVA', $dteFechDhoy);
 
         $this->mensaje();
         $this->activarProcesamiento();
@@ -146,14 +146,14 @@ class CargaMasivaGuias extends FormularioBaseKaizen {
 
     protected function btnAjusGuia_Create() {
         $this->btnAjusGuia = new QButtonI($this);
-        $this->btnAjusGuia->Text = TextoIcono('pencil-square-o','Corregir');
+        $this->btnAjusGuia->Text = TextoIcono('pencil-square-o', 'Corregir');
         $this->btnAjusGuia->Visible = false;
         $this->btnAjusGuia->AddAction(new QClickEvent(), new QServerAction('btnAjusGuia_Click'));
     }
 
     protected function btnImpoGuia_Create() {
         $this->btnImpoGuia = new QButton($this);
-        $this->btnImpoGuia->Text = TextoIcono('download','Importar','F','lg');
+        $this->btnImpoGuia->Text = TextoIcono('download', 'Importar', 'F', 'lg');
         $this->btnImpoGuia->AddAction(new QClickEvent(), new QServerAction('btnImpoGuia_Click'));
         $this->btnImpoGuia->HtmlEntities = false;
         $this->btnImpoGuia->CssClass = 'btn btn-primary btn-sm';

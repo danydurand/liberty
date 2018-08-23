@@ -90,28 +90,30 @@ class RepoLibroDeVentas extends FormularioBaseKaizen {
 		//---------------------------------------------------------
 		// Armo los otros vectores que requiere la rutina PDF
 		//---------------------------------------------------------
-		$arrEnca2XLS = array('Id',
-			                  'Fecha',
-			                  'Factura',
-			                  'Cedula/RIF',
-			                  'Razon Social',
-			                  'Maq. Fiscal',
-			                  'Mto Base',
-			                  'Mto Franqueo',
-			                  'Mto IVA',
-			                  'Mto Seguro',
-			                  'Mto Otros',
-			                  'Monto Total',
-			                  'Comp. Ret. IVA',
-			                  'F. Comp. Ret. IVA',
-			                  '% Ret. IVA',
-			                  'Mto Ret. IVA',
-			                  'F. Pago',
-			                  'Documento',
-			                  'Banco',
-			                  'Mto. Pagado',
-			                  'Creada Por',
-			                  'Sucursal');
+		$arrEnca2XLS = array(
+		    'Id',
+			'Fecha',
+			'Factura',
+			'Cedula/RIF',
+			'Razon Social',
+			'Maq. Fiscal',
+			'Mto Base',
+			'Mto Franqueo',
+			'Mto IVA',
+			'Mto Seguro',
+			'Mto Otros',
+			'Monto Total',
+			'Comp. Ret. IVA',
+			'F. Comp. Ret. IVA',
+			'% Ret. IVA',
+			'Mto Ret. IVA',
+			'F. Pago',
+			'Documento',
+			'Banco',
+			'Mto. Pagado',
+			'Creada Por',
+			'Sucursal'
+        );
 		//----------------------------------------------------------------------
 		// El vector de encabezados, se lleva al archivo plano
 		//----------------------------------------------------------------------
@@ -120,49 +122,92 @@ class RepoLibroDeVentas extends FormularioBaseKaizen {
 		//--------------------------------------------------
 		// Aqui se define el Query sobre la base de datos 
 		//--------------------------------------------------
-		$strCadeSqlx = "select f.id, 
-		                       f.fecha_impresion, 
-		                       f.numero, 
-		                       f.cedula_rif,
-		                       f.razon_social,
-		                       f.maquina_fiscal, 
-		                       f.monto_base,
-		                       f.monto_franqueo,
-		                       f.monto_iva,
-		                       f.monto_seguro,
-		                       f.monto_otros,
-		                       f.monto_total,
-		                       f.comprobante_retencion,
-		                       f.fecha_comprobante,
-		                       f.porcentaje_rete_iva,
-		                       f.monto_rete_iva,
-                             fp.abreviado forma_pago, 
-                             p.numero_documento, 
-                             b.abreviado banco, 
-                             p.monto_pago,
-                             u.logi_usua creada_por,
-                             f.sucursal_id
-		                  from factura_pmn f inner join pago_factura_pmn p 
-		                    on f.id = p.factura_id 
-		                       inner join forma_pago fp 
-		                    on fp.id = p.forma_pago_id
-		                       left join banco b 
-		                    on b.id = p.banco_id
-		                       inner join usuario u 
-		                    on u.codi_usua = f.creada_por
-		                 where f.estatus != 'A'
-		                   and f.fecha_impresion >= '".$this->calFechInic->DateTime->__toString("YYMMDD")."'
-		                   and f.fecha_impresion <= '".$this->calFechFina->DateTime->__toString("YYMMDD")."'
-		                 order by f.numero";
+		$strCadeSqlx  = "select f.id,";
+		$strCadeSqlx .= "       f.fecha_impresion,";
+		$strCadeSqlx .= "       f.numero,";
+		$strCadeSqlx .= "       f.cedula_rif,";
+		$strCadeSqlx .= "       f.razon_social,";
+		$strCadeSqlx .= "       f.maquina_fiscal,";
+		$strCadeSqlx .= "       f.monto_base,";
+		$strCadeSqlx .= "       f.monto_franqueo,";
+		$strCadeSqlx .= "       f.monto_iva,";
+		$strCadeSqlx .= "       f.monto_seguro,";
+		$strCadeSqlx .= "       f.monto_otros,";
+		$strCadeSqlx .= "       f.monto_total,";
+		$strCadeSqlx .= "       f.comprobante_retencion,";
+		$strCadeSqlx .= "       f.fecha_comprobante,";
+		$strCadeSqlx .= "       f.porcentaje_rete_iva,";
+		$strCadeSqlx .= "       f.monto_rete_iva,";
+        $strCadeSqlx .= "       fp.abreviado forma_pago,";
+        $strCadeSqlx .= "       p.numero_documento,";
+        $strCadeSqlx .= "       b.abreviado banco,";
+        $strCadeSqlx .= "       p.monto_pago,";
+        $strCadeSqlx .= "       u.logi_usua creada_por,";
+        $strCadeSqlx .= "       f.sucursal_id, ";
+        $strCadeSqlx .= "       g.tarifa_id ";
+		$strCadeSqlx .= "  from factura_pmn f inner join pago_factura_pmn p";
+		$strCadeSqlx .= "    on f.id = p.factura_id";
+		$strCadeSqlx .= "       inner join guia g";
+		$strCadeSqlx .= "    on f.id = g.factura_id";
+		$strCadeSqlx .= "       inner join forma_pago fp";
+		$strCadeSqlx .= "    on fp.id = p.forma_pago_id";
+		$strCadeSqlx .= "       left join banco b";
+		$strCadeSqlx .= "    on b.id = p.banco_id";
+		$strCadeSqlx .= "       inner join usuario u";
+		$strCadeSqlx .= "    on u.codi_usua = f.creada_por";
+		$strCadeSqlx .= " where f.estatus != 'A'";
+		$strCadeSqlx .= "   and f.fecha_impresion >= '".$this->calFechInic->DateTime->__toString("YYMMDD")."'";
+		$strCadeSqlx .= "   and f.fecha_impresion <= '".$this->calFechFina->DateTime->__toString("YYMMDD")."'";
+		$strCadeSqlx .= " order by f.numero";
 		if ($this->chkMostQuer->Checked) {
 			echo $strCadeSqlx;		                   
 			exit(0);
 		}
-		$objDatabase = FacturaPmn::GetDatabase();
+
+        $blnApliReco = false;
+        $decFactReco = 1;
+        $intTariRefe = 65;
+        //-------------------------------------------------------------------
+        // Aqui se identifica si la Reconversion Monetaria esta activa o no
+        //-------------------------------------------------------------------
+        $objConfReco = BuscarParametro('ConfReco','RecoMone','TODO',null);
+        if ($objConfReco) {
+            $blnApliReco = (boolean)$objConfReco->ParaVal1;
+            $decFactReco = (float)$objConfReco->ParaVal2;
+            $intTariRefe = (int)$objConfReco->ParaVal3;
+        }
+
+        $objDatabase = FacturaPmn::GetDatabase();
 		$objDbResult = $objDatabase->Query($strCadeSqlx);
 		$intCantRegi = 0;
 		while ($mixRegi = $objDbResult->FetchArray()) {
-			//-----------------------------
+            //-------------------------
+            // Montos
+            //-------------------------
+            $decMontBase = $mixRegi['monto_base'];
+            $decMontFran = $mixRegi['monto_franqueo'];
+            $decMontIvax = $mixRegi['monto_iva'];
+            $decMontSgro = $mixRegi['monto_seguro'];
+            $decMontOtro = $mixRegi['monto_otros'];
+            $decMontRete = $mixRegi['monto_rete_iva'];
+            $decMontTota = $mixRegi['monto_total'];
+            $decMontPago = $mixRegi['monto_pago'];
+            //----------------------------------------
+            // Se aplica la reconversión montetaria
+            //----------------------------------------
+            if ($blnApliReco) {
+                if ($mixRegi['tarifa_id'] < $intTariRefe) {
+                    $decMontBase /= $decFactReco;
+                    $decMontFran /= $decFactReco;
+                    $decMontIvax /= $decFactReco;
+                    $decMontSgro /= $decFactReco;
+                    $decMontOtro /= $decFactReco;
+                    $decMontRete /= $decFactReco;
+                    $decMontTota /= $decFactReco;
+                    $decMontPago /= $decFactReco;
+                }
+            }
+            //-----------------------------
 			// Datos que van al reporte
 			//-----------------------------
 			$arrLineArch = array(
@@ -172,20 +217,20 @@ class RepoLibroDeVentas extends FormularioBaseKaizen {
 				$mixRegi['cedula_rif'],
 				$mixRegi['razon_social'],
 				$mixRegi['maquina_fiscal'],
-				nf($mixRegi['monto_base']),
-				nf($mixRegi['monto_franqueo']),
-				nf($mixRegi['monto_iva']),
-				nf($mixRegi['monto_seguro']),
-				nf($mixRegi['monto_otros']),
-				nf($mixRegi['monto_total']),
+				nf($decMontBase),
+				nf($decMontFran),
+				nf($decMontIvax),
+				nf($decMontSgro),
+				nf($decMontOtro),
+				nf($decMontTota),
 				$mixRegi['comprobante_retencion'],
 				$mixRegi['fecha_comprobante'],
 				$mixRegi['porcentaje_rete_iva'],
-				$mixRegi['monto_rete_iva'],
+				nf($decMontRete),
 				$mixRegi['forma_pago'],
 				$mixRegi['numero_documento'],
 				$mixRegi['banco'],
-				nf($mixRegi['monto_pago']),
+				nf($decMontPago),
 				$mixRegi['creada_por'],
 				$mixRegi['sucursal_id']
 			);

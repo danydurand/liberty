@@ -101,6 +101,8 @@ class CargarGuia extends FormularioBaseKaizen {
     protected $lblBotoPopu;
     protected $lblPopuModa;
 
+    protected $objApliReco;
+
     protected function SetupGuia() {
         $strNumeGuia = QApplication::PathInfo(0);
 
@@ -152,7 +154,31 @@ class CargarGuia extends FormularioBaseKaizen {
                 $this->objProducto = unserialize($_SESSION['ProdGuia']);
                 $this->decPorcIvax = unserialize($_SESSION['IvaxDhoy']);
                 $this->decPorcSegu = unserialize($_SESSION['PorcSegu']);
+                //-------------------------------------------
+                // Limites de Valor Declarado reconvertivos
+                //-------------------------------------------
+                $this->arrValoMini = unserialize($_SESSION['RecoMin1']);
+                $this->arrValoMaxi = unserialize($_SESSION['RecoMax1']);
+                $this->arrPorcSegu = unserialize($_SESSION['PorcSeg1']);
+
+                $this->intCantLimi = count($this->arrValoMaxi)-1;
+                $this->decMiniSegu = $this->arrValoMini[0];
+                $this->decMaxiSegu = $this->arrValoMaxi[$this->intCantLimi];
             } else {
+                //-------------------------------------------------------------------------------------
+                // Si la Guia que se esta editando, tiene la tarifa nueva (con reconversion monteria)
+                // entonces los valores limites de Valor Declarado, deben esta reconvertidos
+                //-------------------------------------------------------------------------------------
+                $objConfReco = BuscarParametro('ConfReco','RecoMone','TODO',null);
+                if ($this->objGuia->TarifaId >= (int)$objConfReco->ParaVal3) {
+                    $this->arrValoMini = unserialize($_SESSION['RecoMin1']);
+                    $this->arrValoMaxi = unserialize($_SESSION['RecoMax1']);
+                    $this->arrPorcSegu = unserialize($_SESSION['PorcSeg1']);
+
+                    $this->intCantLimi = count($this->arrValoMaxi)-1;
+                    $this->decMiniSegu = $this->arrValoMini[0];
+                    $this->decMaxiSegu = $this->arrValoMaxi[$this->intCantLimi];
+                }
                 //-------------------------------------------------------------------------------
                 // Se crea un objeto paralelo que permita comparar las modificaciones realizadas
                 //-------------------------------------------------------------------------------
@@ -485,7 +511,7 @@ class CargarGuia extends FormularioBaseKaizen {
     protected function txtCantPiez_Create() {
         $this->txtCantPiez = new QIntegerTextBox($this);
         $this->txtCantPiez->Name = 'Piezas';
-        $this->txtCantPiez->Width = 38;
+        $this->txtCantPiez->Width = 50;
         if ($this->blnEditMode) {
             $this->txtCantPiez->Text = $this->objGuia->CantPiez;
         }
@@ -494,7 +520,7 @@ class CargarGuia extends FormularioBaseKaizen {
     protected function txtPesoGuia_Create() {
         $this->txtPesoGuia = new QFloatTextBox($this);
         $this->txtPesoGuia->Name = 'Peso';
-        $this->txtPesoGuia->Width = 38;
+        $this->txtPesoGuia->Width = 50;
         if ($this->blnEditMode) {
             $this->txtPesoGuia->Text = $this->objGuia->PesoGuia;
         }
@@ -503,7 +529,7 @@ class CargarGuia extends FormularioBaseKaizen {
     protected function txtDescCont_Create() {
         $this->txtDescCont = new QTextBox($this);
         $this->txtDescCont->Name = 'Contenido';
-        $this->txtDescCont->Width = 290;
+        $this->txtDescCont->Width = 300;
         $this->txtDescCont->SetCustomAttribute('onblur',"this.value=this.value.toUpperCase()");
         if ($this->blnEditMode) {
             $this->txtDescCont->Text = $this->objGuia->DescCont;
@@ -513,8 +539,9 @@ class CargarGuia extends FormularioBaseKaizen {
     protected function txtValoDecl_Create() {
         $this->txtValoDecl = new QFloatTextBox($this);
         $this->txtValoDecl->Name = 'Valor Decl.';
-        $this->txtValoDecl->Width = 60;
-        $this->txtValoDecl->HtmlAfter = " (p/env. asegurados | ".$this->decMiniSegu."-".$this->decMaxiSegu.")";
+        $this->txtValoDecl->Width = 120;
+        $this->txtValoDecl->HtmlAfter = " (".$this->decMiniSegu."-".$this->decMaxiSegu.")";
+        $this->txtValoDecl->ToolTip = 'Un monto mayor a cero, implica que el envío se asegura';
         if ($this->blnEditMode) {
             $this->txtValoDecl->Text = $this->objGuia->ValorDeclarado;
         } else {
@@ -1208,6 +1235,37 @@ class CargarGuia extends FormularioBaseKaizen {
         return $decPorcSegu;
     }
 
+    protected function aplicaReconversion(Guia $objGuiaReco) {
+        $objApliReco = new stdClass();
+        $objApliReco->blnApliReco = false;
+        $objApliReco->decFactReco = 1;
+        //-------------------------------------------------------------------
+        // Aqui se identifica si la Reconversion Monetaria esta activa o no
+        //-------------------------------------------------------------------
+        $objConfReco = BuscarParametro('ConfReco','RecoMone','TODO',null);
+        if ($objConfReco) {
+            t('El Parametro de configuracion existe..');
+            $objApliReco->blnApliReco = (boolean)$objConfReco->ParaVal1;
+            $objApliReco->decFactReco = (float)$objConfReco->ParaVal2;
+            $intTariRefe = (int)$objConfReco->ParaVal3;
+            t('Factor de Reconversion: '.$objApliReco->decFactReco);
+            t('Tarifa Referencial: '.$intTariRefe);
+            //---------------------------------------------------------------
+            // Aqui se determina si la reconversion debe ser aplicada o no
+            //---------------------------------------------------------------
+            if ($objApliReco->blnApliReco) {
+                t('Si se debe aplicar la reconversión');
+                $objApliReco->blnApliReco = false;
+                t('La tarifa asociada a la guia es: '.$objGuiaReco->TarifaId);
+                if ($objGuiaReco->TarifaId < $intTariRefe) {
+                    t('En funcion de la tarifa de la guia, si se aplicara la reconversion');
+                    $objApliReco->blnApliReco = true;
+                }
+            }
+        }
+        return $objApliReco;
+    }
+
     //-------------------------------------------------------------------
     // Función responsable del cálculo de la Tarifa del Expreso Nacional
     //-------------------------------------------------------------------
@@ -1219,6 +1277,7 @@ class CargarGuia extends FormularioBaseKaizen {
         } else {
             $objTarifa = FacTarifa::Load($this->objGuia->TarifaId);
         }
+        $objApliReco = $this->aplicaReconversion($this->objGuia);
 
         if ($objTarifa) {
             $arrSucuDest = explode('|',$this->lstSucuDest->SelectedValue);
@@ -1281,7 +1340,16 @@ class CargarGuia extends FormularioBaseKaizen {
             $this->objGuia->EstaOrig = $this->strSucuOrig;
             $this->objGuia->ReceptoriaOrigen = $this->strReceOrig;
         }
-
+        //----------------------------------------------------------------------
+        // Si el Valor Declarado es mayor a cero, entonces se entiende que la
+        // Guia esta asegurada
+        //----------------------------------------------------------------------
+        $blnEnviAseg = false;
+        if (strlen($this->txtValoDecl->Text) > 0) {
+            if ($this->txtValoDecl->Text > 0) {
+                $blnEnviAseg = true;
+            }
+        }
         $this->objGuia->EstaDest           = $this->strCodiEsta;
         $this->objGuia->PesoGuia           = $this->txtPesoGuia->Text;
         $this->objGuia->NombRemi           = $this->txtNombClie->Text;
@@ -1298,7 +1366,7 @@ class CargarGuia extends FormularioBaseKaizen {
         $this->objGuia->ValorDeclarado     = str_replace(",", '', $this->txtValoDecl->Text);
         $this->objGuia->PorcentajeIva      = str_replace(",", '', $this->decPorcIvax);
         $this->objGuia->MontoIva           = str_replace(",", '', $this->lblMontIvax->Text);
-        $this->objGuia->Asegurado          = strlen($this->txtValoDecl->Text) ? 1 : 0;
+        $this->objGuia->Asegurado          = $blnEnviAseg;
         $this->objGuia->PorcentajeSeguro   = $this->AsigPorcSeguro($this->decValoDecl);
         $this->objGuia->MontoSeguro        = str_replace(",", '', $this->lblMontSegu->Text);
         $this->objGuia->MontoBase          = str_replace(",", '', $this->lblMontBase->Text);

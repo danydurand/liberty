@@ -117,12 +117,35 @@ class CargarGuia extends FormularioBaseKaizen {
         $this->decPorcIvax = FacImpuesto::LoadImpuestoVigente('IVA',$this->dteFechDhoy);
         //$this->decPorcSegu = FacImpuesto::LoadImpuestoVigente('SGRO',$this->dteFechDhoy);
 
-        $this->arrValoMini = unserialize($_SESSION['ValoMin1']);
-        $this->arrValoMaxi = unserialize($_SESSION['ValoMax1']);
-
-        $this->intCantLimi = count($this->arrValoMaxi)-1;
-        $this->decValoMini = $this->arrValoMini[0];
-        $this->decValoMaxi = $this->arrValoMaxi[$this->intCantLimi];
+        if ($this->blnEditMode) {
+            //-------------------------------------------------------------------------------------
+            // Si la Guia que se esta editando, tiene la tarifa nueva (con reconversion monteria)
+            // entonces los valores limites de Valor Declarado, deben esta reconvertidos
+            //-------------------------------------------------------------------------------------
+            /**
+             * @var $objConfReco Parametro
+             */
+            $objConfReco = BuscarParametro('ConfReco','RecoMone','TODO',null);
+            if ($this->objGuia->TarifaId >= (int)$objConfReco->ParaVal3) {
+                $this->arrValoMini = unserialize($_SESSION['RecoMin1']);
+                $this->arrValoMaxi = unserialize($_SESSION['RecoMax1']);
+                $this->intCantLimi = count($this->arrValoMaxi)-1;
+                $this->decValoMini = $this->arrValoMini[0];
+                $this->decValoMaxi = $this->arrValoMaxi[$this->intCantLimi];
+            } else {
+                $this->arrValoMini = unserialize($_SESSION['ValoMin1']);
+                $this->arrValoMaxi = unserialize($_SESSION['ValoMax1']);
+                $this->intCantLimi = count($this->arrValoMaxi)-1;
+                $this->decValoMini = $this->arrValoMini[0];
+                $this->decValoMaxi = $this->arrValoMaxi[$this->intCantLimi];
+            }
+        } else {
+            $this->arrValoMini = unserialize($_SESSION['RecoMin1']);
+            $this->arrValoMaxi = unserialize($_SESSION['RecoMax1']);
+            $this->intCantLimi = count($this->arrValoMaxi)-1;
+            $this->decValoMini = $this->arrValoMini[0];
+            $this->decValoMaxi = $this->arrValoMaxi[$this->intCantLimi];
+        }
 
         if ($this->txtPesoGuia->Text <= 2) {
             $this->objProducto = FacProducto::LoadBySiglProd('DOC');

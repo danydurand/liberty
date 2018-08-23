@@ -8,15 +8,15 @@
 require_once('qcubed.inc.php');
 use PHPMailer\PHPMailer\PHPMailer;
 
-//-------------------------------------------------------------------
-// Todas las acciones realizadas quedan grabadas en un archivo log
-//-------------------------------------------------------------------
-$mixManeArch = fopen('actualizar_ultickpt.txt','w');
-fputs($mixManeArch,"\nUltimo Checkpoint");
-fputs($mixManeArch,"\n=================\n\n");
 $objUsuario = Usuario::LoadByLogiUsua('liberty');
 $_SESSION['User'] = serialize($objUsuario);
 error_reporting(E_ALL);
+//-------------------------------------------------------------------
+// Todas las acciones realizadas quedan grabadas en un archivo log
+//-------------------------------------------------------------------
+$mixManeArch = fopen('/tmp/actualizar_ultickpt.txt','w');
+fputs($mixManeArch,"\nUltimo Checkpoint");
+fputs($mixManeArch,"\n=================\n\n");
 //-----------------------------------------------------------
 // Se eliminan los registros de la tabla de actualizacion
 //-----------------------------------------------------------
@@ -25,18 +25,19 @@ $strCadeSqlx  = "delete ";
 $strCadeSqlx .= "  from guia_actualizar ";
 $strCadeSqlx .= " where 1";
 $objDatabase->NonQuery($strCadeSqlx);
-//----------------------------------------------------------------------------------------------
-// Se rellena la tabla de actualizacion con las guias que han tenido movimientos el día de hoy
-//----------------------------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------
+// Se llena la tabla de actualizacion con guias que han tenido movimientos en los ultimos 60 dias
+//-------------------------------------------------------------------------------------------------
 $strCadeSqlx  = "insert ";
 $strCadeSqlx .= "  into guia_actualizar ";
 $strCadeSqlx .= "select distinct nume_guia ";
 $strCadeSqlx .= "  from guia_ckpt ";
-$strCadeSqlx .= " where fech_ckpt = curdate() ";
+$strCadeSqlx .= " where fech_ckpt >= date_sub(curdate(), interval 60 day) ";
 $objDatabase->NonQuery($strCadeSqlx);
-//-----------------------------------------------------------
-// Se seleccionan las guias creadas de los ultimos 60 dias
-//-----------------------------------------------------------
+//----------------------------------------------------------------------------------
+// Se seleccionan las guias creadas de los ultimos 60 dias, cuyo ultimo checkpoint
+// declarado en la tabla guia difiera del ultimo checkpoint en guia_ckpt
+//----------------------------------------------------------------------------------
 $strCadeSqlx  = "select NumeGuia, CodiCkpt, UltiCkpt";
 $strCadeSqlx .= "  from (select nume_guia NumeGuia,";
 $strCadeSqlx .= "               codi_ckpt CodiCkpt,";
@@ -72,20 +73,22 @@ while ($mixRegistro = $objResuQuer->FetchArray()) {
 if ($intContFech > 0) {
 	$strLineText   = sprintf("\n\nCantidad de registros actualizados: (%s)\n\n",$intContFech);
 	fputs($mixManeArch,$strLineText);
-}
-//--------------------------------
-// Envio el reporte por e-mail
-//--------------------------------
-if ($intContFech) {
-    $mail = new PHPMailer();
-    $mail->setFrom('SisCO@libertyexpress.com', 'Control de Fallas');
-    $mail->addAddress('soportelufeman@gmail.com');
-    $mail->Subject  = "Guias con actualizacion de Ultimo Checkpoint";
-    $mail->Body     = 'Estimado Usuario, sírvase revisar el documento anexo...';
-    $mail->addAttachment($mixManeArch);
-    if(!$mail->send()) {
-        echo "Message was not sent.\n";
-        echo "Mailer error: " . $mail->ErrorInfo."\n";
-    }
+    fclose($mixManeArch);
+    //--------------------------------
+    // Envio el reporte por e-mail
+    //--------------------------------
+	$mail = new PHPMailer();
+	try {
+		$mail->isHTML(true);
+		$mail->setFrom('SisCO@libertyexpress.com', 'Control de Fallas');
+		$mail->addAddress('soportelufeman@gmail.com');
+		$mail->Subject = "Guias con actualizacion de Ultimo Checkpoint";
+		$mail->Body = 'Estimado Usuario, sírvase revisar el documento anexo...';
+		$mail->addAttachment($mixManeArch);
+		$mail->send();
+	} catch (Exception $e) {
+		echo "Message was not sent.\n";
+		echo "Mailer error: " . $mail->ErrorInfo."\n";
+	}
 }
 ?>

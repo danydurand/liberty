@@ -86,6 +86,7 @@
 			$this->dtgGuias->MetaAddColumn('NombRemi');
 			$this->dtgGuias->MetaAddColumn('DireRemi');
 			$this->dtgGuias->MetaAddColumn('TeleRemi');
+			$this->dtgGuias->MetaAddColumn('TeleRem2');
 			$this->dtgGuias->MetaAddColumn('NombDest');
 			$this->dtgGuias->MetaAddColumn('DireDest');
 			$this->dtgGuias->MetaAddColumn('TeleDest');
@@ -174,6 +175,7 @@
 			$this->dtgGuias->MetaAddColumn(QQN::Guia()->CobroCod);
 			$this->dtgGuias->MetaAddColumn(QQN::Guia()->EstadisticaDeGuias);
 			$this->dtgGuias->MetaAddColumn(QQN::Guia()->GuiaAduana);
+			$this->dtgGuias->MetaAddColumn(QQN::Guia()->GuiaCalculos);
 			$this->dtgGuias->MetaAddColumn(QQN::Guia()->GuiaCheckpoints);
 			$this->dtgGuias->MetaAddColumn(QQN::Guia()->GuiaModificada);
 

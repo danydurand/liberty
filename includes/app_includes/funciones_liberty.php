@@ -7,6 +7,7 @@
 include('dateclass.php');
 require_once('mimemail.inc.php');
 
+
 function str2num($str)
 {
     if (strpos($str, '.') !== FALSE

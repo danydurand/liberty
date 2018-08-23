@@ -16,7 +16,7 @@
 	 * @package My QCubed Application
 	 * @subpackage GeneratedDataObjects
 	 * @property-read integer $Id the value for intId (Read-Only PK)
-	 * @property integer $FacturaId the value for intFacturaId (Not Null)
+	 * @property integer $FacturaId the value for intFacturaId (Unique)
 	 * @property string $CedulaRif the value for strCedulaRif (Not Null)
 	 * @property string $RazonSocial the value for strRazonSocial (Not Null)
 	 * @property string $DireccionFiscal the value for strDireccionFiscal (Not Null)
@@ -24,7 +24,7 @@
 	 * @property string $Concepto the value for strConcepto (Not Null)
 	 * @property double $Numero the value for fltNumero 
 	 * @property string $MaquinaFiscal the value for strMaquinaFiscal 
-	 * @property QDateTime $FechaImpresion the value for dttFechaImpresion 
+	 * @property string $FechaImpresion the value for strFechaImpresion 
 	 * @property string $HoraImpresion the value for strHoraImpresion 
 	 * @property double $MontoBase the value for fltMontoBase (Not Null)
 	 * @property double $MontoFranqueo the value for fltMontoFranqueo (Not Null)
@@ -40,7 +40,7 @@
 	 * @property string $Estatus the value for strEstatus (Not Null)
 	 * @property integer $ImpresaId the value for intImpresaId (Not Null)
 	 * @property double $MontoDscto the value for fltMontoDscto 
-	 * @property FacturaPmn $Factura the value for the FacturaPmn object referenced by intFacturaId (Not Null)
+	 * @property FacturaPmn $Factura the value for the FacturaPmn object referenced by intFacturaId (Unique)
 	 * @property Estacion $Sucursal the value for the Estacion object referenced by strSucursalId (Not Null)
 	 * @property Counter $Receptoria the value for the Counter object referenced by intReceptoriaId (Not Null)
 	 * @property Caja $Caja the value for the Caja object referenced by intCajaId (Not Null)
@@ -135,9 +135,10 @@
 
 		/**
 		 * Protected member variable that maps to the database column nota_credito.fecha_impresion
-		 * @var QDateTime dttFechaImpresion
+		 * @var string strFechaImpresion
 		 */
-		protected $dttFechaImpresion;
+		protected $strFechaImpresion;
+		const FechaImpresionMaxLength = 10;
 		const FechaImpresionDefault = null;
 
 
@@ -368,7 +369,7 @@
 			$this->strConcepto = NotaCredito::ConceptoDefault;
 			$this->fltNumero = NotaCredito::NumeroDefault;
 			$this->strMaquinaFiscal = NotaCredito::MaquinaFiscalDefault;
-			$this->dttFechaImpresion = (NotaCredito::FechaImpresionDefault === null)?null:new QDateTime(NotaCredito::FechaImpresionDefault);
+			$this->strFechaImpresion = NotaCredito::FechaImpresionDefault;
 			$this->strHoraImpresion = NotaCredito::HoraImpresionDefault;
 			$this->fltMontoBase = NotaCredito::MontoBaseDefault;
 			$this->fltMontoFranqueo = NotaCredito::MontoFranqueoDefault;
@@ -904,7 +905,7 @@
 			$objToReturn->strMaquinaFiscal = $objDbRow->GetColumn($strAliasName, 'VarChar');
 			$strAlias = $strAliasPrefix . 'fecha_impresion';
 			$strAliasName = !empty($strColumnAliasArray[$strAlias]) ? $strColumnAliasArray[$strAlias] : $strAlias;
-			$objToReturn->dttFechaImpresion = $objDbRow->GetColumn($strAliasName, 'Date');
+			$objToReturn->strFechaImpresion = $objDbRow->GetColumn($strAliasName, 'VarChar');
 			$strAlias = $strAliasPrefix . 'hora_impresion';
 			$strAliasName = !empty($strColumnAliasArray[$strAlias]) ? $strColumnAliasArray[$strAlias] : $strAlias;
 			$objToReturn->strHoraImpresion = $objDbRow->GetColumn($strAliasName, 'VarChar');
@@ -1127,34 +1128,18 @@
 		}
 
 		/**
-		 * Load an array of NotaCredito objects,
+		 * Load a single NotaCredito object,
 		 * by FacturaId Index(es)
 		 * @param integer $intFacturaId
 		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
-		 * @return NotaCredito[]
+		 * @return NotaCredito
 		*/
-		public static function LoadArrayByFacturaId($intFacturaId, $objOptionalClauses = null) {
-			// Call NotaCredito::QueryArray to perform the LoadArrayByFacturaId query
-			try {
-				return NotaCredito::QueryArray(
-					QQ::Equal(QQN::NotaCredito()->FacturaId, $intFacturaId),
-					$objOptionalClauses);
-			} catch (QCallerException $objExc) {
-				$objExc->IncrementOffset();
-				throw $objExc;
-			}
-		}
-
-		/**
-		 * Count NotaCreditos
-		 * by FacturaId Index(es)
-		 * @param integer $intFacturaId
-		 * @return int
-		*/
-		public static function CountByFacturaId($intFacturaId) {
-			// Call NotaCredito::QueryCount to perform the CountByFacturaId query
-			return NotaCredito::QueryCount(
-				QQ::Equal(QQN::NotaCredito()->FacturaId, $intFacturaId)
+		public static function LoadByFacturaId($intFacturaId, $objOptionalClauses = null) {
+			return NotaCredito::QuerySingle(
+				QQ::AndCondition(
+					QQ::Equal(QQN::NotaCredito()->FacturaId, $intFacturaId)
+				),
+				$objOptionalClauses
 			);
 		}
 
@@ -1414,7 +1399,7 @@
 							' . $objDatabase->SqlVariable($this->strConcepto) . ',
 							' . $objDatabase->SqlVariable($this->fltNumero) . ',
 							' . $objDatabase->SqlVariable($this->strMaquinaFiscal) . ',
-							' . $objDatabase->SqlVariable($this->dttFechaImpresion) . ',
+							' . $objDatabase->SqlVariable($this->strFechaImpresion) . ',
 							' . $objDatabase->SqlVariable($this->strHoraImpresion) . ',
 							' . $objDatabase->SqlVariable($this->fltMontoBase) . ',
 							' . $objDatabase->SqlVariable($this->fltMontoFranqueo) . ',
@@ -1453,7 +1438,7 @@
 							`concepto` = ' . $objDatabase->SqlVariable($this->strConcepto) . ',
 							`numero` = ' . $objDatabase->SqlVariable($this->fltNumero) . ',
 							`maquina_fiscal` = ' . $objDatabase->SqlVariable($this->strMaquinaFiscal) . ',
-							`fecha_impresion` = ' . $objDatabase->SqlVariable($this->dttFechaImpresion) . ',
+							`fecha_impresion` = ' . $objDatabase->SqlVariable($this->strFechaImpresion) . ',
 							`hora_impresion` = ' . $objDatabase->SqlVariable($this->strHoraImpresion) . ',
 							`monto_base` = ' . $objDatabase->SqlVariable($this->fltMontoBase) . ',
 							`monto_franqueo` = ' . $objDatabase->SqlVariable($this->fltMontoFranqueo) . ',
@@ -1581,7 +1566,7 @@
 			$this->strConcepto = $objReloaded->strConcepto;
 			$this->fltNumero = $objReloaded->fltNumero;
 			$this->strMaquinaFiscal = $objReloaded->strMaquinaFiscal;
-			$this->dttFechaImpresion = $objReloaded->dttFechaImpresion;
+			$this->strFechaImpresion = $objReloaded->strFechaImpresion;
 			$this->strHoraImpresion = $objReloaded->strHoraImpresion;
 			$this->fltMontoBase = $objReloaded->fltMontoBase;
 			$this->fltMontoFranqueo = $objReloaded->fltMontoFranqueo;
@@ -1626,7 +1611,7 @@
 
 				case 'FacturaId':
 					/**
-					 * Gets the value for intFacturaId (Not Null)
+					 * Gets the value for intFacturaId (Unique)
 					 * @return integer
 					 */
 					return $this->intFacturaId;
@@ -1682,10 +1667,10 @@
 
 				case 'FechaImpresion':
 					/**
-					 * Gets the value for dttFechaImpresion 
-					 * @return QDateTime
+					 * Gets the value for strFechaImpresion 
+					 * @return string
 					 */
-					return $this->dttFechaImpresion;
+					return $this->strFechaImpresion;
 
 				case 'HoraImpresion':
 					/**
@@ -1798,7 +1783,7 @@
 				///////////////////
 				case 'Factura':
 					/**
-					 * Gets the value for the FacturaPmn object referenced by intFacturaId (Not Null)
+					 * Gets the value for the FacturaPmn object referenced by intFacturaId (Unique)
 					 * @return FacturaPmn
 					 */
 					try {
@@ -1917,7 +1902,7 @@
 				///////////////////
 				case 'FacturaId':
 					/**
-					 * Sets the value for intFacturaId (Not Null)
+					 * Sets the value for intFacturaId (Unique)
 					 * @param integer $mixValue
 					 * @return integer
 					 */
@@ -2022,12 +2007,12 @@
 
 				case 'FechaImpresion':
 					/**
-					 * Sets the value for dttFechaImpresion 
-					 * @param QDateTime $mixValue
-					 * @return QDateTime
+					 * Sets the value for strFechaImpresion 
+					 * @param string $mixValue
+					 * @return string
 					 */
 					try {
-						return ($this->dttFechaImpresion = QType::Cast($mixValue, QType::DateTime));
+						return ($this->strFechaImpresion = QType::Cast($mixValue, QType::String));
 					} catch (QCallerException $objExc) {
 						$objExc->IncrementOffset();
 						throw $objExc;
@@ -2238,7 +2223,7 @@
 				///////////////////
 				case 'Factura':
 					/**
-					 * Sets the value for the FacturaPmn object referenced by intFacturaId (Not Null)
+					 * Sets the value for the FacturaPmn object referenced by intFacturaId (Unique)
 					 * @param FacturaPmn $mixValue
 					 * @return FacturaPmn
 					 */
@@ -2635,7 +2620,7 @@
 			$strToReturn .= '<element name="Concepto" type="xsd:string"/>';
 			$strToReturn .= '<element name="Numero" type="xsd:float"/>';
 			$strToReturn .= '<element name="MaquinaFiscal" type="xsd:string"/>';
-			$strToReturn .= '<element name="FechaImpresion" type="xsd:dateTime"/>';
+			$strToReturn .= '<element name="FechaImpresion" type="xsd:string"/>';
 			$strToReturn .= '<element name="HoraImpresion" type="xsd:string"/>';
 			$strToReturn .= '<element name="MontoBase" type="xsd:float"/>';
 			$strToReturn .= '<element name="MontoFranqueo" type="xsd:float"/>';
@@ -2698,7 +2683,7 @@
 			if (property_exists($objSoapObject, 'MaquinaFiscal'))
 				$objToReturn->strMaquinaFiscal = $objSoapObject->MaquinaFiscal;
 			if (property_exists($objSoapObject, 'FechaImpresion'))
-				$objToReturn->dttFechaImpresion = new QDateTime($objSoapObject->FechaImpresion);
+				$objToReturn->strFechaImpresion = $objSoapObject->FechaImpresion;
 			if (property_exists($objSoapObject, 'HoraImpresion'))
 				$objToReturn->strHoraImpresion = $objSoapObject->HoraImpresion;
 			if (property_exists($objSoapObject, 'MontoBase'))
@@ -2755,8 +2740,6 @@
 				$objObject->objFactura = FacturaPmn::GetSoapObjectFromObject($objObject->objFactura, false);
 			else if (!$blnBindRelatedObjects)
 				$objObject->intFacturaId = null;
-			if ($objObject->dttFechaImpresion)
-				$objObject->dttFechaImpresion = $objObject->dttFechaImpresion->qFormat(QDateTime::FormatSoap);
 			if ($objObject->objSucursal)
 				$objObject->objSucursal = Estacion::GetSoapObjectFromObject($objObject->objSucursal, false);
 			else if (!$blnBindRelatedObjects)
@@ -2798,7 +2781,7 @@
 			$iArray['Concepto'] = $this->strConcepto;
 			$iArray['Numero'] = $this->fltNumero;
 			$iArray['MaquinaFiscal'] = $this->strMaquinaFiscal;
-			$iArray['FechaImpresion'] = $this->dttFechaImpresion;
+			$iArray['FechaImpresion'] = $this->strFechaImpresion;
 			$iArray['HoraImpresion'] = $this->strHoraImpresion;
 			$iArray['MontoBase'] = $this->fltMontoBase;
 			$iArray['MontoFranqueo'] = $this->fltMontoFranqueo;
@@ -2914,7 +2897,7 @@
 				case 'MaquinaFiscal':
 					return new QQNode('maquina_fiscal', 'MaquinaFiscal', 'VarChar', $this);
 				case 'FechaImpresion':
-					return new QQNode('fecha_impresion', 'FechaImpresion', 'Date', $this);
+					return new QQNode('fecha_impresion', 'FechaImpresion', 'VarChar', $this);
 				case 'HoraImpresion':
 					return new QQNode('hora_impresion', 'HoraImpresion', 'VarChar', $this);
 				case 'MontoBase':
@@ -3033,7 +3016,7 @@
 				case 'MaquinaFiscal':
 					return new QQNode('maquina_fiscal', 'MaquinaFiscal', 'string', $this);
 				case 'FechaImpresion':
-					return new QQNode('fecha_impresion', 'FechaImpresion', 'QDateTime', $this);
+					return new QQNode('fecha_impresion', 'FechaImpresion', 'string', $this);
 				case 'HoraImpresion':
 					return new QQNode('hora_impresion', 'HoraImpresion', 'string', $this);
 				case 'MontoBase':

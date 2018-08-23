@@ -24,12 +24,6 @@
 	 * @property string $TextObse the value for strTextObse 
 	 * @property FacTipoProd $TipoProdObject the value for the FacTipoProd object referenced by strTipoProd (Not Null)
 	 * @property FacCategoriaProd $CodiCateObject the value for the FacCategoriaProd object referenced by intCodiCate (Not Null)
-	 * @property-read Documento $_DocumentoAsProducto the value for the private _objDocumentoAsProducto (Read-Only) if set due to an expansion on the documento.producto_id reverse relationship
-	 * @property-read Documento[] $_DocumentoAsProductoArray the value for the private _objDocumentoAsProductoArray (Read-Only) if set due to an ExpandAsArray on the documento.producto_id reverse relationship
-	 * @property-read FacResumenFact $_FacResumenFactAsCodiProd the value for the private _objFacResumenFactAsCodiProd (Read-Only) if set due to an expansion on the fac_resumen_fact.codi_prod reverse relationship
-	 * @property-read FacResumenFact[] $_FacResumenFactAsCodiProdArray the value for the private _objFacResumenFactAsCodiProdArray (Read-Only) if set due to an ExpandAsArray on the fac_resumen_fact.codi_prod reverse relationship
-	 * @property-read FacTariMasi $_FacTariMasiAsCodiProd the value for the private _objFacTariMasiAsCodiProd (Read-Only) if set due to an expansion on the fac_tari_masi.codi_prod reverse relationship
-	 * @property-read FacTariMasi[] $_FacTariMasiAsCodiProdArray the value for the private _objFacTariMasiAsCodiProdArray (Read-Only) if set due to an ExpandAsArray on the fac_tari_masi.codi_prod reverse relationship
 	 * @property-read FacTarifaPeso $_FacTarifaPesoAsCodiProd the value for the private _objFacTarifaPesoAsCodiProd (Read-Only) if set due to an expansion on the fac_tarifa_peso.codi_prod reverse relationship
 	 * @property-read FacTarifaPeso[] $_FacTarifaPesoAsCodiProdArray the value for the private _objFacTarifaPesoAsCodiProdArray (Read-Only) if set due to an ExpandAsArray on the fac_tarifa_peso.codi_prod reverse relationship
 	 * @property-read FacTarifaProd $_FacTarifaProdAsCodiProd the value for the private _objFacTarifaProdAsCodiProd (Read-Only) if set due to an expansion on the fac_tarifa_prod.codi_prod reverse relationship
@@ -113,54 +107,6 @@
 		const TextObseMaxLength = 200;
 		const TextObseDefault = null;
 
-
-		/**
-		 * Private member variable that stores a reference to a single DocumentoAsProducto object
-		 * (of type Documento), if this FacProducto object was restored with
-		 * an expansion on the documento association table.
-		 * @var Documento _objDocumentoAsProducto;
-		 */
-		private $_objDocumentoAsProducto;
-
-		/**
-		 * Private member variable that stores a reference to an array of DocumentoAsProducto objects
-		 * (of type Documento[]), if this FacProducto object was restored with
-		 * an ExpandAsArray on the documento association table.
-		 * @var Documento[] _objDocumentoAsProductoArray;
-		 */
-		private $_objDocumentoAsProductoArray = null;
-
-		/**
-		 * Private member variable that stores a reference to a single FacResumenFactAsCodiProd object
-		 * (of type FacResumenFact), if this FacProducto object was restored with
-		 * an expansion on the fac_resumen_fact association table.
-		 * @var FacResumenFact _objFacResumenFactAsCodiProd;
-		 */
-		private $_objFacResumenFactAsCodiProd;
-
-		/**
-		 * Private member variable that stores a reference to an array of FacResumenFactAsCodiProd objects
-		 * (of type FacResumenFact[]), if this FacProducto object was restored with
-		 * an ExpandAsArray on the fac_resumen_fact association table.
-		 * @var FacResumenFact[] _objFacResumenFactAsCodiProdArray;
-		 */
-		private $_objFacResumenFactAsCodiProdArray = null;
-
-		/**
-		 * Private member variable that stores a reference to a single FacTariMasiAsCodiProd object
-		 * (of type FacTariMasi), if this FacProducto object was restored with
-		 * an expansion on the fac_tari_masi association table.
-		 * @var FacTariMasi _objFacTariMasiAsCodiProd;
-		 */
-		private $_objFacTariMasiAsCodiProd;
-
-		/**
-		 * Private member variable that stores a reference to an array of FacTariMasiAsCodiProd objects
-		 * (of type FacTariMasi[]), if this FacProducto object was restored with
-		 * an ExpandAsArray on the fac_tari_masi association table.
-		 * @var FacTariMasi[] _objFacTariMasiAsCodiProdArray;
-		 */
-		private $_objFacTariMasiAsCodiProdArray = null;
 
 		/**
 		 * Private member variable that stores a reference to a single FacTarifaPesoAsCodiProd object
@@ -887,51 +833,6 @@
 
 				
 
-			// Check for DocumentoAsProducto Virtual Binding
-			$strAlias = $strAliasPrefix . 'documentoasproducto__id';
-			$strAliasName = !empty($strColumnAliasArray[$strAlias]) ? $strColumnAliasArray[$strAlias] : $strAlias;
-			$objExpansionNode = (empty($objExpansionAliasArray['documentoasproducto']) ? null : $objExpansionAliasArray['documentoasproducto']);
-			$blnExpanded = ($objExpansionNode && $objExpansionNode->ExpandAsArray);
-			if ($blnExpanded && null === $objToReturn->_objDocumentoAsProductoArray)
-				$objToReturn->_objDocumentoAsProductoArray = array();
-			if (!is_null($objDbRow->GetColumn($strAliasName))) {
-				if ($blnExpanded) {
-					$objToReturn->_objDocumentoAsProductoArray[] = Documento::InstantiateDbRow($objDbRow, $strAliasPrefix . 'documentoasproducto__', $objExpansionNode, null, $strColumnAliasArray);
-				} elseif (is_null($objToReturn->_objDocumentoAsProducto)) {
-					$objToReturn->_objDocumentoAsProducto = Documento::InstantiateDbRow($objDbRow, $strAliasPrefix . 'documentoasproducto__', $objExpansionNode, null, $strColumnAliasArray);
-				}
-			}
-
-			// Check for FacResumenFactAsCodiProd Virtual Binding
-			$strAlias = $strAliasPrefix . 'facresumenfactascodiprod__codi_regi';
-			$strAliasName = !empty($strColumnAliasArray[$strAlias]) ? $strColumnAliasArray[$strAlias] : $strAlias;
-			$objExpansionNode = (empty($objExpansionAliasArray['facresumenfactascodiprod']) ? null : $objExpansionAliasArray['facresumenfactascodiprod']);
-			$blnExpanded = ($objExpansionNode && $objExpansionNode->ExpandAsArray);
-			if ($blnExpanded && null === $objToReturn->_objFacResumenFactAsCodiProdArray)
-				$objToReturn->_objFacResumenFactAsCodiProdArray = array();
-			if (!is_null($objDbRow->GetColumn($strAliasName))) {
-				if ($blnExpanded) {
-					$objToReturn->_objFacResumenFactAsCodiProdArray[] = FacResumenFact::InstantiateDbRow($objDbRow, $strAliasPrefix . 'facresumenfactascodiprod__', $objExpansionNode, null, $strColumnAliasArray);
-				} elseif (is_null($objToReturn->_objFacResumenFactAsCodiProd)) {
-					$objToReturn->_objFacResumenFactAsCodiProd = FacResumenFact::InstantiateDbRow($objDbRow, $strAliasPrefix . 'facresumenfactascodiprod__', $objExpansionNode, null, $strColumnAliasArray);
-				}
-			}
-
-			// Check for FacTariMasiAsCodiProd Virtual Binding
-			$strAlias = $strAliasPrefix . 'factarimasiascodiprod__codi_prod';
-			$strAliasName = !empty($strColumnAliasArray[$strAlias]) ? $strColumnAliasArray[$strAlias] : $strAlias;
-			$objExpansionNode = (empty($objExpansionAliasArray['factarimasiascodiprod']) ? null : $objExpansionAliasArray['factarimasiascodiprod']);
-			$blnExpanded = ($objExpansionNode && $objExpansionNode->ExpandAsArray);
-			if ($blnExpanded && null === $objToReturn->_objFacTariMasiAsCodiProdArray)
-				$objToReturn->_objFacTariMasiAsCodiProdArray = array();
-			if (!is_null($objDbRow->GetColumn($strAliasName))) {
-				if ($blnExpanded) {
-					$objToReturn->_objFacTariMasiAsCodiProdArray[] = FacTariMasi::InstantiateDbRow($objDbRow, $strAliasPrefix . 'factarimasiascodiprod__', $objExpansionNode, null, $strColumnAliasArray);
-				} elseif (is_null($objToReturn->_objFacTariMasiAsCodiProd)) {
-					$objToReturn->_objFacTariMasiAsCodiProd = FacTariMasi::InstantiateDbRow($objDbRow, $strAliasPrefix . 'factarimasiascodiprod__', $objExpansionNode, null, $strColumnAliasArray);
-				}
-			}
-
 			// Check for FacTarifaPesoAsCodiProd Virtual Binding
 			$strAlias = $strAliasPrefix . 'factarifapesoascodiprod__id';
 			$strAliasName = !empty($strColumnAliasArray[$strAlias]) ? $strColumnAliasArray[$strAlias] : $strAlias;
@@ -1539,54 +1440,6 @@
 				// (If restored via a "Many-to" expansion)
 				////////////////////////////
 
-				case '_DocumentoAsProducto':
-					/**
-					 * Gets the value for the private _objDocumentoAsProducto (Read-Only)
-					 * if set due to an expansion on the documento.producto_id reverse relationship
-					 * @return Documento
-					 */
-					return $this->_objDocumentoAsProducto;
-
-				case '_DocumentoAsProductoArray':
-					/**
-					 * Gets the value for the private _objDocumentoAsProductoArray (Read-Only)
-					 * if set due to an ExpandAsArray on the documento.producto_id reverse relationship
-					 * @return Documento[]
-					 */
-					return $this->_objDocumentoAsProductoArray;
-
-				case '_FacResumenFactAsCodiProd':
-					/**
-					 * Gets the value for the private _objFacResumenFactAsCodiProd (Read-Only)
-					 * if set due to an expansion on the fac_resumen_fact.codi_prod reverse relationship
-					 * @return FacResumenFact
-					 */
-					return $this->_objFacResumenFactAsCodiProd;
-
-				case '_FacResumenFactAsCodiProdArray':
-					/**
-					 * Gets the value for the private _objFacResumenFactAsCodiProdArray (Read-Only)
-					 * if set due to an ExpandAsArray on the fac_resumen_fact.codi_prod reverse relationship
-					 * @return FacResumenFact[]
-					 */
-					return $this->_objFacResumenFactAsCodiProdArray;
-
-				case '_FacTariMasiAsCodiProd':
-					/**
-					 * Gets the value for the private _objFacTariMasiAsCodiProd (Read-Only)
-					 * if set due to an expansion on the fac_tari_masi.codi_prod reverse relationship
-					 * @return FacTariMasi
-					 */
-					return $this->_objFacTariMasiAsCodiProd;
-
-				case '_FacTariMasiAsCodiProdArray':
-					/**
-					 * Gets the value for the private _objFacTariMasiAsCodiProdArray (Read-Only)
-					 * if set due to an ExpandAsArray on the fac_tari_masi.codi_prod reverse relationship
-					 * @return FacTariMasi[]
-					 */
-					return $this->_objFacTariMasiAsCodiProdArray;
-
 				case '_FacTarifaPesoAsCodiProd':
 					/**
 					 * Gets the value for the private _objFacTarifaPesoAsCodiProd (Read-Only)
@@ -1920,15 +1773,6 @@
 		 */
 		public function TablasRelacionadas() {
 			$arrTablRela = array();
-			if ($this->CountDocumentosAsProducto()) {
-				$arrTablRela[] = 'documento';
-			}
-			if ($this->CountFacResumenFactsAsCodiProd()) {
-				$arrTablRela[] = 'fac_resumen_fact';
-			}
-			if ($this->CountFacTariMasisAsCodiProd()) {
-				$arrTablRela[] = 'fac_tari_masi';
-			}
 			if ($this->CountFacTarifaPesosAsCodiProd()) {
 				$arrTablRela[] = 'fac_tarifa_peso';
 			}
@@ -1961,459 +1805,6 @@
 		// ASSOCIATED OBJECTS' METHODS
 		///////////////////////////////
 
-
-
-		// Related Objects' Methods for DocumentoAsProducto
-		//-------------------------------------------------------------------
-
-		/**
-		 * Gets all associated DocumentosAsProducto as an array of Documento objects
-		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
-		 * @return Documento[]
-		*/
-		public function GetDocumentoAsProductoArray($objOptionalClauses = null) {
-			if ((is_null($this->intCodiProd)))
-				return array();
-
-			try {
-				return Documento::LoadArrayByProductoId($this->intCodiProd, $objOptionalClauses);
-			} catch (QCallerException $objExc) {
-				$objExc->IncrementOffset();
-				throw $objExc;
-			}
-		}
-
-		/**
-		 * Counts all associated DocumentosAsProducto
-		 * @return int
-		*/
-		public function CountDocumentosAsProducto() {
-			if ((is_null($this->intCodiProd)))
-				return 0;
-
-			return Documento::CountByProductoId($this->intCodiProd);
-		}
-
-		/**
-		 * Associates a DocumentoAsProducto
-		 * @param Documento $objDocumento
-		 * @return void
-		*/
-		public function AssociateDocumentoAsProducto(Documento $objDocumento) {
-			if ((is_null($this->intCodiProd)))
-				throw new QUndefinedPrimaryKeyException('Unable to call AssociateDocumentoAsProducto on this unsaved FacProducto.');
-			if ((is_null($objDocumento->Id)))
-				throw new QUndefinedPrimaryKeyException('Unable to call AssociateDocumentoAsProducto on this FacProducto with an unsaved Documento.');
-
-			// Get the Database Object for this Class
-			$objDatabase = FacProducto::GetDatabase();
-
-			// Perform the SQL Query
-			$objDatabase->NonQuery('
-				UPDATE
-					`documento`
-				SET
-					`producto_id` = ' . $objDatabase->SqlVariable($this->intCodiProd) . '
-				WHERE
-					`id` = ' . $objDatabase->SqlVariable($objDocumento->Id) . '
-			');
-		}
-
-		/**
-		 * Unassociates a DocumentoAsProducto
-		 * @param Documento $objDocumento
-		 * @return void
-		*/
-		public function UnassociateDocumentoAsProducto(Documento $objDocumento) {
-			if ((is_null($this->intCodiProd)))
-				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateDocumentoAsProducto on this unsaved FacProducto.');
-			if ((is_null($objDocumento->Id)))
-				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateDocumentoAsProducto on this FacProducto with an unsaved Documento.');
-
-			// Get the Database Object for this Class
-			$objDatabase = FacProducto::GetDatabase();
-
-			// Perform the SQL Query
-			$objDatabase->NonQuery('
-				UPDATE
-					`documento`
-				SET
-					`producto_id` = null
-				WHERE
-					`id` = ' . $objDatabase->SqlVariable($objDocumento->Id) . ' AND
-					`producto_id` = ' . $objDatabase->SqlVariable($this->intCodiProd) . '
-			');
-		}
-
-		/**
-		 * Unassociates all DocumentosAsProducto
-		 * @return void
-		*/
-		public function UnassociateAllDocumentosAsProducto() {
-			if ((is_null($this->intCodiProd)))
-				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateDocumentoAsProducto on this unsaved FacProducto.');
-
-			// Get the Database Object for this Class
-			$objDatabase = FacProducto::GetDatabase();
-
-			// Perform the SQL Query
-			$objDatabase->NonQuery('
-				UPDATE
-					`documento`
-				SET
-					`producto_id` = null
-				WHERE
-					`producto_id` = ' . $objDatabase->SqlVariable($this->intCodiProd) . '
-			');
-		}
-
-		/**
-		 * Deletes an associated DocumentoAsProducto
-		 * @param Documento $objDocumento
-		 * @return void
-		*/
-		public function DeleteAssociatedDocumentoAsProducto(Documento $objDocumento) {
-			if ((is_null($this->intCodiProd)))
-				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateDocumentoAsProducto on this unsaved FacProducto.');
-			if ((is_null($objDocumento->Id)))
-				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateDocumentoAsProducto on this FacProducto with an unsaved Documento.');
-
-			// Get the Database Object for this Class
-			$objDatabase = FacProducto::GetDatabase();
-
-			// Perform the SQL Query
-			$objDatabase->NonQuery('
-				DELETE FROM
-					`documento`
-				WHERE
-					`id` = ' . $objDatabase->SqlVariable($objDocumento->Id) . ' AND
-					`producto_id` = ' . $objDatabase->SqlVariable($this->intCodiProd) . '
-			');
-		}
-
-		/**
-		 * Deletes all associated DocumentosAsProducto
-		 * @return void
-		*/
-		public function DeleteAllDocumentosAsProducto() {
-			if ((is_null($this->intCodiProd)))
-				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateDocumentoAsProducto on this unsaved FacProducto.');
-
-			// Get the Database Object for this Class
-			$objDatabase = FacProducto::GetDatabase();
-
-			// Perform the SQL Query
-			$objDatabase->NonQuery('
-				DELETE FROM
-					`documento`
-				WHERE
-					`producto_id` = ' . $objDatabase->SqlVariable($this->intCodiProd) . '
-			');
-		}
-
-
-		// Related Objects' Methods for FacResumenFactAsCodiProd
-		//-------------------------------------------------------------------
-
-		/**
-		 * Gets all associated FacResumenFactsAsCodiProd as an array of FacResumenFact objects
-		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
-		 * @return FacResumenFact[]
-		*/
-		public function GetFacResumenFactAsCodiProdArray($objOptionalClauses = null) {
-			if ((is_null($this->intCodiProd)))
-				return array();
-
-			try {
-				return FacResumenFact::LoadArrayByCodiProd($this->intCodiProd, $objOptionalClauses);
-			} catch (QCallerException $objExc) {
-				$objExc->IncrementOffset();
-				throw $objExc;
-			}
-		}
-
-		/**
-		 * Counts all associated FacResumenFactsAsCodiProd
-		 * @return int
-		*/
-		public function CountFacResumenFactsAsCodiProd() {
-			if ((is_null($this->intCodiProd)))
-				return 0;
-
-			return FacResumenFact::CountByCodiProd($this->intCodiProd);
-		}
-
-		/**
-		 * Associates a FacResumenFactAsCodiProd
-		 * @param FacResumenFact $objFacResumenFact
-		 * @return void
-		*/
-		public function AssociateFacResumenFactAsCodiProd(FacResumenFact $objFacResumenFact) {
-			if ((is_null($this->intCodiProd)))
-				throw new QUndefinedPrimaryKeyException('Unable to call AssociateFacResumenFactAsCodiProd on this unsaved FacProducto.');
-			if ((is_null($objFacResumenFact->CodiRegi)))
-				throw new QUndefinedPrimaryKeyException('Unable to call AssociateFacResumenFactAsCodiProd on this FacProducto with an unsaved FacResumenFact.');
-
-			// Get the Database Object for this Class
-			$objDatabase = FacProducto::GetDatabase();
-
-			// Perform the SQL Query
-			$objDatabase->NonQuery('
-				UPDATE
-					`fac_resumen_fact`
-				SET
-					`codi_prod` = ' . $objDatabase->SqlVariable($this->intCodiProd) . '
-				WHERE
-					`codi_regi` = ' . $objDatabase->SqlVariable($objFacResumenFact->CodiRegi) . '
-			');
-		}
-
-		/**
-		 * Unassociates a FacResumenFactAsCodiProd
-		 * @param FacResumenFact $objFacResumenFact
-		 * @return void
-		*/
-		public function UnassociateFacResumenFactAsCodiProd(FacResumenFact $objFacResumenFact) {
-			if ((is_null($this->intCodiProd)))
-				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateFacResumenFactAsCodiProd on this unsaved FacProducto.');
-			if ((is_null($objFacResumenFact->CodiRegi)))
-				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateFacResumenFactAsCodiProd on this FacProducto with an unsaved FacResumenFact.');
-
-			// Get the Database Object for this Class
-			$objDatabase = FacProducto::GetDatabase();
-
-			// Perform the SQL Query
-			$objDatabase->NonQuery('
-				UPDATE
-					`fac_resumen_fact`
-				SET
-					`codi_prod` = null
-				WHERE
-					`codi_regi` = ' . $objDatabase->SqlVariable($objFacResumenFact->CodiRegi) . ' AND
-					`codi_prod` = ' . $objDatabase->SqlVariable($this->intCodiProd) . '
-			');
-		}
-
-		/**
-		 * Unassociates all FacResumenFactsAsCodiProd
-		 * @return void
-		*/
-		public function UnassociateAllFacResumenFactsAsCodiProd() {
-			if ((is_null($this->intCodiProd)))
-				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateFacResumenFactAsCodiProd on this unsaved FacProducto.');
-
-			// Get the Database Object for this Class
-			$objDatabase = FacProducto::GetDatabase();
-
-			// Perform the SQL Query
-			$objDatabase->NonQuery('
-				UPDATE
-					`fac_resumen_fact`
-				SET
-					`codi_prod` = null
-				WHERE
-					`codi_prod` = ' . $objDatabase->SqlVariable($this->intCodiProd) . '
-			');
-		}
-
-		/**
-		 * Deletes an associated FacResumenFactAsCodiProd
-		 * @param FacResumenFact $objFacResumenFact
-		 * @return void
-		*/
-		public function DeleteAssociatedFacResumenFactAsCodiProd(FacResumenFact $objFacResumenFact) {
-			if ((is_null($this->intCodiProd)))
-				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateFacResumenFactAsCodiProd on this unsaved FacProducto.');
-			if ((is_null($objFacResumenFact->CodiRegi)))
-				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateFacResumenFactAsCodiProd on this FacProducto with an unsaved FacResumenFact.');
-
-			// Get the Database Object for this Class
-			$objDatabase = FacProducto::GetDatabase();
-
-			// Perform the SQL Query
-			$objDatabase->NonQuery('
-				DELETE FROM
-					`fac_resumen_fact`
-				WHERE
-					`codi_regi` = ' . $objDatabase->SqlVariable($objFacResumenFact->CodiRegi) . ' AND
-					`codi_prod` = ' . $objDatabase->SqlVariable($this->intCodiProd) . '
-			');
-		}
-
-		/**
-		 * Deletes all associated FacResumenFactsAsCodiProd
-		 * @return void
-		*/
-		public function DeleteAllFacResumenFactsAsCodiProd() {
-			if ((is_null($this->intCodiProd)))
-				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateFacResumenFactAsCodiProd on this unsaved FacProducto.');
-
-			// Get the Database Object for this Class
-			$objDatabase = FacProducto::GetDatabase();
-
-			// Perform the SQL Query
-			$objDatabase->NonQuery('
-				DELETE FROM
-					`fac_resumen_fact`
-				WHERE
-					`codi_prod` = ' . $objDatabase->SqlVariable($this->intCodiProd) . '
-			');
-		}
-
-
-		// Related Objects' Methods for FacTariMasiAsCodiProd
-		//-------------------------------------------------------------------
-
-		/**
-		 * Gets all associated FacTariMasisAsCodiProd as an array of FacTariMasi objects
-		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
-		 * @return FacTariMasi[]
-		*/
-		public function GetFacTariMasiAsCodiProdArray($objOptionalClauses = null) {
-			if ((is_null($this->intCodiProd)))
-				return array();
-
-			try {
-				return FacTariMasi::LoadArrayByCodiProd($this->intCodiProd, $objOptionalClauses);
-			} catch (QCallerException $objExc) {
-				$objExc->IncrementOffset();
-				throw $objExc;
-			}
-		}
-
-		/**
-		 * Counts all associated FacTariMasisAsCodiProd
-		 * @return int
-		*/
-		public function CountFacTariMasisAsCodiProd() {
-			if ((is_null($this->intCodiProd)))
-				return 0;
-
-			return FacTariMasi::CountByCodiProd($this->intCodiProd);
-		}
-
-		/**
-		 * Associates a FacTariMasiAsCodiProd
-		 * @param FacTariMasi $objFacTariMasi
-		 * @return void
-		*/
-		public function AssociateFacTariMasiAsCodiProd(FacTariMasi $objFacTariMasi) {
-			if ((is_null($this->intCodiProd)))
-				throw new QUndefinedPrimaryKeyException('Unable to call AssociateFacTariMasiAsCodiProd on this unsaved FacProducto.');
-			if ((is_null($objFacTariMasi->CodiProd)) || (is_null($objFacTariMasi->CodiClie)) || (is_null($objFacTariMasi->TipoRuta)))
-				throw new QUndefinedPrimaryKeyException('Unable to call AssociateFacTariMasiAsCodiProd on this FacProducto with an unsaved FacTariMasi.');
-
-			// Get the Database Object for this Class
-			$objDatabase = FacProducto::GetDatabase();
-
-			// Perform the SQL Query
-			$objDatabase->NonQuery('
-				UPDATE
-					`fac_tari_masi`
-				SET
-					`codi_prod` = ' . $objDatabase->SqlVariable($this->intCodiProd) . '
-				WHERE
-					`codi_prod` = ' . $objDatabase->SqlVariable($objFacTariMasi->CodiProd) . ' AND
-					`codi_clie` = ' . $objDatabase->SqlVariable($objFacTariMasi->CodiClie) . ' AND
-					`tipo_ruta` = ' . $objDatabase->SqlVariable($objFacTariMasi->TipoRuta) . '
-			');
-		}
-
-		/**
-		 * Unassociates a FacTariMasiAsCodiProd
-		 * @param FacTariMasi $objFacTariMasi
-		 * @return void
-		*/
-		public function UnassociateFacTariMasiAsCodiProd(FacTariMasi $objFacTariMasi) {
-			if ((is_null($this->intCodiProd)))
-				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateFacTariMasiAsCodiProd on this unsaved FacProducto.');
-			if ((is_null($objFacTariMasi->CodiProd)) || (is_null($objFacTariMasi->CodiClie)) || (is_null($objFacTariMasi->TipoRuta)))
-				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateFacTariMasiAsCodiProd on this FacProducto with an unsaved FacTariMasi.');
-
-			// Get the Database Object for this Class
-			$objDatabase = FacProducto::GetDatabase();
-
-			// Perform the SQL Query
-			$objDatabase->NonQuery('
-				UPDATE
-					`fac_tari_masi`
-				SET
-					`codi_prod` = null
-				WHERE
-					`codi_prod` = ' . $objDatabase->SqlVariable($objFacTariMasi->CodiProd) . ' AND
-					`codi_clie` = ' . $objDatabase->SqlVariable($objFacTariMasi->CodiClie) . ' AND
-					`tipo_ruta` = ' . $objDatabase->SqlVariable($objFacTariMasi->TipoRuta) . ' AND
-					`codi_prod` = ' . $objDatabase->SqlVariable($this->intCodiProd) . '
-			');
-		}
-
-		/**
-		 * Unassociates all FacTariMasisAsCodiProd
-		 * @return void
-		*/
-		public function UnassociateAllFacTariMasisAsCodiProd() {
-			if ((is_null($this->intCodiProd)))
-				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateFacTariMasiAsCodiProd on this unsaved FacProducto.');
-
-			// Get the Database Object for this Class
-			$objDatabase = FacProducto::GetDatabase();
-
-			// Perform the SQL Query
-			$objDatabase->NonQuery('
-				UPDATE
-					`fac_tari_masi`
-				SET
-					`codi_prod` = null
-				WHERE
-					`codi_prod` = ' . $objDatabase->SqlVariable($this->intCodiProd) . '
-			');
-		}
-
-		/**
-		 * Deletes an associated FacTariMasiAsCodiProd
-		 * @param FacTariMasi $objFacTariMasi
-		 * @return void
-		*/
-		public function DeleteAssociatedFacTariMasiAsCodiProd(FacTariMasi $objFacTariMasi) {
-			if ((is_null($this->intCodiProd)))
-				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateFacTariMasiAsCodiProd on this unsaved FacProducto.');
-			if ((is_null($objFacTariMasi->CodiProd)) || (is_null($objFacTariMasi->CodiClie)) || (is_null($objFacTariMasi->TipoRuta)))
-				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateFacTariMasiAsCodiProd on this FacProducto with an unsaved FacTariMasi.');
-
-			// Get the Database Object for this Class
-			$objDatabase = FacProducto::GetDatabase();
-
-			// Perform the SQL Query
-			$objDatabase->NonQuery('
-				DELETE FROM
-					`fac_tari_masi`
-				WHERE
-					`codi_prod` = ' . $objDatabase->SqlVariable($objFacTariMasi->CodiProd) . ' AND
-					`codi_clie` = ' . $objDatabase->SqlVariable($objFacTariMasi->CodiClie) . ' AND
-					`tipo_ruta` = ' . $objDatabase->SqlVariable($objFacTariMasi->TipoRuta) . ' AND
-					`codi_prod` = ' . $objDatabase->SqlVariable($this->intCodiProd) . '
-			');
-		}
-
-		/**
-		 * Deletes all associated FacTariMasisAsCodiProd
-		 * @return void
-		*/
-		public function DeleteAllFacTariMasisAsCodiProd() {
-			if ((is_null($this->intCodiProd)))
-				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateFacTariMasiAsCodiProd on this unsaved FacProducto.');
-
-			// Get the Database Object for this Class
-			$objDatabase = FacProducto::GetDatabase();
-
-			// Perform the SQL Query
-			$objDatabase->NonQuery('
-				DELETE FROM
-					`fac_tari_masi`
-				WHERE
-					`codi_prod` = ' . $objDatabase->SqlVariable($this->intCodiProd) . '
-			');
-		}
 
 
 		// Related Objects' Methods for FacTarifaPesoAsCodiProd
@@ -3794,9 +3185,6 @@
      * @property-read QQNode $TextObse
      *
      *
-     * @property-read QQReverseReferenceNodeDocumento $DocumentoAsProducto
-     * @property-read QQReverseReferenceNodeFacResumenFact $FacResumenFactAsCodiProd
-     * @property-read QQReverseReferenceNodeFacTariMasi $FacTariMasiAsCodiProd
      * @property-read QQReverseReferenceNodeFacTarifaPeso $FacTarifaPesoAsCodiProd
      * @property-read QQReverseReferenceNodeFacTarifaProd $FacTarifaProdAsCodiProd
      * @property-read QQReverseReferenceNodeGuia $GuiaAsCodiProd
@@ -3832,12 +3220,6 @@
 					return new QQNode('codi_stat', 'CodiStat', 'Integer', $this);
 				case 'TextObse':
 					return new QQNode('text_obse', 'TextObse', 'VarChar', $this);
-				case 'DocumentoAsProducto':
-					return new QQReverseReferenceNodeDocumento($this, 'documentoasproducto', 'reverse_reference', 'producto_id', 'DocumentoAsProducto');
-				case 'FacResumenFactAsCodiProd':
-					return new QQReverseReferenceNodeFacResumenFact($this, 'facresumenfactascodiprod', 'reverse_reference', 'codi_prod', 'FacResumenFactAsCodiProd');
-				case 'FacTariMasiAsCodiProd':
-					return new QQReverseReferenceNodeFacTariMasi($this, 'factarimasiascodiprod', 'reverse_reference', 'codi_prod', 'FacTariMasiAsCodiProd');
 				case 'FacTarifaPesoAsCodiProd':
 					return new QQReverseReferenceNodeFacTarifaPeso($this, 'factarifapesoascodiprod', 'reverse_reference', 'codi_prod', 'FacTarifaPesoAsCodiProd');
 				case 'FacTarifaProdAsCodiProd':
@@ -3880,9 +3262,6 @@
      * @property-read QQNode $TextObse
      *
      *
-     * @property-read QQReverseReferenceNodeDocumento $DocumentoAsProducto
-     * @property-read QQReverseReferenceNodeFacResumenFact $FacResumenFactAsCodiProd
-     * @property-read QQReverseReferenceNodeFacTariMasi $FacTariMasiAsCodiProd
      * @property-read QQReverseReferenceNodeFacTarifaPeso $FacTarifaPesoAsCodiProd
      * @property-read QQReverseReferenceNodeFacTarifaProd $FacTarifaProdAsCodiProd
      * @property-read QQReverseReferenceNodeGuia $GuiaAsCodiProd
@@ -3918,12 +3297,6 @@
 					return new QQNode('codi_stat', 'CodiStat', 'integer', $this);
 				case 'TextObse':
 					return new QQNode('text_obse', 'TextObse', 'string', $this);
-				case 'DocumentoAsProducto':
-					return new QQReverseReferenceNodeDocumento($this, 'documentoasproducto', 'reverse_reference', 'producto_id', 'DocumentoAsProducto');
-				case 'FacResumenFactAsCodiProd':
-					return new QQReverseReferenceNodeFacResumenFact($this, 'facresumenfactascodiprod', 'reverse_reference', 'codi_prod', 'FacResumenFactAsCodiProd');
-				case 'FacTariMasiAsCodiProd':
-					return new QQReverseReferenceNodeFacTariMasi($this, 'factarimasiascodiprod', 'reverse_reference', 'codi_prod', 'FacTariMasiAsCodiProd');
 				case 'FacTarifaPesoAsCodiProd':
 					return new QQReverseReferenceNodeFacTarifaPeso($this, 'factarifapesoascodiprod', 'reverse_reference', 'codi_prod', 'FacTarifaPesoAsCodiProd');
 				case 'FacTarifaProdAsCodiProd':

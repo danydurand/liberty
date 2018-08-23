@@ -407,7 +407,7 @@ require(__APP_INCLUDES__ . '/header.inc.php');
                 <div class="col-md-6">
                     <div class="row">
                         <div class="col-md-3">
-                            <div class="titulo-c"><? $this->lblOtraGuia->Render() ?></div>
+                            <div class="titulo-c"><?php $this->lblOtraGuia->Render() ?></div>
                         </div>
                         <div class="col-md-6">
                             <?php $this->txtOtraGuia->Render(); ?>

@@ -252,6 +252,10 @@ class GuiaListNew extends FormularioBaseKaizen {
         $this->dtgGuiaClie->RowActionParameterHtml = '<?= $_ITEM->NumeGuia ?>';
         $this->dtgGuiaClie->AddRowAction(new QClickEvent(), new QAjaxAction('dtgGuiaRowx_Click'));
 
+        $objClauOrde   = QQ::Clause();
+        $objClauOrde[] = QQ::OrderBy(QQN::Guia()->FechGuia,false);
+        $this->dtgGuiaClie->AdditionalClauses = $objClauOrde;
+
         $colStatGuia = new QDataGridColumn('ST', '<?= $_FORM->StatusColumnRender($_ITEM) ?>');
         $colStatGuia->HtmlEntities = false;
         $colStatGuia->Width        = 10;

@@ -77,16 +77,11 @@ class TarifaPesoEditForm extends TarifaPesoEditFormBase {
         $this->txtPorcentajeFp->Name = '% de Franqueo Postal';
         $this->txtPorcentajeFp->HtmlAfter = ' %';
         $this->txtPorcentajeFp->Width = 30;
-//        $this->txtPorcentajeFp->Enabled = false;
-//        $this->txtPorcentajeFp->ForeColor = 'blue';
 
         $this->txtFranqueoPostal = $this->mctTarifaPeso->txtFranqueoPostal_Create();
         $this->txtFranqueoPostal->AddAction(new QBlurEvent(), new QAjaxAction('txtFranqueoPostal_Blur'));
         $this->txtFranqueoPostal->HtmlAfter = ' Bs';
         $this->txtFranqueoPostal->Width = 100;
-//        if (!$this->mctTarifaPeso->EditMode) {
-//            $this->txtFranqueoPostal->Text = 0;
-//        }
 
         $this->txtMontoBase = $this->mctTarifaPeso->txtMontoBase_Create();
         $this->txtMontoBase->Enabled = false;

@@ -9,8 +9,6 @@
 		QApplicationBase::$ClassFile['faccortfacttype'] = __MODEL__ . '/FacCortfactType.class.php';
 	// ClassPaths for the FacMedidaType type class
 		QApplicationBase::$ClassFile['facmedidatype'] = __MODEL__ . '/FacMedidaType.class.php';
-	// ClassPaths for the FacStatfactType type class
-		QApplicationBase::$ClassFile['facstatfacttype'] = __MODEL__ . '/FacStatfactType.class.php';
 	// ClassPaths for the FacStatregiType type class
 		QApplicationBase::$ClassFile['facstatregitype'] = __MODEL__ . '/FacStatregiType.class.php';
 	// ClassPaths for the FacTipoTarifaType type class

@@ -170,6 +170,14 @@ class Index extends QForm {
         $objProducto = FacProducto::LoadBySiglProd('DOC');
         $arrOperGene = SdeOperacion::LoadArrayByCodiRuta('R9999');
         $intOperGene = $arrOperGene[0]->CodiOper;
+        //-------------------------
+        // Reconversion Monetaria
+        //-------------------------
+        $decFactReco = 100000;
+        $objConfReco = BuscarParametro('ConfReco','RecoMone','TODO',null);
+        if ($objConfReco) {
+            $decFactReco = (float)$objConfReco->ParaVal2;
+        }
         //--------------------------------------------
         // Obteniendo valores de rango del seguro ...
         //--------------------------------------------
@@ -178,11 +186,16 @@ class Index extends QForm {
         $objClauWher   = QQ::Clause();
         $objClauWher[] = QQ::Equal(QQN::Parametro()->IndiPara, 'SeguYama');
         $arrReceAuxi   = Parametro::QueryArray(QQ::AndCondition($objClauWher),$objClauOrde);
+        $arrRecoMini   = array();
+        $arrRecoMaxi   = array();
         $arrValoMini   = array();
         $arrValoMaxi   = array();
         foreach ($arrReceAuxi as $objParaSegu) {
             $arrValoMini[] = $objParaSegu->ParaVal1;
             $arrValoMaxi[] = $objParaSegu->ParaVal2;
+
+            $arrRecoMini[] = $objParaSegu->ParaVal1 / $decFactReco;
+            $arrRecoMaxi[] = $objParaSegu->ParaVal2 / $decFactReco;
         }
         //------------------------------------------------------------------
         // Obteniendo Sucursales de Venezuela activas y que no son almacén.
@@ -203,6 +216,8 @@ class Index extends QForm {
         $_SESSION['IvaxDhoy'] = serialize($decIvaxDhoy);
         $_SESSION['ProdGuia'] = serialize($objProducto);
         $_SESSION['OperGene'] = serialize($intOperGene);
+        $_SESSION['RecoMin1'] = serialize($arrRecoMini);
+        $_SESSION['RecoMax1'] = serialize($arrRecoMaxi);
         $_SESSION['ValoMin1'] = serialize($arrValoMini);
         $_SESSION['ValoMax1'] = serialize($arrValoMaxi);
         $_SESSION['SucuActi'] = serialize($arrSucuActi);

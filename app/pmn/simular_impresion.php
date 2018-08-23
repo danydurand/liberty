@@ -176,7 +176,8 @@ class SimularImpresion extends FormularioBaseKaizen {
                 if ($blnTodoOkey) {
                     $objNotaCred->Numero         = $this->txtDocuFisc->Text;
                     $objNotaCred->MaquinaFiscal  = $this->txtMaquFisc->Text;
-                    $objNotaCred->FechaImpresion = new QDateTime($this->txtFechImpr->Text);
+                    // $objNotaCred->FechaImpresion = new QDateTime($this->txtFechImpr->Text);
+                    $objNotaCred->FechaImpresion = $this->txtFechImpr->Text;
                     $objNotaCred->HoraImpresion  = $this->txtHoraImpr->Text;
                     $objNotaCred->ImpresaId      = SinoType::SI;
                     $objNotaCred->Save();

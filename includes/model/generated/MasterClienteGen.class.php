@@ -83,14 +83,8 @@
 	 * @property FechaUltimaGuia $FechaUltimaGuiaAsCliente the value for the FechaUltimaGuia object that uniquely references this MasterCliente
 	 * @property-read DestinatarioFrecuente $_DestinatarioFrecuenteAsCliente the value for the private _objDestinatarioFrecuenteAsCliente (Read-Only) if set due to an expansion on the destinatario_frecuente.cliente_id reverse relationship
 	 * @property-read DestinatarioFrecuente[] $_DestinatarioFrecuenteAsClienteArray the value for the private _objDestinatarioFrecuenteAsClienteArray (Read-Only) if set due to an ExpandAsArray on the destinatario_frecuente.cliente_id reverse relationship
-	 * @property-read Documento $_DocumentoAsCliente the value for the private _objDocumentoAsCliente (Read-Only) if set due to an expansion on the documento.cliente_id reverse relationship
-	 * @property-read Documento[] $_DocumentoAsClienteArray the value for the private _objDocumentoAsClienteArray (Read-Only) if set due to an ExpandAsArray on the documento.cliente_id reverse relationship
 	 * @property-read DspDespacho $_DspDespachoAsCodiClie the value for the private _objDspDespachoAsCodiClie (Read-Only) if set due to an expansion on the dsp_despacho.codi_clie reverse relationship
 	 * @property-read DspDespacho[] $_DspDespachoAsCodiClieArray the value for the private _objDspDespachoAsCodiClieArray (Read-Only) if set due to an ExpandAsArray on the dsp_despacho.codi_clie reverse relationship
-	 * @property-read FacResumenFact $_FacResumenFactAsCodiClie the value for the private _objFacResumenFactAsCodiClie (Read-Only) if set due to an expansion on the fac_resumen_fact.codi_clie reverse relationship
-	 * @property-read FacResumenFact[] $_FacResumenFactAsCodiClieArray the value for the private _objFacResumenFactAsCodiClieArray (Read-Only) if set due to an ExpandAsArray on the fac_resumen_fact.codi_clie reverse relationship
-	 * @property-read FacTariMasi $_FacTariMasiAsCodiClie the value for the private _objFacTariMasiAsCodiClie (Read-Only) if set due to an expansion on the fac_tari_masi.codi_clie reverse relationship
-	 * @property-read FacTariMasi[] $_FacTariMasiAsCodiClieArray the value for the private _objFacTariMasiAsCodiClieArray (Read-Only) if set due to an ExpandAsArray on the fac_tari_masi.codi_clie reverse relationship
 	 * @property-read FacTarifaProd $_FacTarifaProdAsCodiClie the value for the private _objFacTarifaProdAsCodiClie (Read-Only) if set due to an expansion on the fac_tarifa_prod.codi_clie reverse relationship
 	 * @property-read FacTarifaProd[] $_FacTarifaProdAsCodiClieArray the value for the private _objFacTarifaProdAsCodiClieArray (Read-Only) if set due to an ExpandAsArray on the fac_tarifa_prod.codi_clie reverse relationship
 	 * @property-read Factura $_FacturaAsCodiClie the value for the private _objFacturaAsCodiClie (Read-Only) if set due to an expansion on the factura.codi_clie reverse relationship
@@ -620,22 +614,6 @@
 		private $_objDestinatarioFrecuenteAsClienteArray = null;
 
 		/**
-		 * Private member variable that stores a reference to a single DocumentoAsCliente object
-		 * (of type Documento), if this MasterCliente object was restored with
-		 * an expansion on the documento association table.
-		 * @var Documento _objDocumentoAsCliente;
-		 */
-		private $_objDocumentoAsCliente;
-
-		/**
-		 * Private member variable that stores a reference to an array of DocumentoAsCliente objects
-		 * (of type Documento[]), if this MasterCliente object was restored with
-		 * an ExpandAsArray on the documento association table.
-		 * @var Documento[] _objDocumentoAsClienteArray;
-		 */
-		private $_objDocumentoAsClienteArray = null;
-
-		/**
 		 * Private member variable that stores a reference to a single DspDespachoAsCodiClie object
 		 * (of type DspDespacho), if this MasterCliente object was restored with
 		 * an expansion on the dsp_despacho association table.
@@ -650,38 +628,6 @@
 		 * @var DspDespacho[] _objDspDespachoAsCodiClieArray;
 		 */
 		private $_objDspDespachoAsCodiClieArray = null;
-
-		/**
-		 * Private member variable that stores a reference to a single FacResumenFactAsCodiClie object
-		 * (of type FacResumenFact), if this MasterCliente object was restored with
-		 * an expansion on the fac_resumen_fact association table.
-		 * @var FacResumenFact _objFacResumenFactAsCodiClie;
-		 */
-		private $_objFacResumenFactAsCodiClie;
-
-		/**
-		 * Private member variable that stores a reference to an array of FacResumenFactAsCodiClie objects
-		 * (of type FacResumenFact[]), if this MasterCliente object was restored with
-		 * an ExpandAsArray on the fac_resumen_fact association table.
-		 * @var FacResumenFact[] _objFacResumenFactAsCodiClieArray;
-		 */
-		private $_objFacResumenFactAsCodiClieArray = null;
-
-		/**
-		 * Private member variable that stores a reference to a single FacTariMasiAsCodiClie object
-		 * (of type FacTariMasi), if this MasterCliente object was restored with
-		 * an expansion on the fac_tari_masi association table.
-		 * @var FacTariMasi _objFacTariMasiAsCodiClie;
-		 */
-		private $_objFacTariMasiAsCodiClie;
-
-		/**
-		 * Private member variable that stores a reference to an array of FacTariMasiAsCodiClie objects
-		 * (of type FacTariMasi[]), if this MasterCliente object was restored with
-		 * an ExpandAsArray on the fac_tari_masi association table.
-		 * @var FacTariMasi[] _objFacTariMasiAsCodiClieArray;
-		 */
-		private $_objFacTariMasiAsCodiClieArray = null;
 
 		/**
 		 * Private member variable that stores a reference to a single FacTarifaProdAsCodiClie object
@@ -1796,21 +1742,6 @@
 				}
 			}
 
-			// Check for DocumentoAsCliente Virtual Binding
-			$strAlias = $strAliasPrefix . 'documentoascliente__id';
-			$strAliasName = !empty($strColumnAliasArray[$strAlias]) ? $strColumnAliasArray[$strAlias] : $strAlias;
-			$objExpansionNode = (empty($objExpansionAliasArray['documentoascliente']) ? null : $objExpansionAliasArray['documentoascliente']);
-			$blnExpanded = ($objExpansionNode && $objExpansionNode->ExpandAsArray);
-			if ($blnExpanded && null === $objToReturn->_objDocumentoAsClienteArray)
-				$objToReturn->_objDocumentoAsClienteArray = array();
-			if (!is_null($objDbRow->GetColumn($strAliasName))) {
-				if ($blnExpanded) {
-					$objToReturn->_objDocumentoAsClienteArray[] = Documento::InstantiateDbRow($objDbRow, $strAliasPrefix . 'documentoascliente__', $objExpansionNode, null, $strColumnAliasArray);
-				} elseif (is_null($objToReturn->_objDocumentoAsCliente)) {
-					$objToReturn->_objDocumentoAsCliente = Documento::InstantiateDbRow($objDbRow, $strAliasPrefix . 'documentoascliente__', $objExpansionNode, null, $strColumnAliasArray);
-				}
-			}
-
 			// Check for DspDespachoAsCodiClie Virtual Binding
 			$strAlias = $strAliasPrefix . 'dspdespachoascodiclie__codi_desp';
 			$strAliasName = !empty($strColumnAliasArray[$strAlias]) ? $strColumnAliasArray[$strAlias] : $strAlias;
@@ -1823,36 +1754,6 @@
 					$objToReturn->_objDspDespachoAsCodiClieArray[] = DspDespacho::InstantiateDbRow($objDbRow, $strAliasPrefix . 'dspdespachoascodiclie__', $objExpansionNode, null, $strColumnAliasArray);
 				} elseif (is_null($objToReturn->_objDspDespachoAsCodiClie)) {
 					$objToReturn->_objDspDespachoAsCodiClie = DspDespacho::InstantiateDbRow($objDbRow, $strAliasPrefix . 'dspdespachoascodiclie__', $objExpansionNode, null, $strColumnAliasArray);
-				}
-			}
-
-			// Check for FacResumenFactAsCodiClie Virtual Binding
-			$strAlias = $strAliasPrefix . 'facresumenfactascodiclie__codi_regi';
-			$strAliasName = !empty($strColumnAliasArray[$strAlias]) ? $strColumnAliasArray[$strAlias] : $strAlias;
-			$objExpansionNode = (empty($objExpansionAliasArray['facresumenfactascodiclie']) ? null : $objExpansionAliasArray['facresumenfactascodiclie']);
-			$blnExpanded = ($objExpansionNode && $objExpansionNode->ExpandAsArray);
-			if ($blnExpanded && null === $objToReturn->_objFacResumenFactAsCodiClieArray)
-				$objToReturn->_objFacResumenFactAsCodiClieArray = array();
-			if (!is_null($objDbRow->GetColumn($strAliasName))) {
-				if ($blnExpanded) {
-					$objToReturn->_objFacResumenFactAsCodiClieArray[] = FacResumenFact::InstantiateDbRow($objDbRow, $strAliasPrefix . 'facresumenfactascodiclie__', $objExpansionNode, null, $strColumnAliasArray);
-				} elseif (is_null($objToReturn->_objFacResumenFactAsCodiClie)) {
-					$objToReturn->_objFacResumenFactAsCodiClie = FacResumenFact::InstantiateDbRow($objDbRow, $strAliasPrefix . 'facresumenfactascodiclie__', $objExpansionNode, null, $strColumnAliasArray);
-				}
-			}
-
-			// Check for FacTariMasiAsCodiClie Virtual Binding
-			$strAlias = $strAliasPrefix . 'factarimasiascodiclie__codi_prod';
-			$strAliasName = !empty($strColumnAliasArray[$strAlias]) ? $strColumnAliasArray[$strAlias] : $strAlias;
-			$objExpansionNode = (empty($objExpansionAliasArray['factarimasiascodiclie']) ? null : $objExpansionAliasArray['factarimasiascodiclie']);
-			$blnExpanded = ($objExpansionNode && $objExpansionNode->ExpandAsArray);
-			if ($blnExpanded && null === $objToReturn->_objFacTariMasiAsCodiClieArray)
-				$objToReturn->_objFacTariMasiAsCodiClieArray = array();
-			if (!is_null($objDbRow->GetColumn($strAliasName))) {
-				if ($blnExpanded) {
-					$objToReturn->_objFacTariMasiAsCodiClieArray[] = FacTariMasi::InstantiateDbRow($objDbRow, $strAliasPrefix . 'factarimasiascodiclie__', $objExpansionNode, null, $strColumnAliasArray);
-				} elseif (is_null($objToReturn->_objFacTariMasiAsCodiClie)) {
-					$objToReturn->_objFacTariMasiAsCodiClie = FacTariMasi::InstantiateDbRow($objDbRow, $strAliasPrefix . 'factarimasiascodiclie__', $objExpansionNode, null, $strColumnAliasArray);
 				}
 			}
 
@@ -3511,22 +3412,6 @@
 					 */
 					return $this->_objDestinatarioFrecuenteAsClienteArray;
 
-				case '_DocumentoAsCliente':
-					/**
-					 * Gets the value for the private _objDocumentoAsCliente (Read-Only)
-					 * if set due to an expansion on the documento.cliente_id reverse relationship
-					 * @return Documento
-					 */
-					return $this->_objDocumentoAsCliente;
-
-				case '_DocumentoAsClienteArray':
-					/**
-					 * Gets the value for the private _objDocumentoAsClienteArray (Read-Only)
-					 * if set due to an ExpandAsArray on the documento.cliente_id reverse relationship
-					 * @return Documento[]
-					 */
-					return $this->_objDocumentoAsClienteArray;
-
 				case '_DspDespachoAsCodiClie':
 					/**
 					 * Gets the value for the private _objDspDespachoAsCodiClie (Read-Only)
@@ -3542,38 +3427,6 @@
 					 * @return DspDespacho[]
 					 */
 					return $this->_objDspDespachoAsCodiClieArray;
-
-				case '_FacResumenFactAsCodiClie':
-					/**
-					 * Gets the value for the private _objFacResumenFactAsCodiClie (Read-Only)
-					 * if set due to an expansion on the fac_resumen_fact.codi_clie reverse relationship
-					 * @return FacResumenFact
-					 */
-					return $this->_objFacResumenFactAsCodiClie;
-
-				case '_FacResumenFactAsCodiClieArray':
-					/**
-					 * Gets the value for the private _objFacResumenFactAsCodiClieArray (Read-Only)
-					 * if set due to an ExpandAsArray on the fac_resumen_fact.codi_clie reverse relationship
-					 * @return FacResumenFact[]
-					 */
-					return $this->_objFacResumenFactAsCodiClieArray;
-
-				case '_FacTariMasiAsCodiClie':
-					/**
-					 * Gets the value for the private _objFacTariMasiAsCodiClie (Read-Only)
-					 * if set due to an expansion on the fac_tari_masi.codi_clie reverse relationship
-					 * @return FacTariMasi
-					 */
-					return $this->_objFacTariMasiAsCodiClie;
-
-				case '_FacTariMasiAsCodiClieArray':
-					/**
-					 * Gets the value for the private _objFacTariMasiAsCodiClieArray (Read-Only)
-					 * if set due to an ExpandAsArray on the fac_tari_masi.codi_clie reverse relationship
-					 * @return FacTariMasi[]
-					 */
-					return $this->_objFacTariMasiAsCodiClieArray;
 
 				case '_FacTarifaProdAsCodiClie':
 					/**
@@ -4768,17 +4621,8 @@
 			if ($this->CountDestinatarioFrecuentesAsCliente()) {
 				$arrTablRela[] = 'destinatario_frecuente';
 			}
-			if ($this->CountDocumentosAsCliente()) {
-				$arrTablRela[] = 'documento';
-			}
 			if ($this->CountDspDespachosAsCodiClie()) {
 				$arrTablRela[] = 'dsp_despacho';
-			}
-			if ($this->CountFacResumenFactsAsCodiClie()) {
-				$arrTablRela[] = 'fac_resumen_fact';
-			}
-			if ($this->CountFacTariMasisAsCodiClie()) {
-				$arrTablRela[] = 'fac_tari_masi';
 			}
 			if ($this->CountFacTarifaProdsAsCodiClie()) {
 				$arrTablRela[] = 'fac_tarifa_prod';
@@ -4960,155 +4804,6 @@
 		}
 
 
-		// Related Objects' Methods for DocumentoAsCliente
-		//-------------------------------------------------------------------
-
-		/**
-		 * Gets all associated DocumentosAsCliente as an array of Documento objects
-		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
-		 * @return Documento[]
-		*/
-		public function GetDocumentoAsClienteArray($objOptionalClauses = null) {
-			if ((is_null($this->intCodiClie)))
-				return array();
-
-			try {
-				return Documento::LoadArrayByClienteId($this->intCodiClie, $objOptionalClauses);
-			} catch (QCallerException $objExc) {
-				$objExc->IncrementOffset();
-				throw $objExc;
-			}
-		}
-
-		/**
-		 * Counts all associated DocumentosAsCliente
-		 * @return int
-		*/
-		public function CountDocumentosAsCliente() {
-			if ((is_null($this->intCodiClie)))
-				return 0;
-
-			return Documento::CountByClienteId($this->intCodiClie);
-		}
-
-		/**
-		 * Associates a DocumentoAsCliente
-		 * @param Documento $objDocumento
-		 * @return void
-		*/
-		public function AssociateDocumentoAsCliente(Documento $objDocumento) {
-			if ((is_null($this->intCodiClie)))
-				throw new QUndefinedPrimaryKeyException('Unable to call AssociateDocumentoAsCliente on this unsaved MasterCliente.');
-			if ((is_null($objDocumento->Id)))
-				throw new QUndefinedPrimaryKeyException('Unable to call AssociateDocumentoAsCliente on this MasterCliente with an unsaved Documento.');
-
-			// Get the Database Object for this Class
-			$objDatabase = MasterCliente::GetDatabase();
-
-			// Perform the SQL Query
-			$objDatabase->NonQuery('
-				UPDATE
-					`documento`
-				SET
-					`cliente_id` = ' . $objDatabase->SqlVariable($this->intCodiClie) . '
-				WHERE
-					`id` = ' . $objDatabase->SqlVariable($objDocumento->Id) . '
-			');
-		}
-
-		/**
-		 * Unassociates a DocumentoAsCliente
-		 * @param Documento $objDocumento
-		 * @return void
-		*/
-		public function UnassociateDocumentoAsCliente(Documento $objDocumento) {
-			if ((is_null($this->intCodiClie)))
-				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateDocumentoAsCliente on this unsaved MasterCliente.');
-			if ((is_null($objDocumento->Id)))
-				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateDocumentoAsCliente on this MasterCliente with an unsaved Documento.');
-
-			// Get the Database Object for this Class
-			$objDatabase = MasterCliente::GetDatabase();
-
-			// Perform the SQL Query
-			$objDatabase->NonQuery('
-				UPDATE
-					`documento`
-				SET
-					`cliente_id` = null
-				WHERE
-					`id` = ' . $objDatabase->SqlVariable($objDocumento->Id) . ' AND
-					`cliente_id` = ' . $objDatabase->SqlVariable($this->intCodiClie) . '
-			');
-		}
-
-		/**
-		 * Unassociates all DocumentosAsCliente
-		 * @return void
-		*/
-		public function UnassociateAllDocumentosAsCliente() {
-			if ((is_null($this->intCodiClie)))
-				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateDocumentoAsCliente on this unsaved MasterCliente.');
-
-			// Get the Database Object for this Class
-			$objDatabase = MasterCliente::GetDatabase();
-
-			// Perform the SQL Query
-			$objDatabase->NonQuery('
-				UPDATE
-					`documento`
-				SET
-					`cliente_id` = null
-				WHERE
-					`cliente_id` = ' . $objDatabase->SqlVariable($this->intCodiClie) . '
-			');
-		}
-
-		/**
-		 * Deletes an associated DocumentoAsCliente
-		 * @param Documento $objDocumento
-		 * @return void
-		*/
-		public function DeleteAssociatedDocumentoAsCliente(Documento $objDocumento) {
-			if ((is_null($this->intCodiClie)))
-				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateDocumentoAsCliente on this unsaved MasterCliente.');
-			if ((is_null($objDocumento->Id)))
-				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateDocumentoAsCliente on this MasterCliente with an unsaved Documento.');
-
-			// Get the Database Object for this Class
-			$objDatabase = MasterCliente::GetDatabase();
-
-			// Perform the SQL Query
-			$objDatabase->NonQuery('
-				DELETE FROM
-					`documento`
-				WHERE
-					`id` = ' . $objDatabase->SqlVariable($objDocumento->Id) . ' AND
-					`cliente_id` = ' . $objDatabase->SqlVariable($this->intCodiClie) . '
-			');
-		}
-
-		/**
-		 * Deletes all associated DocumentosAsCliente
-		 * @return void
-		*/
-		public function DeleteAllDocumentosAsCliente() {
-			if ((is_null($this->intCodiClie)))
-				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateDocumentoAsCliente on this unsaved MasterCliente.');
-
-			// Get the Database Object for this Class
-			$objDatabase = MasterCliente::GetDatabase();
-
-			// Perform the SQL Query
-			$objDatabase->NonQuery('
-				DELETE FROM
-					`documento`
-				WHERE
-					`cliente_id` = ' . $objDatabase->SqlVariable($this->intCodiClie) . '
-			');
-		}
-
-
 		// Related Objects' Methods for DspDespachoAsCodiClie
 		//-------------------------------------------------------------------
 
@@ -5252,310 +4947,6 @@
 			$objDatabase->NonQuery('
 				DELETE FROM
 					`dsp_despacho`
-				WHERE
-					`codi_clie` = ' . $objDatabase->SqlVariable($this->intCodiClie) . '
-			');
-		}
-
-
-		// Related Objects' Methods for FacResumenFactAsCodiClie
-		//-------------------------------------------------------------------
-
-		/**
-		 * Gets all associated FacResumenFactsAsCodiClie as an array of FacResumenFact objects
-		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
-		 * @return FacResumenFact[]
-		*/
-		public function GetFacResumenFactAsCodiClieArray($objOptionalClauses = null) {
-			if ((is_null($this->intCodiClie)))
-				return array();
-
-			try {
-				return FacResumenFact::LoadArrayByCodiClie($this->intCodiClie, $objOptionalClauses);
-			} catch (QCallerException $objExc) {
-				$objExc->IncrementOffset();
-				throw $objExc;
-			}
-		}
-
-		/**
-		 * Counts all associated FacResumenFactsAsCodiClie
-		 * @return int
-		*/
-		public function CountFacResumenFactsAsCodiClie() {
-			if ((is_null($this->intCodiClie)))
-				return 0;
-
-			return FacResumenFact::CountByCodiClie($this->intCodiClie);
-		}
-
-		/**
-		 * Associates a FacResumenFactAsCodiClie
-		 * @param FacResumenFact $objFacResumenFact
-		 * @return void
-		*/
-		public function AssociateFacResumenFactAsCodiClie(FacResumenFact $objFacResumenFact) {
-			if ((is_null($this->intCodiClie)))
-				throw new QUndefinedPrimaryKeyException('Unable to call AssociateFacResumenFactAsCodiClie on this unsaved MasterCliente.');
-			if ((is_null($objFacResumenFact->CodiRegi)))
-				throw new QUndefinedPrimaryKeyException('Unable to call AssociateFacResumenFactAsCodiClie on this MasterCliente with an unsaved FacResumenFact.');
-
-			// Get the Database Object for this Class
-			$objDatabase = MasterCliente::GetDatabase();
-
-			// Perform the SQL Query
-			$objDatabase->NonQuery('
-				UPDATE
-					`fac_resumen_fact`
-				SET
-					`codi_clie` = ' . $objDatabase->SqlVariable($this->intCodiClie) . '
-				WHERE
-					`codi_regi` = ' . $objDatabase->SqlVariable($objFacResumenFact->CodiRegi) . '
-			');
-		}
-
-		/**
-		 * Unassociates a FacResumenFactAsCodiClie
-		 * @param FacResumenFact $objFacResumenFact
-		 * @return void
-		*/
-		public function UnassociateFacResumenFactAsCodiClie(FacResumenFact $objFacResumenFact) {
-			if ((is_null($this->intCodiClie)))
-				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateFacResumenFactAsCodiClie on this unsaved MasterCliente.');
-			if ((is_null($objFacResumenFact->CodiRegi)))
-				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateFacResumenFactAsCodiClie on this MasterCliente with an unsaved FacResumenFact.');
-
-			// Get the Database Object for this Class
-			$objDatabase = MasterCliente::GetDatabase();
-
-			// Perform the SQL Query
-			$objDatabase->NonQuery('
-				UPDATE
-					`fac_resumen_fact`
-				SET
-					`codi_clie` = null
-				WHERE
-					`codi_regi` = ' . $objDatabase->SqlVariable($objFacResumenFact->CodiRegi) . ' AND
-					`codi_clie` = ' . $objDatabase->SqlVariable($this->intCodiClie) . '
-			');
-		}
-
-		/**
-		 * Unassociates all FacResumenFactsAsCodiClie
-		 * @return void
-		*/
-		public function UnassociateAllFacResumenFactsAsCodiClie() {
-			if ((is_null($this->intCodiClie)))
-				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateFacResumenFactAsCodiClie on this unsaved MasterCliente.');
-
-			// Get the Database Object for this Class
-			$objDatabase = MasterCliente::GetDatabase();
-
-			// Perform the SQL Query
-			$objDatabase->NonQuery('
-				UPDATE
-					`fac_resumen_fact`
-				SET
-					`codi_clie` = null
-				WHERE
-					`codi_clie` = ' . $objDatabase->SqlVariable($this->intCodiClie) . '
-			');
-		}
-
-		/**
-		 * Deletes an associated FacResumenFactAsCodiClie
-		 * @param FacResumenFact $objFacResumenFact
-		 * @return void
-		*/
-		public function DeleteAssociatedFacResumenFactAsCodiClie(FacResumenFact $objFacResumenFact) {
-			if ((is_null($this->intCodiClie)))
-				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateFacResumenFactAsCodiClie on this unsaved MasterCliente.');
-			if ((is_null($objFacResumenFact->CodiRegi)))
-				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateFacResumenFactAsCodiClie on this MasterCliente with an unsaved FacResumenFact.');
-
-			// Get the Database Object for this Class
-			$objDatabase = MasterCliente::GetDatabase();
-
-			// Perform the SQL Query
-			$objDatabase->NonQuery('
-				DELETE FROM
-					`fac_resumen_fact`
-				WHERE
-					`codi_regi` = ' . $objDatabase->SqlVariable($objFacResumenFact->CodiRegi) . ' AND
-					`codi_clie` = ' . $objDatabase->SqlVariable($this->intCodiClie) . '
-			');
-		}
-
-		/**
-		 * Deletes all associated FacResumenFactsAsCodiClie
-		 * @return void
-		*/
-		public function DeleteAllFacResumenFactsAsCodiClie() {
-			if ((is_null($this->intCodiClie)))
-				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateFacResumenFactAsCodiClie on this unsaved MasterCliente.');
-
-			// Get the Database Object for this Class
-			$objDatabase = MasterCliente::GetDatabase();
-
-			// Perform the SQL Query
-			$objDatabase->NonQuery('
-				DELETE FROM
-					`fac_resumen_fact`
-				WHERE
-					`codi_clie` = ' . $objDatabase->SqlVariable($this->intCodiClie) . '
-			');
-		}
-
-
-		// Related Objects' Methods for FacTariMasiAsCodiClie
-		//-------------------------------------------------------------------
-
-		/**
-		 * Gets all associated FacTariMasisAsCodiClie as an array of FacTariMasi objects
-		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
-		 * @return FacTariMasi[]
-		*/
-		public function GetFacTariMasiAsCodiClieArray($objOptionalClauses = null) {
-			if ((is_null($this->intCodiClie)))
-				return array();
-
-			try {
-				return FacTariMasi::LoadArrayByCodiClie($this->intCodiClie, $objOptionalClauses);
-			} catch (QCallerException $objExc) {
-				$objExc->IncrementOffset();
-				throw $objExc;
-			}
-		}
-
-		/**
-		 * Counts all associated FacTariMasisAsCodiClie
-		 * @return int
-		*/
-		public function CountFacTariMasisAsCodiClie() {
-			if ((is_null($this->intCodiClie)))
-				return 0;
-
-			return FacTariMasi::CountByCodiClie($this->intCodiClie);
-		}
-
-		/**
-		 * Associates a FacTariMasiAsCodiClie
-		 * @param FacTariMasi $objFacTariMasi
-		 * @return void
-		*/
-		public function AssociateFacTariMasiAsCodiClie(FacTariMasi $objFacTariMasi) {
-			if ((is_null($this->intCodiClie)))
-				throw new QUndefinedPrimaryKeyException('Unable to call AssociateFacTariMasiAsCodiClie on this unsaved MasterCliente.');
-			if ((is_null($objFacTariMasi->CodiProd)) || (is_null($objFacTariMasi->CodiClie)) || (is_null($objFacTariMasi->TipoRuta)))
-				throw new QUndefinedPrimaryKeyException('Unable to call AssociateFacTariMasiAsCodiClie on this MasterCliente with an unsaved FacTariMasi.');
-
-			// Get the Database Object for this Class
-			$objDatabase = MasterCliente::GetDatabase();
-
-			// Perform the SQL Query
-			$objDatabase->NonQuery('
-				UPDATE
-					`fac_tari_masi`
-				SET
-					`codi_clie` = ' . $objDatabase->SqlVariable($this->intCodiClie) . '
-				WHERE
-					`codi_prod` = ' . $objDatabase->SqlVariable($objFacTariMasi->CodiProd) . ' AND
-					`codi_clie` = ' . $objDatabase->SqlVariable($objFacTariMasi->CodiClie) . ' AND
-					`tipo_ruta` = ' . $objDatabase->SqlVariable($objFacTariMasi->TipoRuta) . '
-			');
-		}
-
-		/**
-		 * Unassociates a FacTariMasiAsCodiClie
-		 * @param FacTariMasi $objFacTariMasi
-		 * @return void
-		*/
-		public function UnassociateFacTariMasiAsCodiClie(FacTariMasi $objFacTariMasi) {
-			if ((is_null($this->intCodiClie)))
-				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateFacTariMasiAsCodiClie on this unsaved MasterCliente.');
-			if ((is_null($objFacTariMasi->CodiProd)) || (is_null($objFacTariMasi->CodiClie)) || (is_null($objFacTariMasi->TipoRuta)))
-				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateFacTariMasiAsCodiClie on this MasterCliente with an unsaved FacTariMasi.');
-
-			// Get the Database Object for this Class
-			$objDatabase = MasterCliente::GetDatabase();
-
-			// Perform the SQL Query
-			$objDatabase->NonQuery('
-				UPDATE
-					`fac_tari_masi`
-				SET
-					`codi_clie` = null
-				WHERE
-					`codi_prod` = ' . $objDatabase->SqlVariable($objFacTariMasi->CodiProd) . ' AND
-					`codi_clie` = ' . $objDatabase->SqlVariable($objFacTariMasi->CodiClie) . ' AND
-					`tipo_ruta` = ' . $objDatabase->SqlVariable($objFacTariMasi->TipoRuta) . ' AND
-					`codi_clie` = ' . $objDatabase->SqlVariable($this->intCodiClie) . '
-			');
-		}
-
-		/**
-		 * Unassociates all FacTariMasisAsCodiClie
-		 * @return void
-		*/
-		public function UnassociateAllFacTariMasisAsCodiClie() {
-			if ((is_null($this->intCodiClie)))
-				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateFacTariMasiAsCodiClie on this unsaved MasterCliente.');
-
-			// Get the Database Object for this Class
-			$objDatabase = MasterCliente::GetDatabase();
-
-			// Perform the SQL Query
-			$objDatabase->NonQuery('
-				UPDATE
-					`fac_tari_masi`
-				SET
-					`codi_clie` = null
-				WHERE
-					`codi_clie` = ' . $objDatabase->SqlVariable($this->intCodiClie) . '
-			');
-		}
-
-		/**
-		 * Deletes an associated FacTariMasiAsCodiClie
-		 * @param FacTariMasi $objFacTariMasi
-		 * @return void
-		*/
-		public function DeleteAssociatedFacTariMasiAsCodiClie(FacTariMasi $objFacTariMasi) {
-			if ((is_null($this->intCodiClie)))
-				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateFacTariMasiAsCodiClie on this unsaved MasterCliente.');
-			if ((is_null($objFacTariMasi->CodiProd)) || (is_null($objFacTariMasi->CodiClie)) || (is_null($objFacTariMasi->TipoRuta)))
-				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateFacTariMasiAsCodiClie on this MasterCliente with an unsaved FacTariMasi.');
-
-			// Get the Database Object for this Class
-			$objDatabase = MasterCliente::GetDatabase();
-
-			// Perform the SQL Query
-			$objDatabase->NonQuery('
-				DELETE FROM
-					`fac_tari_masi`
-				WHERE
-					`codi_prod` = ' . $objDatabase->SqlVariable($objFacTariMasi->CodiProd) . ' AND
-					`codi_clie` = ' . $objDatabase->SqlVariable($objFacTariMasi->CodiClie) . ' AND
-					`tipo_ruta` = ' . $objDatabase->SqlVariable($objFacTariMasi->TipoRuta) . ' AND
-					`codi_clie` = ' . $objDatabase->SqlVariable($this->intCodiClie) . '
-			');
-		}
-
-		/**
-		 * Deletes all associated FacTariMasisAsCodiClie
-		 * @return void
-		*/
-		public function DeleteAllFacTariMasisAsCodiClie() {
-			if ((is_null($this->intCodiClie)))
-				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateFacTariMasiAsCodiClie on this unsaved MasterCliente.');
-
-			// Get the Database Object for this Class
-			$objDatabase = MasterCliente::GetDatabase();
-
-			// Perform the SQL Query
-			$objDatabase->NonQuery('
-				DELETE FROM
-					`fac_tari_masi`
 				WHERE
 					`codi_clie` = ' . $objDatabase->SqlVariable($this->intCodiClie) . '
 			');
@@ -7075,11 +6466,8 @@
      *
      *
      * @property-read QQReverseReferenceNodeDestinatarioFrecuente $DestinatarioFrecuenteAsCliente
-     * @property-read QQReverseReferenceNodeDocumento $DocumentoAsCliente
      * @property-read QQReverseReferenceNodeDspDespacho $DspDespachoAsCodiClie
      * @property-read QQReverseReferenceNodeEstadisticaDeClientes $EstadisticaDeClientes
-     * @property-read QQReverseReferenceNodeFacResumenFact $FacResumenFactAsCodiClie
-     * @property-read QQReverseReferenceNodeFacTariMasi $FacTariMasiAsCodiClie
      * @property-read QQReverseReferenceNodeFacTarifaProd $FacTarifaProdAsCodiClie
      * @property-read QQReverseReferenceNodeFactura $FacturaAsCodiClie
      * @property-read QQReverseReferenceNodeFechaUltimaGuia $FechaUltimaGuiaAsCliente
@@ -7227,16 +6615,10 @@
 					return new QQNode('proceso_api', 'ProcesoApi', 'Integer', $this);
 				case 'DestinatarioFrecuenteAsCliente':
 					return new QQReverseReferenceNodeDestinatarioFrecuente($this, 'destinatariofrecuenteascliente', 'reverse_reference', 'cliente_id', 'DestinatarioFrecuenteAsCliente');
-				case 'DocumentoAsCliente':
-					return new QQReverseReferenceNodeDocumento($this, 'documentoascliente', 'reverse_reference', 'cliente_id', 'DocumentoAsCliente');
 				case 'DspDespachoAsCodiClie':
 					return new QQReverseReferenceNodeDspDespacho($this, 'dspdespachoascodiclie', 'reverse_reference', 'codi_clie', 'DspDespachoAsCodiClie');
 				case 'EstadisticaDeClientes':
 					return new QQReverseReferenceNodeEstadisticaDeClientes($this, 'estadisticadeclientes', 'reverse_reference', 'cliente_id', 'EstadisticaDeClientes');
-				case 'FacResumenFactAsCodiClie':
-					return new QQReverseReferenceNodeFacResumenFact($this, 'facresumenfactascodiclie', 'reverse_reference', 'codi_clie', 'FacResumenFactAsCodiClie');
-				case 'FacTariMasiAsCodiClie':
-					return new QQReverseReferenceNodeFacTariMasi($this, 'factarimasiascodiclie', 'reverse_reference', 'codi_clie', 'FacTariMasiAsCodiClie');
 				case 'FacTarifaProdAsCodiClie':
 					return new QQReverseReferenceNodeFacTarifaProd($this, 'factarifaprodascodiclie', 'reverse_reference', 'codi_clie', 'FacTarifaProdAsCodiClie');
 				case 'FacturaAsCodiClie':
@@ -7335,11 +6717,8 @@
      *
      *
      * @property-read QQReverseReferenceNodeDestinatarioFrecuente $DestinatarioFrecuenteAsCliente
-     * @property-read QQReverseReferenceNodeDocumento $DocumentoAsCliente
      * @property-read QQReverseReferenceNodeDspDespacho $DspDespachoAsCodiClie
      * @property-read QQReverseReferenceNodeEstadisticaDeClientes $EstadisticaDeClientes
-     * @property-read QQReverseReferenceNodeFacResumenFact $FacResumenFactAsCodiClie
-     * @property-read QQReverseReferenceNodeFacTariMasi $FacTariMasiAsCodiClie
      * @property-read QQReverseReferenceNodeFacTarifaProd $FacTarifaProdAsCodiClie
      * @property-read QQReverseReferenceNodeFactura $FacturaAsCodiClie
      * @property-read QQReverseReferenceNodeFechaUltimaGuia $FechaUltimaGuiaAsCliente
@@ -7487,16 +6866,10 @@
 					return new QQNode('proceso_api', 'ProcesoApi', 'integer', $this);
 				case 'DestinatarioFrecuenteAsCliente':
 					return new QQReverseReferenceNodeDestinatarioFrecuente($this, 'destinatariofrecuenteascliente', 'reverse_reference', 'cliente_id', 'DestinatarioFrecuenteAsCliente');
-				case 'DocumentoAsCliente':
-					return new QQReverseReferenceNodeDocumento($this, 'documentoascliente', 'reverse_reference', 'cliente_id', 'DocumentoAsCliente');
 				case 'DspDespachoAsCodiClie':
 					return new QQReverseReferenceNodeDspDespacho($this, 'dspdespachoascodiclie', 'reverse_reference', 'codi_clie', 'DspDespachoAsCodiClie');
 				case 'EstadisticaDeClientes':
 					return new QQReverseReferenceNodeEstadisticaDeClientes($this, 'estadisticadeclientes', 'reverse_reference', 'cliente_id', 'EstadisticaDeClientes');
-				case 'FacResumenFactAsCodiClie':
-					return new QQReverseReferenceNodeFacResumenFact($this, 'facresumenfactascodiclie', 'reverse_reference', 'codi_clie', 'FacResumenFactAsCodiClie');
-				case 'FacTariMasiAsCodiClie':
-					return new QQReverseReferenceNodeFacTariMasi($this, 'factarimasiascodiclie', 'reverse_reference', 'codi_clie', 'FacTariMasiAsCodiClie');
 				case 'FacTarifaProdAsCodiClie':
 					return new QQReverseReferenceNodeFacTarifaProd($this, 'factarifaprodascodiclie', 'reverse_reference', 'codi_clie', 'FacTarifaProdAsCodiClie');
 				case 'FacturaAsCodiClie':

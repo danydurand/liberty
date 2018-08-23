@@ -58,6 +58,7 @@ class ConfigurarEtiqueta extends FormularioBaseKaizen {
 
     protected function Form_Create() {
         parent::Form_Create();
+
         $this->lblTituForm->Text = QApplication::Translate('Configurar Etiqueta');
 
         $this->objMediEtiq = BuscarParametro('AjusEtiq','MediEtiq','TODO',null);

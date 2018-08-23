@@ -60,7 +60,7 @@
 		 * @var string strNombre
 		 */
 		protected $strNombre;
-		const NombreMaxLength = 50;
+		const NombreMaxLength = 100;
 		const NombreDefault = null;
 
 

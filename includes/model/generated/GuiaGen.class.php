@@ -25,6 +25,7 @@
 	 * @property string $NombRemi the value for strNombRemi (Not Null)
 	 * @property string $DireRemi the value for strDireRemi (Not Null)
 	 * @property string $TeleRemi the value for strTeleRemi (Not Null)
+	 * @property string $TeleRem2 the value for strTeleRem2 
 	 * @property string $NombDest the value for strNombDest (Not Null)
 	 * @property string $DireDest the value for strDireDest (Not Null)
 	 * @property string $TeleDest the value for strTeleDest (Not Null)
@@ -127,6 +128,7 @@
 	 * @property CobroCod $CobroCod the value for the CobroCod object that uniquely references this Guia
 	 * @property EstadisticaDeGuias $EstadisticaDeGuias the value for the EstadisticaDeGuias object that uniquely references this Guia
 	 * @property GuiaAduana $GuiaAduana the value for the GuiaAduana object that uniquely references this Guia
+	 * @property GuiaCalculos $GuiaCalculos the value for the GuiaCalculos object that uniquely references this Guia
 	 * @property GuiaCheckpoints $GuiaCheckpoints the value for the GuiaCheckpoints object that uniquely references this Guia
 	 * @property GuiaModificada $GuiaModificada the value for the GuiaModificada object that uniquely references this Guia
 	 * @property-read Manifiesto $_ManifiestoAsMani the value for the private _objManifiestoAsMani (Read-Only) if set due to an expansion on the mani_guia_assn association table
@@ -242,6 +244,15 @@
 		protected $strTeleRemi;
 		const TeleRemiMaxLength = 50;
 		const TeleRemiDefault = null;
+
+
+		/**
+		 * Protected member variable that maps to the database column guia.tele_rem2
+		 * @var string strTeleRem2
+		 */
+		protected $strTeleRem2;
+		const TeleRem2MaxLength = 50;
+		const TeleRem2Default = null;
 
 
 		/**
@@ -373,7 +384,7 @@
 		 * @var double fltMontoBase
 		 */
 		protected $fltMontoBase;
-		const MontoBaseDefault = 0;
+		const MontoBaseDefault = null;
 
 
 		/**
@@ -1289,6 +1300,24 @@
 
 		/**
 		 * Protected member variable that contains the object which points to
+		 * this object by the reference in the unique database column guia_calculos.guia_id.
+		 *
+		 * NOTE: Always use the GuiaCalculos property getter to correctly retrieve this GuiaCalculos object.
+		 * (Because this class implements late binding, this variable reference MAY be null.)
+		 * @var GuiaCalculos objGuiaCalculos
+		 */
+		protected $objGuiaCalculos;
+
+		/**
+		 * Used internally to manage whether the adjoined GuiaCalculos object
+		 * needs to be updated on save.
+		 *
+		 * NOTE: Do not manually update this value
+		 */
+		protected $blnDirtyGuiaCalculos;
+
+		/**
+		 * Protected member variable that contains the object which points to
 		 * this object by the reference in the unique database column guia_checkpoints.guia_id.
 		 *
 		 * NOTE: Always use the GuiaCheckpoints property getter to correctly retrieve this GuiaCheckpoints object.
@@ -1340,6 +1369,7 @@
 			$this->strNombRemi = Guia::NombRemiDefault;
 			$this->strDireRemi = Guia::DireRemiDefault;
 			$this->strTeleRemi = Guia::TeleRemiDefault;
+			$this->strTeleRem2 = Guia::TeleRem2Default;
 			$this->strNombDest = Guia::NombDestDefault;
 			$this->strDireDest = Guia::DireDestDefault;
 			$this->strTeleDest = Guia::TeleDestDefault;
@@ -1775,6 +1805,7 @@
 			    $objBuilder->AddSelectItem($strTableName, 'nomb_remi', $strAliasPrefix . 'nomb_remi');
 			    $objBuilder->AddSelectItem($strTableName, 'dire_remi', $strAliasPrefix . 'dire_remi');
 			    $objBuilder->AddSelectItem($strTableName, 'tele_remi', $strAliasPrefix . 'tele_remi');
+			    $objBuilder->AddSelectItem($strTableName, 'tele_rem2', $strAliasPrefix . 'tele_rem2');
 			    $objBuilder->AddSelectItem($strTableName, 'nomb_dest', $strAliasPrefix . 'nomb_dest');
 			    $objBuilder->AddSelectItem($strTableName, 'dire_dest', $strAliasPrefix . 'dire_dest');
 			    $objBuilder->AddSelectItem($strTableName, 'tele_dest', $strAliasPrefix . 'tele_dest');
@@ -2015,6 +2046,9 @@
 			$strAlias = $strAliasPrefix . 'tele_remi';
 			$strAliasName = !empty($strColumnAliasArray[$strAlias]) ? $strColumnAliasArray[$strAlias] : $strAlias;
 			$objToReturn->strTeleRemi = $objDbRow->GetColumn($strAliasName, 'VarChar');
+			$strAlias = $strAliasPrefix . 'tele_rem2';
+			$strAliasName = !empty($strColumnAliasArray[$strAlias]) ? $strColumnAliasArray[$strAlias] : $strAlias;
+			$objToReturn->strTeleRem2 = $objDbRow->GetColumn($strAliasName, 'VarChar');
 			$strAlias = $strAliasPrefix . 'nomb_dest';
 			$strAliasName = !empty($strColumnAliasArray[$strAlias]) ? $strColumnAliasArray[$strAlias] : $strAlias;
 			$objToReturn->strNombDest = $objDbRow->GetColumn($strAliasName, 'VarChar');
@@ -2453,6 +2487,21 @@
 					// We ATTEMPTED to do an Early Bind but the Object Doesn't Exist
 					// Let's set to FALSE so that the object knows not to try and re-query again
 					$objToReturn->objGuiaAduana = false;
+				}
+			}
+
+			// Check for GuiaCalculos Unique ReverseReference Binding
+			$strAlias = $strAliasPrefix . 'guiacalculos__id';
+			$strAliasName = !empty($strColumnAliasArray[$strAlias]) ? $strColumnAliasArray[$strAlias] : $strAlias;
+			if ($objDbRow->ColumnExists($strAliasName)) {
+				if (!is_null($objDbRow->GetColumn($strAliasName))) {
+					$objExpansionNode = (empty($objExpansionAliasArray['guiacalculos']) ? null : $objExpansionAliasArray['guiacalculos']);
+					$objToReturn->objGuiaCalculos = GuiaCalculos::InstantiateDbRow($objDbRow, $strAliasPrefix . 'guiacalculos__', $objExpansionNode, null, $strColumnAliasArray);
+				}
+				else {
+					// We ATTEMPTED to do an Early Bind but the Object Doesn't Exist
+					// Let's set to FALSE so that the object knows not to try and re-query again
+					$objToReturn->objGuiaCalculos = false;
 				}
 			}
 
@@ -3747,6 +3796,7 @@
 							`nomb_remi`,
 							`dire_remi`,
 							`tele_remi`,
+							`tele_rem2`,
 							`nomb_dest`,
 							`dire_dest`,
 							`tele_dest`,
@@ -3842,6 +3892,7 @@
 							' . $objDatabase->SqlVariable($this->strNombRemi) . ',
 							' . $objDatabase->SqlVariable($this->strDireRemi) . ',
 							' . $objDatabase->SqlVariable($this->strTeleRemi) . ',
+							' . $objDatabase->SqlVariable($this->strTeleRem2) . ',
 							' . $objDatabase->SqlVariable($this->strNombDest) . ',
 							' . $objDatabase->SqlVariable($this->strDireDest) . ',
 							' . $objDatabase->SqlVariable($this->strTeleDest) . ',
@@ -3950,6 +4001,7 @@
 							`nomb_remi` = ' . $objDatabase->SqlVariable($this->strNombRemi) . ',
 							`dire_remi` = ' . $objDatabase->SqlVariable($this->strDireRemi) . ',
 							`tele_remi` = ' . $objDatabase->SqlVariable($this->strTeleRemi) . ',
+							`tele_rem2` = ' . $objDatabase->SqlVariable($this->strTeleRem2) . ',
 							`nomb_dest` = ' . $objDatabase->SqlVariable($this->strNombDest) . ',
 							`dire_dest` = ' . $objDatabase->SqlVariable($this->strDireDest) . ',
 							`tele_dest` = ' . $objDatabase->SqlVariable($this->strTeleDest) . ',
@@ -4122,6 +4174,26 @@
 				}
 
 
+				// Update the adjoined GuiaCalculos object (if applicable)
+				// TODO: Make this into hard-coded SQL queries
+				if ($this->blnDirtyGuiaCalculos) {
+					// Unassociate the old one (if applicable)
+					if ($objAssociated = GuiaCalculos::LoadByGuiaId($this->strNumeGuia)) {
+						$objAssociated->GuiaId = null;
+						$objAssociated->Save();
+					}
+
+					// Associate the new one (if applicable)
+					if ($this->objGuiaCalculos) {
+						$this->objGuiaCalculos->GuiaId = $this->strNumeGuia;
+						$this->objGuiaCalculos->Save();
+					}
+
+					// Reset the "Dirty" flag
+					$this->blnDirtyGuiaCalculos = false;
+				}
+
+
 				// Update the adjoined GuiaCheckpoints object (if applicable)
 				// TODO: Make this into hard-coded SQL queries
 				if ($this->blnDirtyGuiaCheckpoints) {
@@ -4225,6 +4297,15 @@
 			}
 
 		
+			// Update the adjoined GuiaCalculos object (if applicable) and perform a delete
+
+			// Optional -- if you **KNOW** that you do not want to EVER run any level of business logic on the disassocation,
+			// you *could* override Delete() so that this step can be a single hard coded query to optimize performance.
+			if ($objAssociated = GuiaCalculos::LoadByGuiaId($this->strNumeGuia)) {
+				$objAssociated->Delete();
+			}
+
+		
 			// Update the adjoined GuiaCheckpoints object (if applicable) and perform a delete
 
 			// Optional -- if you **KNOW** that you do not want to EVER run any level of business logic on the disassocation,
@@ -4324,6 +4405,7 @@
 			$this->strNombRemi = $objReloaded->strNombRemi;
 			$this->strDireRemi = $objReloaded->strDireRemi;
 			$this->strTeleRemi = $objReloaded->strTeleRemi;
+			$this->strTeleRem2 = $objReloaded->strTeleRem2;
 			$this->strNombDest = $objReloaded->strNombDest;
 			$this->strDireDest = $objReloaded->strDireDest;
 			$this->strTeleDest = $objReloaded->strTeleDest;
@@ -4497,6 +4579,13 @@
 					 * @return string
 					 */
 					return $this->strTeleRemi;
+
+				case 'TeleRem2':
+					/**
+					 * Gets the value for strTeleRem2 
+					 * @return string
+					 */
+					return $this->strTeleRem2;
 
 				case 'NombDest':
 					/**
@@ -5358,6 +5447,24 @@
 						throw $objExc;
 					}
 
+				case 'GuiaCalculos':
+					/**
+					 * Gets the value for the GuiaCalculos object that uniquely references this Guia
+					 * by objGuiaCalculos (Unique)
+					 * @return GuiaCalculos
+					 */
+					try {
+						if ($this->objGuiaCalculos === false)
+							// We've attempted early binding -- and the reverse reference object does not exist
+							return null;
+						if (!$this->objGuiaCalculos)
+							$this->objGuiaCalculos = GuiaCalculos::LoadByGuiaId($this->strNumeGuia);
+						return $this->objGuiaCalculos;
+					} catch (QCallerException $objExc) {
+						$objExc->IncrementOffset();
+						throw $objExc;
+					}
+
 				case 'GuiaCheckpoints':
 					/**
 					 * Gets the value for the GuiaCheckpoints object that uniquely references this Guia
@@ -5668,6 +5775,19 @@
 					 */
 					try {
 						return ($this->strTeleRemi = QType::Cast($mixValue, QType::String));
+					} catch (QCallerException $objExc) {
+						$objExc->IncrementOffset();
+						throw $objExc;
+					}
+
+				case 'TeleRem2':
+					/**
+					 * Sets the value for strTeleRem2 
+					 * @param string $mixValue
+					 * @return string
+					 */
+					try {
+						return ($this->strTeleRem2 = QType::Cast($mixValue, QType::String));
 					} catch (QCallerException $objExc) {
 						$objExc->IncrementOffset();
 						throw $objExc;
@@ -7383,6 +7503,45 @@
 					}
 					break;
 
+				case 'GuiaCalculos':
+					/**
+					 * Sets the value for the GuiaCalculos object referenced by objGuiaCalculos (Unique)
+					 * @param GuiaCalculos $mixValue
+					 * @return GuiaCalculos
+					 */
+					if (is_null($mixValue)) {
+						$this->objGuiaCalculos = null;
+
+						// Make sure we update the adjoined GuiaCalculos object the next time we call Save()
+						$this->blnDirtyGuiaCalculos = true;
+
+						return null;
+					} else {
+						// Make sure $mixValue actually is a GuiaCalculos object
+						try {
+							$mixValue = QType::Cast($mixValue, 'GuiaCalculos');
+						} catch (QInvalidCastException $objExc) {
+							$objExc->IncrementOffset();
+							throw $objExc;
+						}
+
+						// Are we setting objGuiaCalculos to a DIFFERENT $mixValue?
+						if ((!$this->GuiaCalculos) || ($this->GuiaCalculos->Id != $mixValue->Id)) {
+							// Yes -- therefore, set the "Dirty" flag to true
+							// to make sure we update the adjoined GuiaCalculos object the next time we call Save()
+							$this->blnDirtyGuiaCalculos = true;
+
+							// Update Local Member Variable
+							$this->objGuiaCalculos = $mixValue;
+						} else {
+							// Nope -- therefore, make no changes
+						}
+
+						// Return $mixValue
+						return $mixValue;
+					}
+					break;
+
 				case 'GuiaCheckpoints':
 					/**
 					 * Sets the value for the GuiaCheckpoints object referenced by objGuiaCheckpoints (Unique)
@@ -8577,6 +8736,7 @@
 			$strToReturn .= '<element name="NombRemi" type="xsd:string"/>';
 			$strToReturn .= '<element name="DireRemi" type="xsd:string"/>';
 			$strToReturn .= '<element name="TeleRemi" type="xsd:string"/>';
+			$strToReturn .= '<element name="TeleRem2" type="xsd:string"/>';
 			$strToReturn .= '<element name="NombDest" type="xsd:string"/>';
 			$strToReturn .= '<element name="DireDest" type="xsd:string"/>';
 			$strToReturn .= '<element name="TeleDest" type="xsd:string"/>';
@@ -8721,6 +8881,8 @@
 				$objToReturn->strDireRemi = $objSoapObject->DireRemi;
 			if (property_exists($objSoapObject, 'TeleRemi'))
 				$objToReturn->strTeleRemi = $objSoapObject->TeleRemi;
+			if (property_exists($objSoapObject, 'TeleRem2'))
+				$objToReturn->strTeleRem2 = $objSoapObject->TeleRem2;
 			if (property_exists($objSoapObject, 'NombDest'))
 				$objToReturn->strNombDest = $objSoapObject->NombDest;
 			if (property_exists($objSoapObject, 'DireDest'))
@@ -9007,6 +9169,7 @@
 			$iArray['NombRemi'] = $this->strNombRemi;
 			$iArray['DireRemi'] = $this->strDireRemi;
 			$iArray['TeleRemi'] = $this->strTeleRemi;
+			$iArray['TeleRem2'] = $this->strTeleRem2;
 			$iArray['NombDest'] = $this->strNombDest;
 			$iArray['DireDest'] = $this->strDireDest;
 			$iArray['TeleDest'] = $this->strTeleDest;
@@ -9214,6 +9377,7 @@
      * @property-read QQNode $NombRemi
      * @property-read QQNode $DireRemi
      * @property-read QQNode $TeleRemi
+     * @property-read QQNode $TeleRem2
      * @property-read QQNode $NombDest
      * @property-read QQNode $DireDest
      * @property-read QQNode $TeleDest
@@ -9316,6 +9480,7 @@
      * @property-read QQReverseReferenceNodeCobroCod $CobroCod
      * @property-read QQReverseReferenceNodeEstadisticaDeGuias $EstadisticaDeGuias
      * @property-read QQReverseReferenceNodeGuiaAduana $GuiaAduana
+     * @property-read QQReverseReferenceNodeGuiaCalculos $GuiaCalculos
      * @property-read QQReverseReferenceNodeGuiaCheckpoints $GuiaCheckpoints
      * @property-read QQReverseReferenceNodeGuiaCkpt $GuiaCkptAsNume
      * @property-read QQReverseReferenceNodeGuiaModificada $GuiaModificada
@@ -9360,6 +9525,8 @@
 					return new QQNode('dire_remi', 'DireRemi', 'VarChar', $this);
 				case 'TeleRemi':
 					return new QQNode('tele_remi', 'TeleRemi', 'VarChar', $this);
+				case 'TeleRem2':
+					return new QQNode('tele_rem2', 'TeleRem2', 'VarChar', $this);
 				case 'NombDest':
 					return new QQNode('nomb_dest', 'NombDest', 'VarChar', $this);
 				case 'DireDest':
@@ -9560,6 +9727,8 @@
 					return new QQReverseReferenceNodeEstadisticaDeGuias($this, 'estadisticadeguias', 'reverse_reference', 'guia_id', 'EstadisticaDeGuias');
 				case 'GuiaAduana':
 					return new QQReverseReferenceNodeGuiaAduana($this, 'guiaaduana', 'reverse_reference', 'guia_id', 'GuiaAduana');
+				case 'GuiaCalculos':
+					return new QQReverseReferenceNodeGuiaCalculos($this, 'guiacalculos', 'reverse_reference', 'guia_id', 'GuiaCalculos');
 				case 'GuiaCheckpoints':
 					return new QQReverseReferenceNodeGuiaCheckpoints($this, 'guiacheckpoints', 'reverse_reference', 'guia_id', 'GuiaCheckpoints');
 				case 'GuiaCkptAsNume':
@@ -9603,6 +9772,7 @@
      * @property-read QQNode $NombRemi
      * @property-read QQNode $DireRemi
      * @property-read QQNode $TeleRemi
+     * @property-read QQNode $TeleRem2
      * @property-read QQNode $NombDest
      * @property-read QQNode $DireDest
      * @property-read QQNode $TeleDest
@@ -9705,6 +9875,7 @@
      * @property-read QQReverseReferenceNodeCobroCod $CobroCod
      * @property-read QQReverseReferenceNodeEstadisticaDeGuias $EstadisticaDeGuias
      * @property-read QQReverseReferenceNodeGuiaAduana $GuiaAduana
+     * @property-read QQReverseReferenceNodeGuiaCalculos $GuiaCalculos
      * @property-read QQReverseReferenceNodeGuiaCheckpoints $GuiaCheckpoints
      * @property-read QQReverseReferenceNodeGuiaCkpt $GuiaCkptAsNume
      * @property-read QQReverseReferenceNodeGuiaModificada $GuiaModificada
@@ -9749,6 +9920,8 @@
 					return new QQNode('dire_remi', 'DireRemi', 'string', $this);
 				case 'TeleRemi':
 					return new QQNode('tele_remi', 'TeleRemi', 'string', $this);
+				case 'TeleRem2':
+					return new QQNode('tele_rem2', 'TeleRem2', 'string', $this);
 				case 'NombDest':
 					return new QQNode('nomb_dest', 'NombDest', 'string', $this);
 				case 'DireDest':
@@ -9949,6 +10122,8 @@
 					return new QQReverseReferenceNodeEstadisticaDeGuias($this, 'estadisticadeguias', 'reverse_reference', 'guia_id', 'EstadisticaDeGuias');
 				case 'GuiaAduana':
 					return new QQReverseReferenceNodeGuiaAduana($this, 'guiaaduana', 'reverse_reference', 'guia_id', 'GuiaAduana');
+				case 'GuiaCalculos':
+					return new QQReverseReferenceNodeGuiaCalculos($this, 'guiacalculos', 'reverse_reference', 'guia_id', 'GuiaCalculos');
 				case 'GuiaCheckpoints':
 					return new QQReverseReferenceNodeGuiaCheckpoints($this, 'guiacheckpoints', 'reverse_reference', 'guia_id', 'GuiaCheckpoints');
 				case 'GuiaCkptAsNume':

@@ -61,6 +61,7 @@ abstract class GuiaEditFormBase extends QForm {
 	protected $txtNombRemi;
 	protected $txtDireRemi;
 	protected $txtTeleRemi;
+	protected $txtTeleRem2;
 	protected $txtNombDest;
 	protected $txtDireDest;
 	protected $txtTeleDest;
@@ -151,6 +152,7 @@ abstract class GuiaEditFormBase extends QForm {
 	protected $lstCobroCod;
 	protected $lstEstadisticaDeGuias;
 	protected $lstGuiaAduana;
+	protected $lstGuiaCalculos;
 	protected $lstGuiaCheckpoints;
 	protected $lstGuiaModificada;
 	protected $dtgManifiestosAsMani;
@@ -228,6 +230,7 @@ abstract class GuiaEditFormBase extends QForm {
 		$this->txtNombRemi = $this->mctGuia->txtNombRemi_Create();
 		$this->txtDireRemi = $this->mctGuia->txtDireRemi_Create();
 		$this->txtTeleRemi = $this->mctGuia->txtTeleRemi_Create();
+		$this->txtTeleRem2 = $this->mctGuia->txtTeleRem2_Create();
 		$this->txtNombDest = $this->mctGuia->txtNombDest_Create();
 		$this->txtDireDest = $this->mctGuia->txtDireDest_Create();
 		$this->txtTeleDest = $this->mctGuia->txtTeleDest_Create();
@@ -316,6 +319,7 @@ abstract class GuiaEditFormBase extends QForm {
 			$this->lstCobroCod = $this->mctGuia->lstCobroCod_Create();
 			$this->lstEstadisticaDeGuias = $this->mctGuia->lstEstadisticaDeGuias_Create();
 			$this->lstGuiaAduana = $this->mctGuia->lstGuiaAduana_Create();
+			$this->lstGuiaCalculos = $this->mctGuia->lstGuiaCalculos_Create();
 			$this->lstGuiaCheckpoints = $this->mctGuia->lstGuiaCheckpoints_Create();
 			$this->lstGuiaModificada = $this->mctGuia->lstGuiaModificada_Create();
 			$this->dtgManifiestosAsMani = $this->mctGuia->dtgManifiestosAsMani_Create();

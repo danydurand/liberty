@@ -39,7 +39,7 @@ class AsistenteEditForm extends AsistenteEditFormBase {
 
 		// Use the CreateFromPathInfo shortcut (this can also be done manually using the AsistenteMetaControl constructor)
 		// MAKE SURE we specify "$this" as the MetaControl's (and thus all subsequent controls') parent
-		$this->mctAsistente = AsistenteMetaControl::CreateFromPathInfo($this);
+        $this->mctAsistente = AsistenteMetaControl::CreateFromPathInfo($this);
 
 		// Call MetaControl's methods to create qcontrols based on Asistente's data fields
 		$this->lblCodiAsis = $this->mctAsistente->lblCodiAsis_Create();

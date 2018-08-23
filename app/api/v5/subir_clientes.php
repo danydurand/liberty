@@ -6,7 +6,8 @@
 // Descripcion   : Este programa se encarga de transferir datos de los
 //                 los Clientes a traves del API de OEG Int.
 //------------------------------------------------------------------------
-require_once('../qcubed.inc.php');
+require_once '../qcubed.inc.php';
+
 error_reporting(E_ALL);
 //-------------------------------------------------------------------
 // Todas las acciones realizadas quedan grabadas en un archivo log
@@ -24,7 +25,7 @@ $strDireUrlx = "http://localhost/oeg/app/api/v6/rest.php/customer_api/";
 $strVariCurl = curl_init($strDireUrlx);
 
 curl_setopt($strVariCurl, CURLOPT_RETURNTRANSFER, 1); 
-curl_setopt($strVariCurl, CURLOPT_POST,1); 
+curl_setopt($strVariCurl, CURLOPT_POST, 1); 
 
 $strApixKeyx = '1234564';
 $intAgenIdxx = '1';
@@ -34,16 +35,18 @@ $intAgenIdxx = '1';
 // null (lo cual indica que no ha sido enviado a OEG).
 //-------------------------------------------------------------------------------
 $objClauWher   = QQ::Clause();
-$objClauWher[] = QQ::Equal(QQN::Cliente()->Id,1);
-$objClauWher[] = QQ::Equal(QQN::Cliente()->ApiRegiId,-1);
+$objClauWher[] = QQ::Equal(QQN::Cliente()->Id, 1);
+$objClauWher[] = QQ::Equal(QQN::Cliente()->ApiRegiId, -1);
 $objClauWher[] = QQ::IsNull(QQN::Cliente()->ResultadoRegi);
 $objClauWher[] = QQ::IsNull(QQN::Cliente()->ResultadoModi);
 $arrClieNuev   = Cliente::QueryArray(QQ::AndCondition($objClauWher));
 $intCantNuev   = count($arrClieNuev);
-$strTextMens   = 'Existe(n) '.$intCantNuev.' Cliente(s) nuevo(s) que debe(n) ser procesado(s)';
+$strTextMens   = 'Existe(n) '.$intCantNuev.' Cliente(s) nuevo(s) que debe(n) ser ';
+                 'procesado(s)';
 fputs($mixManeArch, $strTextMens. "\n\n");
 foreach ($arrClieNuev as $objClieNuev) {
-    $strTextMens = 'Voy a procesar al Cliente: '.$objClieNuev->Nombre." (".$objClieNuev->Id.")";
+    $strTextMens = "Voy a procesar al Cliente: ".$objClieNuev->Nombre.
+                   " (".$objClieNuev->Id.")";
     fputs($mixManeArch, $strTextMens. "\n");
     $arrDataInse = array(
         "AgencyId"   => $intAgenIdxx,

@@ -6,8 +6,7 @@
 // Descripcion   : Este programa corre via cron y envia notificaciones de sms a los 
 //                 Clientes del Sistema Internacional de Liberty Express.
 //-------------------------------------------------------------------------------------
-require_once('../../qcubed.inc.php');
-require_once(__APP_INCLUDES__.'/funciones.php');
+require_once('qcubed.inc.php');
 
 error_reporting(E_ALL);
 $blnTodoOkey = true;
@@ -22,11 +21,11 @@ fputs($mixManeArch, "==================\n");
 fputs($mixManeArch, "Fecha: " . date("Y-m-d") . "  Hora: " . date("H:i") . "\n\n");
 
 $objUsuaNoti = Usuario::LoadByLogiUsua('liberty');
-$_SESSION['User'] = serialize($objUsuaNoti);
 if (!$objUsuaNoti) {
    echo "No se ha definido el Usuario de Notificacion: liberty";
    $blnTodoOkey = false;
 }
+$_SESSION['User'] = serialize($objUsuaNoti);
 
 if ($blnTodoOkey) {
    //-------------------------------------------------------

@@ -17,10 +17,6 @@
 	 * @subpackage GeneratedDataObjects
 	 * @property integer $TipoRuta the value for intTipoRuta (PK)
 	 * @property string $DescTrut the value for strDescTrut (Unique)
-	 * @property-read FacResumenFact $_FacResumenFactAsTipoRuta the value for the private _objFacResumenFactAsTipoRuta (Read-Only) if set due to an expansion on the fac_resumen_fact.tipo_ruta reverse relationship
-	 * @property-read FacResumenFact[] $_FacResumenFactAsTipoRutaArray the value for the private _objFacResumenFactAsTipoRutaArray (Read-Only) if set due to an ExpandAsArray on the fac_resumen_fact.tipo_ruta reverse relationship
-	 * @property-read FacTariMasi $_FacTariMasiAsTipoRuta the value for the private _objFacTariMasiAsTipoRuta (Read-Only) if set due to an expansion on the fac_tari_masi.tipo_ruta reverse relationship
-	 * @property-read FacTariMasi[] $_FacTariMasiAsTipoRutaArray the value for the private _objFacTariMasiAsTipoRutaArray (Read-Only) if set due to an ExpandAsArray on the fac_tari_masi.tipo_ruta reverse relationship
 	 * @property-read boolean $__Restored whether or not this object was restored from the database (as opposed to created new)
 	 */
 	class MasTipoRutaGen extends QBaseClass implements IteratorAggregate {
@@ -52,38 +48,6 @@
 		const DescTrutMaxLength = 30;
 		const DescTrutDefault = null;
 
-
-		/**
-		 * Private member variable that stores a reference to a single FacResumenFactAsTipoRuta object
-		 * (of type FacResumenFact), if this MasTipoRuta object was restored with
-		 * an expansion on the fac_resumen_fact association table.
-		 * @var FacResumenFact _objFacResumenFactAsTipoRuta;
-		 */
-		private $_objFacResumenFactAsTipoRuta;
-
-		/**
-		 * Private member variable that stores a reference to an array of FacResumenFactAsTipoRuta objects
-		 * (of type FacResumenFact[]), if this MasTipoRuta object was restored with
-		 * an ExpandAsArray on the fac_resumen_fact association table.
-		 * @var FacResumenFact[] _objFacResumenFactAsTipoRutaArray;
-		 */
-		private $_objFacResumenFactAsTipoRutaArray = null;
-
-		/**
-		 * Private member variable that stores a reference to a single FacTariMasiAsTipoRuta object
-		 * (of type FacTariMasi), if this MasTipoRuta object was restored with
-		 * an expansion on the fac_tari_masi association table.
-		 * @var FacTariMasi _objFacTariMasiAsTipoRuta;
-		 */
-		private $_objFacTariMasiAsTipoRuta;
-
-		/**
-		 * Private member variable that stores a reference to an array of FacTariMasiAsTipoRuta objects
-		 * (of type FacTariMasi[]), if this MasTipoRuta object was restored with
-		 * an ExpandAsArray on the fac_tari_masi association table.
-		 * @var FacTariMasi[] _objFacTariMasiAsTipoRutaArray;
-		 */
-		private $_objFacTariMasiAsTipoRutaArray = null;
 
 		/**
 		 * Protected array of virtual attributes for this object (e.g. extra/other calculated and/or non-object bound
@@ -570,15 +534,6 @@
 			}
 			
 			
-			// See if we're doing an array expansion on the previous item
-			if ($objExpandAsArrayNode && 
-					is_array($objPreviousItemArray) && 
-					count($objPreviousItemArray)) {
-
-				if (MasTipoRuta::ExpandArray ($objDbRow, $strAliasPrefix, $objExpandAsArrayNode, $objPreviousItemArray, $strColumnAliasArray)) {
-					return false; // db row was used but no new object was created
-				}
-			}
 
 			// Create a new instance of the MasTipoRuta object
 			$objToReturn = new MasTipoRuta();
@@ -623,36 +578,6 @@
 
 
 				
-
-			// Check for FacResumenFactAsTipoRuta Virtual Binding
-			$strAlias = $strAliasPrefix . 'facresumenfactastiporuta__codi_regi';
-			$strAliasName = !empty($strColumnAliasArray[$strAlias]) ? $strColumnAliasArray[$strAlias] : $strAlias;
-			$objExpansionNode = (empty($objExpansionAliasArray['facresumenfactastiporuta']) ? null : $objExpansionAliasArray['facresumenfactastiporuta']);
-			$blnExpanded = ($objExpansionNode && $objExpansionNode->ExpandAsArray);
-			if ($blnExpanded && null === $objToReturn->_objFacResumenFactAsTipoRutaArray)
-				$objToReturn->_objFacResumenFactAsTipoRutaArray = array();
-			if (!is_null($objDbRow->GetColumn($strAliasName))) {
-				if ($blnExpanded) {
-					$objToReturn->_objFacResumenFactAsTipoRutaArray[] = FacResumenFact::InstantiateDbRow($objDbRow, $strAliasPrefix . 'facresumenfactastiporuta__', $objExpansionNode, null, $strColumnAliasArray);
-				} elseif (is_null($objToReturn->_objFacResumenFactAsTipoRuta)) {
-					$objToReturn->_objFacResumenFactAsTipoRuta = FacResumenFact::InstantiateDbRow($objDbRow, $strAliasPrefix . 'facresumenfactastiporuta__', $objExpansionNode, null, $strColumnAliasArray);
-				}
-			}
-
-			// Check for FacTariMasiAsTipoRuta Virtual Binding
-			$strAlias = $strAliasPrefix . 'factarimasiastiporuta__codi_prod';
-			$strAliasName = !empty($strColumnAliasArray[$strAlias]) ? $strColumnAliasArray[$strAlias] : $strAlias;
-			$objExpansionNode = (empty($objExpansionAliasArray['factarimasiastiporuta']) ? null : $objExpansionAliasArray['factarimasiastiporuta']);
-			$blnExpanded = ($objExpansionNode && $objExpansionNode->ExpandAsArray);
-			if ($blnExpanded && null === $objToReturn->_objFacTariMasiAsTipoRutaArray)
-				$objToReturn->_objFacTariMasiAsTipoRutaArray = array();
-			if (!is_null($objDbRow->GetColumn($strAliasName))) {
-				if ($blnExpanded) {
-					$objToReturn->_objFacTariMasiAsTipoRutaArray[] = FacTariMasi::InstantiateDbRow($objDbRow, $strAliasPrefix . 'factarimasiastiporuta__', $objExpansionNode, null, $strColumnAliasArray);
-				} elseif (is_null($objToReturn->_objFacTariMasiAsTipoRuta)) {
-					$objToReturn->_objFacTariMasiAsTipoRuta = FacTariMasi::InstantiateDbRow($objDbRow, $strAliasPrefix . 'factarimasiastiporuta__', $objExpansionNode, null, $strColumnAliasArray);
-				}
-			}
 
 			return $objToReturn;
 		}
@@ -967,38 +892,6 @@
 				// (If restored via a "Many-to" expansion)
 				////////////////////////////
 
-				case '_FacResumenFactAsTipoRuta':
-					/**
-					 * Gets the value for the private _objFacResumenFactAsTipoRuta (Read-Only)
-					 * if set due to an expansion on the fac_resumen_fact.tipo_ruta reverse relationship
-					 * @return FacResumenFact
-					 */
-					return $this->_objFacResumenFactAsTipoRuta;
-
-				case '_FacResumenFactAsTipoRutaArray':
-					/**
-					 * Gets the value for the private _objFacResumenFactAsTipoRutaArray (Read-Only)
-					 * if set due to an ExpandAsArray on the fac_resumen_fact.tipo_ruta reverse relationship
-					 * @return FacResumenFact[]
-					 */
-					return $this->_objFacResumenFactAsTipoRutaArray;
-
-				case '_FacTariMasiAsTipoRuta':
-					/**
-					 * Gets the value for the private _objFacTariMasiAsTipoRuta (Read-Only)
-					 * if set due to an expansion on the fac_tari_masi.tipo_ruta reverse relationship
-					 * @return FacTariMasi
-					 */
-					return $this->_objFacTariMasiAsTipoRuta;
-
-				case '_FacTariMasiAsTipoRutaArray':
-					/**
-					 * Gets the value for the private _objFacTariMasiAsTipoRutaArray (Read-Only)
-					 * if set due to an ExpandAsArray on the fac_tari_masi.tipo_ruta reverse relationship
-					 * @return FacTariMasi[]
-					 */
-					return $this->_objFacTariMasiAsTipoRutaArray;
-
 
 				case '__Restored':
 					return $this->__blnRestored;
@@ -1086,12 +979,6 @@
 		 */
 		public function TablasRelacionadas() {
 			$arrTablRela = array();
-			if ($this->CountFacResumenFactsAsTipoRuta()) {
-				$arrTablRela[] = 'fac_resumen_fact';
-			}
-			if ($this->CountFacTariMasisAsTipoRuta()) {
-				$arrTablRela[] = 'fac_tari_masi';
-			}
 			
 			return $arrTablRela;
 		}
@@ -1100,310 +987,6 @@
 		// ASSOCIATED OBJECTS' METHODS
 		///////////////////////////////
 
-
-
-		// Related Objects' Methods for FacResumenFactAsTipoRuta
-		//-------------------------------------------------------------------
-
-		/**
-		 * Gets all associated FacResumenFactsAsTipoRuta as an array of FacResumenFact objects
-		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
-		 * @return FacResumenFact[]
-		*/
-		public function GetFacResumenFactAsTipoRutaArray($objOptionalClauses = null) {
-			if ((is_null($this->intTipoRuta)))
-				return array();
-
-			try {
-				return FacResumenFact::LoadArrayByTipoRuta($this->intTipoRuta, $objOptionalClauses);
-			} catch (QCallerException $objExc) {
-				$objExc->IncrementOffset();
-				throw $objExc;
-			}
-		}
-
-		/**
-		 * Counts all associated FacResumenFactsAsTipoRuta
-		 * @return int
-		*/
-		public function CountFacResumenFactsAsTipoRuta() {
-			if ((is_null($this->intTipoRuta)))
-				return 0;
-
-			return FacResumenFact::CountByTipoRuta($this->intTipoRuta);
-		}
-
-		/**
-		 * Associates a FacResumenFactAsTipoRuta
-		 * @param FacResumenFact $objFacResumenFact
-		 * @return void
-		*/
-		public function AssociateFacResumenFactAsTipoRuta(FacResumenFact $objFacResumenFact) {
-			if ((is_null($this->intTipoRuta)))
-				throw new QUndefinedPrimaryKeyException('Unable to call AssociateFacResumenFactAsTipoRuta on this unsaved MasTipoRuta.');
-			if ((is_null($objFacResumenFact->CodiRegi)))
-				throw new QUndefinedPrimaryKeyException('Unable to call AssociateFacResumenFactAsTipoRuta on this MasTipoRuta with an unsaved FacResumenFact.');
-
-			// Get the Database Object for this Class
-			$objDatabase = MasTipoRuta::GetDatabase();
-
-			// Perform the SQL Query
-			$objDatabase->NonQuery('
-				UPDATE
-					`fac_resumen_fact`
-				SET
-					`tipo_ruta` = ' . $objDatabase->SqlVariable($this->intTipoRuta) . '
-				WHERE
-					`codi_regi` = ' . $objDatabase->SqlVariable($objFacResumenFact->CodiRegi) . '
-			');
-		}
-
-		/**
-		 * Unassociates a FacResumenFactAsTipoRuta
-		 * @param FacResumenFact $objFacResumenFact
-		 * @return void
-		*/
-		public function UnassociateFacResumenFactAsTipoRuta(FacResumenFact $objFacResumenFact) {
-			if ((is_null($this->intTipoRuta)))
-				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateFacResumenFactAsTipoRuta on this unsaved MasTipoRuta.');
-			if ((is_null($objFacResumenFact->CodiRegi)))
-				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateFacResumenFactAsTipoRuta on this MasTipoRuta with an unsaved FacResumenFact.');
-
-			// Get the Database Object for this Class
-			$objDatabase = MasTipoRuta::GetDatabase();
-
-			// Perform the SQL Query
-			$objDatabase->NonQuery('
-				UPDATE
-					`fac_resumen_fact`
-				SET
-					`tipo_ruta` = null
-				WHERE
-					`codi_regi` = ' . $objDatabase->SqlVariable($objFacResumenFact->CodiRegi) . ' AND
-					`tipo_ruta` = ' . $objDatabase->SqlVariable($this->intTipoRuta) . '
-			');
-		}
-
-		/**
-		 * Unassociates all FacResumenFactsAsTipoRuta
-		 * @return void
-		*/
-		public function UnassociateAllFacResumenFactsAsTipoRuta() {
-			if ((is_null($this->intTipoRuta)))
-				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateFacResumenFactAsTipoRuta on this unsaved MasTipoRuta.');
-
-			// Get the Database Object for this Class
-			$objDatabase = MasTipoRuta::GetDatabase();
-
-			// Perform the SQL Query
-			$objDatabase->NonQuery('
-				UPDATE
-					`fac_resumen_fact`
-				SET
-					`tipo_ruta` = null
-				WHERE
-					`tipo_ruta` = ' . $objDatabase->SqlVariable($this->intTipoRuta) . '
-			');
-		}
-
-		/**
-		 * Deletes an associated FacResumenFactAsTipoRuta
-		 * @param FacResumenFact $objFacResumenFact
-		 * @return void
-		*/
-		public function DeleteAssociatedFacResumenFactAsTipoRuta(FacResumenFact $objFacResumenFact) {
-			if ((is_null($this->intTipoRuta)))
-				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateFacResumenFactAsTipoRuta on this unsaved MasTipoRuta.');
-			if ((is_null($objFacResumenFact->CodiRegi)))
-				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateFacResumenFactAsTipoRuta on this MasTipoRuta with an unsaved FacResumenFact.');
-
-			// Get the Database Object for this Class
-			$objDatabase = MasTipoRuta::GetDatabase();
-
-			// Perform the SQL Query
-			$objDatabase->NonQuery('
-				DELETE FROM
-					`fac_resumen_fact`
-				WHERE
-					`codi_regi` = ' . $objDatabase->SqlVariable($objFacResumenFact->CodiRegi) . ' AND
-					`tipo_ruta` = ' . $objDatabase->SqlVariable($this->intTipoRuta) . '
-			');
-		}
-
-		/**
-		 * Deletes all associated FacResumenFactsAsTipoRuta
-		 * @return void
-		*/
-		public function DeleteAllFacResumenFactsAsTipoRuta() {
-			if ((is_null($this->intTipoRuta)))
-				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateFacResumenFactAsTipoRuta on this unsaved MasTipoRuta.');
-
-			// Get the Database Object for this Class
-			$objDatabase = MasTipoRuta::GetDatabase();
-
-			// Perform the SQL Query
-			$objDatabase->NonQuery('
-				DELETE FROM
-					`fac_resumen_fact`
-				WHERE
-					`tipo_ruta` = ' . $objDatabase->SqlVariable($this->intTipoRuta) . '
-			');
-		}
-
-
-		// Related Objects' Methods for FacTariMasiAsTipoRuta
-		//-------------------------------------------------------------------
-
-		/**
-		 * Gets all associated FacTariMasisAsTipoRuta as an array of FacTariMasi objects
-		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
-		 * @return FacTariMasi[]
-		*/
-		public function GetFacTariMasiAsTipoRutaArray($objOptionalClauses = null) {
-			if ((is_null($this->intTipoRuta)))
-				return array();
-
-			try {
-				return FacTariMasi::LoadArrayByTipoRuta($this->intTipoRuta, $objOptionalClauses);
-			} catch (QCallerException $objExc) {
-				$objExc->IncrementOffset();
-				throw $objExc;
-			}
-		}
-
-		/**
-		 * Counts all associated FacTariMasisAsTipoRuta
-		 * @return int
-		*/
-		public function CountFacTariMasisAsTipoRuta() {
-			if ((is_null($this->intTipoRuta)))
-				return 0;
-
-			return FacTariMasi::CountByTipoRuta($this->intTipoRuta);
-		}
-
-		/**
-		 * Associates a FacTariMasiAsTipoRuta
-		 * @param FacTariMasi $objFacTariMasi
-		 * @return void
-		*/
-		public function AssociateFacTariMasiAsTipoRuta(FacTariMasi $objFacTariMasi) {
-			if ((is_null($this->intTipoRuta)))
-				throw new QUndefinedPrimaryKeyException('Unable to call AssociateFacTariMasiAsTipoRuta on this unsaved MasTipoRuta.');
-			if ((is_null($objFacTariMasi->CodiProd)) || (is_null($objFacTariMasi->CodiClie)) || (is_null($objFacTariMasi->TipoRuta)))
-				throw new QUndefinedPrimaryKeyException('Unable to call AssociateFacTariMasiAsTipoRuta on this MasTipoRuta with an unsaved FacTariMasi.');
-
-			// Get the Database Object for this Class
-			$objDatabase = MasTipoRuta::GetDatabase();
-
-			// Perform the SQL Query
-			$objDatabase->NonQuery('
-				UPDATE
-					`fac_tari_masi`
-				SET
-					`tipo_ruta` = ' . $objDatabase->SqlVariable($this->intTipoRuta) . '
-				WHERE
-					`codi_prod` = ' . $objDatabase->SqlVariable($objFacTariMasi->CodiProd) . ' AND
-					`codi_clie` = ' . $objDatabase->SqlVariable($objFacTariMasi->CodiClie) . ' AND
-					`tipo_ruta` = ' . $objDatabase->SqlVariable($objFacTariMasi->TipoRuta) . '
-			');
-		}
-
-		/**
-		 * Unassociates a FacTariMasiAsTipoRuta
-		 * @param FacTariMasi $objFacTariMasi
-		 * @return void
-		*/
-		public function UnassociateFacTariMasiAsTipoRuta(FacTariMasi $objFacTariMasi) {
-			if ((is_null($this->intTipoRuta)))
-				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateFacTariMasiAsTipoRuta on this unsaved MasTipoRuta.');
-			if ((is_null($objFacTariMasi->CodiProd)) || (is_null($objFacTariMasi->CodiClie)) || (is_null($objFacTariMasi->TipoRuta)))
-				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateFacTariMasiAsTipoRuta on this MasTipoRuta with an unsaved FacTariMasi.');
-
-			// Get the Database Object for this Class
-			$objDatabase = MasTipoRuta::GetDatabase();
-
-			// Perform the SQL Query
-			$objDatabase->NonQuery('
-				UPDATE
-					`fac_tari_masi`
-				SET
-					`tipo_ruta` = null
-				WHERE
-					`codi_prod` = ' . $objDatabase->SqlVariable($objFacTariMasi->CodiProd) . ' AND
-					`codi_clie` = ' . $objDatabase->SqlVariable($objFacTariMasi->CodiClie) . ' AND
-					`tipo_ruta` = ' . $objDatabase->SqlVariable($objFacTariMasi->TipoRuta) . ' AND
-					`tipo_ruta` = ' . $objDatabase->SqlVariable($this->intTipoRuta) . '
-			');
-		}
-
-		/**
-		 * Unassociates all FacTariMasisAsTipoRuta
-		 * @return void
-		*/
-		public function UnassociateAllFacTariMasisAsTipoRuta() {
-			if ((is_null($this->intTipoRuta)))
-				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateFacTariMasiAsTipoRuta on this unsaved MasTipoRuta.');
-
-			// Get the Database Object for this Class
-			$objDatabase = MasTipoRuta::GetDatabase();
-
-			// Perform the SQL Query
-			$objDatabase->NonQuery('
-				UPDATE
-					`fac_tari_masi`
-				SET
-					`tipo_ruta` = null
-				WHERE
-					`tipo_ruta` = ' . $objDatabase->SqlVariable($this->intTipoRuta) . '
-			');
-		}
-
-		/**
-		 * Deletes an associated FacTariMasiAsTipoRuta
-		 * @param FacTariMasi $objFacTariMasi
-		 * @return void
-		*/
-		public function DeleteAssociatedFacTariMasiAsTipoRuta(FacTariMasi $objFacTariMasi) {
-			if ((is_null($this->intTipoRuta)))
-				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateFacTariMasiAsTipoRuta on this unsaved MasTipoRuta.');
-			if ((is_null($objFacTariMasi->CodiProd)) || (is_null($objFacTariMasi->CodiClie)) || (is_null($objFacTariMasi->TipoRuta)))
-				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateFacTariMasiAsTipoRuta on this MasTipoRuta with an unsaved FacTariMasi.');
-
-			// Get the Database Object for this Class
-			$objDatabase = MasTipoRuta::GetDatabase();
-
-			// Perform the SQL Query
-			$objDatabase->NonQuery('
-				DELETE FROM
-					`fac_tari_masi`
-				WHERE
-					`codi_prod` = ' . $objDatabase->SqlVariable($objFacTariMasi->CodiProd) . ' AND
-					`codi_clie` = ' . $objDatabase->SqlVariable($objFacTariMasi->CodiClie) . ' AND
-					`tipo_ruta` = ' . $objDatabase->SqlVariable($objFacTariMasi->TipoRuta) . ' AND
-					`tipo_ruta` = ' . $objDatabase->SqlVariable($this->intTipoRuta) . '
-			');
-		}
-
-		/**
-		 * Deletes all associated FacTariMasisAsTipoRuta
-		 * @return void
-		*/
-		public function DeleteAllFacTariMasisAsTipoRuta() {
-			if ((is_null($this->intTipoRuta)))
-				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateFacTariMasiAsTipoRuta on this unsaved MasTipoRuta.');
-
-			// Get the Database Object for this Class
-			$objDatabase = MasTipoRuta::GetDatabase();
-
-			// Perform the SQL Query
-			$objDatabase->NonQuery('
-				DELETE FROM
-					`fac_tari_masi`
-				WHERE
-					`tipo_ruta` = ' . $objDatabase->SqlVariable($this->intTipoRuta) . '
-			');
-		}
 
 
 		
@@ -1547,8 +1130,6 @@
      * @property-read QQNode $DescTrut
      *
      *
-     * @property-read QQReverseReferenceNodeFacResumenFact $FacResumenFactAsTipoRuta
-     * @property-read QQReverseReferenceNodeFacTariMasi $FacTariMasiAsTipoRuta
 
      * @property-read QQNode $_PrimaryKeyNode
      **/
@@ -1562,10 +1143,6 @@
 					return new QQNode('tipo_ruta', 'TipoRuta', 'Integer', $this);
 				case 'DescTrut':
 					return new QQNode('desc_trut', 'DescTrut', 'VarChar', $this);
-				case 'FacResumenFactAsTipoRuta':
-					return new QQReverseReferenceNodeFacResumenFact($this, 'facresumenfactastiporuta', 'reverse_reference', 'tipo_ruta', 'FacResumenFactAsTipoRuta');
-				case 'FacTariMasiAsTipoRuta':
-					return new QQReverseReferenceNodeFacTariMasi($this, 'factarimasiastiporuta', 'reverse_reference', 'tipo_ruta', 'FacTariMasiAsTipoRuta');
 
 				case '_PrimaryKeyNode':
 					return new QQNode('tipo_ruta', 'TipoRuta', 'Integer', $this);
@@ -1585,8 +1162,6 @@
      * @property-read QQNode $DescTrut
      *
      *
-     * @property-read QQReverseReferenceNodeFacResumenFact $FacResumenFactAsTipoRuta
-     * @property-read QQReverseReferenceNodeFacTariMasi $FacTariMasiAsTipoRuta
 
      * @property-read QQNode $_PrimaryKeyNode
      **/
@@ -1600,10 +1175,6 @@
 					return new QQNode('tipo_ruta', 'TipoRuta', 'integer', $this);
 				case 'DescTrut':
 					return new QQNode('desc_trut', 'DescTrut', 'string', $this);
-				case 'FacResumenFactAsTipoRuta':
-					return new QQReverseReferenceNodeFacResumenFact($this, 'facresumenfactastiporuta', 'reverse_reference', 'tipo_ruta', 'FacResumenFactAsTipoRuta');
-				case 'FacTariMasiAsTipoRuta':
-					return new QQReverseReferenceNodeFacTariMasi($this, 'factarimasiastiporuta', 'reverse_reference', 'tipo_ruta', 'FacTariMasiAsTipoRuta');
 
 				case '_PrimaryKeyNode':
 					return new QQNode('tipo_ruta', 'TipoRuta', 'integer', $this);

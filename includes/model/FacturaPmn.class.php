@@ -27,7 +27,13 @@
 			return sprintf('Fact: %s',  $this->intId);
 		}
 
-		public function GuiaCODdelSDE() {
+        public function guiaAsociada() {
+            $objClauWher   = QQ::Clause();
+            $objClauWher[] = QQ::Equal(QQN::Guia()->FacturaId,$this->intId);
+            return Guia::QuerySingle(QQ::AndCondition($objClauWher));
+        }
+
+        public function GuiaCODdelSDE() {
 			//---------------------------------------------------------------------
 			// Esta rutina determina si la Factura corresponde a una guía del SDE
 			// o una guia hecha a traves del Expreso Nacional.

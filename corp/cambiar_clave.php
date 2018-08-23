@@ -104,7 +104,7 @@ class CambiarClave extends FormularioBaseKaizen {
         $strBody .= 'El Sistema CORPorativo, ha registrado un cambio de Clave de Acceso, para su Usuario.<br>';
         $strBody .= 'Si Usted desconoce esta transacción, por favor comuníquese a la brevedad<br>';
         $strBody .= 'posible con el Administrador del Sistema a través de la cuenta de correo:<br><br>';
-        $strBody .= 'soportelufeman@gmail.com<br>';
+        $strBody .= 'incidencias@libertyexpress.com<br>';
         $objMessage->HtmlBody = $strBody;
 
         // Add random/custom email headers

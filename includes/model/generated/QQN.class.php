@@ -205,12 +205,6 @@
 			return new QQNodeDivisa('divisa', null, null);
 		}
 		/**
-		 * @return QQNodeDocumento
-		 */
-		static public function Documento() {
-			return new QQNodeDocumento('documento', null, null);
-		}
-		/**
 		 * @return QQNodeDspDespacho
 		 */
 		static public function DspDespacho() {
@@ -241,12 +235,6 @@
 			return new QQNodeEstacion('estacion', null, null);
 		}
 		/**
-		 * @return QQNodeEstadistica
-		 */
-		static public function Estadistica() {
-			return new QQNodeEstadistica('estadistica', null, null);
-		}
-		/**
 		 * @return QQNodeEstadisticaDeClientes
 		 */
 		static public function EstadisticaDeClientes() {
@@ -265,22 +253,10 @@
 			return new QQNodeEstado('estado', null, null);
 		}
 		/**
-		 * @return QQNodeFacAudiCierre
-		 */
-		static public function FacAudiCierre() {
-			return new QQNodeFacAudiCierre('fac_audi_cierre', null, null);
-		}
-		/**
 		 * @return QQNodeFacCategoriaProd
 		 */
 		static public function FacCategoriaProd() {
 			return new QQNodeFacCategoriaProd('fac_categoria_prod', null, null);
-		}
-		/**
-		 * @return QQNodeFacDocTemp
-		 */
-		static public function FacDocTemp() {
-			return new QQNodeFacDocTemp('fac_doc_temp', null, null);
 		}
 		/**
 		 * @return QQNodeFacImpuesto
@@ -289,34 +265,10 @@
 			return new QQNodeFacImpuesto('fac_impuesto', null, null);
 		}
 		/**
-		 * @return QQNodeFacPeriFact
-		 */
-		static public function FacPeriFact() {
-			return new QQNodeFacPeriFact('fac_peri_fact', null, null);
-		}
-		/**
 		 * @return QQNodeFacProducto
 		 */
 		static public function FacProducto() {
 			return new QQNodeFacProducto('fac_producto', null, null);
-		}
-		/**
-		 * @return QQNodeFacProfit
-		 */
-		static public function FacProfit() {
-			return new QQNodeFacProfit('fac_profit', null, null);
-		}
-		/**
-		 * @return QQNodeFacResumenFact
-		 */
-		static public function FacResumenFact() {
-			return new QQNodeFacResumenFact('fac_resumen_fact', null, null);
-		}
-		/**
-		 * @return QQNodeFacTariMasi
-		 */
-		static public function FacTariMasi() {
-			return new QQNodeFacTariMasi('fac_tari_masi', null, null);
 		}
 		/**
 		 * @return QQNodeFacTarifa
@@ -425,6 +377,12 @@
 		 */
 		static public function GuiaCacesa() {
 			return new QQNodeGuiaCacesa('guia_cacesa', null, null);
+		}
+		/**
+		 * @return QQNodeGuiaCalculos
+		 */
+		static public function GuiaCalculos() {
+			return new QQNodeGuiaCalculos('guia_calculos', null, null);
 		}
 		/**
 		 * @return QQNodeGuiaCheckpoints

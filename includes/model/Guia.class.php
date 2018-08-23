@@ -27,6 +27,13 @@
             return sprintf('%s',  $this->strNumeGuia);
         }
 
+        public function UltiCkptObj() {
+           $objClausula   = QQ::Clause();
+           $objClausula[] = QQ::OrderBy(QQN::GuiaCkpt()->FechCkpt,false,QQN::GuiaCkpt()->HoraCkpt,false);
+           $objClausula[] = QQ::LimitInfo(1);
+           $arrGuiaCkpt   = GuiaCkpt::LoadArrayByNumeGuia($this->strNumeGuia,$objClausula);
+           return (count($arrGuiaCkpt)) ? $arrGuiaCkpt[0] : null;
+       }
 
         //public function calcularTarifa() {
         //    /**

@@ -67,8 +67,6 @@
 	 * @property Sistema $Sistema the value for the Sistema object referenced by strSistemaId 
 	 * @property-read Cobranza $_Cobranza the value for the private _objCobranza (Read-Only) if set due to an expansion on the cobranza.factura_id reverse relationship
 	 * @property-read Cobranza[] $_CobranzaArray the value for the private _objCobranzaArray (Read-Only) if set due to an ExpandAsArray on the cobranza.factura_id reverse relationship
-	 * @property-read Documento $_Documento the value for the private _objDocumento (Read-Only) if set due to an expansion on the documento.factura_id reverse relationship
-	 * @property-read Documento[] $_DocumentoArray the value for the private _objDocumentoArray (Read-Only) if set due to an ExpandAsArray on the documento.factura_id reverse relationship
 	 * @property-read boolean $__Restored whether or not this object was restored from the database (as opposed to created new)
 	 */
 	class FacturaGen extends QBaseClass implements IteratorAggregate {
@@ -440,22 +438,6 @@
 		 * @var Cobranza[] _objCobranzaArray;
 		 */
 		private $_objCobranzaArray = null;
-
-		/**
-		 * Private member variable that stores a reference to a single Documento object
-		 * (of type Documento), if this Factura object was restored with
-		 * an expansion on the documento association table.
-		 * @var Documento _objDocumento;
-		 */
-		private $_objDocumento;
-
-		/**
-		 * Private member variable that stores a reference to an array of Documento objects
-		 * (of type Documento[]), if this Factura object was restored with
-		 * an ExpandAsArray on the documento association table.
-		 * @var Documento[] _objDocumentoArray;
-		 */
-		private $_objDocumentoArray = null;
 
 		/**
 		 * Protected array of virtual attributes for this object (e.g. extra/other calculated and/or non-object bound
@@ -1343,21 +1325,6 @@
 					$objToReturn->_objCobranzaArray[] = Cobranza::InstantiateDbRow($objDbRow, $strAliasPrefix . 'cobranza__', $objExpansionNode, null, $strColumnAliasArray);
 				} elseif (is_null($objToReturn->_objCobranza)) {
 					$objToReturn->_objCobranza = Cobranza::InstantiateDbRow($objDbRow, $strAliasPrefix . 'cobranza__', $objExpansionNode, null, $strColumnAliasArray);
-				}
-			}
-
-			// Check for Documento Virtual Binding
-			$strAlias = $strAliasPrefix . 'documento__id';
-			$strAliasName = !empty($strColumnAliasArray[$strAlias]) ? $strColumnAliasArray[$strAlias] : $strAlias;
-			$objExpansionNode = (empty($objExpansionAliasArray['documento']) ? null : $objExpansionAliasArray['documento']);
-			$blnExpanded = ($objExpansionNode && $objExpansionNode->ExpandAsArray);
-			if ($blnExpanded && null === $objToReturn->_objDocumentoArray)
-				$objToReturn->_objDocumentoArray = array();
-			if (!is_null($objDbRow->GetColumn($strAliasName))) {
-				if ($blnExpanded) {
-					$objToReturn->_objDocumentoArray[] = Documento::InstantiateDbRow($objDbRow, $strAliasPrefix . 'documento__', $objExpansionNode, null, $strColumnAliasArray);
-				} elseif (is_null($objToReturn->_objDocumento)) {
-					$objToReturn->_objDocumento = Documento::InstantiateDbRow($objDbRow, $strAliasPrefix . 'documento__', $objExpansionNode, null, $strColumnAliasArray);
 				}
 			}
 
@@ -2687,22 +2654,6 @@
 					 */
 					return $this->_objCobranzaArray;
 
-				case '_Documento':
-					/**
-					 * Gets the value for the private _objDocumento (Read-Only)
-					 * if set due to an expansion on the documento.factura_id reverse relationship
-					 * @return Documento
-					 */
-					return $this->_objDocumento;
-
-				case '_DocumentoArray':
-					/**
-					 * Gets the value for the private _objDocumentoArray (Read-Only)
-					 * if set due to an ExpandAsArray on the documento.factura_id reverse relationship
-					 * @return Documento[]
-					 */
-					return $this->_objDocumentoArray;
-
 
 				case '__Restored':
 					return $this->__blnRestored;
@@ -3564,9 +3515,6 @@
 			if ($this->CountCobranzas()) {
 				$arrTablRela[] = 'cobranza';
 			}
-			if ($this->CountDocumentos()) {
-				$arrTablRela[] = 'documento';
-			}
 			
 			return $arrTablRela;
 		}
@@ -3720,155 +3668,6 @@
 			$objDatabase->NonQuery('
 				DELETE FROM
 					`cobranza`
-				WHERE
-					`factura_id` = ' . $objDatabase->SqlVariable($this->intId) . '
-			');
-		}
-
-
-		// Related Objects' Methods for Documento
-		//-------------------------------------------------------------------
-
-		/**
-		 * Gets all associated Documentos as an array of Documento objects
-		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
-		 * @return Documento[]
-		*/
-		public function GetDocumentoArray($objOptionalClauses = null) {
-			if ((is_null($this->intId)))
-				return array();
-
-			try {
-				return Documento::LoadArrayByFacturaId($this->intId, $objOptionalClauses);
-			} catch (QCallerException $objExc) {
-				$objExc->IncrementOffset();
-				throw $objExc;
-			}
-		}
-
-		/**
-		 * Counts all associated Documentos
-		 * @return int
-		*/
-		public function CountDocumentos() {
-			if ((is_null($this->intId)))
-				return 0;
-
-			return Documento::CountByFacturaId($this->intId);
-		}
-
-		/**
-		 * Associates a Documento
-		 * @param Documento $objDocumento
-		 * @return void
-		*/
-		public function AssociateDocumento(Documento $objDocumento) {
-			if ((is_null($this->intId)))
-				throw new QUndefinedPrimaryKeyException('Unable to call AssociateDocumento on this unsaved Factura.');
-			if ((is_null($objDocumento->Id)))
-				throw new QUndefinedPrimaryKeyException('Unable to call AssociateDocumento on this Factura with an unsaved Documento.');
-
-			// Get the Database Object for this Class
-			$objDatabase = Factura::GetDatabase();
-
-			// Perform the SQL Query
-			$objDatabase->NonQuery('
-				UPDATE
-					`documento`
-				SET
-					`factura_id` = ' . $objDatabase->SqlVariable($this->intId) . '
-				WHERE
-					`id` = ' . $objDatabase->SqlVariable($objDocumento->Id) . '
-			');
-		}
-
-		/**
-		 * Unassociates a Documento
-		 * @param Documento $objDocumento
-		 * @return void
-		*/
-		public function UnassociateDocumento(Documento $objDocumento) {
-			if ((is_null($this->intId)))
-				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateDocumento on this unsaved Factura.');
-			if ((is_null($objDocumento->Id)))
-				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateDocumento on this Factura with an unsaved Documento.');
-
-			// Get the Database Object for this Class
-			$objDatabase = Factura::GetDatabase();
-
-			// Perform the SQL Query
-			$objDatabase->NonQuery('
-				UPDATE
-					`documento`
-				SET
-					`factura_id` = null
-				WHERE
-					`id` = ' . $objDatabase->SqlVariable($objDocumento->Id) . ' AND
-					`factura_id` = ' . $objDatabase->SqlVariable($this->intId) . '
-			');
-		}
-
-		/**
-		 * Unassociates all Documentos
-		 * @return void
-		*/
-		public function UnassociateAllDocumentos() {
-			if ((is_null($this->intId)))
-				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateDocumento on this unsaved Factura.');
-
-			// Get the Database Object for this Class
-			$objDatabase = Factura::GetDatabase();
-
-			// Perform the SQL Query
-			$objDatabase->NonQuery('
-				UPDATE
-					`documento`
-				SET
-					`factura_id` = null
-				WHERE
-					`factura_id` = ' . $objDatabase->SqlVariable($this->intId) . '
-			');
-		}
-
-		/**
-		 * Deletes an associated Documento
-		 * @param Documento $objDocumento
-		 * @return void
-		*/
-		public function DeleteAssociatedDocumento(Documento $objDocumento) {
-			if ((is_null($this->intId)))
-				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateDocumento on this unsaved Factura.');
-			if ((is_null($objDocumento->Id)))
-				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateDocumento on this Factura with an unsaved Documento.');
-
-			// Get the Database Object for this Class
-			$objDatabase = Factura::GetDatabase();
-
-			// Perform the SQL Query
-			$objDatabase->NonQuery('
-				DELETE FROM
-					`documento`
-				WHERE
-					`id` = ' . $objDatabase->SqlVariable($objDocumento->Id) . ' AND
-					`factura_id` = ' . $objDatabase->SqlVariable($this->intId) . '
-			');
-		}
-
-		/**
-		 * Deletes all associated Documentos
-		 * @return void
-		*/
-		public function DeleteAllDocumentos() {
-			if ((is_null($this->intId)))
-				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateDocumento on this unsaved Factura.');
-
-			// Get the Database Object for this Class
-			$objDatabase = Factura::GetDatabase();
-
-			// Perform the SQL Query
-			$objDatabase->NonQuery('
-				DELETE FROM
-					`documento`
 				WHERE
 					`factura_id` = ' . $objDatabase->SqlVariable($this->intId) . '
 			');
@@ -4279,7 +4078,6 @@
      *
      *
      * @property-read QQReverseReferenceNodeCobranza $Cobranza
-     * @property-read QQReverseReferenceNodeDocumento $Documento
 
      * @property-read QQNode $_PrimaryKeyNode
      **/
@@ -4391,8 +4189,6 @@
 					return new QQNode('tipo_impresora', 'TipoImpresora', 'VarChar', $this);
 				case 'Cobranza':
 					return new QQReverseReferenceNodeCobranza($this, 'cobranza', 'reverse_reference', 'factura_id', 'Cobranza');
-				case 'Documento':
-					return new QQReverseReferenceNodeDocumento($this, 'documento', 'reverse_reference', 'factura_id', 'Documento');
 
 				case '_PrimaryKeyNode':
 					return new QQNode('id', 'Id', 'Integer', $this);
@@ -4461,7 +4257,6 @@
      *
      *
      * @property-read QQReverseReferenceNodeCobranza $Cobranza
-     * @property-read QQReverseReferenceNodeDocumento $Documento
 
      * @property-read QQNode $_PrimaryKeyNode
      **/
@@ -4573,8 +4368,6 @@
 					return new QQNode('tipo_impresora', 'TipoImpresora', 'string', $this);
 				case 'Cobranza':
 					return new QQReverseReferenceNodeCobranza($this, 'cobranza', 'reverse_reference', 'factura_id', 'Cobranza');
-				case 'Documento':
-					return new QQReverseReferenceNodeDocumento($this, 'documento', 'reverse_reference', 'factura_id', 'Documento');
 
 				case '_PrimaryKeyNode':
 					return new QQNode('id', 'Id', 'integer', $this);

@@ -159,35 +159,35 @@ class RepoCuadreDeCajaPlus extends FormularioBaseKaizen {
         //--------------------------------------------------
         // Aqui se define el Query sobre la base de datos
         //--------------------------------------------------
-        $strCadeSqlx = "select f.id,
-						 	   f.sucursal_id,
-						 	   g.nume_guia,
-							   r.siglas,
-							   u.logi_usua, 
-                               f.fecha_impresion, 
-                               f.numero, 
-                               f.cedula_rif, 
-                               f.razon_social, 
-                               f.maquina_fiscal, 
-                               f.monto_total,
-                               fp.abreviado forma_pago, 
-                               p.numero_documento, 
-                               b.abreviado banco, 
-                               p.monto_pago
-		                  from factura_pmn f inner join pago_factura_pmn p 
-		                    on f.id = p.factura_id 
-		                       inner join forma_pago fp 
-		                    on fp.id = p.forma_pago_id
-		                       left join banco b 
-		                    on b.id = p.banco_id
-		                       inner join usuario u 
-		                    on u.codi_usua = f.creada_por
-		                       inner join counter r 
-		                    on r.id = f.receptoria_id
-		                       inner join guia g
-		                    on f.id = g.factura_id
-		                 where f.estatus != 'A'
-		                   and f.sucursal_id = '".$this->lstCodiSucu->SelectedValue."' ";
+        $strCadeSqlx  = "select f.id, ";
+		$strCadeSqlx .=	" 	    f.sucursal_id, ";
+		$strCadeSqlx .=	" 	    g.nume_guia, ";
+		$strCadeSqlx .=	"	    r.siglas, ";
+		$strCadeSqlx .=	"	    u.logi_usua, ";
+        $strCadeSqlx .= "       f.fecha_impresion, ";
+        $strCadeSqlx .= "       f.numero, ";
+        $strCadeSqlx .= "       f.cedula_rif, ";
+        $strCadeSqlx .= "       f.razon_social, ";
+        $strCadeSqlx .= "       f.maquina_fiscal, ";
+        $strCadeSqlx .= "       f.monto_total, ";
+        $strCadeSqlx .= "       fp.abreviado forma_pago, ";
+        $strCadeSqlx .= "       p.numero_documento, ";
+        $strCadeSqlx .= "       b.abreviado banco, ";
+        $strCadeSqlx .= "       p.monto_pago ";
+		$strCadeSqlx .= "  from factura_pmn f inner join pago_factura_pmn p ";
+		$strCadeSqlx .= "    on f.id = p.factura_id ";
+		$strCadeSqlx .= "       inner join forma_pago fp ";
+		$strCadeSqlx .= "    on fp.id = p.forma_pago_id ";
+		$strCadeSqlx .= "       left join banco b ";
+		$strCadeSqlx .= "    on b.id = p.banco_id ";
+		$strCadeSqlx .= "       inner join usuario u ";
+		$strCadeSqlx .= "    on u.codi_usua = f.creada_por ";
+		$strCadeSqlx .= "       inner join counter r ";
+		$strCadeSqlx .= "    on r.id = f.receptoria_id ";
+		$strCadeSqlx .= "       inner join guia g ";
+		$strCadeSqlx .= "    on f.id = g.factura_id ";
+		$strCadeSqlx .= " where f.estatus != 'A' ";
+		$strCadeSqlx .= "   and f.sucursal_id = '".$this->lstCodiSucu->SelectedValue."' ";
         if (!is_null($this->lstCodiRece->SelectedValue)) {
             $strCadeSqlx .= "and f.receptoria_id = ".$this->lstCodiRece->SelectedValue." ";
         }
@@ -199,6 +199,20 @@ class RepoCuadreDeCajaPlus extends FormularioBaseKaizen {
             echo $strCadeSqlx;
             exit(0);
         }
+
+        $blnApliReco = false;
+        $decFactReco = 1;
+        $intTariRefe = 65;
+        //-------------------------------------------------------------------
+        // Aqui se identifica si la Reconversion Monetaria esta activa o no
+        //-------------------------------------------------------------------
+        $objConfReco = BuscarParametro('ConfReco','RecoMone','TODO',null);
+        if ($objConfReco) {
+            $blnApliReco = (boolean)$objConfReco->ParaVal1;
+            $decFactReco = (float)$objConfReco->ParaVal2;
+            $intTariRefe = (int)$objConfReco->ParaVal3;
+        }
+
         $objDatabase = FacturaPmn::GetDatabase();
         $objDbResult = $objDatabase->Query($strCadeSqlx);
         $arrFormPago = array();
@@ -214,6 +228,20 @@ class RepoCuadreDeCajaPlus extends FormularioBaseKaizen {
             if (strlen($strFechImpr)) {
                 $strFechImpr = substr($strFechImpr,4,2)."/".substr($strFechImpr,2,2)."/".substr($strFechImpr,0,2);
             }
+            //-------------------------
+            // Montos de las Facturas
+            //-------------------------
+            $decMontTota = $mixRegi['monto_total'];
+            $decMontPago = $mixRegi['monto_pago'];
+            //----------------------------------------
+            // Se aplica la reconversión montetaria
+            //----------------------------------------
+            if ($blnApliReco) {
+                if ($mixRegi['tarifa_id'] < $intTariRefe) {
+                    $decMontTota /= $decFactReco;
+                    $decMontPago /= $decFactReco;
+                }
+            }
             $arrDatoRepo[] = array(
                 $mixRegi['id'],
                 $strUbicFact,
@@ -222,21 +250,21 @@ class RepoCuadreDeCajaPlus extends FormularioBaseKaizen {
                 $mixRegi['numero'],
                 $mixRegi['cedula_rif']."|".substr($mixRegi['razon_social'],0,20),
                 $mixRegi['maquina_fiscal'],
-                nf($mixRegi['monto_total']),
+                nf($decMontTota),
                 $mixRegi['forma_pago'],
                 $mixRegi['numero_documento'],
                 $mixRegi['banco'],
-                nf($mixRegi['monto_pago'])
+                nf($decMontPago)
             );
             //----------------------------------------------------
             // Se acumulan los montos pagados por Forma de Pago
             //----------------------------------------------------
-            $this->arrFormPago[$mixRegi['forma_pago']] += $mixRegi['monto_pago'];
+            $this->arrFormPago[$mixRegi['forma_pago']] += $decMontPago;
             //--------------------------------------------
             // Se acumula el monto de la forma de pago
             //--------------------------------------------
-            $decTotaFact += $mixRegi['monto_total'];
-            $decTotaPago += $mixRegi['monto_pago'];
+            $decTotaFact += $decMontTota;
+            $decTotaPago += $decMontPago;
         }
         // Linea de totales
         $arrDatoRepo[] = array('','','','','','','TOTALES',nf($decTotaFact),'','','',nf($decTotaPago));

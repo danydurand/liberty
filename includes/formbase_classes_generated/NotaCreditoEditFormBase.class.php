@@ -60,7 +60,7 @@ abstract class NotaCreditoEditFormBase extends QForm {
 	protected $txtConcepto;
 	protected $txtNumero;
 	protected $txtMaquinaFiscal;
-	protected $calFechaImpresion;
+	protected $txtFechaImpresion;
 	protected $txtHoraImpresion;
 	protected $txtMontoBase;
 	protected $txtMontoFranqueo;
@@ -150,7 +150,7 @@ abstract class NotaCreditoEditFormBase extends QForm {
 		$this->txtConcepto = $this->mctNotaCredito->txtConcepto_Create();
 		$this->txtNumero = $this->mctNotaCredito->txtNumero_Create();
 		$this->txtMaquinaFiscal = $this->mctNotaCredito->txtMaquinaFiscal_Create();
-		$this->calFechaImpresion = $this->mctNotaCredito->calFechaImpresion_Create();
+		$this->txtFechaImpresion = $this->mctNotaCredito->txtFechaImpresion_Create();
 		$this->txtHoraImpresion = $this->mctNotaCredito->txtHoraImpresion_Create();
 		$this->txtMontoBase = $this->mctNotaCredito->txtMontoBase_Create();
 		$this->txtMontoFranqueo = $this->mctNotaCredito->txtMontoFranqueo_Create();
@@ -403,7 +403,12 @@ abstract class NotaCreditoEditFormBase extends QForm {
 
 		// Custom Validation Rules
 		// TODO: Be sure to set $blnToReturn to false if any custom validation fails!
-		
+		// Check for records that may violate Unique Clauses
+			if (($objNotaCredito = NotaCredito::LoadByFacturaId($this->lstFactura->SelectedValue)) && ($objNotaCredito->Id != $this->mctNotaCredito->NotaCredito->Id )){
+				$blnToReturn = false;
+				$this->lstFactura->Warning = QApplication::Translate("Already in Use");
+			}
+
 		$blnFocused = false;
 		foreach ($this->GetErrorControls() as $objControl) {
 			// Set Focus to the top-most invalid control
