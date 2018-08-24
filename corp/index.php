@@ -204,10 +204,16 @@ class Index extends QForm {
         //---------------------------------------------------------------------------
         // Obteniendo los destinatarios frecuentes del Cliente ordenados por Nombre.
         //---------------------------------------------------------------------------
-        $arrDestFrec = DestinatarioFrecuente::LoadArrayByClienteId(
+        $arrDestTemp = DestinatarioFrecuente::LoadArrayByClienteId(
             $objUsuaConn->ClienteId,
             QQ::Clause(QQ::OrderBy(QQN::DestinatarioFrecuente()->Nombre))
         );
+        $arrDestFrec = array();
+        foreach ($arrDestTemp as $objDestFrec) {
+            if (strlen(trim($objDestFrec->Nombre)) > 0) {
+                $arrDestFrec[] = $objDestFrec;
+            }
+        }
         $objCkptNore = SdeCheckpoint::Load('NR');
         //----------------------------------------------------------
         // Variables de Session que se usan a lo largo del Sistema.

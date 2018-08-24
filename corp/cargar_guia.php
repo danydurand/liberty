@@ -154,10 +154,20 @@ class CargarGuia extends FormularioBaseKaizen {
         $intCantCarg = count($this->arrDestFrec);
         $intCantBase = $this->objCliente->CountDestinatarioFrecuentesAsCliente();
         if ($intCantCarg != $intCantBase) {
-            $this->arrDestFrec = DestinatarioFrecuente::LoadArrayByClienteId(
+            $arrDestTemp = DestinatarioFrecuente::LoadArrayByClienteId(
                 $this->objCliente->CodiClie,
                 QQ::Clause(QQ::OrderBy(QQN::DestinatarioFrecuente()->Nombre))
             );
+            $arrDestFrec = array();
+            foreach ($arrDestTemp as $objDestFrec) {
+                if (strlen(trim($objDestFrec->Nombre)) > 0) {
+                    $arrDestFrec[] = $objDestFrec;
+                }
+            }
+            //$this->arrDestFrec = DestinatarioFrecuente::LoadArrayByClienteId(
+            //    $this->objCliente->CodiClie,
+            //    QQ::Clause(QQ::OrderBy(QQN::DestinatarioFrecuente()->Nombre))
+            //);
             $_SESSION['DestFrec'] = serialize($this->arrDestFrec);
         }
         //------------------------------------------------------------
@@ -772,10 +782,10 @@ class CargarGuia extends FormularioBaseKaizen {
                     //--------------------------------------------------------------------
                     // Se llenan los campos del Destinatario con la información obtenida.
                     //--------------------------------------------------------------------
-                    $this->txtNombDest->Text = $objDestFrec->Nombre;
-                    $this->txtDireDest->Text = $objDestFrec->Direccion;
-                    $this->txtTeleDest->Text = $objDestFrec->Telefono;
-                    $this->txtCeduDest->Text = $objDestFrec->CedulaRif;
+                    $this->txtNombDest->Text = limpiarCadena($objDestFrec->Nombre);
+                    $this->txtDireDest->Text = limpiarCadena($objDestFrec->Direccion);
+                    $this->txtTeleDest->Text = limpiarCadena($objDestFrec->Telefono);
+                    $this->txtCeduDest->Text = limpiarCadena($objDestFrec->CedulaRif);
                     //------------------------------------------------------------------------------------
                     // Se carga el destino de la guia en funcion del destinatario frecuente seleccionado.
                     //------------------------------------------------------------------------------------

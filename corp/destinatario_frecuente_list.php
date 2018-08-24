@@ -72,8 +72,9 @@ class DestinatarioFrecuenteListForm extends DestinatarioFrecuenteListFormBase {
         $colNombDest->Width = 300;
         $this->dtgDestinatarioFrecuentes->AddColumn($colNombDest);
 
-		$colDireDest = $this->dtgDestinatarioFrecuentes->MetaAddColumn('Direccion');
+		$colDireDest = new QDataGridColumn('Direccion','<?= $_FORM->dtgDestFrec_DireccionRender($_ITEM); ?>');
 		$colDireDest->Width = 500;
+        $this->dtgDestinatarioFrecuentes->AddColumn($colDireDest);
 
 		$colNumeTele = $this->dtgDestinatarioFrecuentes->MetaAddColumn('Telefono');
 		$colNumeTele->Width = 200;
@@ -88,6 +89,12 @@ class DestinatarioFrecuenteListForm extends DestinatarioFrecuenteListFormBase {
     public function dtgDestFrec_NombreRender(DestinatarioFrecuente $objDescFrec) {
 		if ($objDescFrec) {
 			return limpiarCadena($objDescFrec->Nombre);
+		}
+	}
+
+    public function dtgDestFrec_DireccionRender(DestinatarioFrecuente $objDescFrec) {
+		if ($objDescFrec) {
+			return limpiarCadena($objDescFrec->Direccion);
 		}
 	}
 

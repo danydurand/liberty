@@ -606,9 +606,9 @@ class CargarGuia extends FormularioBaseKaizen {
 
     protected function MostrarDatosCliente() {
         if ($this->objCliente) {
-            $this->txtNombRemi->Text = $this->objCliente->NombClie;
-            $this->txtDireRemi->Text = $this->objCliente->DireReco;
-            $this->txtTeleRemi->Text = $this->objCliente->TeleCona;
+            $this->txtNombRemi->Text = limpiarCadena($this->objCliente->NombClie);
+            $this->txtDireRemi->Text = limpiarCadena($this->objCliente->DireReco);
+            $this->txtTeleRemi->Text = limpiarCadena($this->objCliente->TeleCona);
             //------------------------------------------------------------------------
             // La modalidad de pago del envio debe ser acorde con el tipo de Cliente
             //------------------------------------------------------------------------
@@ -1752,17 +1752,17 @@ class CargarGuia extends FormularioBaseKaizen {
             if ($this->strIdenTabl == 'D') {
                 $objDestFrec = DestinatarioFrecuente::Load($strCodiRegi);
                 if ($objDestFrec) {
-                    $this->txtNombDest->Text = $objDestFrec->Nombre;
-                    $this->txtDireDest->Text = $objDestFrec->Direccion;
-                    $this->txtTeleDest->Text = $objDestFrec->Telefono;
+                    $this->txtNombDest->Text = limpiarCadena($objDestFrec->Nombre);
+                    $this->txtDireDest->Text = limpiarCadena($objDestFrec->Direccion);
+                    $this->txtTeleDest->Text = limpiarCadena($objDestFrec->Telefono);
                 }
                 $this->chkDestFrec->Enabled = true;
             } else {
                 $objCliente = MasterCliente::Load($strCodiRegi);
                 if ($objCliente) {
-                    $this->txtNombDest->Text = $objCliente->NombClie;
-                    $this->txtDireDest->Text = $objCliente->DireReco;
-                    $this->txtTeleDest->Text = $objCliente->TeleCona;
+                    $this->txtNombDest->Text = limpiarCadena($objCliente->NombClie);
+                    $this->txtDireDest->Text = limpiarCadena($objCliente->DireReco);
+                    $this->txtTeleDest->Text = limpiarCadena($objCliente->TeleCona);
                 }
                 $this->chkDestFrec->Enabled = false;
             }
