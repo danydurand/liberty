@@ -57,6 +57,7 @@ abstract class EstadisticaDeClientesEditFormBase extends QForm {
 	protected $txtPesoTotal;
 	protected $txtCantidadGuias;
 	protected $txtVentaTotal;
+	protected $txtDiasAbandono;
 
 	// Other ListBoxes (if applicable) via Unique ReverseReferences and ManyToMany References
 
@@ -128,6 +129,7 @@ abstract class EstadisticaDeClientesEditFormBase extends QForm {
 		$this->txtPesoTotal = $this->mctEstadisticaDeClientes->txtPesoTotal_Create();
 		$this->txtCantidadGuias = $this->mctEstadisticaDeClientes->txtCantidadGuias_Create();
 		$this->txtVentaTotal = $this->mctEstadisticaDeClientes->txtVentaTotal_Create();
+		$this->txtDiasAbandono = $this->mctEstadisticaDeClientes->txtDiasAbandono_Create();
 
 		$this->btnSave_Create();
 		$this->btnCancel_Create();

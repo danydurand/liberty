@@ -44,14 +44,19 @@ class TarifaPesoEditForm extends TarifaPesoEditFormBase {
         $this->objTariPadr = FacTarifa::Load($this->intIdxxTari);
         $this->objDatabase = FacTarifa::GetDatabase();
 
-        $this->decPorcIvax = FacImpuesto::LoadImpuestoVigente('IVA',FechaDeHoy());
-        $this->decFactIvax = 1 + ($this->decPorcIvax / 100);
-
 		// Use the CreateFromPathInfo shortcut (this can also be done manually using the TarifaPesoMetaControl constructor)
 		// MAKE SURE we specify "$this" as the MetaControl's (and thus all subsequent controls') parent
 		$this->mctTarifaPeso = TarifaPesoMetaControl::CreateFromPathInfo($this);
 
-		// Call MetaControl's methods to create qcontrols based on TarifaPeso's data fields
+        $this->decPorcIvax = FacImpuesto::LoadImpuestoVigente('IVA',FechaDeHoy());
+        $this->decFactIvax = 1 + ($this->decPorcIvax / 100);
+
+        if (!is_null($this->mctTarifaPeso->TarifaPeso->Tarifa->TasaIva)) {
+            $this->decPorcIvax = $this->mctTarifaPeso->TarifaPeso->Tarifa->TasaIva;
+            $this->decFactIvax = 1 + ($this->decPorcIvax / 100);
+        }
+
+        // Call MetaControl's methods to create qcontrols based on TarifaPeso's data fields
 		$this->lblId = $this->mctTarifaPeso->lblId_Create();
 
         $this->lstTarifa = $this->mctTarifaPeso->lstTarifa_Create();

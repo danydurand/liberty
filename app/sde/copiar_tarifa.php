@@ -18,6 +18,8 @@ class CopiarTarifa extends FormularioBaseKaizen {
     protected $objTariOrig;
     protected $txtNombOrig;
     protected $txtNombNuev;
+    protected $txtTasaIvax;
+    protected $txtPorcAume;
 
     protected function SetupValores() {
         $intTariOrig = QApplication::PathInfo(0);
@@ -41,6 +43,8 @@ class CopiarTarifa extends FormularioBaseKaizen {
 
         $this->txtNombOrig_Create();
         $this->txtNombNuev_Create();
+        $this->txtTasaIvax_Create();
+        $this->txtPorcAume_Create();
 
         $this->btnSave->Text = TextoIcono('clone','Copiar');
     }
@@ -63,6 +67,21 @@ class CopiarTarifa extends FormularioBaseKaizen {
         $this->txtNombNuev->Name = 'Nombre de la nueva Tarifa';
         $this->txtNombNuev->Required = true;
         $this->txtNombNuev->SetCustomAttribute('onblur',"this.value=this.value.toUpperCase()");
+    }
+
+    protected function txtTasaIvax_Create() {
+        $this->txtTasaIvax = new QFloatTextBox($this);
+        $this->txtTasaIvax->Name = 'Tasa IVA';
+        $this->txtTasaIvax->Text = $this->objTariOrig->TasaIva;
+        $this->txtTasaIvax->Width = 60;
+        $this->txtTasaIvax->ToolTip = '% de IVA para la nueva Tarifa';
+    }
+
+    protected function txtPorcAume_Create() {
+        $this->txtPorcAume = new QFloatTextBox($this);
+        $this->txtPorcAume->Name = '% de Aumento';
+        $this->txtPorcAume->Width = 60;
+        $this->txtPorcAume->ToolTip = '% de Aumento para la nueva Tarifa';
     }
 
     //-------------------------------------
@@ -88,6 +107,21 @@ class CopiarTarifa extends FormularioBaseKaizen {
             $this->mensaje('Ya existe una Tarifa con ese Nombre, elija otro !!!','m','d','',__iHAND__);
         }
         if ($blnTodoOkey) {
+            $decTasaIvax = strlen($this->txtTasaIvax->Text) > 0 ? $this->txtTasaIvax->Text : $this->objTariOrig->TasaIva;
+            $decPorcAume = strlen($this->txtPorcAume->Text) > 0 ? $this->txtPorcAume->Text : 0;
+            $decFactIvax = 1 + ($decTasaIvax / 100);
+            //----------------------
+            // Montos de la Tarifa
+            //----------------------
+            $decIncrNaci = $this->objTariOrig->ValorIncremento;
+            $decIncrUrba = $this->objTariOrig->IncrementoUrbano;
+            if ($decPorcAume > 0) {
+                //-----------------------------------------------------------
+                // Aqui se implementa el aumento, en caso que sea necesario
+                //-----------------------------------------------------------
+                $decIncrNaci += round($this->objTariOrig->ValorIncremento * ($decPorcAume/100),2);
+                $decIncrUrba += round($this->objTariOrig->IncrementoUrbano * ($decPorcAume/100),2);
+            }
             //------------------------------------------------
             // Se copian los datos de cabezera de la tarifa
             //------------------------------------------------
@@ -95,7 +129,7 @@ class CopiarTarifa extends FormularioBaseKaizen {
             $objNuevTari->Descripcion          = $this->txtNombNuev->Text;
             $objNuevTari->TipoTarifa           = $this->objTariOrig->TipoTarifa;
             $objNuevTari->PesoInicial          = $this->objTariOrig->PesoInicial;
-            $objNuevTari->ValorIncremento      = $this->objTariOrig->ValorIncremento;
+            $objNuevTari->ValorIncremento      = $decIncrNaci; //$this->objTariOrig->ValorIncremento;
             $objNuevTari->MedidaIncremento     = $this->objTariOrig->MedidaIncremento;
             $objNuevTari->PorcentajeSobreValor = $this->objTariOrig->PorcentajeSobreValor;
             $objNuevTari->VolumenParaDscto     = $this->objTariOrig->VolumenParaDscto;
@@ -105,30 +139,46 @@ class CopiarTarifa extends FormularioBaseKaizen {
             $objNuevTari->MontoMinimo          = $this->objTariOrig->MontoMinimo;
             $objNuevTari->CostoParadaAdicional = $this->objTariOrig->CostoParadaAdicional;
             $objNuevTari->CostoAyudante        = $this->objTariOrig->CostoAyudante;
-            $objNuevTari->IncrementoUrbano     = $this->objTariOrig->IncrementoUrbano;
+            $objNuevTari->IncrementoUrbano     = $decIncrUrba; //$this->objTariOrig->IncrementoUrbano;
             $objNuevTari->PesoInicialUrbano    = $this->objTariOrig->PesoInicialUrbano;
+            $objNuevTari->TasaIva              = $decTasaIvax;
             $objNuevTari->Save();
             //----------------------------------------------------------------
             // Se arma un vector con todos los registros de la Tarifa Origen
             //----------------------------------------------------------------
             $arrTariOrig = TarifaPeso::LoadArrayByTarifaId($this->objTariOrig->Id);
-            //-----------------------------------------------------
-            // Se borran todos los registros de la Tarifa Destino
-            //-----------------------------------------------------
-            // TarifaPeso::BorrarContenidoTarifaPeso($this->lstTariDest->SelectedValue);
             //------------------------------------------------------------------
             // Se copian los registro de la Tarifa Origen en la Tarifa Destino
             //------------------------------------------------------------------
             $intCantRegi = 0;
             foreach ($arrTariOrig as $objTariOrig) {
+                $decMontTari = $objTariOrig->MontoTarifa;
+                $decMontBase = $objTariOrig->MontoBase;
+                if ($decPorcAume > 0) {
+                    //-------------------------------------------------------
+                    // Se implementa el aumento, en caso que sea necesario
+                    //-------------------------------------------------------
+                    $decMontTari += $decMontTari * ($decPorcAume/100);
+                    //-------------------------------------------------------
+                    // Se calcula el monto base en funcion del aumento
+                    //-------------------------------------------------------
+                    $decBaseImpo = $decMontTari - $objTariOrig->FranqueoPostal;
+                    $decMontIvax = $decBaseImpo - ($decBaseImpo / $decFactIvax);
+                    $decMontBase = round($decBaseImpo - $decMontIvax,2);
+                }
+                if ($decTasaIvax != $this->objTariOrig->TasaIva) {
+                    $decMontIvax = round(($decMontBase * $decTasaIvax / 100),2);
+                    $decMontTari = $decMontBase + $objTariOrig->FranqueoPostal + $decMontIvax;
+                }
+
                 $objTariDest = new TarifaPeso();
                 $objTariDest->TarifaId       = $objNuevTari->Id;
                 $objTariDest->TipoId         = $objTariOrig->TipoId;
                 $objTariDest->PesoInicial    = $objTariOrig->PesoInicial;
                 $objTariDest->PesoFinal      = $objTariOrig->PesoFinal;
-                $objTariDest->MontoTarifa    = $objTariOrig->MontoTarifa;
+                $objTariDest->MontoTarifa    = $decMontTari; //$objTariOrig->MontoTarifa;
                 $objTariDest->FranqueoPostal = $objTariOrig->FranqueoPostal;
-                $objTariDest->MontoBase      = $objTariOrig->MontoBase;
+                $objTariDest->MontoBase      = $decMontBase; //$objTariOrig->MontoBase;
                 $objTariDest->PorcentajeFp   = $objTariOrig->PorcentajeFp;
                 $objTariDest->Save();
                 $intCantRegi++;
@@ -147,7 +197,6 @@ class CopiarTarifa extends FormularioBaseKaizen {
             $arrLogxCamb['strDescCamb'] = "Copiada";
             $arrLogxCamb['strEnlaEnti'] = __SIST__.'/copiar_tarifa.php';
             LogDeCambios($arrLogxCamb);
-            // $this->mensaje("Transacción Exitosa. Se copiaron $intCantRegi registro(s)",'','','',__iCHEC__);
             $strEditNuev = __SIST__.'/fac_tarifa_edit.php/'.$objNuevTari->Id;
             QApplication::Redirect($strEditNuev);
         }

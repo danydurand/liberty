@@ -92,6 +92,7 @@
 			$this->dtgFacTarifas->MetaAddColumn('CostoAyudante');
 			$this->dtgFacTarifas->MetaAddColumn('IncrementoUrbano');
 			$this->dtgFacTarifas->MetaAddColumn('PesoInicialUrbano');
+			$this->dtgFacTarifas->MetaAddColumn('TasaIva');
 
             $this->btnExpoExce_Create();
 

@@ -120,6 +120,10 @@ class FacTarifaEditForm extends FacTarifaEditFormBase {
         $this->txtPesoInicialUrbano->Enabled = false;
         $this->txtPesoInicialUrbano->ForeColor = 'blue';
 
+        $this->txtTasaIva = $this->mctFacTarifa->txtTasaIva_Create();
+        $this->txtTasaIva->Width = 60;
+        $this->txtTasaIva->ToolTip = '% de IVA asociado a la Tarifa';
+
         if (!$this->mctFacTarifa->EditMode) {
             $this->txtPesoInicial->Text = 0;
             $this->txtPesoInicialUrbano->Text = 0;
@@ -127,6 +131,7 @@ class FacTarifaEditForm extends FacTarifaEditFormBase {
             $this->txtDsctoPorVolumen->Text = 0;
             $this->txtPesoParaDscto->Text = 0;
             $this->txtDsctoPorPeso->Text = 0;
+            $this->txtTasaIva->Text = FacImpuesto::LoadImpuestoVigente('IVA',FechaDeHoy());
         }
 
         //--------------------------------

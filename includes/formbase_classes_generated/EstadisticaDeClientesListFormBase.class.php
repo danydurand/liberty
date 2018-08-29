@@ -82,6 +82,7 @@
 			$this->dtgEstadisticaDeClienteses->MetaAddColumn('PesoTotal');
 			$this->dtgEstadisticaDeClienteses->MetaAddColumn('CantidadGuias');
 			$this->dtgEstadisticaDeClienteses->MetaAddColumn('VentaTotal');
+			$this->dtgEstadisticaDeClienteses->MetaAddColumn('DiasAbandono');
 
             $this->btnExpoExce_Create();
 

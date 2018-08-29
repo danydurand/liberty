@@ -66,9 +66,13 @@ class EliminarCkptGuia extends FormularioBaseKaizen {
             if (!$blnTodoPais) {
                 $objClauWher[] = QQ::Equal(QQN::GuiaCkpt()->CodiEsta, $this->objUsuario->CodiEsta);
             }
-            foreach (GuiaCkpt::QueryArray(QQ::AndCondition($objClauWher), QQ::Clause(QQ::OrderBy(QQN::GuiaCkpt()->FechCkpt))) as $arrCodiCkptNG) {
-                $strPartVisi = $arrCodiCkptNG->CodiCkpt.' - '.$arrCodiCkptNG->CodiEsta.' - '.$arrCodiCkptNG->FechCkpt->__toString('YYYY-MM-DD').' - '.$arrCodiCkptNG->HoraCkpt.' - '.substr($arrCodiCkptNG->TextObse,0,36);
-                $strPartInvi = $arrCodiCkptNG->NumeGuia.','.$arrCodiCkptNG->CodiEsta.','.$arrCodiCkptNG->CodiCkpt.','.$arrCodiCkptNG->FechCkpt->__toString('YYYY-MM-DD').','.$arrCodiCkptNG->HoraCkpt.','.$arrCodiCkptNG->TextObse.','.$arrCodiCkptNG->CodiRuta.','.$arrCodiCkptNG->CodiUsua;
+            $objClauOrde   = QQ::Clause();
+            $objClauOrde[] = QQ::OrderBy(QQN::GuiaCkpt()->FechCkpt,false);
+            $objClauOrde[] = QQ::OrderBy(QQN::GuiaCkpt()->HoraCkpt,false);
+            $arrCkptGuia   = GuiaCkpt::QueryArray(QQ::AndCondition($objClauWher), $objClauOrde);
+            foreach ($arrCkptGuia as $objGuiaCkpt) {
+                $strPartVisi = $objGuiaCkpt->CodiCkpt.' - '.$objGuiaCkpt->CodiEsta.' - '.$objGuiaCkpt->FechCkpt->__toString('YYYY-MM-DD').' - '.$objGuiaCkpt->HoraCkpt.' - '.substr($objGuiaCkpt->TextObse,0,36);
+                $strPartInvi = $objGuiaCkpt->NumeGuia.','.$objGuiaCkpt->CodiEsta.','.$objGuiaCkpt->CodiCkpt.','.$objGuiaCkpt->FechCkpt->__toString('YYYY-MM-DD').','.$objGuiaCkpt->HoraCkpt.','.$objGuiaCkpt->TextObse.','.$objGuiaCkpt->CodiRuta.','.$objGuiaCkpt->CodiUsua;
                 $this->lstChecBoxs->AddItem($strPartVisi, $strPartInvi);
             }
         }

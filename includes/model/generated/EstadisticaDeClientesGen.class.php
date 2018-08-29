@@ -21,6 +21,7 @@
 	 * @property double $PesoTotal the value for fltPesoTotal 
 	 * @property integer $CantidadGuias the value for intCantidadGuias 
 	 * @property double $VentaTotal the value for fltVentaTotal 
+	 * @property integer $DiasAbandono the value for intDiasAbandono 
 	 * @property MasterCliente $Cliente the value for the MasterCliente object referenced by intClienteId (PK)
 	 * @property-read boolean $__Restored whether or not this object was restored from the database (as opposed to created new)
 	 */
@@ -86,6 +87,14 @@
 
 
 		/**
+		 * Protected member variable that maps to the database column estadistica_de_clientes.dias_abandono
+		 * @var integer intDiasAbandono
+		 */
+		protected $intDiasAbandono;
+		const DiasAbandonoDefault = null;
+
+
+		/**
 		 * Protected array of virtual attributes for this object (e.g. extra/other calculated and/or non-object bound
 		 * columns from the run-time database query result for this object).  Used by InstantiateDbRow and
 		 * GetVirtualAttribute.
@@ -130,6 +139,7 @@
 			$this->fltPesoTotal = EstadisticaDeClientes::PesoTotalDefault;
 			$this->intCantidadGuias = EstadisticaDeClientes::CantidadGuiasDefault;
 			$this->fltVentaTotal = EstadisticaDeClientes::VentaTotalDefault;
+			$this->intDiasAbandono = EstadisticaDeClientes::DiasAbandonoDefault;
 		}
 
 
@@ -477,6 +487,7 @@
 			    $objBuilder->AddSelectItem($strTableName, 'peso_total', $strAliasPrefix . 'peso_total');
 			    $objBuilder->AddSelectItem($strTableName, 'cantidad_guias', $strAliasPrefix . 'cantidad_guias');
 			    $objBuilder->AddSelectItem($strTableName, 'venta_total', $strAliasPrefix . 'venta_total');
+			    $objBuilder->AddSelectItem($strTableName, 'dias_abandono', $strAliasPrefix . 'dias_abandono');
             }
 		}
 
@@ -621,6 +632,9 @@
 			$strAlias = $strAliasPrefix . 'venta_total';
 			$strAliasName = !empty($strColumnAliasArray[$strAlias]) ? $strColumnAliasArray[$strAlias] : $strAlias;
 			$objToReturn->fltVentaTotal = $objDbRow->GetColumn($strAliasName, 'Float');
+			$strAlias = $strAliasPrefix . 'dias_abandono';
+			$strAliasName = !empty($strColumnAliasArray[$strAlias]) ? $strColumnAliasArray[$strAlias] : $strAlias;
+			$objToReturn->intDiasAbandono = $objDbRow->GetColumn($strAliasName, 'Integer');
 
 			if (isset($objPreviousItemArray) && is_array($objPreviousItemArray)) {
 				foreach ($objPreviousItemArray as $objPreviousItem) {
@@ -790,14 +804,16 @@
 							`fecha_ultima_guia`,
 							`peso_total`,
 							`cantidad_guias`,
-							`venta_total`
+							`venta_total`,
+							`dias_abandono`
 						) VALUES (
 							' . $objDatabase->SqlVariable($this->intClienteId) . ',
 							' . $objDatabase->SqlVariable($this->dttFechaPrimeraGuia) . ',
 							' . $objDatabase->SqlVariable($this->dttFechaUltimaGuia) . ',
 							' . $objDatabase->SqlVariable($this->fltPesoTotal) . ',
 							' . $objDatabase->SqlVariable($this->intCantidadGuias) . ',
-							' . $objDatabase->SqlVariable($this->fltVentaTotal) . '
+							' . $objDatabase->SqlVariable($this->fltVentaTotal) . ',
+							' . $objDatabase->SqlVariable($this->intDiasAbandono) . '
 						)
 					');
 
@@ -817,7 +833,8 @@
 							`fecha_ultima_guia` = ' . $objDatabase->SqlVariable($this->dttFechaUltimaGuia) . ',
 							`peso_total` = ' . $objDatabase->SqlVariable($this->fltPesoTotal) . ',
 							`cantidad_guias` = ' . $objDatabase->SqlVariable($this->intCantidadGuias) . ',
-							`venta_total` = ' . $objDatabase->SqlVariable($this->fltVentaTotal) . '
+							`venta_total` = ' . $objDatabase->SqlVariable($this->fltVentaTotal) . ',
+							`dias_abandono` = ' . $objDatabase->SqlVariable($this->intDiasAbandono) . '
 						WHERE
 							`cliente_id` = ' . $objDatabase->SqlVariable($this->__intClienteId) . '
 					');
@@ -930,6 +947,7 @@
 			$this->fltPesoTotal = $objReloaded->fltPesoTotal;
 			$this->intCantidadGuias = $objReloaded->intCantidadGuias;
 			$this->fltVentaTotal = $objReloaded->fltVentaTotal;
+			$this->intDiasAbandono = $objReloaded->intDiasAbandono;
 		}
 
 
@@ -991,6 +1009,13 @@
 					 * @return double
 					 */
 					return $this->fltVentaTotal;
+
+				case 'DiasAbandono':
+					/**
+					 * Gets the value for intDiasAbandono 
+					 * @return integer
+					 */
+					return $this->intDiasAbandono;
 
 
 				///////////////////
@@ -1122,6 +1147,19 @@
 						throw $objExc;
 					}
 
+				case 'DiasAbandono':
+					/**
+					 * Sets the value for intDiasAbandono 
+					 * @param integer $mixValue
+					 * @return integer
+					 */
+					try {
+						return ($this->intDiasAbandono = QType::Cast($mixValue, QType::Integer));
+					} catch (QCallerException $objExc) {
+						$objExc->IncrementOffset();
+						throw $objExc;
+					}
+
 
 				///////////////////
 				// Member Objects
@@ -1242,6 +1280,7 @@
 			$strToReturn .= '<element name="PesoTotal" type="xsd:float"/>';
 			$strToReturn .= '<element name="CantidadGuias" type="xsd:int"/>';
 			$strToReturn .= '<element name="VentaTotal" type="xsd:float"/>';
+			$strToReturn .= '<element name="DiasAbandono" type="xsd:int"/>';
 			$strToReturn .= '<element name="__blnRestored" type="xsd:boolean"/>';
 			$strToReturn .= '</sequence></complexType>';
 			return $strToReturn;
@@ -1278,6 +1317,8 @@
 				$objToReturn->intCantidadGuias = $objSoapObject->CantidadGuias;
 			if (property_exists($objSoapObject, 'VentaTotal'))
 				$objToReturn->fltVentaTotal = $objSoapObject->VentaTotal;
+			if (property_exists($objSoapObject, 'DiasAbandono'))
+				$objToReturn->intDiasAbandono = $objSoapObject->DiasAbandono;
 			if (property_exists($objSoapObject, '__blnRestored'))
 				$objToReturn->__blnRestored = $objSoapObject->__blnRestored;
 			return $objToReturn;
@@ -1324,6 +1365,7 @@
 			$iArray['PesoTotal'] = $this->fltPesoTotal;
 			$iArray['CantidadGuias'] = $this->intCantidadGuias;
 			$iArray['VentaTotal'] = $this->fltVentaTotal;
+			$iArray['DiasAbandono'] = $this->intDiasAbandono;
 			return new ArrayIterator($iArray);
 		}
 
@@ -1368,6 +1410,7 @@
      * @property-read QQNode $PesoTotal
      * @property-read QQNode $CantidadGuias
      * @property-read QQNode $VentaTotal
+     * @property-read QQNode $DiasAbandono
      *
      *
 
@@ -1393,6 +1436,8 @@
 					return new QQNode('cantidad_guias', 'CantidadGuias', 'Integer', $this);
 				case 'VentaTotal':
 					return new QQNode('venta_total', 'VentaTotal', 'Float', $this);
+				case 'DiasAbandono':
+					return new QQNode('dias_abandono', 'DiasAbandono', 'Integer', $this);
 
 				case '_PrimaryKeyNode':
 					return new QQNodeMasterCliente('cliente_id', 'ClienteId', 'Integer', $this);
@@ -1415,6 +1460,7 @@
      * @property-read QQNode $PesoTotal
      * @property-read QQNode $CantidadGuias
      * @property-read QQNode $VentaTotal
+     * @property-read QQNode $DiasAbandono
      *
      *
 
@@ -1440,6 +1486,8 @@
 					return new QQNode('cantidad_guias', 'CantidadGuias', 'integer', $this);
 				case 'VentaTotal':
 					return new QQNode('venta_total', 'VentaTotal', 'double', $this);
+				case 'DiasAbandono':
+					return new QQNode('dias_abandono', 'DiasAbandono', 'integer', $this);
 
 				case '_PrimaryKeyNode':
 					return new QQNodeMasterCliente('cliente_id', 'ClienteId', 'integer', $this);

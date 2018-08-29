@@ -30,6 +30,8 @@ require(__APP_INCLUDES__ . '/header.inc.php');
             <div class="col-md-8 col-lg-8" style="margin-top: 1em;">
                 <?php $this->txtNombOrig->RenderWithName(); ?>
                 <?php $this->txtNombNuev->RenderWithName(); ?>
+                <?php $this->txtTasaIvax->RenderWithName(); ?>
+                <?php $this->txtPorcAume->RenderWithName(); ?>
             </div>
             <div class="col-md-3 col-lg-3" style="margin-top: 1em;"></div>
         </div>

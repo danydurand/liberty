@@ -173,7 +173,8 @@ class RepoCuadreDeCajaPlus extends FormularioBaseKaizen {
         $strCadeSqlx .= "       fp.abreviado forma_pago, ";
         $strCadeSqlx .= "       p.numero_documento, ";
         $strCadeSqlx .= "       b.abreviado banco, ";
-        $strCadeSqlx .= "       p.monto_pago ";
+        $strCadeSqlx .= "       p.monto_pago, ";
+        $strCadeSqlx .= "       g.tarifa_id ";
 		$strCadeSqlx .= "  from factura_pmn f inner join pago_factura_pmn p ";
 		$strCadeSqlx .= "    on f.id = p.factura_id ";
 		$strCadeSqlx .= "       inner join forma_pago fp ";

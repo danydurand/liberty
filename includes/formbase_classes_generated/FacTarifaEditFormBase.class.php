@@ -67,6 +67,7 @@ abstract class FacTarifaEditFormBase extends QForm {
 	protected $txtCostoAyudante;
 	protected $txtIncrementoUrbano;
 	protected $txtPesoInicialUrbano;
+	protected $txtTasaIva;
 
 	// Other ListBoxes (if applicable) via Unique ReverseReferences and ManyToMany References
 
@@ -148,6 +149,7 @@ abstract class FacTarifaEditFormBase extends QForm {
 		$this->txtCostoAyudante = $this->mctFacTarifa->txtCostoAyudante_Create();
 		$this->txtIncrementoUrbano = $this->mctFacTarifa->txtIncrementoUrbano_Create();
 		$this->txtPesoInicialUrbano = $this->mctFacTarifa->txtPesoInicialUrbano_Create();
+		$this->txtTasaIva = $this->mctFacTarifa->txtTasaIva_Create();
 
 		$this->btnSave_Create();
 		$this->btnCancel_Create();

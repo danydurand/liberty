@@ -11,9 +11,9 @@ use PHPMailer\PHPMailer\PHPMailer;
 $dttFechDhoy = date('Y-m-d');
 $arrSucuSele = Estacion::LoadSucursalesActivasSinAlmacenes();
 foreach ($arrSucuSele as $objSucursal) {
-    //if ($objSucursal->CodiEsta != 'CCS') {
-    //    continue;
-    //}
+    /**
+     * @var $objSucursal Estacion
+     */
     //--------------------------------------------------------
     // Selecciono los registros que satisfagan la condicion
     //--------------------------------------------------------
@@ -88,15 +88,14 @@ foreach ($arrSucuSele as $objSucursal) {
         //--------------------------------
         $mail = new PHPMailer();
         $mail->setFrom('SisCO@libertyexpress.com', 'Medicion y Control');
-
-        $arrDestCorr = array();
         $arrDireMail = explode(',',$objSucursal->DireMail);
         foreach ($arrDireMail as $strDireMail) {
-            //array_push($arrDestCorr,$strDireMail);
             $mail->addAddress($strDireMail);
         }
-        $strDireMail = $arrDestCorr;
-
+        $arrDirePpal = explode(',',$objSucursal->DireMailPrincipal);
+        foreach ($arrDireMail as $strDireMail) {
+            $mail->addAddress($strDireMail);
+        }
         if ($objSucursal->CodiEsta == 'CCS') {
             $mail->addAddress('soportelufeman@gmail.com');
         }
@@ -109,7 +108,7 @@ foreach ($arrSucuSele as $objSucursal) {
         $mail->addAddress('incidencias@libertyexpress.com');
         $mail->addAddress('calidadyservicio@libertyexpress.com');
         $mail->Subject  = $strTituRepo;
-        $mail->Body     = 'Estimado Usuario, sírvase revisar el documento anexo...';
+        $mail->Body     = 'Estimado Usuario, sirvase revisar el documento anexo...';
         $mail->addAttachment($strNombArch);
         if(!$mail->send()) {
             echo "Message was not sent.\n";

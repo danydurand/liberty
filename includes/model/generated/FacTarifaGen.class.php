@@ -31,6 +31,7 @@
 	 * @property double $CostoAyudante the value for fltCostoAyudante (Not Null)
 	 * @property double $IncrementoUrbano the value for fltIncrementoUrbano (Not Null)
 	 * @property double $PesoInicialUrbano the value for fltPesoInicialUrbano (Not Null)
+	 * @property double $TasaIva the value for fltTasaIva 
 	 * @property-read CambioTarifa $_CambioTarifaAsTarifaDestino the value for the private _objCambioTarifaAsTarifaDestino (Read-Only) if set due to an expansion on the cambio_tarifa.tarifa_destino_id reverse relationship
 	 * @property-read CambioTarifa[] $_CambioTarifaAsTarifaDestinoArray the value for the private _objCambioTarifaAsTarifaDestinoArray (Read-Only) if set due to an ExpandAsArray on the cambio_tarifa.tarifa_destino_id reverse relationship
 	 * @property-read CambioTarifa $_CambioTarifaAsTarifaOrigen the value for the private _objCambioTarifaAsTarifaOrigen (Read-Only) if set due to an expansion on the cambio_tarifa.tarifa_origen_id reverse relationship
@@ -179,6 +180,14 @@
 
 
 		/**
+		 * Protected member variable that maps to the database column fac_tarifa.tasa_iva
+		 * @var double fltTasaIva
+		 */
+		protected $fltTasaIva;
+		const TasaIvaDefault = null;
+
+
+		/**
 		 * Private member variable that stores a reference to a single CambioTarifaAsTarifaDestino object
 		 * (of type CambioTarifa), if this FacTarifa object was restored with
 		 * an expansion on the cambio_tarifa association table.
@@ -303,6 +312,7 @@
 			$this->fltCostoAyudante = FacTarifa::CostoAyudanteDefault;
 			$this->fltIncrementoUrbano = FacTarifa::IncrementoUrbanoDefault;
 			$this->fltPesoInicialUrbano = FacTarifa::PesoInicialUrbanoDefault;
+			$this->fltTasaIva = FacTarifa::TasaIvaDefault;
 		}
 
 
@@ -660,6 +670,7 @@
 			    $objBuilder->AddSelectItem($strTableName, 'costo_ayudante', $strAliasPrefix . 'costo_ayudante');
 			    $objBuilder->AddSelectItem($strTableName, 'incremento_urbano', $strAliasPrefix . 'incremento_urbano');
 			    $objBuilder->AddSelectItem($strTableName, 'peso_inicial_urbano', $strAliasPrefix . 'peso_inicial_urbano');
+			    $objBuilder->AddSelectItem($strTableName, 'tasa_iva', $strAliasPrefix . 'tasa_iva');
             }
 		}
 
@@ -833,6 +844,9 @@
 			$strAlias = $strAliasPrefix . 'peso_inicial_urbano';
 			$strAliasName = !empty($strColumnAliasArray[$strAlias]) ? $strColumnAliasArray[$strAlias] : $strAlias;
 			$objToReturn->fltPesoInicialUrbano = $objDbRow->GetColumn($strAliasName, 'Float');
+			$strAlias = $strAliasPrefix . 'tasa_iva';
+			$strAliasName = !empty($strColumnAliasArray[$strAlias]) ? $strColumnAliasArray[$strAlias] : $strAlias;
+			$objToReturn->fltTasaIva = $objDbRow->GetColumn($strAliasName, 'Float');
 
 			if (isset($objPreviousItemArray) && is_array($objPreviousItemArray)) {
 				foreach ($objPreviousItemArray as $objPreviousItem) {
@@ -1159,7 +1173,8 @@
 							`costo_parada_adicional`,
 							`costo_ayudante`,
 							`incremento_urbano`,
-							`peso_inicial_urbano`
+							`peso_inicial_urbano`,
+							`tasa_iva`
 						) VALUES (
 							' . $objDatabase->SqlVariable($this->strDescripcion) . ',
 							' . $objDatabase->SqlVariable($this->intTipoTarifa) . ',
@@ -1175,7 +1190,8 @@
 							' . $objDatabase->SqlVariable($this->fltCostoParadaAdicional) . ',
 							' . $objDatabase->SqlVariable($this->fltCostoAyudante) . ',
 							' . $objDatabase->SqlVariable($this->fltIncrementoUrbano) . ',
-							' . $objDatabase->SqlVariable($this->fltPesoInicialUrbano) . '
+							' . $objDatabase->SqlVariable($this->fltPesoInicialUrbano) . ',
+							' . $objDatabase->SqlVariable($this->fltTasaIva) . '
 						)
 					');
 
@@ -1205,7 +1221,8 @@
 							`costo_parada_adicional` = ' . $objDatabase->SqlVariable($this->fltCostoParadaAdicional) . ',
 							`costo_ayudante` = ' . $objDatabase->SqlVariable($this->fltCostoAyudante) . ',
 							`incremento_urbano` = ' . $objDatabase->SqlVariable($this->fltIncrementoUrbano) . ',
-							`peso_inicial_urbano` = ' . $objDatabase->SqlVariable($this->fltPesoInicialUrbano) . '
+							`peso_inicial_urbano` = ' . $objDatabase->SqlVariable($this->fltPesoInicialUrbano) . ',
+							`tasa_iva` = ' . $objDatabase->SqlVariable($this->fltTasaIva) . '
 						WHERE
 							`id` = ' . $objDatabase->SqlVariable($this->intId) . '
 					');
@@ -1325,6 +1342,7 @@
 			$this->fltCostoAyudante = $objReloaded->fltCostoAyudante;
 			$this->fltIncrementoUrbano = $objReloaded->fltIncrementoUrbano;
 			$this->fltPesoInicialUrbano = $objReloaded->fltPesoInicialUrbano;
+			$this->fltTasaIva = $objReloaded->fltTasaIva;
 		}
 
 
@@ -1456,6 +1474,13 @@
 					 * @return double
 					 */
 					return $this->fltPesoInicialUrbano;
+
+				case 'TasaIva':
+					/**
+					 * Gets the value for fltTasaIva 
+					 * @return double
+					 */
+					return $this->fltTasaIva;
 
 
 				///////////////////
@@ -1764,6 +1789,19 @@
 					 */
 					try {
 						return ($this->fltPesoInicialUrbano = QType::Cast($mixValue, QType::Float));
+					} catch (QCallerException $objExc) {
+						$objExc->IncrementOffset();
+						throw $objExc;
+					}
+
+				case 'TasaIva':
+					/**
+					 * Sets the value for fltTasaIva 
+					 * @param double $mixValue
+					 * @return double
+					 */
+					try {
+						return ($this->fltTasaIva = QType::Cast($mixValue, QType::Float));
 					} catch (QCallerException $objExc) {
 						$objExc->IncrementOffset();
 						throw $objExc;
@@ -2627,6 +2665,7 @@
 			$strToReturn .= '<element name="CostoAyudante" type="xsd:float"/>';
 			$strToReturn .= '<element name="IncrementoUrbano" type="xsd:float"/>';
 			$strToReturn .= '<element name="PesoInicialUrbano" type="xsd:float"/>';
+			$strToReturn .= '<element name="TasaIva" type="xsd:float"/>';
 			$strToReturn .= '<element name="__blnRestored" type="xsd:boolean"/>';
 			$strToReturn .= '</sequence></complexType>';
 			return $strToReturn;
@@ -2681,6 +2720,8 @@
 				$objToReturn->fltIncrementoUrbano = $objSoapObject->IncrementoUrbano;
 			if (property_exists($objSoapObject, 'PesoInicialUrbano'))
 				$objToReturn->fltPesoInicialUrbano = $objSoapObject->PesoInicialUrbano;
+			if (property_exists($objSoapObject, 'TasaIva'))
+				$objToReturn->fltTasaIva = $objSoapObject->TasaIva;
 			if (property_exists($objSoapObject, '__blnRestored'))
 				$objToReturn->__blnRestored = $objSoapObject->__blnRestored;
 			return $objToReturn;
@@ -2729,6 +2770,7 @@
 			$iArray['CostoAyudante'] = $this->fltCostoAyudante;
 			$iArray['IncrementoUrbano'] = $this->fltIncrementoUrbano;
 			$iArray['PesoInicialUrbano'] = $this->fltPesoInicialUrbano;
+			$iArray['TasaIva'] = $this->fltTasaIva;
 			return new ArrayIterator($iArray);
 		}
 
@@ -2782,6 +2824,7 @@
      * @property-read QQNode $CostoAyudante
      * @property-read QQNode $IncrementoUrbano
      * @property-read QQNode $PesoInicialUrbano
+     * @property-read QQNode $TasaIva
      *
      *
      * @property-read QQReverseReferenceNodeCambioTarifa $CambioTarifaAsTarifaDestino
@@ -2830,6 +2873,8 @@
 					return new QQNode('incremento_urbano', 'IncrementoUrbano', 'Float', $this);
 				case 'PesoInicialUrbano':
 					return new QQNode('peso_inicial_urbano', 'PesoInicialUrbano', 'Float', $this);
+				case 'TasaIva':
+					return new QQNode('tasa_iva', 'TasaIva', 'Float', $this);
 				case 'CambioTarifaAsTarifaDestino':
 					return new QQReverseReferenceNodeCambioTarifa($this, 'cambiotarifaastarifadestino', 'reverse_reference', 'tarifa_destino_id', 'CambioTarifaAsTarifaDestino');
 				case 'CambioTarifaAsTarifaOrigen':
@@ -2871,6 +2916,7 @@
      * @property-read QQNode $CostoAyudante
      * @property-read QQNode $IncrementoUrbano
      * @property-read QQNode $PesoInicialUrbano
+     * @property-read QQNode $TasaIva
      *
      *
      * @property-read QQReverseReferenceNodeCambioTarifa $CambioTarifaAsTarifaDestino
@@ -2919,6 +2965,8 @@
 					return new QQNode('incremento_urbano', 'IncrementoUrbano', 'double', $this);
 				case 'PesoInicialUrbano':
 					return new QQNode('peso_inicial_urbano', 'PesoInicialUrbano', 'double', $this);
+				case 'TasaIva':
+					return new QQNode('tasa_iva', 'TasaIva', 'double', $this);
 				case 'CambioTarifaAsTarifaDestino':
 					return new QQReverseReferenceNodeCambioTarifa($this, 'cambiotarifaastarifadestino', 'reverse_reference', 'tarifa_destino_id', 'CambioTarifaAsTarifaDestino');
 				case 'CambioTarifaAsTarifaOrigen':

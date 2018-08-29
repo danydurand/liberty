@@ -65,9 +65,8 @@
                 </div>
             </div>
             <div class="row" style="margin-top: 1em;">
-                <div class="col-lg-1 visible-lg"></div>
-                <div class="col-md-6 col-lg-5">
-                    <?php //$this->lblId->RenderWithName(); ?>
+                <div class="col-md-offset-1 col-md-6 col-lg-5">
+                    <?php $this->lblId->RenderWithName(); ?>
                     <?php $this->txtDescripcion->RenderWithName(); ?>
                     <?php $this->lstTipoTarifaObject->RenderWithName(); ?>
                     <?php $this->txtPesoInicialUrbano->RenderWithName(); ?>
@@ -80,8 +79,8 @@
                     <?php $this->txtCantClie->RenderWithName(); ?>
                     <?php $this->txtPesoInicial->RenderWithName(); ?>
                     <?php $this->txtValorIncremento->RenderWithName(); ?>
+                    <?php $this->txtTasaIva->RenderWithName(); ?>
                 </div>
-                <div class="col-lg-1 visible-lg"></div>
             </div>
             <?php if ($blnMuesGrid) { ?>
             <div class="row" style="margin-top: 1em">

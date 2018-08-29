@@ -36,9 +36,9 @@ if (isset($_SESSION['SucuSele'])) {
 	$strModoEjec = 'CRON';
 }
 foreach ($arrSucuSele as $objSucursal) {
-    //if (!in_array($objSucursal->CodiEsta, array('CCS'))) {
-    //    continue;
-    //}
+    /**
+     * @var $objSucursal Estacion
+     */
     $strNombArch = 'guias_ar_sin_ok_48_'.$objSucursal->CodiEsta.'.pdf';
     $strTituRepo = 'Guias con AR sin Ok +48 Hrs '.$objSucursal->CodiEsta;
     //--------------------------------------------------------
@@ -152,20 +152,19 @@ foreach ($arrSucuSele as $objSucursal) {
             //--------------------------------
             // Envio el reporte por e-mail
             //--------------------------------
-            $arrDestCorr = array();
-            $arrDireMail = explode(',',$objSucursal->DireMail);
-            foreach ($arrDireMail as $strDireMail) {
-                array_push($arrDestCorr,$strDireMail);
-            }
-            $strDireMail = $arrDestCorr;
-            $strDireMail = array('danydurand@gmail.com, aalvarado@libertyexpress.com, emontilla@libertyexpress.com, rortega@libertyexpress.com, jmartini@libertyexpress.com');
-
             $mail = new PHPMailer();
             $mail->setFrom('SisCO@libertyexpress.com', 'Medicion y Control');
+            $arrDireMail = explode(',',$objSucursal->DireMail);
+            foreach ($arrDireMail as $strDireMail) {
+                $mail->addAddress($strDireMail);
+            }
+            $arrDirePpal = explode(',',$objSucursal->DireMailPrincipal);
+            foreach ($arrDireMail as $strDireMail) {
+                $mail->addAddress($strDireMail);
+            }
             if ($objSucursal->CodiEsta == 'CCS') {
                 $mail->addAddress('soportelufeman@gmail.com');
             }
-            $mail->addAddress('aalvarado@libertyexpress.com');
             $mail->addAddress('aalvarado@libertyexpress.com');
             $mail->addAddress('emontilla@libertyexpress.com');
             $mail->addAddress('rortega@libertyexpress.com');
@@ -173,7 +172,7 @@ foreach ($arrSucuSele as $objSucursal) {
             $mail->addAddress('incidencias@libertyexpress.com');
             $mail->addAddress('calidadyservicio@libertyexpress.com');
             $mail->Subject  = $strTituRepo;
-            $mail->Body     = 'Estimado Usuario, sírvase revisar el documento anexo...';
+            $mail->Body     = 'Estimado Usuario, sirvase revisar el documento anexo...';
             $mail->addAttachment($strNombArch);
             if(!$mail->send()) {
                 echo "Message was not sent.\n";
