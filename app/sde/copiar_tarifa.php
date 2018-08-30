@@ -75,6 +75,7 @@ class CopiarTarifa extends FormularioBaseKaizen {
         $this->txtTasaIvax->Text = $this->objTariOrig->TasaIva;
         $this->txtTasaIvax->Width = 60;
         $this->txtTasaIvax->ToolTip = '% de IVA para la nueva Tarifa';
+        $this->txtTasaIvax->HtmlAfter = ' (% de IVA para la nueva Tarifa)';
     }
 
     protected function txtPorcAume_Create() {
@@ -82,6 +83,7 @@ class CopiarTarifa extends FormularioBaseKaizen {
         $this->txtPorcAume->Name = '% de Aumento';
         $this->txtPorcAume->Width = 60;
         $this->txtPorcAume->ToolTip = '% de Aumento para la nueva Tarifa';
+        $this->txtPorcAume->HtmlAfter = ' (% de Aumento para la nueva Tarifa)';
     }
 
     //-------------------------------------
