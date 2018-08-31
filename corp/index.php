@@ -160,6 +160,9 @@ class Index extends QForm {
     }
 
     protected function SetupValoresDeSesion($objUsuaConn) {
+        //t('====================================================');
+        //t('Entrando a SetupValoresDeSesion en el index del CORP');
+
         $strEmaiSopo = BuscarParametro('CntaSopo','EmaiSopo','Txt1','soportelufeman@gmail.com');
         $_SESSION['EmaiSopo'] = serialize($strEmaiSopo);
         //---------------------------------------------------------------------------------------------------------
@@ -185,6 +188,7 @@ class Index extends QForm {
         $objClauOrde[] = QQ::OrderBy(QQN::Parametro()->ParaVal1);
         $objClauWher   = QQ::Clause();
         $objClauWher[] = QQ::Equal(QQN::Parametro()->IndiPara, 'SeguYama');
+        $objClauWher[] = QQ::IsNotNull(QQN::Parametro()->ParaVal1);
         $arrReceAuxi   = Parametro::QueryArray(QQ::AndCondition($objClauWher),$objClauOrde);
         $arrRecoMini   = array();
         $arrRecoMaxi   = array();
@@ -197,6 +201,17 @@ class Index extends QForm {
             $arrRecoMini[] = $objParaSegu->ParaVal1 / $decFactReco;
             $arrRecoMaxi[] = $objParaSegu->ParaVal2 / $decFactReco;
         }
+        //------------------
+        // Minimo y Maximo
+        //------------------
+        $intCantElem = count($arrValoMini)-1;
+        $decValoMini = $arrValoMini[0];
+        $decValoMaxi = $arrValoMaxi[$intCantElem];
+        //-------------------------------
+        // Minimo y Maximo Reconvertido
+        //-------------------------------
+        $decRecoMini = $arrRecoMini[0];
+        $decRecoMaxi = $arrRecoMaxi[$intCantElem];
         //------------------------------------------------------------------
         // Obteniendo Sucursales de Venezuela activas y que no son almacén.
         //------------------------------------------------------------------
@@ -222,10 +237,17 @@ class Index extends QForm {
         $_SESSION['IvaxDhoy'] = serialize($decIvaxDhoy);
         $_SESSION['ProdGuia'] = serialize($objProducto);
         $_SESSION['OperGene'] = serialize($intOperGene);
-        $_SESSION['RecoMin1'] = serialize($arrRecoMini);
-        $_SESSION['RecoMax1'] = serialize($arrRecoMaxi);
+
+        $_SESSION['ValoMini'] = serialize($decValoMini);
+        $_SESSION['ValoMaxi'] = serialize($decValoMaxi);
         $_SESSION['ValoMin1'] = serialize($arrValoMini);
         $_SESSION['ValoMax1'] = serialize($arrValoMaxi);
+
+        $_SESSION['RecoMini'] = serialize($decRecoMini);
+        $_SESSION['RecoMaxi'] = serialize($decRecoMaxi);
+        $_SESSION['RecoMin1'] = serialize($arrRecoMini);
+        $_SESSION['RecoMax1'] = serialize($arrRecoMaxi);
+
         $_SESSION['SucuActi'] = serialize($arrSucuActi);
         $_SESSION['DestFrec'] = serialize($arrDestFrec);
     }

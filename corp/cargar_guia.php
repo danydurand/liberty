@@ -28,8 +28,17 @@ class CargarGuia extends FormularioBaseKaizen {
     //----------------------
     protected $blnEditMode;
     //protected $blnSoloCred;
+
     protected $arrValoMini;
     protected $arrValoMaxi;
+    protected $decValoMini;
+    protected $decValoMaxi;
+
+    protected $arrRecoMini;
+    protected $arrRecoMaxi;
+    protected $decRecoMini;
+    protected $decRecoMaxi;
+
     protected $intCantLimi;
     protected $arrSucuActi;
     protected $arrDestFrec;
@@ -94,11 +103,14 @@ class CargarGuia extends FormularioBaseKaizen {
     }
 
     protected function setupValues() {
+        t('===========================================================');
+        t('Entrando a setupValues en la creacion de la Guia en el CORP');
         $this->objCliente = unserialize($_SESSION['ClieMast']);
         //--------------------------------------------------------------------------------------------
         // Si la Guía se encuentra en modo de edición, la misma se queda con su Peso correspondiente.
         //--------------------------------------------------------------------------------------------
         if ($this->blnEditMode) {
+            t('Editando la guia...');
             $this->strPesoGuia = $this->objGuia->PesoGuia;
             //-------------------------------------------------------------------------------------
             // Si la guia tiene la tarifa nueva (con reconversion monteria) entonces los valores
@@ -111,19 +123,28 @@ class CargarGuia extends FormularioBaseKaizen {
             if ($this->objGuia->TarifaId >= (int)$objConfReco->ParaVal3) {
                 $this->arrValoMini = unserialize($_SESSION['RecoMin1']);
                 $this->arrValoMaxi = unserialize($_SESSION['RecoMax1']);
+                $this->decValoMini = unserialize($_SESSION['RecoMini']);
+                $this->decValoMaxi = unserialize($_SESSION['RecoMaxi']);
                 $this->intCantLimi = count($this->arrValoMaxi)-1;
             } else {
                 $this->arrValoMini = unserialize($_SESSION['ValoMin1']);
                 $this->arrValoMaxi = unserialize($_SESSION['ValoMax1']);
+                $this->decValoMini = unserialize($_SESSION['ValoMini']);
+                $this->decValoMaxi = unserialize($_SESSION['ValoMaxi']);
                 $this->intCantLimi = count($this->arrValoMaxi)-1;
             }
         } else {
+            t('Creando una guia nueva...');
             //--------------------------------------------------------
             // Limites de Valor Declarado para asegurar la mercancia
             //--------------------------------------------------------
             $this->arrValoMini = unserialize($_SESSION['RecoMin1']);
             $this->arrValoMaxi = unserialize($_SESSION['RecoMax1']);
+            $this->decValoMini = unserialize($_SESSION['RecoMini']);
+            $this->decValoMaxi = unserialize($_SESSION['RecoMaxi']);
             $this->intCantLimi = count($this->arrValoMaxi)-1;
+            t('El Valor Minimo es: '.$this->decValoMini);
+            t('El Valor Maximo es: '.$this->decValoMaxi);
             //------------------------------------------------------------------------------------------------------
             // Si la Tarifa del Cliente es por Valor de la Mercancía, entonces el Peso de la Guía tendrá como valor
             // 2.5 K. En caso contrario, el valor del Peso de la Guía tendrá como valor cero (0).
@@ -164,10 +185,6 @@ class CargarGuia extends FormularioBaseKaizen {
                     $arrDestFrec[] = $objDestFrec;
                 }
             }
-            //$this->arrDestFrec = DestinatarioFrecuente::LoadArrayByClienteId(
-            //    $this->objCliente->CodiClie,
-            //    QQ::Clause(QQ::OrderBy(QQN::DestinatarioFrecuente()->Nombre))
-            //);
             $_SESSION['DestFrec'] = serialize($this->arrDestFrec);
         }
         //------------------------------------------------------------
@@ -625,8 +642,13 @@ class CargarGuia extends FormularioBaseKaizen {
                 return false;
             } else {
                 if ($this->objSeguGuia) {
-                    if ($this->txtValoDecl->Text < $this->arrValoMini[0]) {
-                        $strMensErro = 'Valor Declaro ('.$this->objSeguGuia->MensSegu.')';
+                    if ($this->txtValoDecl->Text < $this->decValoMini) {
+                        $strMensErro = $this->objSeguGuia->MensSegu;
+                        $this->enviarMensajeDeError($strMensErro);
+                        return false;
+                    }
+                    if ($this->txtValoDecl->Text > $this->decValoMaxi) {
+                        $strMensErro = $this->objSeguGuia->MensSegu;
                         $this->enviarMensajeDeError($strMensErro);
                         return false;
                     }
@@ -707,8 +729,6 @@ class CargarGuia extends FormularioBaseKaizen {
             // Se obtienen el Valor declarado, el Valor o Monto mínimo y máximo reglamentario del Seguro.
             //--------------------------------------------------------------------------------------------
             $this->decValoDecl = $this->txtValoDecl->Text;
-            $decValoMini = $this->arrValoMini[0];
-            $decValoMaxi = $this->arrValoMaxi[$this->intCantLimi];
             //-------------------------------------
             // Se inicializan otros parámetros ...
             //-------------------------------------
@@ -718,29 +738,30 @@ class CargarGuia extends FormularioBaseKaizen {
             //---------------------------------------------------------------------------------------------------
             // Se informa al usuario el rango reglamentario de valores del seguro y otras normativas necesarias.
             //---------------------------------------------------------------------------------------------------
-            $strMensUsua  = 'El Valor Declarado debe estar comprendido entre Bs. '.nf($decValoMini).' - Bs. '.nf($decValoMaxi);
-            $strMensUsua .= '. Se le recuerda también que no se aseguran líquidos ni artículos de vidrio.';
+            $strMensUsua  = 'Rango de Valor Declarado permitido <b>[%s - %s]</b> Bs.  ';
+            $strMensUsua .= 'Recuerde que <b>no se aseguran líquidos ni artículos de vidrio</b>';
+            $strMensUsua  = sprintf($strMensUsua,$this->decValoMini,$this->decValoMaxi);
             $this->mensaje($strMensUsua,'m','w','',__iEXCL__);
             //--------------------------------------------------------------------------------------------
             // Si el V. Declarado es Mayor al Valor Máximo establecido entonces se advierte la situación.
             //--------------------------------------------------------------------------------------------
-            if ($this->decValoDecl > $decValoMaxi) {
+            if ($this->decValoDecl > $this->decValoMaxi) {
                 $blnExceMaxi = true;
-                $this->decValoDecl = $decValoMaxi;
-                $strMensAdve = 'El Valor Decl. ha sido ajustado al Monto Máximo asegurable (Bs. '.$decValoMaxi.')';
+                $this->decValoDecl = $this->decValoMaxi;
+                $strMensAdve = 'El Monto Máximo asegurable es de Bs. '.$this->decValoMaxi;
                 //----------------------------------------------------------------------------
                 // Si la tarifa del Cliente es "Por Peso", entonces el valor máximo permitido
                 // se convierte en el valor declarado.
                 //----------------------------------------------------------------------------
                 if ($this->objCliente->Tarifa->TipoTarifa == FacTipoTarifaType::PORPESO) {
-                    $this->txtValoDecl->Text = $decValoMaxi;
+                    $this->txtValoDecl->Text = $this->decValoMaxi;
                 }
-            } elseif ($this->decValoDecl < $decValoMini) {
+            } elseif ($this->decValoDecl < $this->decValoMini) {
                 //-------------------------------------------------------------------------------------------
                 // Si el V.Declarado es Menor al Valor Mínimo establecido entonces se advierte la situación
                 //-------------------------------------------------------------------------------------------
                 $blnExceMini = true;
-                $strMensAdve = 'El Monto Mínimo asegurable es de Bs. '.$decValoMini;
+                $strMensAdve = 'El Monto Mínimo asegurable es de Bs. '.$this->decValoMini;
             }
             //---------------------------------------------------------------------------------------------
             // Se crea un objeto genérico con la intención de almacenar la información del seguro, y poder
@@ -884,16 +905,16 @@ class CargarGuia extends FormularioBaseKaizen {
         $strMensInfo = '';
         $strTipoInfo = 'i';
         $strSimbInfo = __iEXCL__;
-        //------------------------------------------------------------------------------------
-        // Si se guarda por primera vez la guía, a la misma se le genera un número o Id nuevo
-        //------------------------------------------------------------------------------------
         if (!$this->blnEditMode) {
+            //--------------------------------------------------------------------------
+            // Si se trata de una guia nueva, se asigna el consecutivo correspondiente
+            //--------------------------------------------------------------------------
             $this->txtNumeGuia->Text = proxNroDeGuia();
         }
         // t('Nro de Guia asignado');
-        //--------------------------------------------
+        //---------------------------------------------
         // Se actualizan ahora los campos de la tabla
-        //--------------------------------------------
+        //---------------------------------------------
         $this->UpdateGuiaFields();
         // t('Campos de la Guia, actualizados');
         //----------------------------------------------------------------------------------------
@@ -1019,9 +1040,11 @@ class CargarGuia extends FormularioBaseKaizen {
             // Si el Usuario ha requerido el Seguro, y el Valor Decl. está por encima del Rango legal del mismo,
             // se le notifica que el Valor Decl. ha sido ajustado al Monto Máximo del Rango.
             //---------------------------------------------------------------------------------------------------
+            /*
             if (($this->objSeguGuia) && ($this->objSeguGuia->ExceMaxi)) {
                 $strMensUsua .= '. '.$this->objSeguGuia->MensSegu;
             }
+            */
         }
         // t('Botones de impresion, visibles...');
         //-----------------------------------------------------------------------
@@ -1239,21 +1262,6 @@ class CargarGuia extends FormularioBaseKaizen {
                     $objListItem = new QListItem($strValue, $intId, $intId == TipoGuiaType::CRDCREDITO);
                     $this->lstModaPago->AddItem($objListItem);
                 }
-                /*if ($this->blnSoloCred) {
-                    //--------------------------------------------------------------------------------------------------
-                    // El usuario actual, siendo filiar de un Cliente, el cual solamente tiene autorizado CRD como modo
-                    // de pago, se le habilita únicamente dicho modo.
-                    //--------------------------------------------------------------------------------------------------
-                    if ($intId == 2) {
-                        $objListItem = new QListItem($strValue, $intId, true);
-                    }
-                } else {
-                    //------------------------------------------------------------------------------------------
-                    // Se carga la Modalidad en la lista, y se selecciona de manera automática si corresponde a
-                    // CRD-CREDITO.
-                    //------------------------------------------------------------------------------------------
-                    $objListItem = new QListItem($strValue, $intId, $intId == TipoGuiaType::CRDCREDITO);
-                }*/
             }
         }
     }

@@ -209,6 +209,8 @@ class Index extends QForm {
     }
 
     protected function SetupValoresDeSesion($strSistPath) {
+        t('===========================================');
+        t('Entrando a SetupValoresDeSesion en el Index');
         $strEmaiSopo = BuscarParametro('CntaSopo','EmaiSopo','Txt1','soportelufeman@gmail.com');
         $_SESSION['EmaiSopo'] = serialize($strEmaiSopo);
         //---------------------------------------------------------------------------------------------------------
@@ -246,6 +248,7 @@ class Index extends QForm {
         }
 
         if ($strSistPath == 'pmn') {
+            t('Sistema: Expreso Nacional');
             //------------------------------------------------
             // Checkpoints de uso general en las receptorias
             //------------------------------------------------
@@ -274,11 +277,6 @@ class Index extends QForm {
                 $decPorcSegu = 10;
                 $decRutaMaxi = 2000;
             }
-            //--------------------------------
-            // Valor Max y Min Reconvertidos
-            //--------------------------------
-            $decRecoMini = $decValoMini / $decFactReco;
-            $decRecoMaxi = $decValoMaxi / $decFactReco;
             //---------------------------------------------
             // Nueva configuracion del Seguro del Exp Nac
             //---------------------------------------------
@@ -301,6 +299,21 @@ class Index extends QForm {
                 $arrRecoMini[] = $objParaSegu->ParaVal1 / $decFactReco;
                 $arrRecoMaxi[] = $objParaSegu->ParaVal2 / $decFactReco;
             }
+            //--------------------------------
+            // Valor Min y Max
+            //--------------------------------
+            $intCantElem = count($arrValoMini)-1;
+            $decValoMini = $arrValoMini[0];
+            $decValoMaxi = $arrValoMaxi[$intCantElem];
+            t('Valor Minimo: '.$decValoMini);
+            t('Valor Maximo: '.$decValoMaxi);
+            //--------------------------------
+            // Valor Min y Max Reconvertidos
+            //--------------------------------
+            $decRecoMini = $decValoMini / $decFactReco;
+            $decRecoMaxi = $decValoMaxi / $decFactReco;
+            t('Valor Minimo Reconv: '.$decRecoMini);
+            t('Valor Maximo Reconv: '.$decRecoMaxi);
             //-----------------------------------------------
             // Checkpoints de Cierre del Ciclo de un envio
             //-----------------------------------------------
@@ -405,7 +418,8 @@ class Index extends QForm {
             $objClaoOrde   = QQ::Clause();
             $objClaoOrde[] = QQ::OrderBy(QQN::Parametro()->ParaVal1);
             $objClauWher   = QQ::Clause();
-            $objClauWher[] = QQ::Equal(QQN::Parametro()->IndiPara, 'SeguPmns');
+            $objClauWher[] = QQ::Equal(QQN::Parametro()->IndiPara, 'SeguYama');
+            //$objClauWher[] = QQ::Equal(QQN::Parametro()->IndiPara, 'SeguPmns');
             $arrReceAuxi = Parametro::QueryArray(QQ::AndCondition($objClauWher),$objClaoOrde);
             $arrValoMini = array();
             $arrValoMaxi = array();

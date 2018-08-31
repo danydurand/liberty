@@ -7,7 +7,6 @@
 include('dateclass.php');
 require_once('mimemail.inc.php');
 
-
 function str2num($str)
 {
     if (strpos($str, '.') !== FALSE
@@ -811,22 +810,47 @@ function asignarPorcFranqueo($decPesoGuia) {
  * @param int $intChecAseg
  * @return int
  */
-function asignarPorcSeguro($decValoDecl,$intChecAseg = 0) {
+function asignarPorcSeguro($decValoDecl,$intTariGuia,$intChecAseg = 0) {
+    /**
+     * @var $objConfReco Parametro
+     */
     $decPorcSgro = 0;
 
+    t('El Valor Decl. es: '.$decValoDecl);
     if ($intChecAseg) {
+        t('El envio esta asegurado...');
+        //-------------------------
+        // Reconversion Monetaria
+        //-------------------------
+        $intTariRefe = 65;
+        $objConfReco = BuscarParametro('ConfReco','RecoMone','TODO',null);
+        if ($objConfReco) {
+            $intTariRefe = (int)$objConfReco->ParaVal3;
+            t('Reconv. Monet. Activa.  La Tarifa Referencial es: '.$intTariRefe);
+        }
+        $arrValoMaxi = unserialize($_SESSION['RecoMax1']);
+        if ($intTariGuia < $intTariRefe) {
+            t('Se trata de un envio con Tarifa vieja');
+            //------------------------------------------------------------------------------------------
+            // Esta condicion se cumple cuando la guia tiene tarifa vieja (anterior a la reconversion)
+            //------------------------------------------------------------------------------------------
+            $arrValoMaxi = unserialize($_SESSION['ValoMax1']);
+        }
         //------------------------------------------------------------------------------------
         // Se asigna el nuevo valor de seguro de Liberty, dependiendo de los nuevos rangos
         // agregados desde el index general del Sistema.
         //------------------------------------------------------------------------------------
-        $arrValoMaxi = unserialize($_SESSION['ValoMax1']);
+        //$arrValoMaxi = unserialize($_SESSION['ValoMax1']);
         $arrPorcSegu = unserialize($_SESSION['PorcSeg1']);
 
+        t('La cantidad de elementos del vector es: '.count($arrValoMaxi));
         $intCantLimi = count($arrValoMaxi)-1;
 
         for ($i = 0; $i <= $intCantLimi; $i++) {
+            t('Valor del rango: '.$arrValoMaxi[$i]);
             if ($decValoDecl < $arrValoMaxi[$i] + 1) {
                 $decPorcSgro = $arrPorcSegu[$i];
+                t('El % de seguro es: '.$decPorcSgro);
                 break;
             }
         }
@@ -1037,7 +1061,7 @@ function calcularTarifaParcialNew($arrParaTari) {
         // Se le asigna el nuevo valor de porcentaje de Seguro según los protocolos actuales
         // de Liberty
         //------------------------------------------------------------------------------------
-        $dblPorcSgro = asignarPorcSeguro($dblValoDecl,$intChecAseg);
+        $dblPorcSgro = asignarPorcSeguro($dblValoDecl,$intCodiTari,$intChecAseg);
     }
 
     $arrParaTari = buscarMontoBaseTarifa($intCodiTari,$intCodiProd,$strCodiOrig,$strCodiDest,$strModaPago,$dblPesoGuia,$dblValoDecl,$dttFechGuia);
