@@ -235,6 +235,12 @@
 			return new QQNodeEstacion('estacion', null, null);
 		}
 		/**
+		 * @return QQNodeEstadistica
+		 */
+		static public function Estadistica() {
+			return new QQNodeEstadistica('estadistica', null, null);
+		}
+		/**
 		 * @return QQNodeEstadisticaDeClientes
 		 */
 		static public function EstadisticaDeClientes() {

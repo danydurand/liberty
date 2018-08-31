@@ -319,7 +319,6 @@ class ConsultaGuia extends FormularioBaseKaizen {
         if (TipoGuiaType::ToStringCorto($this->objGuia->TipoGuia) == 'COD') {
             $this->corregirReceptoriaDestino();
         }
-
     }
 
     //---------------------
@@ -488,23 +487,20 @@ class ConsultaGuia extends FormularioBaseKaizen {
 
     protected function lblMontIvax_Create() {
         $this->lblMontIvax = new QLabel($this);
-        $this->lblMontIvax->Name = 'I.V.A.';
+        $this->lblMontIvax->Name = 'I.V.A. ('.$this->objGuia->PorcentajeIva.'%)';
         $this->lblMontIvax->Text = $this->objGuia->MontoIva;
-        //$this->lblMontIvax->Width = 20;
     }
 
     protected function lblMontFran_Create() {
         $this->lblMontFran = new QLabel($this);
-        $this->lblMontFran->Name = 'Franq/Sgro';
-        $this->lblMontFran->Text = $this->objGuia->MontoFranqueo.' / '.$this->objGuia->MontoSeguro.' Bs';
-        //$this->lblMontFran->Width = 20;
+        $this->lblMontFran->Name = 'Franqueo';
+        $this->lblMontFran->Text = $this->objGuia->MontoFranqueo;
     }
 
     protected function lblMontSegu_Create() {
         $this->lblMontSegu = new QLabel($this);
         $this->lblMontSegu->Name = 'Seguro';
         $this->lblMontSegu->Text = $this->objGuia->MontoSeguro;
-        //$this->lblMontSegu->Width = 20;
     }
 
     protected function lblMontTota_Create() {

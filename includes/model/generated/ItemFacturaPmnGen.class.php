@@ -28,6 +28,7 @@
 	 * @property double $MontoOtros the value for fltMontoOtros (Not Null)
 	 * @property double $MontoTotal the value for fltMontoTotal (Not Null)
 	 * @property FacturaPmn $Factura the value for the FacturaPmn object referenced by intFacturaId (Not Null)
+	 * @property Guia $Guia the value for the Guia object referenced by strGuiaId (Not Null)
 	 * @property-read boolean $__Restored whether or not this object was restored from the database (as opposed to created new)
 	 */
 	class ItemFacturaPmnGen extends QBaseClass implements IteratorAggregate {
@@ -164,6 +165,16 @@
 		 * @var FacturaPmn objFactura
 		 */
 		protected $objFactura;
+
+		/**
+		 * Protected member variable that contains the object pointed by the reference
+		 * in the database column item_factura_pmn.guia_id.
+		 *
+		 * NOTE: Always use the Guia property getter to correctly retrieve this Guia object.
+		 * (Because this class implements late binding, this variable reference MAY be null.)
+		 * @var Guia objGuia
+		 */
+		protected $objGuia;
 
 
 
@@ -735,6 +746,13 @@
 				$objExpansionNode = (empty($objExpansionAliasArray['factura_id']) ? null : $objExpansionAliasArray['factura_id']);
 				$objToReturn->objFactura = FacturaPmn::InstantiateDbRow($objDbRow, $strAliasPrefix . 'factura_id__', $objExpansionNode, null, $strColumnAliasArray);
 			}
+			// Check for Guia Early Binding
+			$strAlias = $strAliasPrefix . 'guia_id__nume_guia';
+			$strAliasName = !empty($strColumnAliasArray[$strAlias]) ? $strColumnAliasArray[$strAlias] : $strAlias;
+			if (!is_null($objDbRow->GetColumn($strAliasName))) {
+				$objExpansionNode = (empty($objExpansionAliasArray['guia_id']) ? null : $objExpansionAliasArray['guia_id']);
+				$objToReturn->objGuia = Guia::InstantiateDbRow($objDbRow, $strAliasPrefix . 'guia_id__', $objExpansionNode, null, $strColumnAliasArray);
+			}
 
 				
 
@@ -1080,7 +1098,7 @@
 
 			// Update $this's local variables to match
 			$this->FacturaId = $objReloaded->FacturaId;
-			$this->strGuiaId = $objReloaded->strGuiaId;
+			$this->GuiaId = $objReloaded->GuiaId;
 			$this->fltMontoBase = $objReloaded->fltMontoBase;
 			$this->fltPorcentajeDscto = $objReloaded->fltPorcentajeDscto;
 			$this->fltMontoDscto = $objReloaded->fltMontoDscto;
@@ -1212,6 +1230,20 @@
 						throw $objExc;
 					}
 
+				case 'Guia':
+					/**
+					 * Gets the value for the Guia object referenced by strGuiaId (Not Null)
+					 * @return Guia
+					 */
+					try {
+						if ((!$this->objGuia) && (!is_null($this->strGuiaId)))
+							$this->objGuia = Guia::Load($this->strGuiaId);
+						return $this->objGuia;
+					} catch (QCallerException $objExc) {
+						$objExc->IncrementOffset();
+						throw $objExc;
+					}
+
 
 				////////////////////////////
 				// Virtual Object References (Many to Many and Reverse References)
@@ -1266,6 +1298,7 @@
 					 * @return string
 					 */
 					try {
+						$this->objGuia = null;
 						return ($this->strGuiaId = QType::Cast($mixValue, QType::String));
 					} catch (QCallerException $objExc) {
 						$objExc->IncrementOffset();
@@ -1425,6 +1458,38 @@
 					}
 					break;
 
+				case 'Guia':
+					/**
+					 * Sets the value for the Guia object referenced by strGuiaId (Not Null)
+					 * @param Guia $mixValue
+					 * @return Guia
+					 */
+					if (is_null($mixValue)) {
+						$this->strGuiaId = null;
+						$this->objGuia = null;
+						return null;
+					} else {
+						// Make sure $mixValue actually is a Guia object
+						try {
+							$mixValue = QType::Cast($mixValue, 'Guia');
+						} catch (QInvalidCastException $objExc) {
+							$objExc->IncrementOffset();
+							throw $objExc;
+						}
+
+						// Make sure $mixValue is a SAVED Guia object
+						if (is_null($mixValue->NumeGuia))
+							throw new QCallerException('Unable to set an unsaved Guia for this ItemFacturaPmn');
+
+						// Update Local Member Variables
+						$this->objGuia = $mixValue;
+						$this->strGuiaId = $mixValue->NumeGuia;
+
+						// Return $mixValue
+						return $mixValue;
+					}
+					break;
+
 				default:
 					try {
 						return parent::__set($strName, $mixValue);
@@ -1505,7 +1570,7 @@
 			$strToReturn = '<complexType name="ItemFacturaPmn"><sequence>';
 			$strToReturn .= '<element name="Id" type="xsd:int"/>';
 			$strToReturn .= '<element name="Factura" type="xsd1:FacturaPmn"/>';
-			$strToReturn .= '<element name="GuiaId" type="xsd:string"/>';
+			$strToReturn .= '<element name="Guia" type="xsd1:Guia"/>';
 			$strToReturn .= '<element name="MontoBase" type="xsd:float"/>';
 			$strToReturn .= '<element name="PorcentajeDscto" type="xsd:float"/>';
 			$strToReturn .= '<element name="MontoDscto" type="xsd:float"/>';
@@ -1524,6 +1589,7 @@
 			if (!array_key_exists('ItemFacturaPmn', $strComplexTypeArray)) {
 				$strComplexTypeArray['ItemFacturaPmn'] = ItemFacturaPmn::GetSoapComplexTypeXml();
 				FacturaPmn::AlterSoapComplexTypeArray($strComplexTypeArray);
+				Guia::AlterSoapComplexTypeArray($strComplexTypeArray);
 			}
 		}
 
@@ -1543,8 +1609,9 @@
 			if ((property_exists($objSoapObject, 'Factura')) &&
 				($objSoapObject->Factura))
 				$objToReturn->Factura = FacturaPmn::GetObjectFromSoapObject($objSoapObject->Factura);
-			if (property_exists($objSoapObject, 'GuiaId'))
-				$objToReturn->strGuiaId = $objSoapObject->GuiaId;
+			if ((property_exists($objSoapObject, 'Guia')) &&
+				($objSoapObject->Guia))
+				$objToReturn->Guia = Guia::GetObjectFromSoapObject($objSoapObject->Guia);
 			if (property_exists($objSoapObject, 'MontoBase'))
 				$objToReturn->fltMontoBase = $objSoapObject->MontoBase;
 			if (property_exists($objSoapObject, 'PorcentajeDscto'))
@@ -1585,6 +1652,10 @@
 				$objObject->objFactura = FacturaPmn::GetSoapObjectFromObject($objObject->objFactura, false);
 			else if (!$blnBindRelatedObjects)
 				$objObject->intFacturaId = null;
+			if ($objObject->objGuia)
+				$objObject->objGuia = Guia::GetSoapObjectFromObject($objObject->objGuia, false);
+			else if (!$blnBindRelatedObjects)
+				$objObject->strGuiaId = null;
 			return $objObject;
 		}
 
@@ -1652,6 +1723,7 @@
      * @property-read QQNode $FacturaId
      * @property-read QQNodeFacturaPmn $Factura
      * @property-read QQNode $GuiaId
+     * @property-read QQNodeGuia $Guia
      * @property-read QQNode $MontoBase
      * @property-read QQNode $PorcentajeDscto
      * @property-read QQNode $MontoDscto
@@ -1680,6 +1752,8 @@
 					return new QQNodeFacturaPmn('factura_id', 'Factura', 'Integer', $this);
 				case 'GuiaId':
 					return new QQNode('guia_id', 'GuiaId', 'VarChar', $this);
+				case 'Guia':
+					return new QQNodeGuia('guia_id', 'Guia', 'VarChar', $this);
 				case 'MontoBase':
 					return new QQNode('monto_base', 'MontoBase', 'Float', $this);
 				case 'PorcentajeDscto':
@@ -1717,6 +1791,7 @@
      * @property-read QQNode $FacturaId
      * @property-read QQNodeFacturaPmn $Factura
      * @property-read QQNode $GuiaId
+     * @property-read QQNodeGuia $Guia
      * @property-read QQNode $MontoBase
      * @property-read QQNode $PorcentajeDscto
      * @property-read QQNode $MontoDscto
@@ -1745,6 +1820,8 @@
 					return new QQNodeFacturaPmn('factura_id', 'Factura', 'integer', $this);
 				case 'GuiaId':
 					return new QQNode('guia_id', 'GuiaId', 'string', $this);
+				case 'Guia':
+					return new QQNodeGuia('guia_id', 'Guia', 'string', $this);
 				case 'MontoBase':
 					return new QQNode('monto_base', 'MontoBase', 'double', $this);
 				case 'PorcentajeDscto':

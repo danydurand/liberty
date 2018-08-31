@@ -79,7 +79,7 @@ class CrearFactura extends FormularioBaseKaizen {
 
         if (strlen($this->strNumeGuia)) {
             //--------------------------------------------------------------------
-            // Cuando al programa se accesa con un numero de guia como parametro
+            // Cuando el programa se accesa con un numero de guia como parametro
             //--------------------------------------------------------------------
             $this->objGuia = Guia::Load($this->strNumeGuia);
             $this->objCliePmnx = ClientePmn::Load($this->objGuia->CedulaRif);
@@ -704,8 +704,14 @@ class CrearFactura extends FormularioBaseKaizen {
     }
 
     protected function btnMostDxml_Click() {
-        $strDurlDxml = 'http://app-libertyexpress.com/liberty/ws/cliente.php?NombRuti=factura&id='.$this->lblNumeFact->Text;
-        QApplication::Redirect($strDurlDxml);
+        if ($_SERVER['SERVER_NAME'] == 'localhost') {
+            $strDurlDxml = 'http://localhost/liberty/ws/cliente.php?NombRuti=factura&id='.$this->lblNumeFact->Text;
+            QApplication::Redirect($strDurlDxml);
+        } else {
+            //$this->mensaje($_SERVER['SERVER_NAME']);
+            $strDurlDxml = 'http://app-libertyexpress.com/liberty/ws/cliente.php?NombRuti=factura&id='.$this->lblNumeFact->Text;
+            QApplication::Redirect($strDurlDxml);
+        }
     }
 
     protected function chkTienRete_Change() {
@@ -975,25 +981,51 @@ class CrearFactura extends FormularioBaseKaizen {
     //------------------------------
 
     protected function CrearNuevaFactura() {
+        t('======================================');
+        t('Creando Factura en el Expreso Nacional');
+        t('Los montos de la Guia son:');
+        t('El % de IVA   :'.$this->objGuia->PorcentajeIva);
+        t('Monto Base    :'.$this->objGuia->MontoBase);
+        t('Monto Franqueo:'.$this->objGuia->MontoFranqueo);
+        t('Monto Iva     :'.$this->objGuia->MontoIva);
+        t('Monto Seguro  :'.$this->objGuia->MontoSeguro);
+        t('Monto Otros   :'.$this->objGuia->MontoOtros);
+        t('Monto Total   :'.$this->objGuia->MontoTotal);
+        //---------------------------------------------------------------------------------
+        // A partir del 1ero de Septiembre, la Tasa de IVA que se debe aplicar es del 16%
+        //---------------------------------------------------------------------------------
+        $dttFechDhoy = FechaDeHoy();
+        $decTasaVige = FacImpuesto::LoadImpuestoVigente('IVA',$dttFechDhoy);
+        if ($this->objGuia->PorcentajeIva != $decTasaVige) {
+            t('*** La guia necesita recalculo ***');
+            //-----------------------------------------------------------------------
+            // Si el IVA de la Guia difiere del IVA Vigente, se recalcula la tarifa
+            //-----------------------------------------------------------------------
+            $this->objGuia->PorcentajeIva = $decTasaVige;
+            $arrCalcTari   = CalcularTarifaNacionalDeLaGuia($this->objGuia);
+            $blnTodoOkey   = $arrCalcTari['blnTodoOkey'];
+            $this->objGuia = $arrCalcTari['objGuiaCalc'];
+            t('Los montos de la Guia despues del recalculo:');
+            t('El % de IVA   :'.$this->objGuia->PorcentajeIva);
+            t('Monto Base    :'.$this->objGuia->MontoBase);
+            t('Monto Franqueo:'.$this->objGuia->MontoFranqueo);
+            t('Monto Iva     :'.$this->objGuia->MontoIva);
+            t('Monto Seguro  :'.$this->objGuia->MontoSeguro);
+            t('Monto Otros   :'.$this->objGuia->MontoOtros);
+            t('Monto Total   :'.$this->objGuia->MontoTotal);
+        }
         //---------------------------------------------
         // Se crea un registro en la tabla factura
         //---------------------------------------------
-//        t('Los montos de la Guia son: (M0)');
-//        t('Monto Base    :'.$this->objGuia->MontoBase);
-//        t('Monto Franqueo:'.$this->objGuia->MontoFranqueo);
-//        t('Monto Iva     :'.$this->objGuia->MontoIva);
-//        t('Monto Seguro  :'.$this->objGuia->MontoSeguro);
-//        t('Monto Otros   :'.$this->objGuia->MontoOtros);
-//        t('Monto Total   :'.$this->objGuia->MontoTotal);
         $this->UpdateFieldsFactura();
         $this->objFactPmnx->Save();
-//        t('Los montos de la Factura son: (M1)');
-//        t('Monto Base    :'.$this->objFactPmnx->MontoBase);
-//        t('Monto Franqueo:'.$this->objFactPmnx->MontoFranqueo);
-//        t('Monto Iva     :'.$this->objFactPmnx->MontoIva);
-//        t('Monto Seguro  :'.$this->objFactPmnx->MontoSeguro);
-//        t('Monto Otros   :'.$this->objFactPmnx->MontoOtros);
-//        t('Monto Total   :'.$this->objFactPmnx->MontoTotal);
+        //t('Los montos de la Factura son:');
+        //t('Monto Base    :'.$this->objFactPmnx->MontoBase);
+        //t('Monto Franqueo:'.$this->objFactPmnx->MontoFranqueo);
+        //t('Monto Iva     :'.$this->objFactPmnx->MontoIva);
+        //t('Monto Seguro  :'.$this->objFactPmnx->MontoSeguro);
+        //t('Monto Otros   :'.$this->objFactPmnx->MontoOtros);
+        //t('Monto Total   :'.$this->objFactPmnx->MontoTotal);
         $this->lblNumeFact->Text = $this->objFactPmnx->Id;
         //-----------------------------------------------------------------------------
         // La guia que entra como parametro, se agrega como primer item de la factura
