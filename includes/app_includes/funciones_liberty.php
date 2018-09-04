@@ -868,7 +868,7 @@ function asignarPorcSeguro($decValoDecl,$intTariGuia,$intChecAseg = 0) {
  * @param double $dblMontTari
  * @return int
  */
-function asignarPorcIVA($strCodiOrig,$strCodiDest,$strModaPago,$dblMontTari) {
+function asignarPorcIVA($strCodiOrig,$strCodiDest,$strModaPago,$dblMontTari=0) {
     $arrSucuExen = unserialize($_SESSION['SucuExen']);
     t('Existe(n) '.count($arrSucuExen).' Sucursal(es) exenta(s)');
     $decPorcIvax = FacImpuesto::LoadImpuestoVigente('IVA',FechaDeHoy());

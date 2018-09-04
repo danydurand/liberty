@@ -1001,7 +1001,9 @@ class CrearFactura extends FormularioBaseKaizen {
             //-----------------------------------------------------------------------
             // Si el IVA de la Guia difiere del IVA Vigente, se recalcula la tarifa
             //-----------------------------------------------------------------------
-            $this->objGuia->PorcentajeIva = $decTasaVige;
+            //$this->objGuia->PorcentajeIva = $decTasaVige;
+            $this->objGuia->PorcentajeIva = asignarPorcIVA($this->objGuia->EstaOrig, $this->objGuia->EstaDest,
+                TipoGuiaType::ToStringCorto($this->objGuia->TipoGuia));
             $arrCalcTari   = CalcularTarifaNacionalDeLaGuia($this->objGuia);
             $blnTodoOkey   = $arrCalcTari['blnTodoOkey'];
             $this->objGuia = $arrCalcTari['objGuiaCalc'];

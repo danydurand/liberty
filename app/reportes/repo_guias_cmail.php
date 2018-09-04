@@ -110,7 +110,6 @@ foreach ($arrSucuSele as $objSucursal) {
             $mail->setFrom('SisCO@libertyexpress.com', 'Medicion y Control');
             $mail->addAddress('soportelufeman@gmail.com');
 //                $mail->addAddress('aalvarado@libertyexpress.com');
-//                $mail->addAddress('aalvarado@libertyexpress.com');
 //                $mail->addAddress('emontilla@libertyexpress.com');
 //                $mail->addAddress('rortega@libertyexpress.com');
 //                $mail->addAddress('jmartini@libertyexpress.com');

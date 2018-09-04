@@ -328,45 +328,25 @@ foreach ($arrSucuSele as $objSucursal) {
         $pdf->Output();
     } else {
         $pdf->Output($strNombArch);
-        //----------------------------------------------------------------
-        // La maquina del laboratorio no tiene habilitado el Sendmail
-        // por lo tanto se creo un parametro que le dice al programa
-        // si debe o no enviar el e-mail
-        //----------------------------------------------------------------
-        $strEnviMail = BuscarParametro('EnviMail','MailSino',"Txt1","S");
         //--------------------------------
         // Envio el reporte por e-mail
         //--------------------------------
         $mail = new PHPMailer();
         $mail->setFrom('SisCO@libertyexpress.com', 'Medicion y Control');
-        $mail->addAddress('soportelufeman@gmail.com');
-        //                $mail->addAddress('aalvarado@libertyexpress.com');
-        //                $mail->addAddress('aalvarado@libertyexpress.com');
-        //                $mail->addAddress('emontilla@libertyexpress.com');
-        //                $mail->addAddress('rortega@libertyexpress.com');
-        //                $mail->addAddress('jmartini@libertyexpress.com');
+        if ($objSucursal->CodiEsta == 'CCS') {
+            $mail->addAddress('soportelufeman@gmail.com');
+        }
+        $mail->addAddress('aalvarado@libertyexpress.com');
+        $mail->addAddress('emontilla@libertyexpress.com');
+        $mail->addAddress('rortega@libertyexpress.com');
+        $mail->addAddress('jmartini@libertyexpress.com');
         $mail->Subject  = $strTituRepo;
-        $mail->Body     = 'Estimado Usuario, sírvase revisar el documento anexo...';
+        $mail->Body     = 'Estimado Usuario, sirvase revisar el documento anexo...';
         $mail->addAttachment($strNombArch);
         if(!$mail->send()) {
             echo "Message was not sent.\n";
             echo "Mailer error: " . $mail->ErrorInfo."\n";
         }
-        /*
-        $to = array($objSucursal->DireMail);
-        //$to = array($objSucursal->DireMail,'danydurand@gmail.com');
-        $attach = $strNombArch;
-        $mimemail = new MIMEMAIL('plain/text');
-        $mimemail->senderName = 'LibertyExpress';
-        $mimemail->senderMail = 'localhost@app-libertyexpress.com';
-        $mimemail->subject = $strTituRepo;
-        $mimemail->body = '';
-        $mimemail->attachments[] = $attach;
-        $mimemail->create();
-        if ($strEnviMail == 'S') {
-            $mimemail->send($to);
-        }
-        */
     }
 }
 ?>
