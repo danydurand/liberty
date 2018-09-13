@@ -102,7 +102,12 @@ class CambioTarifaGuias extends FormularioBaseKaizen {
                 // Se actualiza la tarifa y se recalculan los montos
                 //----------------------------------------------------
                 $objGuiaProc->TarifaId = $this->lstCodiTari->SelectedValue;
-                $objGuiaProc->PorcentajeIva = $this->PorcentajeIVA($objGuiaProc);
+                //$objGuiaProc->PorcentajeIva = $this->PorcentajeIVA($objGuiaProc);
+                $objGuiaProc->PorcentajeIva = asignarPorcIVA(
+                    $objGuiaProc->EstaOrig,
+                    $objGuiaProc->EstaDest,
+                    TipoGuiaType::ToStringCorto($objGuiaProc->TipoGuia));
+                $objGuiaProc->Save();
                 $arrCalcTari = CalcularTarifaNacionalDeLaGuia($objGuiaProc);
                 $blnTodoOkey = $arrCalcTari['blnTodoOkey'];
                 $objGuiaProc = $arrCalcTari['objGuiaCalc'];

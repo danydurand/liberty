@@ -230,6 +230,16 @@ class Index extends QForm {
             }
         }
         $objCkptNore = SdeCheckpoint::Load('NR');
+        //---------------------------------------
+        // Vector de Sucursales exentas de Iva
+        //---------------------------------------
+        $objSeleColu   = QQ::Select(QQN::Estacion()->CodiEsta);
+        $arrSucuAuxi   = Estacion::LoadArrayByExentaDeIvaId(SinoType::SI,QQ::Clause($objSeleColu));
+        $arrSucuExen   = array();
+        foreach ($arrSucuAuxi as $objSucuExen) {
+            $arrSucuExen[] = $objSucuExen->CodiEsta;
+        }
+        $_SESSION['SucuExen'] = serialize($arrSucuExen);
         //----------------------------------------------------------
         // Variables de Session que se usan a lo largo del Sistema.
         //----------------------------------------------------------

@@ -328,7 +328,7 @@ class CargarGuia extends FormularioBaseKaizen {
     }
 
     protected function txtValoDecl_Create() {
-        $this->txtValoDecl = new QTextBox($this);
+        $this->txtValoDecl = new QFloatTextBox($this);
         $this->txtValoDecl->Name = 'Valor Decl.';
         $this->txtValoDecl->Width = 80;
         if ($this->blnEditMode) {
@@ -634,6 +634,13 @@ class CargarGuia extends FormularioBaseKaizen {
             $strMensErro = 'Cantidad de Piezas (Debe ser mayor a cero)';
             $this->enviarMensajeDeError($strMensErro);
             return false;
+        }
+        if (strlen($this->txtValoDecl->Text) > 0) {
+            if (!is_numeric($this->txtValoDecl->Text)) {
+                $strMensErro = 'El Valor Declarado debe ser un Valor Numérico';
+                $this->enviarMensajeDeError($strMensErro);
+                return false;
+            }
         }
         if ($this->chkSeguGuia->Checked) {
             if (strlen($this->txtValoDecl->Text) == 0) {

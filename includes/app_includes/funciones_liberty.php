@@ -1590,6 +1590,7 @@ function buscarMontoBaseTarifa($intTarifaId,$intCodiProd,$strOrigen,$strDestino,
         $objRegiTraz->Save();
     }
     $decPorcIvax = FacImpuesto::LoadImpuestoVigente('IVA',FechaDeHoy());
+    $decPorcIvax = asignarPorcIVA($strOrigen,$strDestino,$strModaPago);
 
     if ($objTarifa->TipoTarifa == FacTipoTarifaType::PORPESO) {
         //-----------------------------------------------------------------------------------------
