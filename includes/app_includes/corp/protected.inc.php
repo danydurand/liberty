@@ -19,7 +19,8 @@ if (!($objUser instanceof UsuarioConnect)) {
     QApplication::Redirect(__SUBDIRECTORY__.'/corp/index.php');
 }
 if (!defined('__SIST__')) {
-    define ('__SIST__', '/newliberty/'.$_SESSION['NombDire']);
+    //define ('__SIST__', '/newliberty/'.$_SESSION['NombDire']);
+    define ('__SIST__', '/'.$_SESSION['NombDire']);
 }
 //---------------------------------------------------------------------------------
 // Aqui se deja registro de la base de datos del programa accesado por el Usuario

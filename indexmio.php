@@ -153,7 +153,8 @@ class IndexMio extends QForm {
                 $_SESSION['Sistema']       = $this->lstCodiSist->SelectedValue;
                 $_SESSION['NombSist']      = $this->lstCodiSist->SelectedName;
                 $_SESSION['NombDire']      = 'yokohama';
-                define ('__SIST__', '/newliberty/app/'.$_SESSION['Sistema']);
+                //define ('__SIST__', '/newliberty/app/'.$_SESSION['Sistema']);
+                define ('__SIST__', '/app/'.$_SESSION['Sistema']);
 
                 // $objUsuario->FechAcce = new QDateTime(QDateTime::Now);
                 // $objUsuario->CantInte = 0;

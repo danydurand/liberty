@@ -328,10 +328,10 @@ require(__APP_INCLUDES__ . '/header.inc.php');
             <!--    </div>-->
             <!--</div>-->
             <div class="row" style="margin-top: 0.5em; margin-bottom: 0.5em;">
-                <div class="col-md-9 col-md-10">
+                <div class="col-md-11">
                     <?php $this->txtTextCome->Render(); ?>
                 </div>
-                <div class="col-md-3 col-md-2"><!-- <div class="col-md-6" style="padding-top:2.6em;">-->
+                <div class="col-md-1 text-left">
                     <?php $this->btnSaveCome->Render(); ?>
                 </div>
             </div>

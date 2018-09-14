@@ -660,7 +660,7 @@ class ConsultaGuia extends FormularioBaseKaizen {
         $this->txtTextCome = new QTextBox($this);
         $this->txtTextCome->Text = $this->objRegiTrab->Comentario;
         $this->txtTextCome->Width = '100%';
-        $this->txtTextCome->TextMode = QTextMode::MultiLine;
+        //$this->txtTextCome->TextMode = QTextMode::MultiLine;
         $this->txtTextCome->AddAction(new QFocusEvent(), new QAjaxAction('txtTextCome_Focus'));
         $this->txtTextCome->AddAction(new QBlurEvent(), new QAjaxAction('txtTextCome_Blur'));
     }
@@ -713,7 +713,7 @@ class ConsultaGuia extends FormularioBaseKaizen {
 
     protected function btnSaveCome_Create() {
         $this->btnSaveCome = new QButtonS($this);
-        $this->btnSaveCome->Text = TextoIcono('check fa-lg','Guardar Comentario');
+        $this->btnSaveCome->Text = TextoIcono('check fa-lg','');
         $this->btnSaveCome->AddAction(new QClickEvent(), new QAjaxAction('btnSaveCome_Click'));
     }
 
@@ -1152,10 +1152,12 @@ class ConsultaGuia extends FormularioBaseKaizen {
     }
 
     protected function createDtgRegiTrabColumns() {
+        /*
         $colGuiaRegi = new QDataGridColumn($this);
         $colGuiaRegi->Name = QApplication::Translate('GUÍA');
         $colGuiaRegi->Html = '<?= $_ITEM->GuiaId; ?>';
         $this->dtgRegiTrab->AddColumn($colGuiaRegi);
+        */
 
         $colCodiSucu = new QDataGridColumn($this);
         $colCodiSucu->Name = QApplication::Translate('SUC');

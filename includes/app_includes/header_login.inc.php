@@ -11,9 +11,9 @@ $strPageTitle = 'SISPAQ';
 		<style type="text/css">@import url("<?php _p(__VIRTUAL_DIRECTORY__ . __APP_CSS_ASSETS__); ?>/styles.css");</style>
 		<style type="text/css">@import url("<?php _p(__VIRTUAL_DIRECTORY__ . __APP_CSS_ASSETS__); ?>/styles_plus.css");</style>
 		<!-- Custom Fonts -->
-		<link href=<?= __APP_CSS_ASSETS__ ."/bower_components/font-awesome/css/font-awesome.min.css"?> rel="stylesheet" type="text/css">
+		<link href=<?= __VIRTUAL_DIRECTORY__ . __APP_CSS_ASSETS__ ."/bower_components/font-awesome/css/font-awesome.min.css"?> rel="stylesheet" type="text/css">
 	</head>
-	<body background="<?php _p(__APP_IMAGE_ASSETS__); ?>/mapamundi.jpg">
+	<body background="<?php _p(__VIRTUAL_DIRECTORY__ . __APP_IMAGE_ASSETS__); ?>/mapamundi.jpg">
 		<?php
 			$strNombEmpr = 'LibertyExpress<br>SISPAQ - Sistema de Paqueteria';
 			$strDatoUsua = '';
