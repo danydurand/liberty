@@ -278,6 +278,11 @@ class Index extends QForm {
                 $decPorcSegu = 10;
                 $decRutaMaxi = 2000;
             }
+            //--------------------------------
+            // Valor Max y Min Reconvertidos
+            //--------------------------------
+            $decRecoMini = $decValoMini / $decFactReco;
+            $decRecoMaxi = $decValoMaxi / $decFactReco;
             //---------------------------------------------
             // Nueva configuracion del Seguro del Exp Nac
             //---------------------------------------------
@@ -420,7 +425,7 @@ class Index extends QForm {
             $objClaoOrde[] = QQ::OrderBy(QQN::Parametro()->ParaVal1);
             $objClauWher   = QQ::Clause();
             $objClauWher[] = QQ::Equal(QQN::Parametro()->IndiPara, 'SeguYama');
-            //$objClauWher[] = QQ::Equal(QQN::Parametro()->IndiPara, 'SeguPmns');
+            $objClauWher[] = QQ::IsNotNull(QQN::Parametro()->ParaVal1);
             $arrReceAuxi = Parametro::QueryArray(QQ::AndCondition($objClauWher),$objClaoOrde);
             $arrValoMini = array();
             $arrValoMaxi = array();

@@ -127,7 +127,8 @@ class NewOpcionListForm extends NewOpcionListFormBase {
     //-----------------------------------
 
     public function btnNuevRegi_Click() {
-        QApplication::Redirect(__SIST__.'/new_opcion_edit.php');
+        //QApplication::Redirect(__SIST__.'/new_opcion_edit.php');
+        QApplication::Redirect('/new_opcion_edit.php');
     }
 
     public function dtgNewOpcionsRow_Click($strFormId, $strControlId, $strParameter) {

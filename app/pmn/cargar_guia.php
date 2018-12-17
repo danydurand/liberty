@@ -867,9 +867,7 @@ class CargarGuia extends FormularioBaseKaizen {
         }
     }
 
-    //----------------------------------------------------------------------------
-    // Función que define el evento change del QListBox de las sucursales destino
-    //----------------------------------------------------------------------------
+
     public function lstSucuDest_Change() {
         if (!is_null($this->lstSucuDest->SelectedValue)) {
             $arrCodiSele = explode('|',$this->lstSucuDest->SelectedValue);
@@ -938,7 +936,7 @@ class CargarGuia extends FormularioBaseKaizen {
                     $this->lstReceDest->RemoveAllItems();
 
                     //-------------------------------------------------------------------------------------------------
-                    // Si la guia se encuentra en modo de edicion, y el RaioButton seleccionado es "RECEPTORIA", se
+                    // Si la guia se encuentra en modo de edicion, y el RadioButton seleccionado es "RECEPTORIA", se
                     // carga y selecciona por defecto la receptoria del destino de la guia en la lista de receptorias,
                     // y la misma se bloquea al igual que el campo de direccion del destino.
                     //-------------------------------------------------------------------------------------------------
@@ -946,9 +944,11 @@ class CargarGuia extends FormularioBaseKaizen {
                         $this->cargarReceptorias($this->strCodiEsta,$this->objGuia->ReceptoriaDestino);
                         $this->lstReceDest->Enabled = false;
                         $this->lstReceDest->ForeColor = 'blue';
-                        //$this->txtDireDest->Text = 'OFICINA LIBERTY ('.$this->strCodiEsta.')';
                         $this->txtDireDest->Enabled = false;
                         $this->txtDireDest->ForeColor = 'blue';
+                        if (substr_count($this->txtDireDest->Text, 'OFICINA LIBERTY')) {
+                            $this->txtDireDest->Text = 'OFICINA LIBERTY (' . $this->strCodiEsta . ')';
+                        }
                     } else {
                         $this->lstReceDest->RemoveAllItems();
                         $this->lstReceDest->Enabled = false;
@@ -969,10 +969,9 @@ class CargarGuia extends FormularioBaseKaizen {
                 $this->txtDireDest->Enabled = true;
                 $this->txtDireDest->ForeColor = null;
             }
-            //---------------------------------------------------
-            // Se cargan las Zonas Cubiertas de la Sucursal y se
-            // activa el boton que permite visualizarlas.
-            //---------------------------------------------------
+            //-----------------------------------------------------------------------------------------------
+            // Se cargan las Zonas Cubiertas de la Sucursal y se activa el boton que permite visualizarlas.
+            //-----------------------------------------------------------------------------------------------
             $objEstaDest = Estacion::Load($this->strCodiEsta);
             $this->strZonaIncu = $objEstaDest->ZonasNc;
             $this->lblBotoPopu->Visible = true;
@@ -1270,6 +1269,8 @@ class CargarGuia extends FormularioBaseKaizen {
     // Función responsable del cálculo de la Tarifa del Expreso Nacional
     //-------------------------------------------------------------------
     protected function calcularTarifa() {
+        t('=========================');
+        t('Entrando a CalcularTarifa');
         $blnTodoOkey = false;
 
         if (!$this->blnEditMode) {
@@ -1340,10 +1341,9 @@ class CargarGuia extends FormularioBaseKaizen {
             $this->objGuia->EstaOrig = $this->strSucuOrig;
             $this->objGuia->ReceptoriaOrigen = $this->strReceOrig;
         }
-        //----------------------------------------------------------------------
-        // Si el Valor Declarado es mayor a cero, entonces se entiende que la
-        // Guia esta asegurada
-        //----------------------------------------------------------------------
+        //-----------------------------------------------------------------------------------------
+        // Si el Valor Declarado es mayor a cero, entonces se entiende que la Guia esta asegurada
+        //-----------------------------------------------------------------------------------------
         $blnEnviAseg = false;
         if (strlen($this->txtValoDecl->Text) > 0) {
             if ($this->txtValoDecl->Text > 0) {
@@ -1385,6 +1385,7 @@ class CargarGuia extends FormularioBaseKaizen {
 
         $this->objGuia->VendedorId = $this->objClieTari->VendedorId;
         $this->objGuia->OperacionId = $this->intOperGene;
+
         if ($this->lstReceDest->SelectedValue) {
             $strReceDest = $this->lstReceDest->SelectedValue;
         } else {
@@ -1459,10 +1460,7 @@ class CargarGuia extends FormularioBaseKaizen {
         }
     }
 
-    //--------------------------------------------------------------------------------------------------------------
-    // Función que compara dos objetos y registra una traza de trabajo en caso de haber una o más diferencias entre
-    // los objetos.
-    //--------------------------------------------------------------------------------------------------------------
+
     protected function RegistroDeCambios($objGuiaOrig, $objNuevGuia) {
         $strTextMens = '';
         $strCodiCkpt = 'MG';  // Modifico la Guia
@@ -1591,132 +1589,111 @@ class CargarGuia extends FormularioBaseKaizen {
         }
     }
 
+
     protected function enviarMensajeDeError($strTextMens) {
         $this->mensaje($strTextMens,'','d', '', __iHAND__);
     }
 
-    //-----------------------------------------------------------------------------------------
-    // Función encargada de validar en varias partes del programa varios campos del formulario
-    //-----------------------------------------------------------------------------------------
-    protected function verificarDatos() {
-        $blnTodoOkey = true;
 
+    protected function verificarDatos() {
         if (strlen($this->txtPesoGuia->Text) == 0) {
-            $this->mensaje('Debe especificar el Peso!','','d',
-                           '',__iHAND__);
-            $blnTodoOkey = false;
+            $strMensUsua = 'Debe especificar el Peso!';
+            $this->mensaje($strMensUsua,'','d', '',__iHAND__);
+            return false;
         } else {
             if ($this->txtPesoGuia->Text <= 0) {
-                $this->mensaje('El Peso debe ser Mayor a cero!','',
-                               'd','',__iHAND__);
-                $blnTodoOkey = false;
+                $strMensUsua = 'El Peso <b>debe ser Mayor a cero!</b>';
+                $this->mensaje($strMensUsua,'', 'd','',__iHAND__);
+                return false;
             }
         }
 
-        if ($blnTodoOkey){
-            if (is_null($this->lstSucuDest->SelectedValue)) {
-                $this->mensaje('Debe especificar el Destino del Envío!','',
-                               'd','',__iHAND__);
-                $blnTodoOkey = false;
+        if (is_null($this->lstSucuDest->SelectedValue)) {
+            $strMensUsua = 'Debe especificar el Destino del Envío!';
+            $this->mensaje($strMensUsua,'', 'd','',__iHAND__);
+            return false;
+        }
+
+        //--------------------------------------------------------------------------
+        // Se verifica que la Receptoría Destino corresponda a la Sucursal Destino
+        //--------------------------------------------------------------------------
+        if (!is_null($this->lstReceDest->SelectedValue)) {
+            $strReceDest = $this->lstReceDest->SelectedValue;
+            $objReceDest = Counter::LoadBySiglas($strReceDest);
+            if ($objReceDest->SucursalId != $this->strCodiEsta) {
+                $strMensUsua = 'La Receptoría Destino <b>'.$strReceDest.
+                               '</b> no corresponde a la Sucursal Destino <b>'.$this->strCodiEsta.'</b>!';
+                $this->mensaje($strMensUsua,'','d','i',__iHAND__);
+                return false;
             }
         }
 
-        if ($blnTodoOkey) {
-            //--------------------------------------------------------------------------
-            // Se verifica que la Receptoría Destino corresponda a la Sucursal Destino
-            //--------------------------------------------------------------------------
-            if (!is_null($this->lstReceDest->SelectedValue)) {
-                $strReceDest = $this->lstReceDest->SelectedValue;
-                $objReceDest = Counter::LoadBySiglas($strReceDest);
-                if ($objReceDest->SucursalId != $this->strCodiEsta) {
-                    $strMensUsua = 'La Receptoría Destino <b>'.$strReceDest.
-                                   '</b> no corresponde a la Sucursal Destino <b>'.$this->strCodiEsta.'</b>!';
-                    $this->mensaje($strMensUsua,'','d','i',__iHAND__);
-                    $blnTodoOkey = false;
+        $this->decValoDecl = $this->txtValoDecl->Text;
+        if (strlen($this->txtValoDecl->Text) > 0) {
+            $this->txtValoDecl->Text = DejarSoloLosNumeros($this->txtValoDecl->Text);
+            //----------------------------------------------------------------------------------------------------
+            // Si el valor declarado es mayor a cero, y a su vez, es menor al rango reglamentario, se notifica al
+            // usuario que dicho valor tiene que ser mayor o igual al valor mínimo reglamentario.
+            //----------------------------------------------------------------------------------------------------
+            if ($this->txtValoDecl->Text > 0 && $this->txtValoDecl->Text < $this->decMiniSegu) {
+                $strMensUsua ='El Valor Declarado <b>mínimo aceptable es: '.$this->decMiniSegu.'!</b>';
+                $this->mensaje($strMensUsua, '','d','',__iHAND__);
+                return false;
+            }
+            //---------------------------------------------------------------------------------------------------
+            // Si el valor declarado es mayor a cero, y a su vez, es mayor al rango reglamentario, se notifica al
+            // usuario que dicho valor tiene que ser menor o igual al valor máximo reglamentario.
+            //---------------------------------------------------------------------------------------------------
+            if ($this->txtValoDecl->Text > 0 && $this->txtValoDecl->Text > $this->decMaxiSegu) {
+                $this->txtValoDecl->Text = $this->decMaxiSegu;
+                $this->decValoDecl = $this->decMaxiSegu;
+                $strMensUsua ='El Valor Declarado <b>se ajustó al máximo permitido (Bs.'. $this->decMaxiSegu.')</b>';
+                $this->mensaje($strMensUsua, '', 'w', '', __iEXCL__);
+                return false;
+            }
+        }
+
+        if (is_null($this->rdbModaPago->SelectedValue)) {
+            $strMensUsua ='Debe especificar la Forma de Pago!';
+            $this->mensaje($strMensUsua,'', 'd','',__iHAND__);
+            return false;
+        }
+
+        if (strlen($this->txtCantPiez->Text) == 0) {
+            $strMensUsua = 'Debe especificar la cantidad de piezas!';
+            $this->mensaje($strMensUsua,'m', 'd','',__iHAND__);
+            return false;
+        } else {
+            if ($this->txtCantPiez->Text <= 0) {
+                $strMensUsua ='La Cantidad de Piezas <b>debe ser mayor a Cero(0)!</b>';
+                $this->mensaje($strMensUsua,'m', 'd','',__iHAND__);
+                return false;
+            }
+        }
+
+        //-------------------------------------------------------------------------
+        // Se verifica el Limite de Kilos en funcion del Origen/Destino de la guia
+        //-------------------------------------------------------------------------
+        $decPesoGuia = $this->txtPesoGuia->Text;
+        $intCantPiez = $this->txtCantPiez->Text;
+        $decPromPeso = $decPesoGuia / $intCantPiez;
+
+        foreach ($this->arrReceLimi as $key => $value) {
+            //--------------------------------------------------------------------
+            // Si el Origen o el Destino estan en la lista de las Receptorias con
+            // limite de peso, entonces se notifica al Usuario
+            //--------------------------------------------------------------------
+            if ($this->strReceOrig == $key || $this->lstReceDest->SelectedValue == $key) {
+                if ($decPromPeso > $value) {
+                    $strMensUsua ='El Peso <b>no puede exceder '.$value.' Kg (Origen/Destino con Limite de Kilos)</b>';
+                    $this->mensaje($strMensUsua, '','d','',__iHAND__);
+                    return false;
                 }
             }
         }
 
-        if ($blnTodoOkey) {
-            $this->decValoDecl = $this->txtValoDecl->Text;
-            if (strlen($this->txtValoDecl->Text) > 0) {
-                $this->txtValoDecl->Text = DejarSoloLosNumeros($this->txtValoDecl->Text);
-                //----------------------------------------------------------------------------------------------------
-                // Si el valor declarado es mayor a cero, y a su vez, es menor al rango reglamentario, se notifica al
-                // usuario que dicho valor tiene que ser mayor o igual al valor mínimo reglamentario.
-                //----------------------------------------------------------------------------------------------------
-                if ($this->txtValoDecl->Text > 0 && $this->txtValoDecl->Text < $this->decMiniSegu) {
-                    $this->mensaje('El Valor Declarado debe ser Superior ó igual a: '.$this->decMiniSegu.'!',
-                        '','d','',__iHAND__);
-                    $blnTodoOkey = false;
-                }
-                //---------------------------------------------------------------------------------------------------
-                // Si el valor declarado es mayor a cero, y a su vez, es mayor al rango reglamentario, se notifica al
-                // usuario que dicho valor tiene que ser menor o igual al valor máximo reglamentario.
-                //---------------------------------------------------------------------------------------------------
-                if ($this->txtValoDecl->Text > 0 && $this->txtValoDecl->Text > $this->decMaxiSegu) {
-                    $this->txtValoDecl->Text = $this->decMaxiSegu;
-                    $this->decValoDecl = $this->decMaxiSegu;
-                    $this->mensaje('El Valor Declarado se ajustó al equivalente máximo reglamentario (Bs.'.
-                                    $this->decMaxiSegu.')', '', 'w',
-                                   '', __iEXCL__);
-                    $blnTodoOkey = false;
-                }
-            }
-        }
-
-        if ($blnTodoOkey) {
-            if (is_null($this->rdbModaPago->SelectedValue)) {
-                $this->mensaje('Debe especificar la Forma de Pago!','',
-                               'd','',__iHAND__);
-                $blnTodoOkey = false;
-            }
-        }
-
-        if ($blnTodoOkey) {
-            if (strlen($this->txtCantPiez->Text) == 0) {
-                $this->mensaje('Debe especificar la cantidad de piezas!','m',
-                               'd','',__iHAND__);
-                $blnTodoOkey = false;
-            } else {
-                if ($this->txtCantPiez->Text <= 0) {
-                    $this->mensaje('La Cantidad de Piezas debe ser mayor a Cero(0)!','m',
-                                   'd','',__iHAND__);
-                    $blnTodoOkey = false;
-                }
-            }
-        }
-
-        if ($blnTodoOkey) {
-            //-------------------------------------------------------------------------
-            // Se verifica el Limite de Kilos en funcion del Origen/Destino de la guia
-            //-------------------------------------------------------------------------
-            $decPesoGuia = $this->txtPesoGuia->Text;
-            $intCantPiez = $this->txtCantPiez->Text;
-            $decPromPeso = $decPesoGuia / $intCantPiez;
-
-            foreach ($this->arrReceLimi as $key => $value) {
-                //--------------------------------------------------------------------
-                // Si el Origen o el Destino estan en la lista de las Receptorias con
-                // limite de peso, entonces se notifica al Usuario
-                //--------------------------------------------------------------------
-                if ($this->strReceOrig == $key || $this->lstReceDest->SelectedValue == $key) {
-                    if ($decPromPeso > $value) {
-                        $this->mensaje('El Peso no puede exceder '.$value.
-                                                  ' Kg (Origen/Destino con Limite de Kilos)',
-                            '','d','',__iHAND__);
-
-                        $blnTodoOkey = false;
-                    }
-                }
-            }
-        }
-
-        if ($blnTodoOkey) {
-            $this->mensaje();
-        }
-
-        return $blnTodoOkey;
+        $this->mensaje();
+        return true;
     }
 
     protected function Form_Validate() {

@@ -11,14 +11,11 @@ class CambiarClave extends FormularioBaseKaizen {
     protected $txtClavNue2;
 
     protected function Form_Create() {
-        //echo 1;
         parent::Form_Create();
         $this->lblTituForm->Text = 'Cambiar Clave';
-        //echo 2;
         $this->txtClavActu_Create();
         $this->txtClavNue1_Create();
         $this->txtClavNue2_Create();
-        //echo 3;
     }
 
     //----------------------------

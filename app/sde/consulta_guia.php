@@ -280,7 +280,7 @@ class ConsultaGuia extends FormularioBaseKaizen {
 
         $strTextBoto   = TextoIcono('plus','Acciones');
         $arrOpciDrop   = array();
-//        $arrOpciDrop[] = OpcionDropDown(__SIST__.'/ver_calculos.php',TextoIcono(__iOJOS__,'Ver Calculos'));
+        //$arrOpciDrop[] = OpcionDropDown(__SIST__.'/ver_calculos.php',TextoIcono(__iOJOS__,'Ver Calculos'));
         if ($this->objGuia->sistema() == 'ExpNac') {
             $arrOpciDrop[] = OpcionDropDown(__SIST__.'/cambio_sucu_rece_guia.php',TextoIcono(__iEDIT__,'Cambiar Receptoria'));
         }

@@ -56,6 +56,7 @@ if ($_SESSION['FechInic']) {
     $strModoEjec = 'CRON';
 }
 
+
 //-----------------------------------------
 // Se Procesan una por una las Sucursales
 //-----------------------------------------
@@ -81,6 +82,8 @@ foreach ($arrSucuSele as $objSucursal) {
         $strCadeSql3 .= "   and esta_dest not in ( 'TODOS','EXP' ) ";
         $strCadeSql3 .= " group by 1 ";
         $objDbResult3  = $objDatabase->Query($strCadeSql3);
+        echo $strCadeSql3;
+        exit;
         while ($mixRegistro3 = $objDbResult3->FetchArray()) {
             $arrDatoRep3[] = array(''.$mixRegistro3[0],''.$mixRegistro3[1]);
         }

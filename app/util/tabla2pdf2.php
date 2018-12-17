@@ -10,10 +10,10 @@ session_start();
 //----------------------
 // Cargo las Librerias
 //----------------------
-$dbhost = 'srvlufemandb';
-$dbuser = 'root';
+$dbhost   = 'localhost';
+$dbuser   = 'root';
 $dbpasswd = 'hiroshima71';
-$dbname ='liberty';
+$dbname   = 'liberty';
 require_once('/appl/lib/db.php');
 require_once('/appl/lib/repo_totales_pdflib.php');
 //require_once('/appl/lib/funciones.php');
@@ -38,7 +38,7 @@ $dire_fisc = $regi_dato['para_txt5'];
 $clau_sele = get_select('parametro','*','indi_para = "88888" and codi_para = "logos"');
 $db->sql_query($clau_sele);
 $regi_dato = $db->sql_fetchrow();
-$nomb_imag = "../../generador/assets/images/LogoEmpresa.jpg";
+$nomb_imag = "../../assets/images/LogoEmpresa.jpg";
 //$nomb_imag = '';
 //echo 3;
 //------------------------------------------------------------

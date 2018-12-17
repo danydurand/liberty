@@ -11,6 +11,7 @@ require_once(__APP_INCLUDES__.'/protected.inc.php');
 require_once(__APP_INCLUDES__.'/FormularioBaseKaizen.class.php');
 
 class ConfigurarSeguro extends FormularioBaseKaizen {
+    protected $intAnchCamp;
     protected $objSeguPmnx;
     protected $objSeguPmn1;
     protected $objSeguPmn2;
@@ -441,6 +442,8 @@ class ConfigurarSeguro extends FormularioBaseKaizen {
 
         $this->lblTituForm->Text = 'Configurar Seguro';
 
+        $this->intAnchCamp = 100;
+
         $this->SetupValores();
 
         $this->chkSeguSino_Create();
@@ -505,7 +508,6 @@ class ConfigurarSeguro extends FormularioBaseKaizen {
     protected function chkSeguSino_Create() {
         $this->chkSeguSino = new QCheckBox($this);
         $this->chkSeguSino->Name = QApplication::Translate('Se Ofrece Seguro ?');
-        //$this->chkSeguSino->Checked = $this->intSeguSino;
         $this->chkSeguSino->Checked = true;
         $this->chkSeguSino->AddAction(new QChangeEvent(), new QAjaxAction('chkSeguSino_Change'));
     }
@@ -513,7 +515,7 @@ class ConfigurarSeguro extends FormularioBaseKaizen {
     protected function txtMontMini_Create() {
         $this->txtMontMini = new QFloatTextBox($this);
         $this->txtMontMini->Name = QApplication::Translate('Monto Minimo');
-        $this->txtMontMini->Width = 80;
+        $this->txtMontMini->Width = $this->intAnchCamp;
         $this->txtMontMini->Text = $this->decMontMini;
         if (!$this->chkSeguSino->Checked) {
             $this->txtMontMini->Enabled = false;
@@ -524,7 +526,7 @@ class ConfigurarSeguro extends FormularioBaseKaizen {
     protected function txtMontMini2_Create() {
         $this->txtMontMini2 = new QFloatTextBox($this);
         $this->txtMontMini2->Name = QApplication::Translate('Monto Minimo');
-        $this->txtMontMini2->Width = 80;
+        $this->txtMontMini2->Width = $this->intAnchCamp;
         $this->txtMontMini2->Text = $this->decMontMini2;
         if (!$this->chkSeguSino->Checked) {
             $this->txtMontMini2->Enabled = false;
@@ -535,7 +537,7 @@ class ConfigurarSeguro extends FormularioBaseKaizen {
     protected function txtMontMini3_Create() {
         $this->txtMontMini3 = new QFloatTextBox($this);
         $this->txtMontMini3->Name = QApplication::Translate('Monto Minimo');
-        $this->txtMontMini3->Width = 80;
+        $this->txtMontMini3->Width = $this->intAnchCamp;
         $this->txtMontMini3->Text = $this->decMontMini3;
         if (!$this->chkSeguSino->Checked) {
             $this->txtMontMini3->Enabled = false;
@@ -546,7 +548,7 @@ class ConfigurarSeguro extends FormularioBaseKaizen {
     protected function txtMontMini4_Create() {
         $this->txtMontMini4 = new QFloatTextBox($this);
         $this->txtMontMini4->Name = QApplication::Translate('Monto Minimo');
-        $this->txtMontMini4->Width = 80;
+        $this->txtMontMini4->Width = $this->intAnchCamp;
         $this->txtMontMini4->Text = $this->decMontMini4;
         if (!$this->chkSeguSino->Checked) {
             $this->txtMontMini4->Enabled = false;
@@ -557,7 +559,7 @@ class ConfigurarSeguro extends FormularioBaseKaizen {
     protected function txtMontMini5_Create() {
         $this->txtMontMini5 = new QFloatTextBox($this);
         $this->txtMontMini5->Name = QApplication::Translate('Monto Minimo');
-        $this->txtMontMini5->Width = 80;
+        $this->txtMontMini5->Width = $this->intAnchCamp;
         $this->txtMontMini5->Text = $this->decMontMini5;
         if (!$this->chkSeguSino->Checked) {
             $this->txtMontMini5->Enabled = false;
@@ -568,7 +570,7 @@ class ConfigurarSeguro extends FormularioBaseKaizen {
     protected function txtMontMini6_Create() {
         $this->txtMontMini6 = new QFloatTextBox($this);
         $this->txtMontMini6->Name = QApplication::Translate('Monto Minimo');
-        $this->txtMontMini6->Width = 80;
+        $this->txtMontMini6->Width = $this->intAnchCamp;
         $this->txtMontMini6->Text = $this->decMontMini6;
         if (!$this->chkSeguSino->Checked) {
             $this->txtMontMini6->Enabled = false;
@@ -579,7 +581,7 @@ class ConfigurarSeguro extends FormularioBaseKaizen {
     protected function txtMontMini7_Create() {
         $this->txtMontMini7 = new QFloatTextBox($this);
         $this->txtMontMini7->Name = QApplication::Translate('Monto Minimo');
-        $this->txtMontMini7->Width = 80;
+        $this->txtMontMini7->Width = $this->intAnchCamp;
         $this->txtMontMini7->Text = $this->decMontMini7;
         if (!$this->chkSeguSino->Checked) {
             $this->txtMontMini7->Enabled = false;
@@ -590,7 +592,7 @@ class ConfigurarSeguro extends FormularioBaseKaizen {
     protected function txtMontMini8_Create() {
         $this->txtMontMini8 = new QFloatTextBox($this);
         $this->txtMontMini8->Name = QApplication::Translate('Monto Minimo');
-        $this->txtMontMini8->Width = 80;
+        $this->txtMontMini8->Width = $this->intAnchCamp;
         $this->txtMontMini8->Text = $this->decMontMini8;
         if (!$this->chkSeguSino->Checked) {
             $this->txtMontMini8->Enabled = false;
@@ -601,7 +603,7 @@ class ConfigurarSeguro extends FormularioBaseKaizen {
     protected function txtMontMini9_Create() {
         $this->txtMontMini9 = new QFloatTextBox($this);
         $this->txtMontMini9->Name = QApplication::Translate('Monto Minimo');
-        $this->txtMontMini9->Width = 80;
+        $this->txtMontMini9->Width = $this->intAnchCamp;
         $this->txtMontMini9->Text = $this->decMontMini9;
         if (!$this->chkSeguSino->Checked) {
             $this->txtMontMini9->Enabled = false;
@@ -612,7 +614,7 @@ class ConfigurarSeguro extends FormularioBaseKaizen {
     protected function txtMontMini10_Create() {
         $this->txtMontMini10 = new QFloatTextBox($this);
         $this->txtMontMini10->Name = QApplication::Translate('Monto Minimo');
-        $this->txtMontMini10->Width = 80;
+        $this->txtMontMini10->Width = $this->intAnchCamp;
         $this->txtMontMini10->Text = $this->decMontMini10;
         if (!$this->chkSeguSino->Checked) {
             $this->txtMontMini10->Enabled = false;
@@ -623,7 +625,7 @@ class ConfigurarSeguro extends FormularioBaseKaizen {
     protected function txtMontMini11_Create() {
         $this->txtMontMini11 = new QFloatTextBox($this);
         $this->txtMontMini11->Name = QApplication::Translate('Monto Minimo');
-        $this->txtMontMini11->Width = 80;
+        $this->txtMontMini11->Width = $this->intAnchCamp;
         $this->txtMontMini11->Text = $this->decMontMini11;
         if (!$this->chkSeguSino->Checked) {
             $this->txtMontMini11->Enabled = false;
@@ -634,7 +636,7 @@ class ConfigurarSeguro extends FormularioBaseKaizen {
     protected function txtMontMini12_Create() {
         $this->txtMontMini12 = new QFloatTextBox($this);
         $this->txtMontMini12->Name = QApplication::Translate('Monto Minimo');
-        $this->txtMontMini12->Width = 80;
+        $this->txtMontMini12->Width = $this->intAnchCamp;
         $this->txtMontMini12->Text = $this->decMontMini12;
         if (!$this->chkSeguSino->Checked) {
             $this->txtMontMini12->Enabled = false;
@@ -645,7 +647,7 @@ class ConfigurarSeguro extends FormularioBaseKaizen {
     protected function txtMontMini13_Create() {
         $this->txtMontMini13 = new QFloatTextBox($this);
         $this->txtMontMini13->Name = QApplication::Translate('Monto Minimo');
-        $this->txtMontMini13->Width = 80;
+        $this->txtMontMini13->Width = $this->intAnchCamp;
         $this->txtMontMini13->Text = $this->decMontMini13;
         if (!$this->chkSeguSino->Checked) {
             $this->txtMontMini13->Enabled = false;
@@ -656,7 +658,7 @@ class ConfigurarSeguro extends FormularioBaseKaizen {
     protected function txtMontMini14_Create() {
         $this->txtMontMini14 = new QFloatTextBox($this);
         $this->txtMontMini14->Name = QApplication::Translate('Monto Minimo');
-        $this->txtMontMini14->Width = 80;
+        $this->txtMontMini14->Width = $this->intAnchCamp;
         $this->txtMontMini14->Text = $this->decMontMini14;
         if (!$this->chkSeguSino->Checked) {
             $this->txtMontMini14->Enabled = false;
@@ -667,7 +669,7 @@ class ConfigurarSeguro extends FormularioBaseKaizen {
     protected function txtMontMini15_Create() {
         $this->txtMontMini15 = new QFloatTextBox($this);
         $this->txtMontMini15->Name = QApplication::Translate('Monto Minimo');
-        $this->txtMontMini15->Width = 80;
+        $this->txtMontMini15->Width = $this->intAnchCamp;
         $this->txtMontMini15->Text = $this->decMontMini15;
         if (!$this->chkSeguSino->Checked) {
             $this->txtMontMini15->Enabled = false;
@@ -678,7 +680,7 @@ class ConfigurarSeguro extends FormularioBaseKaizen {
     protected function txtMontMini16_Create() {
         $this->txtMontMini16 = new QFloatTextBox($this);
         $this->txtMontMini16->Name = QApplication::Translate('Monto Minimo');
-        $this->txtMontMini16->Width = 80;
+        $this->txtMontMini16->Width = $this->intAnchCamp;
         $this->txtMontMini16->Text = $this->decMontMini16;
         if (!$this->chkSeguSino->Checked) {
             $this->txtMontMini16->Enabled = false;
@@ -689,7 +691,7 @@ class ConfigurarSeguro extends FormularioBaseKaizen {
     protected function txtMontMaxi_Create() {
         $this->txtMontMaxi = new QFloatTextBox($this);
         $this->txtMontMaxi->Name = QApplication::Translate('Monto Maximo');
-        $this->txtMontMaxi->Width = 80;
+        $this->txtMontMaxi->Width = $this->intAnchCamp;
         $this->txtMontMaxi->Text = $this->decMontMaxi;
         if (!$this->chkSeguSino->Checked) {
             $this->txtMontMaxi->Enabled = false;
@@ -700,7 +702,7 @@ class ConfigurarSeguro extends FormularioBaseKaizen {
     protected function txtMontMaxi2_Create() {
         $this->txtMontMaxi2 = new QFloatTextBox($this);
         $this->txtMontMaxi2->Name = QApplication::Translate('Monto Maximo');
-        $this->txtMontMaxi2->Width = 80;
+        $this->txtMontMaxi2->Width = $this->intAnchCamp;
         $this->txtMontMaxi2->Text = $this->decMontMaxi2;
         if (!$this->chkSeguSino->Checked) {
             $this->txtMontMaxi2->Enabled = false;
@@ -711,7 +713,7 @@ class ConfigurarSeguro extends FormularioBaseKaizen {
     protected function txtMontMaxi3_Create() {
         $this->txtMontMaxi3 = new QFloatTextBox($this);
         $this->txtMontMaxi3->Name = QApplication::Translate('Monto Maximo');
-        $this->txtMontMaxi3->Width = 80;
+        $this->txtMontMaxi3->Width = $this->intAnchCamp;
         $this->txtMontMaxi3->Text = $this->decMontMaxi3;
         if (!$this->chkSeguSino->Checked) {
             $this->txtMontMaxi3->Enabled = false;
@@ -723,7 +725,7 @@ class ConfigurarSeguro extends FormularioBaseKaizen {
     protected function txtMontMaxi4_Create() {
         $this->txtMontMaxi4 = new QFloatTextBox($this);
         $this->txtMontMaxi4->Name = QApplication::Translate('Monto Maximo');
-        $this->txtMontMaxi4->Width = 80;
+        $this->txtMontMaxi4->Width = $this->intAnchCamp;
         $this->txtMontMaxi4->Text = $this->decMontMaxi4;
         if (!$this->chkSeguSino->Checked) {
             $this->txtMontMaxi4->Enabled = false;
@@ -735,7 +737,7 @@ class ConfigurarSeguro extends FormularioBaseKaizen {
     protected function txtMontMaxi5_Create() {
         $this->txtMontMaxi5 = new QFloatTextBox($this);
         $this->txtMontMaxi5->Name = QApplication::Translate('Monto Maximo');
-        $this->txtMontMaxi5->Width = 80;
+        $this->txtMontMaxi5->Width = $this->intAnchCamp;
         $this->txtMontMaxi5->Text = $this->decMontMaxi5;
         if (!$this->chkSeguSino->Checked) {
             $this->txtMontMaxi5->Enabled = false;
@@ -747,7 +749,7 @@ class ConfigurarSeguro extends FormularioBaseKaizen {
     protected function txtMontMaxi6_Create() {
         $this->txtMontMaxi6 = new QFloatTextBox($this);
         $this->txtMontMaxi6->Name = QApplication::Translate('Monto Maximo');
-        $this->txtMontMaxi6->Width = 80;
+        $this->txtMontMaxi6->Width = $this->intAnchCamp;
         $this->txtMontMaxi6->Text = $this->decMontMaxi6;
         if (!$this->chkSeguSino->Checked) {
             $this->txtMontMaxi6->Enabled = false;
@@ -759,7 +761,7 @@ class ConfigurarSeguro extends FormularioBaseKaizen {
     protected function txtMontMaxi7_Create() {
         $this->txtMontMaxi7 = new QFloatTextBox($this);
         $this->txtMontMaxi7->Name = QApplication::Translate('Monto Maximo');
-        $this->txtMontMaxi7->Width = 80;
+        $this->txtMontMaxi7->Width = $this->intAnchCamp;
         $this->txtMontMaxi7->Text = $this->decMontMaxi7;
         if (!$this->chkSeguSino->Checked) {
             $this->txtMontMaxi7->Enabled = false;
@@ -771,7 +773,7 @@ class ConfigurarSeguro extends FormularioBaseKaizen {
     protected function txtMontMaxi8_Create() {
         $this->txtMontMaxi8 = new QFloatTextBox($this);
         $this->txtMontMaxi8->Name = QApplication::Translate('Monto Maximo');
-        $this->txtMontMaxi8->Width = 80;
+        $this->txtMontMaxi8->Width = $this->intAnchCamp;
         $this->txtMontMaxi8->Text = $this->decMontMaxi8;
         if (!$this->chkSeguSino->Checked) {
             $this->txtMontMaxi8->Enabled = false;
@@ -783,7 +785,7 @@ class ConfigurarSeguro extends FormularioBaseKaizen {
     protected function txtMontMaxi9_Create() {
         $this->txtMontMaxi9 = new QFloatTextBox($this);
         $this->txtMontMaxi9->Name = QApplication::Translate('Monto Maximo');
-        $this->txtMontMaxi9->Width = 80;
+        $this->txtMontMaxi9->Width = $this->intAnchCamp;
         $this->txtMontMaxi9->Text = $this->decMontMaxi9;
         if (!$this->chkSeguSino->Checked) {
             $this->txtMontMaxi9->Enabled = false;
@@ -795,7 +797,7 @@ class ConfigurarSeguro extends FormularioBaseKaizen {
     protected function txtMontMaxi10_Create() {
         $this->txtMontMaxi10 = new QFloatTextBox($this);
         $this->txtMontMaxi10->Name = QApplication::Translate('Monto Maximo');
-        $this->txtMontMaxi10->Width = 80;
+        $this->txtMontMaxi10->Width = $this->intAnchCamp;
         $this->txtMontMaxi10->Text = $this->decMontMaxi10;
         if (!$this->chkSeguSino->Checked) {
             $this->txtMontMaxi10->Enabled = false;
@@ -806,7 +808,7 @@ class ConfigurarSeguro extends FormularioBaseKaizen {
     protected function txtMontMaxi11_Create() {
         $this->txtMontMaxi11 = new QFloatTextBox($this);
         $this->txtMontMaxi11->Name = QApplication::Translate('Monto Maximo');
-        $this->txtMontMaxi11->Width = 80;
+        $this->txtMontMaxi11->Width = $this->intAnchCamp;
         $this->txtMontMaxi11->Text = $this->decMontMaxi11;
         if (!$this->chkSeguSino->Checked) {
             $this->txtMontMaxi11->Enabled = false;
@@ -817,7 +819,7 @@ class ConfigurarSeguro extends FormularioBaseKaizen {
     protected function txtMontMaxi12_Create() {
         $this->txtMontMaxi12 = new QFloatTextBox($this);
         $this->txtMontMaxi12->Name = QApplication::Translate('Monto Maximo');
-        $this->txtMontMaxi12->Width = 80;
+        $this->txtMontMaxi12->Width = $this->intAnchCamp;
         $this->txtMontMaxi12->Text = $this->decMontMaxi12;
         if (!$this->chkSeguSino->Checked) {
             $this->txtMontMaxi12->Enabled = false;
@@ -828,7 +830,7 @@ class ConfigurarSeguro extends FormularioBaseKaizen {
     protected function txtMontMaxi13_Create() {
         $this->txtMontMaxi13 = new QFloatTextBox($this);
         $this->txtMontMaxi13->Name = QApplication::Translate('Monto Maximo');
-        $this->txtMontMaxi13->Width = 80;
+        $this->txtMontMaxi13->Width = $this->intAnchCamp;
         $this->txtMontMaxi13->Text = $this->decMontMaxi13;
         if (!$this->chkSeguSino->Checked) {
             $this->txtMontMaxi13->Enabled = false;
@@ -839,7 +841,7 @@ class ConfigurarSeguro extends FormularioBaseKaizen {
     protected function txtMontMaxi14_Create() {
         $this->txtMontMaxi14 = new QFloatTextBox($this);
         $this->txtMontMaxi14->Name = QApplication::Translate('Monto Maximo');
-        $this->txtMontMaxi14->Width = 80;
+        $this->txtMontMaxi14->Width = $this->intAnchCamp;
         $this->txtMontMaxi14->Text = $this->decMontMaxi14;
         if (!$this->chkSeguSino->Checked) {
             $this->txtMontMaxi14->Enabled = false;
@@ -850,7 +852,7 @@ class ConfigurarSeguro extends FormularioBaseKaizen {
     protected function txtMontMaxi15_Create() {
         $this->txtMontMaxi15 = new QFloatTextBox($this);
         $this->txtMontMaxi15->Name = QApplication::Translate('Monto Maximo');
-        $this->txtMontMaxi15->Width = 80;
+        $this->txtMontMaxi15->Width = $this->intAnchCamp;
         $this->txtMontMaxi15->Text = $this->decMontMaxi15;
         if (!$this->chkSeguSino->Checked) {
             $this->txtMontMaxi15->Enabled = false;
@@ -861,7 +863,7 @@ class ConfigurarSeguro extends FormularioBaseKaizen {
     protected function txtMontMaxi16_Create() {
         $this->txtMontMaxi16 = new QFloatTextBox($this);
         $this->txtMontMaxi16->Name = QApplication::Translate('Monto Maximo');
-        $this->txtMontMaxi16->Width = 80;
+        $this->txtMontMaxi16->Width = $this->intAnchCamp;
         $this->txtMontMaxi16->Text = $this->decMontMaxi16;
         if (!$this->chkSeguSino->Checked) {
             $this->txtMontMaxi16->Enabled = false;
@@ -1048,7 +1050,7 @@ class ConfigurarSeguro extends FormularioBaseKaizen {
     protected function txtRutaMaxi_Create() {
         $this->txtRutaMaxi = new QFloatTextBox($this);
         $this->txtRutaMaxi->Name = QApplication::Translate('Limite Maximo para Salir a Ruta');
-        $this->txtRutaMaxi->Width = 80;
+        $this->txtRutaMaxi->Width = $this->intAnchCamp;
         $this->txtRutaMaxi->Text = $this->decRutaMaxi;
         $this->txtRutaMaxi->ToolTip  = 'Toda factura que sea menor a este monto, puede salir a ruta sin ';
         $this->txtRutaMaxi->ToolTip .= 'haber sido registrado el pago de la misma';

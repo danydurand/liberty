@@ -140,7 +140,9 @@ class DarPermisos extends FormularioBaseKaizen {
         $this->lstPermProc->Required = true;
         $this->lstPermProc->Width = 300;
         $this->lstPermProc->AddItem(QApplication::Translate("- Seleccione Uno -",null));
-        $arrListPerm = Parametro::LoadArrayByIndiPara('VariPerm');
+        $objClauOrde   = QQ::Clause();
+        $objClauOrde[] = QQ::OrderBy(QQN::Parametro()->DescPara);
+        $arrListPerm = Parametro::LoadArrayByIndiPara('VariPerm', $objClauOrde);
         foreach ($arrListPerm as $objPermiso) {
             $this->lstPermProc->AddItem(trim($objPermiso->DescPara)." (".$objPermiso->CodiPara.")",$objPermiso);
         }

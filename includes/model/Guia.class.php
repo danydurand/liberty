@@ -35,87 +35,12 @@
            return (count($arrGuiaCkpt)) ? $arrGuiaCkpt[0] : null;
        }
 
-        //public function calcularTarifa() {
-        //    /**
-        //     * @var $objRegiTraz Parametro
-        //     * @var $objUsuario Usuario
-        //     */
-        //    $objUsuario  = unserialize($_SESSION['User']);
-        //    $strLogiUsua = $objUsuario->LogiUsua;
-        //    $objRegiTraz = BuscarParametro('RegiTraz','CalcTari','TODO',null);
-        //    $blnRegiTraz = false;
-        //    if ($objRegiTraz) {
-        //        if (trim($objRegiTraz->ParaTxt2) == trim($strLogiUsua)) {
-        //            $blnRegiTraz = $objRegiTraz->ParaVal1;
-        //        }
-        //    }
-        //    if ($blnRegiTraz) {
-        //        $objRegiTraz->ParaTxt1  = 'Guia Nro: '.$this->NumeGuia."<br>";
-        //        $objRegiTraz->Save();
-        //        t('Guia Nro: '.$this->NumeGuia);
-        //        $objRegiTraz->ParaTxt1 .= "<b>CalcularTarifaNacionalDeLaGuia</b><br>";
-        //        $objRegiTraz->Save();
-        //        t('*** CalcularTarifaNacionalDeLaGuia ***');
-        //    }
-        //
-        //    //------------------------------------------------------------------------
-        //    // Se establecen los parametros necesarios para el calculo de la tarifa
-        //    //------------------------------------------------------------------------
-        //    $arrParaTari['dttFechGuia'] = $this->FechGuia->__toString("YYYY-MM-DD");
-        //    $arrParaTari['intCodiTari'] = $this->TarifaId;
-        //    $arrParaTari['intCodiProd'] = $this->CodiProd;
-        //    $arrParaTari['strCodiOrig'] = $this->EstaOrig;
-        //    $arrParaTari['strCodiDest'] = $this->EstaDest;
-        //    $arrParaTari['dblPesoGuia'] = $this->PesoGuia;
-        //    $arrParaTari['dblValoDecl'] = $this->ValorDeclarado;
-        //    $arrParaTari['intChecAseg'] = $this->Asegurado;
-        //    $arrParaTari['decSgroClie'] = $this->CodiClieObject->PorcentajeSeguro;
-        //    $arrParaTari['strModaPago'] = TipoGuiaType::ToStringCorto($this->TipoGuia);
-        //
-        //    $arrValoTari = calcularTarifaParcialNew($arrParaTari);
-        //
-        //    if ($blnRegiTraz) {
-        //        $objRegiTraz->ParaTxt1 .= "<b>Regrese de calcularTarifaParcialNew</b><br>";
-        //        $objRegiTraz->Save();
-        //        t('Regrese de calcularTarifaParcialNew');
-        //    }
-        //
-        //    $blnTodoOkey = $arrValoTari['blnTodoOkey'];
-        //    $strMensUsua = $arrValoTari['strMensUsua'];
-        //
-        //    if ($blnTodoOkey) {
-        //        $this->MontoBase        = $arrValoTari['dblMontBase'];
-        //        $this->MontoFranqueo    = $arrValoTari['dblFranPost'];
-        //        $this->PorcentajeSeguro = $arrValoTari['dblPorcSgro'];
-        //        $this->MontoSeguro      = $arrValoTari['dblMontSgro'];
-        //        $this->PorcentajeIva    = $arrValoTari['dblPorcDiva'];
-        //        $this->MontoIva         = $arrValoTari['dblMontDiva'];
-        //        $this->MontoTotal       = $arrValoTari['dblMontTota'];
-        //        $this->MontoOtros       = $arrValoTari['dblMontOtro'];
-        //    }
-        //    if ($blnRegiTraz) {
-        //        $objRegiTraz->ParaTxt1 .= "Valores de retorno:<br>";
-        //        $objRegiTraz->Save();
-        //        t('Valores de retorno:');
-        //        $strTextMens = "Mto Base: ".$this->MontoBase."<br>".
-        //            " Franq Postal: ".$this->MontoFranqueo."<br>".
-        //            " %Sgro: ".$this->PorcentajeSeguro."<br>".
-        //            " Mto Sgro: ".$this->MontoSeguro."<br>".
-        //            " %Iva: ".$this->PorcentajeIva."<br>".
-        //            " Mto Iva: ".$this->MontoIva."<br>".
-        //            " Mto Total: ".$this->MontoTotal."<br>";
-        //        $objRegiTraz->ParaTxt1 .= $strTextMens;
-        //        $objRegiTraz->Save();
-        //        t($strTextMens);
-        //    }
-        //    $arrCalcTari['blnTodoOkey'] = $blnTodoOkey;
-        //    $arrCalcTari['strMensUsua'] = $strMensUsua;
-        //    return $arrCalcTari;
-        //}
-
 
         public function sistema() {
             switch ($this->SistemaId) {
+                case 'api':
+                    return 'Api';
+                    break;
                 case 'sde':
                     return 'SisCO';
                     break;

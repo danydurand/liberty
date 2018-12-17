@@ -46,7 +46,7 @@ if (count($arrCambTari) > 0) {
                     // Log de Transacciones
                     //------------------------
                     $arrLogxCamb['strNombTabl'] = 'MasterCliente';
-                    $arrLogxCamb['intRefeRegi'] = $objClieOrig->CodigoInterno;
+                    $arrLogxCamb['intRefeRegi'] = $objClieOrig->CodiClie;
                     $arrLogxCamb['strNombRegi'] = $objClieOrig->NombClie;
                     $arrLogxCamb['strDescCamb'] = $strTextCamb;
                     LogDeCambios($arrLogxCamb);
@@ -74,6 +74,7 @@ if (count($arrCambTari) > 0) {
                 $objCambTari->TarifaDestino->Descripcion." (".
                 $objCambTari->EjecutadoEl->__toString("YYYY-MM-DD")." a las ".
                 $objCambTari->HoraEjecucion->qFormat(QDateTime::FormatDisplayTime)).")";
+
 
             $mail = new PHPMailer();
             $mail->isHTML(true);

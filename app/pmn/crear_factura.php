@@ -807,10 +807,9 @@ class CrearFactura extends FormularioBaseKaizen {
             $objCliePmnx->Direccion     = $strDireFisc;
             $objCliePmnx->Save();
         } catch (Exception $e) {
-            //$this->mensaje($e->getMessage(),'m','d','',__iHAND__);
             $strMensErro .= $e->getMessage();
             $arrParaErro['ProcIdxx'] = $objProcEjec->Id;
-            $arrParaErro['NumeRefe'] = 'Cliente Exp Nac: '.$this->lblCeduRifx->Text;
+            $arrParaErro['NumeRefe'] = 'Cliente Exp Nac: '.$this->txtCeduRifx->Text;
             $arrParaErro['MensErro'] = $e->getMessage();
             $arrParaErro['ComeErro'] = 'Falló el Save del Cliente Exp Nac';
             GrabarError($arrParaErro);

@@ -903,6 +903,8 @@ function asignarPorcIVA($strCodiOrig,$strCodiDest,$strModaPago,$dblMontTari=0) {
  * @return array $arrValoTari
  */
 function calcularTarifaParcialPmn($arrParaTari) {
+    t('===================================');
+    t('Entrando a CalcularTarifaParcialPmn');
     $dttFechGuia = $arrParaTari['dttFechGuia'];
     $strCodiOrig = $arrParaTari['strCodiOrig'];
     $strCodiDest = $arrParaTari['strCodiDest'];
@@ -928,6 +930,7 @@ function calcularTarifaParcialPmn($arrParaTari) {
     if ($objTariGuia) {
         $_SESSION['TariPmnx'] = serialize($objTariGuia);
     }
+    t('Voy a buscarMontoBaseTarifaPmn');
     $arrParaTari = buscarMontoBaseTarifaPmn($intDispTari,$decPesoGuia,$strModaPago,$strCodiDest,$strEstaUsua,$dttFechGuia);
 
     $blnTodoOkey = $arrParaTari[0];
@@ -1396,11 +1399,16 @@ function telefonoValido($strNumeTele) {
  *
  */
 function buscarMontoBaseTarifaPmn($intDispTari,$decPesoGuia,$strModaPago,$strCodiDest,$strEstaUsua,$dttFechGuia) {
+    /**
+     * @var $objLimiNaci TarifaPeso
+     */
+    t('===================================');
+    t('Entrando a buscarMontoBaseTarifaPmn');
     //------------------------
     // Parametros de Sesion
     //------------------------
     $objTarifa   = unserialize($_SESSION['TariPmnx']);
-    // t('La tarifa en buscarMontoBaseTarifaPmn es: '.$objTarifa->Id);
+    t('La tarifa es: '.$objTarifa->Id);
     //$decPorcIvax = unserialize($_SESSION['IvaxDhoy']);
     $objLimiNaci = unserialize($_SESSION['LimiNaci']);
     $objLimiUrba = unserialize($_SESSION['LimiUrba']);
@@ -1413,13 +1421,13 @@ function buscarMontoBaseTarifaPmn($intDispTari,$decPesoGuia,$strModaPago,$strCod
     // se aplican los valores referidos en la tarifa misma
     //-----------------------------------------------------------------------------------------
     if ($intDispTari == TipoTarifaType::NAC) {
-        // Traza("Nacional");
+        t("Nacional");
         $decPesoComp = $objTarifa->PesoInicial;
         $dblPesoMaxi = $objLimiNaci->PesoFinal;
-        $dblTariMaxi = $objLimiNaci->MontoTarifa;
+        $dblTariMaxi = $objLimiNaci->MontoBase;
         $decValoIncr = $objTarifa->ValorIncremento;
     } else {
-        // Traza("Urbana");
+        t("Urbana");
         $decPesoComp = $objTarifa->PesoInicialUrbano;
         $dblPesoMaxi = $objLimiUrba->PesoFinal;
         $dblTariMaxi = $objLimiUrba->MontoTarifa;
@@ -1432,21 +1440,21 @@ function buscarMontoBaseTarifaPmn($intDispTari,$decPesoGuia,$strModaPago,$strCod
         //-------------------------------------
         $decPesoGuia = $decPesoGuia - $dblPesoMaxi;
         $decPesoGuia = round($decPesoGuia);
-        // Traza("Peso Excendente: ".$decPesoGuia);
+        t("Peso Excendente: ".$decPesoGuia);
         //--------------------------------------
         // Se aplica la medida de incremento
         //--------------------------------------
         if ($objTarifa->MedidaIncremento == FacMedidaType::MEDIOKILO) {
             $decPesoGuia = $decPesoGuia / 0.5;
         }
-        // Traza("Luego de aplicar el tipo de medida el peso es: ".$decPesoGuia);
+        t("Luego de aplicar el tipo de medida el peso es: ".$decPesoGuia);
         $dblMontIncr = $decPesoGuia * $decValoIncr;
-        // Traza("Monto Incremento (Peso Excendente * Incremento): ".$dblMontIncr);
+        t("Monto Incremento (Peso Excendente * Incremento): ".$dblMontIncr);
         //----------------------------------------------------------------------------------
         // El Valor del Incremento, debe ser sumado al valor maximo de la Tarifa por Peso
         //----------------------------------------------------------------------------------
         $dblMontTari = $dblMontIncr + $dblTariMaxi;
-        // Traza(sprintf("Monto de la Tarifa es: Monto Incremento (%s) + Monto Maximo Tarifa (%s) = %s",$dblMontIncr,$dblTariMaxi,$dblMontTari));
+        t(sprintf("Monto de la Tarifa es: Monto Incremento (%s) + Monto Maximo Tarifa (%s) = %s",$dblMontIncr,$dblTariMaxi,$dblMontTari));
         $dblFranPost = 0;
         //----------------------------------
         // Se obtiene el porcentaje de IVA
@@ -1458,10 +1466,16 @@ function buscarMontoBaseTarifaPmn($intDispTari,$decPesoGuia,$strModaPago,$strCod
         $arrTariBase['MontTari'] = $dblMontTari;
         $arrTariBase['FactIvax'] = $decFactIvax;
         $arrTariBase['FranPost'] = $dblFranPost;
-        $dblMontBase = CalcularMontoBaseTarifa($arrTariBase);
+        t('Voy a CalcularMontoBaseTarifa');
+        //$dblMontBase = CalcularMontoBaseTarifa($arrTariBase);
+        $dblMontBase = $dblMontTari;
 
-        // Traza("Monto Base: ".$dblMontBase);
+
+        t("Monto Base: ".$dblMontBase);
     } else {
+        $dblMontBase = 0;
+        $dblFranPost = 0;
+        $decPorcIvax = 0;
         //-----------------------------------------------------------------------------------
         // Si el peso del envio esta en el rango de pesos de la Tarifa, entonces se busca
         // el monto base correspondiente
@@ -1489,16 +1503,14 @@ function buscarMontoBaseTarifaPmn($intDispTari,$decPesoGuia,$strModaPago,$strCod
         } else {
             $blnTodoOkey = false;
             $strMensUsua = "No existe Tarifa para este Producto, Origen, Destino y Peso";
-            $dblMontBase = 0;
-            $dblFranPost = 0;
         }
     }
-    // Traza("Los valores que retorna la rutina son:");
-    // Traza("blnTodoOkey: ".$blnTodoOkey);
-    // Traza("strMensUsua: ".$strMensUsua);
-    // Traza("dblMontBase: ".$dblMontBase);
-    // Traza("dblFranPost: ".$dblFranPost);
-    // Traza("Tipo Tarifa: ".$objTarifa->TipoTarifa);
+    t("Los valores que retorna la rutina son:");
+    t("blnTodoOkey: ".$blnTodoOkey);
+    t("strMensUsua: ".$strMensUsua);
+    t("dblMontBase: ".$dblMontBase);
+    t("dblFranPost: ".$dblFranPost);
+    t("Tipo Tarifa: ".$objTarifa->TipoTarifa);
     return array($blnTodoOkey,$strMensUsua,$dblMontBase,$dblFranPost,$objTarifa->TipoTarifa,$intDispTari,$decPorcIvax);
 }
 
@@ -1589,7 +1601,7 @@ function buscarMontoBaseTarifa($intTarifaId,$intCodiProd,$strOrigen,$strDestino,
         $objRegiTraz->ParaTxt1 .= $strTextMens."<br>";
         $objRegiTraz->Save();
     }
-    $decPorcIvax = FacImpuesto::LoadImpuestoVigente('IVA',FechaDeHoy());
+    //$decPorcIvax = FacImpuesto::LoadImpuestoVigente('IVA',FechaDeHoy());
     $decPorcIvax = asignarPorcIVA($strOrigen,$strDestino,$strModaPago);
 
     if ($objTarifa->TipoTarifa == FacTipoTarifaType::PORPESO) {

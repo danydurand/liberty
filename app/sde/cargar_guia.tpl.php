@@ -57,11 +57,11 @@ require(__APP_INCLUDES__ . '/header.inc.php');
                     </div>
                     <div class="row" style="margin-top: 0.5em;">
                         <div class="col-md-6 col-lg-3">
-                            <div class="titulo-c">Busc. x Código</div>
+                            <div class="titulo-c">Busc. Código</div>
                             <?php $this->txtCodiInte->Render(); ?>
                         </div>
                         <div class="col-md-6 col-lg-3">
-                            <div class="titulo-c">Busc. x Nombre</div>
+                            <div class="titulo-c">Busc. Nombre</div>
                             <?php $this->txtNombBusc->Render(); ?>
                         </div>
                         <div class="col-md-6">
@@ -145,11 +145,11 @@ require(__APP_INCLUDES__ . '/header.inc.php');
                     </div>
                     <div class="row">
                         <div class="col-md-6 col-lg-3">
-                            <div class="titulo-c">Busc. x Código</div>
+                            <div class="titulo-c">Busc. Código</div>
                             <?php $this->txtCodiInt2->Render(); ?>
                         </div>
                         <div class="col-md-6 col-lg-3">
-                            <div class="titulo-c">Busc. x Nombre</div>
+                            <div class="titulo-c">Busc. Nombre</div>
                             <?php $this->txtNombBus2->Render(); ?>
                         </div>
                         <div class="col-md-6">

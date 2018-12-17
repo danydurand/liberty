@@ -581,7 +581,9 @@ class CargarGuia extends FormularioBaseKaizen {
     }
 
     protected function CargarDestinos() {
-        foreach (Estacion::LoadArrayByCodiStat(1) as $objSucursal) {
+        $objClauOrde   = QQ::Clause();
+        $objClauOrde[] = QQ::OrderBy(QQN::Estacion()->DescEsta);
+        foreach (Estacion::LoadArrayByCodiStat(1,$objClauOrde) as $objSucursal) {
             if ($objSucursal->EsUnAlmacen == SinoType::NO) {
                 if (!$this->blnEditMode) {
                     $this->lstCodiDest->AddItem($objSucursal->__toString(),$objSucursal->CodiEsta);
@@ -1934,6 +1936,7 @@ class CargarGuia extends FormularioBaseKaizen {
         // Se verifica si la Guía tiene Flete Directo
         //---------------------------------------------
         $blnCalcTari = true;
+        $blnTodoOkey = true;
         if ($this->chkFletDire->Checked || $this->chkPesoVolu->Checked) {
             $blnTodoOkey = true;
         } else {

@@ -81,6 +81,7 @@ class UsuarioListForm extends UsuarioListFormBase {
         $this->dtgUsuarios->MetaAddColumn('FechAcce');
 
         $this->btnExpoExce_Create();
+        $this->btnExpoExce->Visible = true;
 
     }
 

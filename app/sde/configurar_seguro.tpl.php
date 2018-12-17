@@ -4,10 +4,10 @@ require(__APP_INCLUDES__ . '/header.inc.php');
 ?>
 
 <div class="titulo-formulario">
-    <div class="hidden-xs hidden-sm col-md-4 pull-left" style="text-align: left; margin-top: -0.30em; margin-left: -1em;">
+    <div class="hidden-xs hidden-sm col-md-5 pull-left" style="text-align: left; margin-top: -0.30em; margin-left: -1em;">
         <?php $this->lblTituForm->Render(); ?>
     </div>
-    <div class="col-xs-12 col-md-8" style="text-align: left; margin-top: -0.25em;">
+    <div class="col-xs-12 col-md-7" style="text-align: left; margin-top: -0.25em;">
         <?php $this->btnCancel->Render(); ?>
         <?php $this->btnSave->Render(); ?>
     </div>

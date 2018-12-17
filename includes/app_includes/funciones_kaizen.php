@@ -392,7 +392,7 @@ function BuscarDiaFeriadoEstandar($strCodiPara) {
 }
 
 function DejarNumerosVJGuion($strCadeProc) {
-    $strNuevCade = preg_replace("/[^0-9JV-]/", "", $strCadeProc);
+    $strNuevCade = preg_replace("/[^0-9JVG-]/", "", $strCadeProc);
     return $strNuevCade;
 }
 
