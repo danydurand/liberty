@@ -27,6 +27,38 @@
 			return sprintf('%s',  $this->strNumeCont);
 		}
 
+        /**
+         * Suma los pesos de las guias que contiene
+         * @return double
+         */
+        public function SumaMontos() {
+            if ((is_null($this->strNumeCont)))
+                return 0;
+
+            $decSumaMont = 0;
+            $arrGuiaCont = Guia::LoadArrayBySdeContenedor($this->strNumeCont);
+            foreach ($arrGuiaCont as $objGuia) {
+                $decSumaMont += (double)$objGuia->MontoTotal;
+            }
+            return $decSumaMont;
+        }
+
+        /**
+         * Suma los pesos de las guias que contiene
+         * @return double
+         */
+        public function SumaPesos() {
+            if ((is_null($this->strNumeCont)))
+                return 0;
+
+            $decSumaPeso = 0;
+            $arrGuiaCont = Guia::LoadArrayBySdeContenedor($this->strNumeCont);
+            foreach ($arrGuiaCont as $objGuia) {
+                $decSumaPeso += (double)$objGuia->PesoGuia;
+            }
+            return $decSumaPeso;
+        }
+
         public function GetGuiasConCheckpoint($strCodiCkpt) {
             //------------------------------------------------------------------------
             // Esta rutina devuelve un vector con los numeros de las Guias

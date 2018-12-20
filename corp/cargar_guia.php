@@ -922,6 +922,7 @@ class CargarGuia extends FormularioBaseKaizen {
         //---------------------------------------------
         // Se actualizan ahora los campos de la tabla
         //---------------------------------------------
+        $this->chkSeguGuia_Change();
         $this->UpdateGuiaFields();
         // t('Campos de la Guia, actualizados');
         //----------------------------------------------------------------------------------------

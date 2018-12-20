@@ -144,7 +144,6 @@ class ImprimirManifiestoHe extends FormularioBaseKaizen {
                     QApplication::Redirect('imprimir_manifiesto.php?manifiesto='.$strManiImpr);
                 }
             }
-//            QApplication::Redirect('imprimir_manifiesto.php?manifiesto='.$strManiImpr);
         }
         if ($this->lstTipoRepo->SelectedValue == 'H') {
             if ($objContenedor) {
@@ -154,7 +153,6 @@ class ImprimirManifiestoHe extends FormularioBaseKaizen {
                     QApplication::Redirect('imprimir_hoja_entrega.php?manifiesto='.$strManiImpr);
                 }
             }
-//            QApplication::Redirect('imprimir_hoja_entrega.php?manifiesto='.$strManiImpr);
         }
     }
 

@@ -27,32 +27,48 @@ if ($objManifiesto) {
     //--------------------------------------------------------------
     // Se procesan las Valijas incluidas dentro del Contenedor
     //--------------------------------------------------------------
-    /*
     $arrValiMani = $objManifiesto->GetParentSdeContenedorAsSdeContContArray();
     foreach ($arrValiMani as $objValija) {
-        foreach ($objValija->GetGuiaArray() as $objGuia) {
-            $strSistGuia = '';
-            if ($objGuia->SistemaId == 'cnt') {
-                $strSistGuia = "EXPR";
-            }
-            $intContRegi++;
-            $arrRegiDato[] = array(
-                $intContRegi,
-                $objGuia->NumeGuia,
-                nfp($objGuia->MontoTotal),
-                $strSistGuia,
-                $objGuia->FechGuia->__toString("DD/MM/YYYY"),
-                substr($objGuia->NombRemi,0,30),
-                substr($objGuia->NombDest,0,30),
-                $objGuia->EstaDest,
-                $objGuia->CantPiez,
-                $objGuia->PesoGuia
-            );
-            $intTotaPiez += $objGuia->CantPiez;
-            $decPesoTota += floatval($objGuia->PesoGuia);
-        }
+        $intContRegi++;
+        $intCantPiez = $objValija->CountGuias();
+        $decSumaPeso = $objValija->SumaPesos();
+        $decSumaMont = $objValija->SumaMontos();
+        $arrRegiDato[] = array(
+            $intContRegi,
+            $objValija->NumeCont,
+            $decSumaMont,
+            'Valija',
+            $objValija->Fecha->__toString("DD/MM/YYYY"),
+            'LIBERTYEXPRESS',
+            'LIBERTYEXPRESS',
+            '',
+            $intCantPiez,
+            $decSumaPeso
+        );
+        $intTotaPiez += $intCantPiez;
+        $decPesoTota += $decSumaPeso;
+        //foreach ($objValija->GetGuiaArray() as $objGuia) {
+        //    $strSistGuia = '';
+        //    if ($objGuia->SistemaId == 'cnt') {
+        //        $strSistGuia = "EXPR";
+        //    }
+        //    $intContRegi++;
+        //    $arrRegiDato[] = array(
+        //        $intContRegi,
+        //        $objGuia->NumeGuia,
+        //        nfp($objGuia->MontoTotal),
+        //        $strSistGuia,
+        //        $objGuia->FechGuia->__toString("DD/MM/YYYY"),
+        //        substr($objGuia->NombRemi,0,30),
+        //        substr($objGuia->NombDest,0,30),
+        //        $objGuia->EstaDest,
+        //        $objGuia->CantPiez,
+        //        $objGuia->PesoGuia
+        //    );
+        //    $intTotaPiez += $objGuia->CantPiez;
+        //    $decPesoTota += floatval($objGuia->PesoGuia);
+        //}
     }
-    */
     //-------------------------------------------------------
     // Se procesan ahora las Guias asociadas al Contenedor
     //-------------------------------------------------------

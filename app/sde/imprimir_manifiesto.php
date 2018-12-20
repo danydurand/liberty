@@ -10,7 +10,7 @@ require_once(__APP_INCLUDES__.'/protected.inc.php');
 require_once(__APP_INCLUDES__.'/FormularioBaseKaizen.class.php');
 require_once('/appl/lib/mylistapdf.php');
 
-
+t('Entrando...');
 if (isset($_GET['manifiesto'])) {
     $strNumeMani = $_GET['manifiesto'];
 } else {
@@ -18,6 +18,7 @@ if (isset($_GET['manifiesto'])) {
 }
 $arrRegiDato = array();
 $objManifiesto = SdeContenedor::Load($strNumeMani);
+t('El manifiesto es: '.$strNumeMani);
 if ($objManifiesto) {
     $objChofer = Chofer::Load($objManifiesto->CodiOperObject->CodiChof);
     $intContRegi = 0;
@@ -27,6 +28,7 @@ if ($objManifiesto) {
     // Se procesan las Valijas incluidas dentro del Contenedor
     //--------------------------------------------------------------
     $arrValiMani = $objManifiesto->GetParentSdeContenedorAsSdeContContArray();
+    t('El manifiesto tiene: '.count($arrValiMani).' valijas...');
     foreach ($arrValiMani as $objValija) {
         foreach ($objValija->GetGuiaArray() as $objGuia) {
             $strSistGuia = '';

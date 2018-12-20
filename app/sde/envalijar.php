@@ -95,6 +95,8 @@ class Envalijar extends FormularioBaseKaizen {
 	}
 
 	protected function btnSave_Click() {
+	    t('===========================================');
+	    t('Entrando a Salvar en la opcion de Envalijar');
 		//--------------------------------------
 		// Se graba o actualiza el Contenedor
 		//--------------------------------------
@@ -130,13 +132,17 @@ class Envalijar extends FormularioBaseKaizen {
 		$this->txtListNume->Text = '';
 
 		$arrDestinos = $objContenedor->GetDestinos();
+		t('La Operaciones es:  '.$this->lstOperAbie->SelectedValue);
+		t('Los destinos asociados a la ruta del contenedor son: ');
+		foreach ($arrDestinos as $strCodiSucu) {
+		    t('Sucursal: '.$strCodiSucu);
+        }
 		$strCodiRuta = $objContenedor->CodiOperObject->CodiRuta;
 
 		$intContVali = 0;
 		$intContGuia = 0;
 		$intContCkpt = 0;
 		foreach ($arrListNume as $strNumeSeri) {
-            // $strNumeSeri = DejarSoloLosNumeros($strNumeSeri);
             //-----------------------------------------------------------------------
             // Se procesa una a una las Guias/Valijas proporcionadas por el Usuario
             //-----------------------------------------------------------------------
