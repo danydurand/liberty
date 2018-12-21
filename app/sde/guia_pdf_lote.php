@@ -1,6 +1,8 @@
 <?php
 require_once('qcubed.inc.php');
-require_once(__APP_INCLUDES__.'/barcodelib.php');
+//require_once(__APP_INCLUDES__.'/barcodelib.php');
+require_once(__APP_INCLUDES__.'/php-barcode.php');
+require_once(__APP_INCLUDES__.'/fpdf.php');
 
 $blnTodoOkey = true;
 if (isset($_SESSION['Dato'])) {
@@ -9,6 +11,26 @@ if (isset($_SESSION['Dato'])) {
 	$blnTodoOkey = false;
 	echo "No se especificaron las Guias<br>\n"; 
 }
+
+class eFPDF extends FPDF{
+    function TextWithRotation($x, $y, $txt, $txt_angle, $font_angle=0)
+    {
+        $font_angle+=90+$txt_angle;
+        $txt_angle*=M_PI/180;
+        $font_angle*=M_PI/180;
+
+        $txt_dx=cos($txt_angle);
+        $txt_dy=sin($txt_angle);
+        $font_dx=cos($font_angle);
+        $font_dy=sin($font_angle);
+
+        $s=sprintf('BT %.2F %.2F %.2F %.2F %.2F %.2F Tm (%s) Tj ET',$txt_dx,$txt_dy,$font_dx,$font_dy,$x*$this->k,($this->h-$y)*$this->k,$this->_escape($txt));
+        if ($this->ColorFlag)
+            $s='q '.$this->TextColor.' '.$s.' Q';
+        $this->_out($s);
+    }
+}
+
 
 if ($blnTodoOkey) {
 	function Bloque($pdf,$intX,$intY,$objGuia,$objCliente,$objUsuario) {
@@ -190,7 +212,7 @@ if ($blnTodoOkey) {
 		$pdf->SetXY($intX,$intY);
 		$pdf->Cell(30,5,'Nacional',0);
 		$pdf->SetXY($intX+50,$intY);
-		$pdf->Cell(30,5,'BsF: ',0);
+		$pdf->Cell(30,5,'Bs: ',0);
 		$pdf->SetXY($intX+58,$intY);
 		$pdf->Cell(12,5,$objGuia->MontoTotal,0,0,'R');
 
@@ -202,7 +224,7 @@ if ($blnTodoOkey) {
 		$pdf->SetXY($intX,$intY);
 		$pdf->Cell(30,5,'Internacional Aereo:',0);
 		$pdf->SetXY($intX+50,$intY);
-		$pdf->Cell(30,5,'BsF: ');
+		$pdf->Cell(30,5,'Bs: ');
 		$pdf->SetXY($intX+58,$intY);
 		$pdf->Cell(12,5,$objGuia->MontoTotalInt,0,0,'R');
 
@@ -214,7 +236,7 @@ if ($blnTodoOkey) {
 		$pdf->SetXY($intX,$intY);
 		$pdf->Cell(30,5,'Sobre Valor FOB, Cobertura 80%:',0);
 		$pdf->SetXY($intX+50,$intY);
-		$pdf->Cell(30,5,'BsF: ',0);
+		$pdf->Cell(30,5,'Bs: ',0);
 		$pdf->SetXY($intX+58,$intY);
 		$pdf->Cell(12,5,$objGuia->MontoSeguro,0,0,'R');
 
@@ -226,17 +248,44 @@ if ($blnTodoOkey) {
 		$pdf->SetXY($intX,$intY);
 		$pdf->Cell(30,5,'Iva:',0);
 		$pdf->SetXY($intX+50,$intY);
-		$pdf->Cell(30,5,'BsF: ',0);
+		$pdf->Cell(30,5,'Bs: ',0);
 		$pdf->SetXY($intX+58,$intY);
 		$pdf->Cell(12,5,$objGuia->MontoIva,0,0,'R');
 
 		$intY += 4;
 		$pdf->SetXY($intX+38,$intY);
-		$pdf->Cell(30,5,'Efectivo BsF: ',0);
+		$pdf->Cell(30,5,'Efectivo Bs: ',0);
 		$pdf->SetXY($intX+58,$intY);
 		$pdf->Cell(12,5,$objGuia->MontoTotal,0,0,'R');
 
-		$pdf->Codabar($intX+25,$intY+8,$objGuia->NumeGuia,'A','A',0.5,11);
+        // -------------------------------------------------- //
+        //                  PROPERTIES
+        // -------------------------------------------------- //
+        $fontSize = 10;
+        $marge    = 10;   // between barcode and hri in pixel
+        $x        = 200;  // barcode center
+        $y        = 200;  // barcode center
+        $height   = 12;   // barcode height in 1D ; module size in 2D
+        $width    = 0.5;  // barcode height in 1D ; not use in 2D
+        $angle    = 0;    // rotation in degrees
+
+        $code     = $objGuia->NumeGuia; // barcode, of course ;)
+        $type     = 'code128';
+        $black    = '000000'; // color in hexa
+        // -------------------------------------------------- //
+        //                      BARCODE
+        // -------------------------------------------------- //
+        $data = Barcode::fpdf($pdf, $black, $x, $y, $angle, $type, array('code'=>$code), $width, $height);
+        // -------------------------------------------------- //
+        //                      HRI
+        // -------------------------------------------------- //
+        $pdf->SetFont('Arial','B',$fontSize);
+        $pdf->SetTextColor(0, 0, 0);
+        $len = $pdf->GetStringWidth($data['hri']);
+        Barcode::rotate(-$len / 2, ($data['height'] / 2) + $fontSize + $marge, $angle, $xt, $yt);
+        $pdf->TextWithRotation($x + $xt, $y + $yt, $data['hri'], $angle);
+
+        //$pdf->Codabar($intX+25,$intY+8,$objGuia->NumeGuia,'A','A',0.5,11);
 
 		$pdf->SetFont('Times','B',38);
 		$intY -= 40;
@@ -266,8 +315,9 @@ if ($blnTodoOkey) {
 	$strTeleEmpr = $objDatoEmpr->ParaTxt4;
 	$strHabiPost = $objLogoEmpr->ParaTxt5;
 
-	$pdf = new PDF_Codabar('L','mm','Letter');
-	$pdf->AliasNbPages();
+	//$pdf = new PDF_Codabar('L','mm','Letter');
+    $pdf = new eFPDF('L', 'mm', 'Letter');
+    $pdf->AliasNbPages();
 	foreach ($arrNumeGuia as $strNumeGuia) {
 		$objGuia = Guia::Load($strNumeGuia);
 		$objCliente = MasterCliente::Load($objGuia->CodiClie);

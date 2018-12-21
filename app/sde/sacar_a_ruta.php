@@ -733,10 +733,9 @@ class SacarARuta extends FormularioBaseKaizen {
             // Se graba o actualiza el contenedor en la tabla guia
             //------------------------------------------------------
             if ($strTipoRuta == "URBANA") {
-                //---------------------------------------------------------------
-                // Si la Ruta es "Urbana" y no se ha especificado un Contenedor
-                // o Número de Valija el Sistema debe asignar un número.
-                //---------------------------------------------------------------
+                //-----------------------------------------------------------------------------------
+                // Si la Ruta es "Urbana" y no se ha especificado un Contenedor se debe asignar uno
+                //-----------------------------------------------------------------------------------
                 $this->txtNumeCont->Text = date('YmdHis');
             }
             $objContenedor = SdeContenedor::Load($this->txtNumeCont->Text);
@@ -778,6 +777,15 @@ class SacarARuta extends FormularioBaseKaizen {
                 //-----------------------------------------------------------------------
                 $objGuia = Guia::Load($strNumeSeri);
                 if ($objGuia) {
+                    //-------------------------------------------------------------------------------------
+                    // A petición de la gerencia de ventas, una guia no puede salir a ruta mas de 3 veces
+                    //-------------------------------------------------------------------------------------
+                    $intCantDesp = $objGuia->cantidadDeDespachos();
+                    if ($intCantDesp >= 3) {
+                        $this->txtListNume->Text .= $strNumeSeri." (Muchos Despachos)".chr(13);
+                        $this->arrGuiaErro[] = array($objGuia->NumeGuia,"Muchos Despachos");
+                        continue;
+                    }
                     $arrSepuProc = $objGuia->SePuedeProcesar();
                     if ($arrSepuProc['TodoOkey']) {
                         if ($strTipoRuta == 'EXTRA-URBANA') {

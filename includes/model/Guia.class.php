@@ -27,6 +27,20 @@
             return sprintf('%s',  $this->strNumeGuia);
         }
 
+        /**
+         * Esta rutina devuelve la cantidad de veces que la guia ha salido a ruta
+         *
+         * @return integer
+         */
+        public function cantidadDeDespachos()
+        {
+            $objClauWher   = QQ::Clause();
+            $objClauWher[] = QQ::Equal(QQN::GuiaCkpt()->NumeGuia,$this->NumeGuia);
+            $objClauWher[] = QQ::Equal(QQN::GuiaCkpt()->CodiCkpt,'ER');
+            $intCantDesp   = GuiaCkpt::QueryCount(QQ::AndCondition($objClauWher));
+            return $intCantDesp;
+        }
+
         public function UltiCkptObj() {
            $objClausula   = QQ::Clause();
            $objClausula[] = QQ::OrderBy(QQN::GuiaCkpt()->FechCkpt,false,QQN::GuiaCkpt()->HoraCkpt,false);
