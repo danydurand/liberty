@@ -9,6 +9,7 @@ app/util/v2/
 app/viejo/
 app/yokohama/
 includes/error_log/
+includes/app_includes/font
 sql/
 web/
 

@@ -219,6 +219,7 @@ class DarPermisos extends FormularioBaseKaizen {
         $intCantRegi = 0;
         $intUsuaProc = 0;
         foreach ($arrListLogi as $strLogiUsua) {
+            $strLogiUsua = strtolower($strLogiUsua);
             if (!in_array($strLogiUsua,array('cliente','liberty'))) {
                 $objUsuario = Usuario::LoadByLogiUsua($strLogiUsua);
                 if ($objUsuario) {
