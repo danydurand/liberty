@@ -155,6 +155,7 @@ abstract class GuiaEditFormBase extends QForm {
 	protected $lstGuiaCalculos;
 	protected $lstGuiaCheckpoints;
 	protected $lstGuiaModificada;
+	protected $lstWitecConf;
 	protected $dtgManifiestosAsMani;
 	protected $dtgSdeContenedors;
 
@@ -322,6 +323,7 @@ abstract class GuiaEditFormBase extends QForm {
 			$this->lstGuiaCalculos = $this->mctGuia->lstGuiaCalculos_Create();
 			$this->lstGuiaCheckpoints = $this->mctGuia->lstGuiaCheckpoints_Create();
 			$this->lstGuiaModificada = $this->mctGuia->lstGuiaModificada_Create();
+			$this->lstWitecConf = $this->mctGuia->lstWitecConf_Create();
 			$this->dtgManifiestosAsMani = $this->mctGuia->dtgManifiestosAsMani_Create();
 			$this->dtgSdeContenedors = $this->mctGuia->dtgSdeContenedors_Create();
 

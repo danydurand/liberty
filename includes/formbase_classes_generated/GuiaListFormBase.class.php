@@ -178,6 +178,7 @@
 			$this->dtgGuias->MetaAddColumn(QQN::Guia()->GuiaCalculos);
 			$this->dtgGuias->MetaAddColumn(QQN::Guia()->GuiaCheckpoints);
 			$this->dtgGuias->MetaAddColumn(QQN::Guia()->GuiaModificada);
+			$this->dtgGuias->MetaAddColumn(QQN::Guia()->WitecConf);
 
             $this->btnExpoExce_Create();
 

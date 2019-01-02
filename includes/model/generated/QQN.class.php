@@ -253,6 +253,12 @@
 			return new QQNodeEstadisticaDeGuias('estadistica_de_guias', null, null);
 		}
 		/**
+		 * @return QQNodeEstadisticas
+		 */
+		static public function Estadisticas() {
+			return new QQNodeEstadisticas('estadisticas', null, null);
+		}
+		/**
 		 * @return QQNodeEstado
 		 */
 		static public function Estado() {
@@ -815,6 +821,12 @@
 		 */
 		static public function VendedorConsecutivo() {
 			return new QQNodeVendedorConsecutivo('vendedor_consecutivo', null, null);
+		}
+		/**
+		 * @return QQNodeWitecConf
+		 */
+		static public function WitecConf() {
+			return new QQNodeWitecConf('witec_conf', null, null);
 		}
 		/**
 		 * @return QQNodeZncPorSucursal

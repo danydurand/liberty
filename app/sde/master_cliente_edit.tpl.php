@@ -177,6 +177,14 @@ require(__APP_INCLUDES__ . '/header.inc.php');
 											<?php $this->txtPassApix->RenderWithName(); ?>
                                             <?php $this->txtGuiaXdia->RenderWithName(); ?>
 										</div>
+                                        <div class="row" style="padding: 0.1em">
+                                            <div class="titulo">Descuentos</div>
+                                        </div>
+                                        <?php $this->txtDctoVolu->RenderWithName(); ?>
+                                        <?php $this->txtVoluDcto->RenderWithName(); ?>
+                                        <?php $this->txtDctoPeso->RenderWithName(); ?>
+                                        <?php $this->txtPesoDcto->RenderWithName(); ?>
+                                        <?php $this->dttDctoCadu->RenderWithName(); ?>
 									</div>
 								</div>
 							</div>

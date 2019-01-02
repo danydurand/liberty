@@ -81,9 +81,10 @@ abstract class GuiaCacesaEditFormBase extends QForm {
 	protected $txtObservacion;
 	protected $txtTarifaId;
 	protected $lstCliente;
-	protected $lstProceso;
+	protected $txtProcesoId;
 	protected $txtCodigoContrato;
 	protected $txtModaPago;
+	protected $txtReceptoriaDestino;
 
 	// Other ListBoxes (if applicable) via Unique ReverseReferences and ManyToMany References
 
@@ -179,9 +180,10 @@ abstract class GuiaCacesaEditFormBase extends QForm {
 		$this->txtObservacion = $this->mctGuiaCacesa->txtObservacion_Create();
 		$this->txtTarifaId = $this->mctGuiaCacesa->txtTarifaId_Create();
 		$this->lstCliente = $this->mctGuiaCacesa->lstCliente_Create();
-		$this->lstProceso = $this->mctGuiaCacesa->lstProceso_Create();
+		$this->txtProcesoId = $this->mctGuiaCacesa->txtProcesoId_Create();
 		$this->txtCodigoContrato = $this->mctGuiaCacesa->txtCodigoContrato_Create();
 		$this->txtModaPago = $this->mctGuiaCacesa->txtModaPago_Create();
+		$this->txtReceptoriaDestino = $this->mctGuiaCacesa->txtReceptoriaDestino_Create();
 
 		$this->btnSave_Create();
 		$this->btnCancel_Create();

@@ -106,9 +106,10 @@
 			$this->dtgGuiaCacesas->MetaAddColumn('Observacion');
 			$this->dtgGuiaCacesas->MetaAddColumn('TarifaId');
 			$this->dtgGuiaCacesas->MetaAddColumn(QQN::GuiaCacesa()->Cliente);
-			$this->dtgGuiaCacesas->MetaAddColumn(QQN::GuiaCacesa()->Proceso);
+			$this->dtgGuiaCacesas->MetaAddColumn('ProcesoId');
 			$this->dtgGuiaCacesas->MetaAddColumn('CodigoContrato');
 			$this->dtgGuiaCacesas->MetaAddColumn('ModaPago');
+			$this->dtgGuiaCacesas->MetaAddColumn('ReceptoriaDestino');
 
             $this->btnExpoExce_Create();
 

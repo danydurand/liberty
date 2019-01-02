@@ -88,6 +88,7 @@ abstract class MasterClienteEditFormBase extends QForm {
 	protected $txtVolumenParaDscto;
 	protected $txtDsctoPorPeso;
 	protected $txtPesoParaDscto;
+	protected $calDescuentoCaducaEl;
 	protected $txtPorcentajeSeguro;
 	protected $txtDirEntregaFactura;
 	protected $txtClaveServiciosWeb;
@@ -213,6 +214,7 @@ abstract class MasterClienteEditFormBase extends QForm {
 		$this->txtVolumenParaDscto = $this->mctMasterCliente->txtVolumenParaDscto_Create();
 		$this->txtDsctoPorPeso = $this->mctMasterCliente->txtDsctoPorPeso_Create();
 		$this->txtPesoParaDscto = $this->mctMasterCliente->txtPesoParaDscto_Create();
+		$this->calDescuentoCaducaEl = $this->mctMasterCliente->calDescuentoCaducaEl_Create();
 		$this->txtPorcentajeSeguro = $this->mctMasterCliente->txtPorcentajeSeguro_Create();
 		$this->txtDirEntregaFactura = $this->mctMasterCliente->txtDirEntregaFactura_Create();
 		$this->txtClaveServiciosWeb = $this->mctMasterCliente->txtClaveServiciosWeb_Create();

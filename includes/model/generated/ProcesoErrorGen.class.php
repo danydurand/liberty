@@ -24,8 +24,6 @@
 	 * @property string $Comentario Comentarios y/u observaciones relacionados al proceso. 
 	 * @property boolean $NotificarAdmin Confirmación de notificación al administrador del sistema (Not Null)
 	 * @property boolean $NotificarUsuario Confirmacion de notificacion al usuario del sistema. (Not Null)
-	 * @property-read GuiaCacesa $_GuiaCacesaAsProceso the value for the private _objGuiaCacesaAsProceso (Read-Only) if set due to an expansion on the guia_cacesa.proceso_id reverse relationship
-	 * @property-read GuiaCacesa[] $_GuiaCacesaAsProcesoArray the value for the private _objGuiaCacesaAsProcesoArray (Read-Only) if set due to an ExpandAsArray on the guia_cacesa.proceso_id reverse relationship
 	 * @property-read boolean $__Restored whether or not this object was restored from the database (as opposed to created new)
 	 */
 	class ProcesoErrorGen extends QBaseClass implements IteratorAggregate {
@@ -107,22 +105,6 @@
 		protected $blnNotificarUsuario;
 		const NotificarUsuarioDefault = null;
 
-
-		/**
-		 * Private member variable that stores a reference to a single GuiaCacesaAsProceso object
-		 * (of type GuiaCacesa), if this ProcesoError object was restored with
-		 * an expansion on the guia_cacesa association table.
-		 * @var GuiaCacesa _objGuiaCacesaAsProceso;
-		 */
-		private $_objGuiaCacesaAsProceso;
-
-		/**
-		 * Private member variable that stores a reference to an array of GuiaCacesaAsProceso objects
-		 * (of type GuiaCacesa[]), if this ProcesoError object was restored with
-		 * an ExpandAsArray on the guia_cacesa association table.
-		 * @var GuiaCacesa[] _objGuiaCacesaAsProcesoArray;
-		 */
-		private $_objGuiaCacesaAsProcesoArray = null;
 
 		/**
 		 * Protected array of virtual attributes for this object (e.g. extra/other calculated and/or non-object bound
@@ -623,15 +605,6 @@
 			}
 			
 			
-			// See if we're doing an array expansion on the previous item
-			if ($objExpandAsArrayNode && 
-					is_array($objPreviousItemArray) && 
-					count($objPreviousItemArray)) {
-
-				if (ProcesoError::ExpandArray ($objDbRow, $strAliasPrefix, $objExpandAsArrayNode, $objPreviousItemArray, $strColumnAliasArray)) {
-					return false; // db row was used but no new object was created
-				}
-			}
 
 			// Create a new instance of the ProcesoError object
 			$objToReturn = new ProcesoError();
@@ -696,21 +669,6 @@
 
 
 				
-
-			// Check for GuiaCacesaAsProceso Virtual Binding
-			$strAlias = $strAliasPrefix . 'guiacacesaasproceso__id';
-			$strAliasName = !empty($strColumnAliasArray[$strAlias]) ? $strColumnAliasArray[$strAlias] : $strAlias;
-			$objExpansionNode = (empty($objExpansionAliasArray['guiacacesaasproceso']) ? null : $objExpansionAliasArray['guiacacesaasproceso']);
-			$blnExpanded = ($objExpansionNode && $objExpansionNode->ExpandAsArray);
-			if ($blnExpanded && null === $objToReturn->_objGuiaCacesaAsProcesoArray)
-				$objToReturn->_objGuiaCacesaAsProcesoArray = array();
-			if (!is_null($objDbRow->GetColumn($strAliasName))) {
-				if ($blnExpanded) {
-					$objToReturn->_objGuiaCacesaAsProcesoArray[] = GuiaCacesa::InstantiateDbRow($objDbRow, $strAliasPrefix . 'guiacacesaasproceso__', $objExpansionNode, null, $strColumnAliasArray);
-				} elseif (is_null($objToReturn->_objGuiaCacesaAsProceso)) {
-					$objToReturn->_objGuiaCacesaAsProceso = GuiaCacesa::InstantiateDbRow($objDbRow, $strAliasPrefix . 'guiacacesaasproceso__', $objExpansionNode, null, $strColumnAliasArray);
-				}
-			}
 
 			return $objToReturn;
 		}
@@ -1081,22 +1039,6 @@
 				// (If restored via a "Many-to" expansion)
 				////////////////////////////
 
-				case '_GuiaCacesaAsProceso':
-					/**
-					 * Gets the value for the private _objGuiaCacesaAsProceso (Read-Only)
-					 * if set due to an expansion on the guia_cacesa.proceso_id reverse relationship
-					 * @return GuiaCacesa
-					 */
-					return $this->_objGuiaCacesaAsProceso;
-
-				case '_GuiaCacesaAsProcesoArray':
-					/**
-					 * Gets the value for the private _objGuiaCacesaAsProcesoArray (Read-Only)
-					 * if set due to an ExpandAsArray on the guia_cacesa.proceso_id reverse relationship
-					 * @return GuiaCacesa[]
-					 */
-					return $this->_objGuiaCacesaAsProcesoArray;
-
 
 				case '__Restored':
 					return $this->__blnRestored;
@@ -1262,9 +1204,6 @@
 		 */
 		public function TablasRelacionadas() {
 			$arrTablRela = array();
-			if ($this->CountGuiaCacesasAsProceso()) {
-				$arrTablRela[] = 'guia_cacesa';
-			}
 			
 			return $arrTablRela;
 		}
@@ -1273,155 +1212,6 @@
 		// ASSOCIATED OBJECTS' METHODS
 		///////////////////////////////
 
-
-
-		// Related Objects' Methods for GuiaCacesaAsProceso
-		//-------------------------------------------------------------------
-
-		/**
-		 * Gets all associated GuiaCacesasAsProceso as an array of GuiaCacesa objects
-		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
-		 * @return GuiaCacesa[]
-		*/
-		public function GetGuiaCacesaAsProcesoArray($objOptionalClauses = null) {
-			if ((is_null($this->intId)))
-				return array();
-
-			try {
-				return GuiaCacesa::LoadArrayByProcesoId($this->intId, $objOptionalClauses);
-			} catch (QCallerException $objExc) {
-				$objExc->IncrementOffset();
-				throw $objExc;
-			}
-		}
-
-		/**
-		 * Counts all associated GuiaCacesasAsProceso
-		 * @return int
-		*/
-		public function CountGuiaCacesasAsProceso() {
-			if ((is_null($this->intId)))
-				return 0;
-
-			return GuiaCacesa::CountByProcesoId($this->intId);
-		}
-
-		/**
-		 * Associates a GuiaCacesaAsProceso
-		 * @param GuiaCacesa $objGuiaCacesa
-		 * @return void
-		*/
-		public function AssociateGuiaCacesaAsProceso(GuiaCacesa $objGuiaCacesa) {
-			if ((is_null($this->intId)))
-				throw new QUndefinedPrimaryKeyException('Unable to call AssociateGuiaCacesaAsProceso on this unsaved ProcesoError.');
-			if ((is_null($objGuiaCacesa->Id)))
-				throw new QUndefinedPrimaryKeyException('Unable to call AssociateGuiaCacesaAsProceso on this ProcesoError with an unsaved GuiaCacesa.');
-
-			// Get the Database Object for this Class
-			$objDatabase = ProcesoError::GetDatabase();
-
-			// Perform the SQL Query
-			$objDatabase->NonQuery('
-				UPDATE
-					`guia_cacesa`
-				SET
-					`proceso_id` = ' . $objDatabase->SqlVariable($this->intId) . '
-				WHERE
-					`id` = ' . $objDatabase->SqlVariable($objGuiaCacesa->Id) . '
-			');
-		}
-
-		/**
-		 * Unassociates a GuiaCacesaAsProceso
-		 * @param GuiaCacesa $objGuiaCacesa
-		 * @return void
-		*/
-		public function UnassociateGuiaCacesaAsProceso(GuiaCacesa $objGuiaCacesa) {
-			if ((is_null($this->intId)))
-				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateGuiaCacesaAsProceso on this unsaved ProcesoError.');
-			if ((is_null($objGuiaCacesa->Id)))
-				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateGuiaCacesaAsProceso on this ProcesoError with an unsaved GuiaCacesa.');
-
-			// Get the Database Object for this Class
-			$objDatabase = ProcesoError::GetDatabase();
-
-			// Perform the SQL Query
-			$objDatabase->NonQuery('
-				UPDATE
-					`guia_cacesa`
-				SET
-					`proceso_id` = null
-				WHERE
-					`id` = ' . $objDatabase->SqlVariable($objGuiaCacesa->Id) . ' AND
-					`proceso_id` = ' . $objDatabase->SqlVariable($this->intId) . '
-			');
-		}
-
-		/**
-		 * Unassociates all GuiaCacesasAsProceso
-		 * @return void
-		*/
-		public function UnassociateAllGuiaCacesasAsProceso() {
-			if ((is_null($this->intId)))
-				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateGuiaCacesaAsProceso on this unsaved ProcesoError.');
-
-			// Get the Database Object for this Class
-			$objDatabase = ProcesoError::GetDatabase();
-
-			// Perform the SQL Query
-			$objDatabase->NonQuery('
-				UPDATE
-					`guia_cacesa`
-				SET
-					`proceso_id` = null
-				WHERE
-					`proceso_id` = ' . $objDatabase->SqlVariable($this->intId) . '
-			');
-		}
-
-		/**
-		 * Deletes an associated GuiaCacesaAsProceso
-		 * @param GuiaCacesa $objGuiaCacesa
-		 * @return void
-		*/
-		public function DeleteAssociatedGuiaCacesaAsProceso(GuiaCacesa $objGuiaCacesa) {
-			if ((is_null($this->intId)))
-				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateGuiaCacesaAsProceso on this unsaved ProcesoError.');
-			if ((is_null($objGuiaCacesa->Id)))
-				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateGuiaCacesaAsProceso on this ProcesoError with an unsaved GuiaCacesa.');
-
-			// Get the Database Object for this Class
-			$objDatabase = ProcesoError::GetDatabase();
-
-			// Perform the SQL Query
-			$objDatabase->NonQuery('
-				DELETE FROM
-					`guia_cacesa`
-				WHERE
-					`id` = ' . $objDatabase->SqlVariable($objGuiaCacesa->Id) . ' AND
-					`proceso_id` = ' . $objDatabase->SqlVariable($this->intId) . '
-			');
-		}
-
-		/**
-		 * Deletes all associated GuiaCacesasAsProceso
-		 * @return void
-		*/
-		public function DeleteAllGuiaCacesasAsProceso() {
-			if ((is_null($this->intId)))
-				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateGuiaCacesaAsProceso on this unsaved ProcesoError.');
-
-			// Get the Database Object for this Class
-			$objDatabase = ProcesoError::GetDatabase();
-
-			// Perform the SQL Query
-			$objDatabase->NonQuery('
-				DELETE FROM
-					`guia_cacesa`
-				WHERE
-					`proceso_id` = ' . $objDatabase->SqlVariable($this->intId) . '
-			');
-		}
 
 
 		
@@ -1606,7 +1396,6 @@
      * @property-read QQNode $NotificarUsuario
      *
      *
-     * @property-read QQReverseReferenceNodeGuiaCacesa $GuiaCacesaAsProceso
 
      * @property-read QQNode $_PrimaryKeyNode
      **/
@@ -1634,8 +1423,6 @@
 					return new QQNode('notificar_admin', 'NotificarAdmin', 'Bit', $this);
 				case 'NotificarUsuario':
 					return new QQNode('notificar_usuario', 'NotificarUsuario', 'Bit', $this);
-				case 'GuiaCacesaAsProceso':
-					return new QQReverseReferenceNodeGuiaCacesa($this, 'guiacacesaasproceso', 'reverse_reference', 'proceso_id', 'GuiaCacesaAsProceso');
 
 				case '_PrimaryKeyNode':
 					return new QQNode('id', 'Id', 'Integer', $this);
@@ -1662,7 +1449,6 @@
      * @property-read QQNode $NotificarUsuario
      *
      *
-     * @property-read QQReverseReferenceNodeGuiaCacesa $GuiaCacesaAsProceso
 
      * @property-read QQNode $_PrimaryKeyNode
      **/
@@ -1690,8 +1476,6 @@
 					return new QQNode('notificar_admin', 'NotificarAdmin', 'boolean', $this);
 				case 'NotificarUsuario':
 					return new QQNode('notificar_usuario', 'NotificarUsuario', 'boolean', $this);
-				case 'GuiaCacesaAsProceso':
-					return new QQReverseReferenceNodeGuiaCacesa($this, 'guiacacesaasproceso', 'reverse_reference', 'proceso_id', 'GuiaCacesaAsProceso');
 
 				case '_PrimaryKeyNode':
 					return new QQNode('id', 'Id', 'integer', $this);

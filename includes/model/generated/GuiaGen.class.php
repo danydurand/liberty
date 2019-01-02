@@ -131,6 +131,7 @@
 	 * @property GuiaCalculos $GuiaCalculos the value for the GuiaCalculos object that uniquely references this Guia
 	 * @property GuiaCheckpoints $GuiaCheckpoints the value for the GuiaCheckpoints object that uniquely references this Guia
 	 * @property GuiaModificada $GuiaModificada the value for the GuiaModificada object that uniquely references this Guia
+	 * @property WitecConf $WitecConf the value for the WitecConf object that uniquely references this Guia
 	 * @property-read Manifiesto $_ManifiestoAsMani the value for the private _objManifiestoAsMani (Read-Only) if set due to an expansion on the mani_guia_assn association table
 	 * @property-read Manifiesto[] $_ManifiestoAsManiArray the value for the private _objManifiestoAsManiArray (Read-Only) if set due to an ExpandAsArray on the mani_guia_assn association table
 	 * @property-read SdeContenedor $_SdeContenedor the value for the private _objSdeContenedor (Read-Only) if set due to an expansion on the sde_contenedor_guia_assn association table
@@ -1352,6 +1353,24 @@
 		 */
 		protected $blnDirtyGuiaModificada;
 
+		/**
+		 * Protected member variable that contains the object which points to
+		 * this object by the reference in the unique database column witec_conf.guia_id.
+		 *
+		 * NOTE: Always use the WitecConf property getter to correctly retrieve this WitecConf object.
+		 * (Because this class implements late binding, this variable reference MAY be null.)
+		 * @var WitecConf objWitecConf
+		 */
+		protected $objWitecConf;
+
+		/**
+		 * Used internally to manage whether the adjoined WitecConf object
+		 * needs to be updated on save.
+		 *
+		 * NOTE: Do not manually update this value
+		 */
+		protected $blnDirtyWitecConf;
+
 
 
 		/**
@@ -2532,6 +2551,21 @@
 					// We ATTEMPTED to do an Early Bind but the Object Doesn't Exist
 					// Let's set to FALSE so that the object knows not to try and re-query again
 					$objToReturn->objGuiaModificada = false;
+				}
+			}
+
+			// Check for WitecConf Unique ReverseReference Binding
+			$strAlias = $strAliasPrefix . 'witecconf__id';
+			$strAliasName = !empty($strColumnAliasArray[$strAlias]) ? $strColumnAliasArray[$strAlias] : $strAlias;
+			if ($objDbRow->ColumnExists($strAliasName)) {
+				if (!is_null($objDbRow->GetColumn($strAliasName))) {
+					$objExpansionNode = (empty($objExpansionAliasArray['witecconf']) ? null : $objExpansionAliasArray['witecconf']);
+					$objToReturn->objWitecConf = WitecConf::InstantiateDbRow($objDbRow, $strAliasPrefix . 'witecconf__', $objExpansionNode, null, $strColumnAliasArray);
+				}
+				else {
+					// We ATTEMPTED to do an Early Bind but the Object Doesn't Exist
+					// Let's set to FALSE so that the object knows not to try and re-query again
+					$objToReturn->objWitecConf = false;
 				}
 			}
 
@@ -4232,6 +4266,26 @@
 					// Reset the "Dirty" flag
 					$this->blnDirtyGuiaModificada = false;
 				}
+
+
+				// Update the adjoined WitecConf object (if applicable)
+				// TODO: Make this into hard-coded SQL queries
+				if ($this->blnDirtyWitecConf) {
+					// Unassociate the old one (if applicable)
+					if ($objAssociated = WitecConf::LoadByGuiaId($this->strNumeGuia)) {
+						$objAssociated->GuiaId = null;
+						$objAssociated->Save();
+					}
+
+					// Associate the new one (if applicable)
+					if ($this->objWitecConf) {
+						$this->objWitecConf->GuiaId = $this->strNumeGuia;
+						$this->objWitecConf->Save();
+					}
+
+					// Reset the "Dirty" flag
+					$this->blnDirtyWitecConf = false;
+				}
 			} catch (QCallerException $objExc) {
 				$objExc->IncrementOffset();
 				throw $objExc;
@@ -4320,6 +4374,15 @@
 			// Optional -- if you **KNOW** that you do not want to EVER run any level of business logic on the disassocation,
 			// you *could* override Delete() so that this step can be a single hard coded query to optimize performance.
 			if ($objAssociated = GuiaModificada::LoadByGuiaId($this->strNumeGuia)) {
+				$objAssociated->Delete();
+			}
+
+		
+			// Update the adjoined WitecConf object (if applicable) and perform a delete
+
+			// Optional -- if you **KNOW** that you do not want to EVER run any level of business logic on the disassocation,
+			// you *could* override Delete() so that this step can be a single hard coded query to optimize performance.
+			if ($objAssociated = WitecConf::LoadByGuiaId($this->strNumeGuia)) {
 				$objAssociated->Delete();
 			}
 
@@ -5496,6 +5559,24 @@
 						if (!$this->objGuiaModificada)
 							$this->objGuiaModificada = GuiaModificada::LoadByGuiaId($this->strNumeGuia);
 						return $this->objGuiaModificada;
+					} catch (QCallerException $objExc) {
+						$objExc->IncrementOffset();
+						throw $objExc;
+					}
+
+				case 'WitecConf':
+					/**
+					 * Gets the value for the WitecConf object that uniquely references this Guia
+					 * by objWitecConf (Unique)
+					 * @return WitecConf
+					 */
+					try {
+						if ($this->objWitecConf === false)
+							// We've attempted early binding -- and the reverse reference object does not exist
+							return null;
+						if (!$this->objWitecConf)
+							$this->objWitecConf = WitecConf::LoadByGuiaId($this->strNumeGuia);
+						return $this->objWitecConf;
 					} catch (QCallerException $objExc) {
 						$objExc->IncrementOffset();
 						throw $objExc;
@@ -7620,6 +7701,45 @@
 					}
 					break;
 
+				case 'WitecConf':
+					/**
+					 * Sets the value for the WitecConf object referenced by objWitecConf (Unique)
+					 * @param WitecConf $mixValue
+					 * @return WitecConf
+					 */
+					if (is_null($mixValue)) {
+						$this->objWitecConf = null;
+
+						// Make sure we update the adjoined WitecConf object the next time we call Save()
+						$this->blnDirtyWitecConf = true;
+
+						return null;
+					} else {
+						// Make sure $mixValue actually is a WitecConf object
+						try {
+							$mixValue = QType::Cast($mixValue, 'WitecConf');
+						} catch (QInvalidCastException $objExc) {
+							$objExc->IncrementOffset();
+							throw $objExc;
+						}
+
+						// Are we setting objWitecConf to a DIFFERENT $mixValue?
+						if ((!$this->WitecConf) || ($this->WitecConf->Id != $mixValue->Id)) {
+							// Yes -- therefore, set the "Dirty" flag to true
+							// to make sure we update the adjoined WitecConf object the next time we call Save()
+							$this->blnDirtyWitecConf = true;
+
+							// Update Local Member Variable
+							$this->objWitecConf = $mixValue;
+						} else {
+							// Nope -- therefore, make no changes
+						}
+
+						// Return $mixValue
+						return $mixValue;
+					}
+					break;
+
 				default:
 					try {
 						return parent::__set($strName, $mixValue);
@@ -9488,6 +9608,7 @@
      * @property-read QQReverseReferenceNodeNotificacion $Notificacion
      * @property-read QQReverseReferenceNodeRegistroTrabajo $RegistroTrabajo
      * @property-read QQReverseReferenceNodeSreGuiaCkpt $SreGuiaCkptAsNume
+     * @property-read QQReverseReferenceNodeWitecConf $WitecConf
 
      * @property-read QQNode $_PrimaryKeyNode
      **/
@@ -9743,6 +9864,8 @@
 					return new QQReverseReferenceNodeRegistroTrabajo($this, 'registrotrabajo', 'reverse_reference', 'guia_id', 'RegistroTrabajo');
 				case 'SreGuiaCkptAsNume':
 					return new QQReverseReferenceNodeSreGuiaCkpt($this, 'sreguiackptasnume', 'reverse_reference', 'nume_guia', 'SreGuiaCkptAsNume');
+				case 'WitecConf':
+					return new QQReverseReferenceNodeWitecConf($this, 'witecconf', 'reverse_reference', 'guia_id', 'WitecConf');
 
 				case '_PrimaryKeyNode':
 					return new QQNode('nume_guia', 'NumeGuia', 'VarChar', $this);
@@ -9883,6 +10006,7 @@
      * @property-read QQReverseReferenceNodeNotificacion $Notificacion
      * @property-read QQReverseReferenceNodeRegistroTrabajo $RegistroTrabajo
      * @property-read QQReverseReferenceNodeSreGuiaCkpt $SreGuiaCkptAsNume
+     * @property-read QQReverseReferenceNodeWitecConf $WitecConf
 
      * @property-read QQNode $_PrimaryKeyNode
      **/
@@ -10138,6 +10262,8 @@
 					return new QQReverseReferenceNodeRegistroTrabajo($this, 'registrotrabajo', 'reverse_reference', 'guia_id', 'RegistroTrabajo');
 				case 'SreGuiaCkptAsNume':
 					return new QQReverseReferenceNodeSreGuiaCkpt($this, 'sreguiackptasnume', 'reverse_reference', 'nume_guia', 'SreGuiaCkptAsNume');
+				case 'WitecConf':
+					return new QQReverseReferenceNodeWitecConf($this, 'witecconf', 'reverse_reference', 'guia_id', 'WitecConf');
 
 				case '_PrimaryKeyNode':
 					return new QQNode('nume_guia', 'NumeGuia', 'string', $this);

@@ -272,6 +272,13 @@
 		QApplicationBase::$ClassFile['estacionmetacontrol'] = __META_CONTROLS__ . '/EstacionMetaControl.class.php';
 		QApplicationBase::$ClassFile['estaciondatagrid'] = __META_CONTROLS__ . '/EstacionDataGrid.class.php';
 
+	// ClassPaths for the Estadistica class
+		QApplicationBase::$ClassFile['estadistica'] = __MODEL__ . '/Estadistica.class.php';
+		QApplicationBase::$ClassFile['qqnodeestadistica'] = __MODEL__ . '/Estadistica.class.php';
+		QApplicationBase::$ClassFile['qqreversereferencenodeestadistica'] = __MODEL__ . '/Estadistica.class.php';
+		QApplicationBase::$ClassFile['estadisticametacontrol'] = __META_CONTROLS__ . '/EstadisticaMetaControl.class.php';
+		QApplicationBase::$ClassFile['estadisticadatagrid'] = __META_CONTROLS__ . '/EstadisticaDataGrid.class.php';
+
 	// ClassPaths for the EstadisticaDeClientes class
 		QApplicationBase::$ClassFile['estadisticadeclientes'] = __MODEL__ . '/EstadisticaDeClientes.class.php';
 		QApplicationBase::$ClassFile['qqnodeestadisticadeclientes'] = __MODEL__ . '/EstadisticaDeClientes.class.php';
@@ -285,6 +292,13 @@
 		QApplicationBase::$ClassFile['qqreversereferencenodeestadisticadeguias'] = __MODEL__ . '/EstadisticaDeGuias.class.php';
 		QApplicationBase::$ClassFile['estadisticadeguiasmetacontrol'] = __META_CONTROLS__ . '/EstadisticaDeGuiasMetaControl.class.php';
 		QApplicationBase::$ClassFile['estadisticadeguiasdatagrid'] = __META_CONTROLS__ . '/EstadisticaDeGuiasDataGrid.class.php';
+
+	// ClassPaths for the Estadisticas class
+		QApplicationBase::$ClassFile['estadisticas'] = __MODEL__ . '/Estadisticas.class.php';
+		QApplicationBase::$ClassFile['qqnodeestadisticas'] = __MODEL__ . '/Estadisticas.class.php';
+		QApplicationBase::$ClassFile['qqreversereferencenodeestadisticas'] = __MODEL__ . '/Estadisticas.class.php';
+		QApplicationBase::$ClassFile['estadisticasmetacontrol'] = __META_CONTROLS__ . '/EstadisticasMetaControl.class.php';
+		QApplicationBase::$ClassFile['estadisticasdatagrid'] = __META_CONTROLS__ . '/EstadisticasDataGrid.class.php';
 
 	// ClassPaths for the Estado class
 		QApplicationBase::$ClassFile['estado'] = __MODEL__ . '/Estado.class.php';
@@ -943,6 +957,13 @@
 		QApplicationBase::$ClassFile['qqreversereferencenodevendedorconsecutivo'] = __MODEL__ . '/VendedorConsecutivo.class.php';
 		QApplicationBase::$ClassFile['vendedorconsecutivometacontrol'] = __META_CONTROLS__ . '/VendedorConsecutivoMetaControl.class.php';
 		QApplicationBase::$ClassFile['vendedorconsecutivodatagrid'] = __META_CONTROLS__ . '/VendedorConsecutivoDataGrid.class.php';
+
+	// ClassPaths for the WitecConf class
+		QApplicationBase::$ClassFile['witecconf'] = __MODEL__ . '/WitecConf.class.php';
+		QApplicationBase::$ClassFile['qqnodewitecconf'] = __MODEL__ . '/WitecConf.class.php';
+		QApplicationBase::$ClassFile['qqreversereferencenodewitecconf'] = __MODEL__ . '/WitecConf.class.php';
+		QApplicationBase::$ClassFile['witecconfmetacontrol'] = __META_CONTROLS__ . '/WitecConfMetaControl.class.php';
+		QApplicationBase::$ClassFile['witecconfdatagrid'] = __META_CONTROLS__ . '/WitecConfDataGrid.class.php';
 
 	// ClassPaths for the ZncPorSucursal class
 		QApplicationBase::$ClassFile['zncporsucursal'] = __MODEL__ . '/ZncPorSucursal.class.php';

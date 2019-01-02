@@ -72,6 +72,10 @@
 	 * @property-read DspDespacho[] $_DspDespachoAsCodiOrigArray the value for the private _objDspDespachoAsCodiOrigArray (Read-Only) if set due to an ExpandAsArray on the dsp_despacho.codi_orig reverse relationship
 	 * @property-read DspDespacho $_DspDespachoAsCodiDest the value for the private _objDspDespachoAsCodiDest (Read-Only) if set due to an expansion on the dsp_despacho.codi_dest reverse relationship
 	 * @property-read DspDespacho[] $_DspDespachoAsCodiDestArray the value for the private _objDspDespachoAsCodiDestArray (Read-Only) if set due to an ExpandAsArray on the dsp_despacho.codi_dest reverse relationship
+	 * @property-read Estadistica $_EstadisticaAsSucursal the value for the private _objEstadisticaAsSucursal (Read-Only) if set due to an expansion on the estadistica.sucursal_id reverse relationship
+	 * @property-read Estadistica[] $_EstadisticaAsSucursalArray the value for the private _objEstadisticaAsSucursalArray (Read-Only) if set due to an ExpandAsArray on the estadistica.sucursal_id reverse relationship
+	 * @property-read Estadisticas $_EstadisticasAsSucursal the value for the private _objEstadisticasAsSucursal (Read-Only) if set due to an expansion on the estadisticas.sucursal_id reverse relationship
+	 * @property-read Estadisticas[] $_EstadisticasAsSucursalArray the value for the private _objEstadisticasAsSucursalArray (Read-Only) if set due to an ExpandAsArray on the estadisticas.sucursal_id reverse relationship
 	 * @property-read FacTarifaPeso $_FacTarifaPesoAsOrigen the value for the private _objFacTarifaPesoAsOrigen (Read-Only) if set due to an expansion on the fac_tarifa_peso.origen reverse relationship
 	 * @property-read FacTarifaPeso[] $_FacTarifaPesoAsOrigenArray the value for the private _objFacTarifaPesoAsOrigenArray (Read-Only) if set due to an ExpandAsArray on the fac_tarifa_peso.origen reverse relationship
 	 * @property-read FacTarifaPeso $_FacTarifaPesoAsDestino the value for the private _objFacTarifaPesoAsDestino (Read-Only) if set due to an expansion on the fac_tarifa_peso.destino reverse relationship
@@ -557,6 +561,38 @@
 		 * @var DspDespacho[] _objDspDespachoAsCodiDestArray;
 		 */
 		private $_objDspDespachoAsCodiDestArray = null;
+
+		/**
+		 * Private member variable that stores a reference to a single EstadisticaAsSucursal object
+		 * (of type Estadistica), if this Estacion object was restored with
+		 * an expansion on the estadistica association table.
+		 * @var Estadistica _objEstadisticaAsSucursal;
+		 */
+		private $_objEstadisticaAsSucursal;
+
+		/**
+		 * Private member variable that stores a reference to an array of EstadisticaAsSucursal objects
+		 * (of type Estadistica[]), if this Estacion object was restored with
+		 * an ExpandAsArray on the estadistica association table.
+		 * @var Estadistica[] _objEstadisticaAsSucursalArray;
+		 */
+		private $_objEstadisticaAsSucursalArray = null;
+
+		/**
+		 * Private member variable that stores a reference to a single EstadisticasAsSucursal object
+		 * (of type Estadisticas), if this Estacion object was restored with
+		 * an expansion on the estadisticas association table.
+		 * @var Estadisticas _objEstadisticasAsSucursal;
+		 */
+		private $_objEstadisticasAsSucursal;
+
+		/**
+		 * Private member variable that stores a reference to an array of EstadisticasAsSucursal objects
+		 * (of type Estadisticas[]), if this Estacion object was restored with
+		 * an ExpandAsArray on the estadisticas association table.
+		 * @var Estadisticas[] _objEstadisticasAsSucursalArray;
+		 */
+		private $_objEstadisticasAsSucursalArray = null;
 
 		/**
 		 * Private member variable that stores a reference to a single FacTarifaPesoAsOrigen object
@@ -1853,6 +1889,36 @@
 					$objToReturn->_objDspDespachoAsCodiDestArray[] = DspDespacho::InstantiateDbRow($objDbRow, $strAliasPrefix . 'dspdespachoascodidest__', $objExpansionNode, null, $strColumnAliasArray);
 				} elseif (is_null($objToReturn->_objDspDespachoAsCodiDest)) {
 					$objToReturn->_objDspDespachoAsCodiDest = DspDespacho::InstantiateDbRow($objDbRow, $strAliasPrefix . 'dspdespachoascodidest__', $objExpansionNode, null, $strColumnAliasArray);
+				}
+			}
+
+			// Check for EstadisticaAsSucursal Virtual Binding
+			$strAlias = $strAliasPrefix . 'estadisticaassucursal__sucursal_id';
+			$strAliasName = !empty($strColumnAliasArray[$strAlias]) ? $strColumnAliasArray[$strAlias] : $strAlias;
+			$objExpansionNode = (empty($objExpansionAliasArray['estadisticaassucursal']) ? null : $objExpansionAliasArray['estadisticaassucursal']);
+			$blnExpanded = ($objExpansionNode && $objExpansionNode->ExpandAsArray);
+			if ($blnExpanded && null === $objToReturn->_objEstadisticaAsSucursalArray)
+				$objToReturn->_objEstadisticaAsSucursalArray = array();
+			if (!is_null($objDbRow->GetColumn($strAliasName))) {
+				if ($blnExpanded) {
+					$objToReturn->_objEstadisticaAsSucursalArray[] = Estadistica::InstantiateDbRow($objDbRow, $strAliasPrefix . 'estadisticaassucursal__', $objExpansionNode, null, $strColumnAliasArray);
+				} elseif (is_null($objToReturn->_objEstadisticaAsSucursal)) {
+					$objToReturn->_objEstadisticaAsSucursal = Estadistica::InstantiateDbRow($objDbRow, $strAliasPrefix . 'estadisticaassucursal__', $objExpansionNode, null, $strColumnAliasArray);
+				}
+			}
+
+			// Check for EstadisticasAsSucursal Virtual Binding
+			$strAlias = $strAliasPrefix . 'estadisticasassucursal__id';
+			$strAliasName = !empty($strColumnAliasArray[$strAlias]) ? $strColumnAliasArray[$strAlias] : $strAlias;
+			$objExpansionNode = (empty($objExpansionAliasArray['estadisticasassucursal']) ? null : $objExpansionAliasArray['estadisticasassucursal']);
+			$blnExpanded = ($objExpansionNode && $objExpansionNode->ExpandAsArray);
+			if ($blnExpanded && null === $objToReturn->_objEstadisticasAsSucursalArray)
+				$objToReturn->_objEstadisticasAsSucursalArray = array();
+			if (!is_null($objDbRow->GetColumn($strAliasName))) {
+				if ($blnExpanded) {
+					$objToReturn->_objEstadisticasAsSucursalArray[] = Estadisticas::InstantiateDbRow($objDbRow, $strAliasPrefix . 'estadisticasassucursal__', $objExpansionNode, null, $strColumnAliasArray);
+				} elseif (is_null($objToReturn->_objEstadisticasAsSucursal)) {
+					$objToReturn->_objEstadisticasAsSucursal = Estadisticas::InstantiateDbRow($objDbRow, $strAliasPrefix . 'estadisticasassucursal__', $objExpansionNode, null, $strColumnAliasArray);
 				}
 			}
 
@@ -3547,6 +3613,38 @@
 					 */
 					return $this->_objDspDespachoAsCodiDestArray;
 
+				case '_EstadisticaAsSucursal':
+					/**
+					 * Gets the value for the private _objEstadisticaAsSucursal (Read-Only)
+					 * if set due to an expansion on the estadistica.sucursal_id reverse relationship
+					 * @return Estadistica
+					 */
+					return $this->_objEstadisticaAsSucursal;
+
+				case '_EstadisticaAsSucursalArray':
+					/**
+					 * Gets the value for the private _objEstadisticaAsSucursalArray (Read-Only)
+					 * if set due to an ExpandAsArray on the estadistica.sucursal_id reverse relationship
+					 * @return Estadistica[]
+					 */
+					return $this->_objEstadisticaAsSucursalArray;
+
+				case '_EstadisticasAsSucursal':
+					/**
+					 * Gets the value for the private _objEstadisticasAsSucursal (Read-Only)
+					 * if set due to an expansion on the estadisticas.sucursal_id reverse relationship
+					 * @return Estadisticas
+					 */
+					return $this->_objEstadisticasAsSucursal;
+
+				case '_EstadisticasAsSucursalArray':
+					/**
+					 * Gets the value for the private _objEstadisticasAsSucursalArray (Read-Only)
+					 * if set due to an ExpandAsArray on the estadisticas.sucursal_id reverse relationship
+					 * @return Estadisticas[]
+					 */
+					return $this->_objEstadisticasAsSucursalArray;
+
 				case '_FacTarifaPesoAsOrigen':
 					/**
 					 * Gets the value for the private _objFacTarifaPesoAsOrigen (Read-Only)
@@ -4560,6 +4658,12 @@
 			}
 			if ($this->CountDspDespachosAsCodiDest()) {
 				$arrTablRela[] = 'dsp_despacho';
+			}
+			if ($this->CountEstadisticasAsSucursal()) {
+				$arrTablRela[] = 'estadistica';
+			}
+			if ($this->CountEstadisticasesAsSucursal()) {
+				$arrTablRela[] = 'estadisticas';
 			}
 			if ($this->CountFacTarifaPesosAsOrigen()) {
 				$arrTablRela[] = 'fac_tarifa_peso';
@@ -6126,6 +6230,310 @@
 					`dsp_despacho`
 				WHERE
 					`codi_dest` = ' . $objDatabase->SqlVariable($this->strCodiEsta) . '
+			');
+		}
+
+
+		// Related Objects' Methods for EstadisticaAsSucursal
+		//-------------------------------------------------------------------
+
+		/**
+		 * Gets all associated EstadisticasAsSucursal as an array of Estadistica objects
+		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
+		 * @return Estadistica[]
+		*/
+		public function GetEstadisticaAsSucursalArray($objOptionalClauses = null) {
+			if ((is_null($this->strCodiEsta)))
+				return array();
+
+			try {
+				return Estadistica::LoadArrayBySucursalId($this->strCodiEsta, $objOptionalClauses);
+			} catch (QCallerException $objExc) {
+				$objExc->IncrementOffset();
+				throw $objExc;
+			}
+		}
+
+		/**
+		 * Counts all associated EstadisticasAsSucursal
+		 * @return int
+		*/
+		public function CountEstadisticasAsSucursal() {
+			if ((is_null($this->strCodiEsta)))
+				return 0;
+
+			return Estadistica::CountBySucursalId($this->strCodiEsta);
+		}
+
+		/**
+		 * Associates a EstadisticaAsSucursal
+		 * @param Estadistica $objEstadistica
+		 * @return void
+		*/
+		public function AssociateEstadisticaAsSucursal(Estadistica $objEstadistica) {
+			if ((is_null($this->strCodiEsta)))
+				throw new QUndefinedPrimaryKeyException('Unable to call AssociateEstadisticaAsSucursal on this unsaved Estacion.');
+			if ((is_null($objEstadistica->SucursalId)) || (is_null($objEstadistica->Fecha)) || (is_null($objEstadistica->Medicion)))
+				throw new QUndefinedPrimaryKeyException('Unable to call AssociateEstadisticaAsSucursal on this Estacion with an unsaved Estadistica.');
+
+			// Get the Database Object for this Class
+			$objDatabase = Estacion::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				UPDATE
+					`estadistica`
+				SET
+					`sucursal_id` = ' . $objDatabase->SqlVariable($this->strCodiEsta) . '
+				WHERE
+					`sucursal_id` = ' . $objDatabase->SqlVariable($objEstadistica->SucursalId) . ' AND
+					`fecha` = ' . $objDatabase->SqlVariable($objEstadistica->Fecha) . ' AND
+					`medicion` = ' . $objDatabase->SqlVariable($objEstadistica->Medicion) . '
+			');
+		}
+
+		/**
+		 * Unassociates a EstadisticaAsSucursal
+		 * @param Estadistica $objEstadistica
+		 * @return void
+		*/
+		public function UnassociateEstadisticaAsSucursal(Estadistica $objEstadistica) {
+			if ((is_null($this->strCodiEsta)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateEstadisticaAsSucursal on this unsaved Estacion.');
+			if ((is_null($objEstadistica->SucursalId)) || (is_null($objEstadistica->Fecha)) || (is_null($objEstadistica->Medicion)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateEstadisticaAsSucursal on this Estacion with an unsaved Estadistica.');
+
+			// Get the Database Object for this Class
+			$objDatabase = Estacion::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				UPDATE
+					`estadistica`
+				SET
+					`sucursal_id` = null
+				WHERE
+					`sucursal_id` = ' . $objDatabase->SqlVariable($objEstadistica->SucursalId) . ' AND
+					`fecha` = ' . $objDatabase->SqlVariable($objEstadistica->Fecha) . ' AND
+					`medicion` = ' . $objDatabase->SqlVariable($objEstadistica->Medicion) . ' AND
+					`sucursal_id` = ' . $objDatabase->SqlVariable($this->strCodiEsta) . '
+			');
+		}
+
+		/**
+		 * Unassociates all EstadisticasAsSucursal
+		 * @return void
+		*/
+		public function UnassociateAllEstadisticasAsSucursal() {
+			if ((is_null($this->strCodiEsta)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateEstadisticaAsSucursal on this unsaved Estacion.');
+
+			// Get the Database Object for this Class
+			$objDatabase = Estacion::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				UPDATE
+					`estadistica`
+				SET
+					`sucursal_id` = null
+				WHERE
+					`sucursal_id` = ' . $objDatabase->SqlVariable($this->strCodiEsta) . '
+			');
+		}
+
+		/**
+		 * Deletes an associated EstadisticaAsSucursal
+		 * @param Estadistica $objEstadistica
+		 * @return void
+		*/
+		public function DeleteAssociatedEstadisticaAsSucursal(Estadistica $objEstadistica) {
+			if ((is_null($this->strCodiEsta)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateEstadisticaAsSucursal on this unsaved Estacion.');
+			if ((is_null($objEstadistica->SucursalId)) || (is_null($objEstadistica->Fecha)) || (is_null($objEstadistica->Medicion)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateEstadisticaAsSucursal on this Estacion with an unsaved Estadistica.');
+
+			// Get the Database Object for this Class
+			$objDatabase = Estacion::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				DELETE FROM
+					`estadistica`
+				WHERE
+					`sucursal_id` = ' . $objDatabase->SqlVariable($objEstadistica->SucursalId) . ' AND
+					`fecha` = ' . $objDatabase->SqlVariable($objEstadistica->Fecha) . ' AND
+					`medicion` = ' . $objDatabase->SqlVariable($objEstadistica->Medicion) . ' AND
+					`sucursal_id` = ' . $objDatabase->SqlVariable($this->strCodiEsta) . '
+			');
+		}
+
+		/**
+		 * Deletes all associated EstadisticasAsSucursal
+		 * @return void
+		*/
+		public function DeleteAllEstadisticasAsSucursal() {
+			if ((is_null($this->strCodiEsta)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateEstadisticaAsSucursal on this unsaved Estacion.');
+
+			// Get the Database Object for this Class
+			$objDatabase = Estacion::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				DELETE FROM
+					`estadistica`
+				WHERE
+					`sucursal_id` = ' . $objDatabase->SqlVariable($this->strCodiEsta) . '
+			');
+		}
+
+
+		// Related Objects' Methods for EstadisticasAsSucursal
+		//-------------------------------------------------------------------
+
+		/**
+		 * Gets all associated EstadisticasesAsSucursal as an array of Estadisticas objects
+		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
+		 * @return Estadisticas[]
+		*/
+		public function GetEstadisticasAsSucursalArray($objOptionalClauses = null) {
+			if ((is_null($this->strCodiEsta)))
+				return array();
+
+			try {
+				return Estadisticas::LoadArrayBySucursalId($this->strCodiEsta, $objOptionalClauses);
+			} catch (QCallerException $objExc) {
+				$objExc->IncrementOffset();
+				throw $objExc;
+			}
+		}
+
+		/**
+		 * Counts all associated EstadisticasesAsSucursal
+		 * @return int
+		*/
+		public function CountEstadisticasesAsSucursal() {
+			if ((is_null($this->strCodiEsta)))
+				return 0;
+
+			return Estadisticas::CountBySucursalId($this->strCodiEsta);
+		}
+
+		/**
+		 * Associates a EstadisticasAsSucursal
+		 * @param Estadisticas $objEstadisticas
+		 * @return void
+		*/
+		public function AssociateEstadisticasAsSucursal(Estadisticas $objEstadisticas) {
+			if ((is_null($this->strCodiEsta)))
+				throw new QUndefinedPrimaryKeyException('Unable to call AssociateEstadisticasAsSucursal on this unsaved Estacion.');
+			if ((is_null($objEstadisticas->Id)))
+				throw new QUndefinedPrimaryKeyException('Unable to call AssociateEstadisticasAsSucursal on this Estacion with an unsaved Estadisticas.');
+
+			// Get the Database Object for this Class
+			$objDatabase = Estacion::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				UPDATE
+					`estadisticas`
+				SET
+					`sucursal_id` = ' . $objDatabase->SqlVariable($this->strCodiEsta) . '
+				WHERE
+					`id` = ' . $objDatabase->SqlVariable($objEstadisticas->Id) . '
+			');
+		}
+
+		/**
+		 * Unassociates a EstadisticasAsSucursal
+		 * @param Estadisticas $objEstadisticas
+		 * @return void
+		*/
+		public function UnassociateEstadisticasAsSucursal(Estadisticas $objEstadisticas) {
+			if ((is_null($this->strCodiEsta)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateEstadisticasAsSucursal on this unsaved Estacion.');
+			if ((is_null($objEstadisticas->Id)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateEstadisticasAsSucursal on this Estacion with an unsaved Estadisticas.');
+
+			// Get the Database Object for this Class
+			$objDatabase = Estacion::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				UPDATE
+					`estadisticas`
+				SET
+					`sucursal_id` = null
+				WHERE
+					`id` = ' . $objDatabase->SqlVariable($objEstadisticas->Id) . ' AND
+					`sucursal_id` = ' . $objDatabase->SqlVariable($this->strCodiEsta) . '
+			');
+		}
+
+		/**
+		 * Unassociates all EstadisticasesAsSucursal
+		 * @return void
+		*/
+		public function UnassociateAllEstadisticasesAsSucursal() {
+			if ((is_null($this->strCodiEsta)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateEstadisticasAsSucursal on this unsaved Estacion.');
+
+			// Get the Database Object for this Class
+			$objDatabase = Estacion::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				UPDATE
+					`estadisticas`
+				SET
+					`sucursal_id` = null
+				WHERE
+					`sucursal_id` = ' . $objDatabase->SqlVariable($this->strCodiEsta) . '
+			');
+		}
+
+		/**
+		 * Deletes an associated EstadisticasAsSucursal
+		 * @param Estadisticas $objEstadisticas
+		 * @return void
+		*/
+		public function DeleteAssociatedEstadisticasAsSucursal(Estadisticas $objEstadisticas) {
+			if ((is_null($this->strCodiEsta)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateEstadisticasAsSucursal on this unsaved Estacion.');
+			if ((is_null($objEstadisticas->Id)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateEstadisticasAsSucursal on this Estacion with an unsaved Estadisticas.');
+
+			// Get the Database Object for this Class
+			$objDatabase = Estacion::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				DELETE FROM
+					`estadisticas`
+				WHERE
+					`id` = ' . $objDatabase->SqlVariable($objEstadisticas->Id) . ' AND
+					`sucursal_id` = ' . $objDatabase->SqlVariable($this->strCodiEsta) . '
+			');
+		}
+
+		/**
+		 * Deletes all associated EstadisticasesAsSucursal
+		 * @return void
+		*/
+		public function DeleteAllEstadisticasesAsSucursal() {
+			if ((is_null($this->strCodiEsta)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateEstadisticasAsSucursal on this unsaved Estacion.');
+
+			// Get the Database Object for this Class
+			$objDatabase = Estacion::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				DELETE FROM
+					`estadisticas`
+				WHERE
+					`sucursal_id` = ' . $objDatabase->SqlVariable($this->strCodiEsta) . '
 			');
 		}
 
@@ -10066,6 +10474,8 @@
      * @property-read QQReverseReferenceNodeDestinatarioFrecuente $DestinatarioFrecuenteAsDestino
      * @property-read QQReverseReferenceNodeDspDespacho $DspDespachoAsCodiOrig
      * @property-read QQReverseReferenceNodeDspDespacho $DspDespachoAsCodiDest
+     * @property-read QQReverseReferenceNodeEstadistica $EstadisticaAsSucursal
+     * @property-read QQReverseReferenceNodeEstadisticas $EstadisticasAsSucursal
      * @property-read QQReverseReferenceNodeFacTarifaPeso $FacTarifaPesoAsOrigen
      * @property-read QQReverseReferenceNodeFacTarifaPeso $FacTarifaPesoAsDestino
      * @property-read QQReverseReferenceNodeFactura $FacturaAsSucursal
@@ -10190,6 +10600,10 @@
 					return new QQReverseReferenceNodeDspDespacho($this, 'dspdespachoascodiorig', 'reverse_reference', 'codi_orig', 'DspDespachoAsCodiOrig');
 				case 'DspDespachoAsCodiDest':
 					return new QQReverseReferenceNodeDspDespacho($this, 'dspdespachoascodidest', 'reverse_reference', 'codi_dest', 'DspDespachoAsCodiDest');
+				case 'EstadisticaAsSucursal':
+					return new QQReverseReferenceNodeEstadistica($this, 'estadisticaassucursal', 'reverse_reference', 'sucursal_id', 'EstadisticaAsSucursal');
+				case 'EstadisticasAsSucursal':
+					return new QQReverseReferenceNodeEstadisticas($this, 'estadisticasassucursal', 'reverse_reference', 'sucursal_id', 'EstadisticasAsSucursal');
 				case 'FacTarifaPesoAsOrigen':
 					return new QQReverseReferenceNodeFacTarifaPeso($this, 'factarifapesoasorigen', 'reverse_reference', 'origen', 'FacTarifaPesoAsOrigen');
 				case 'FacTarifaPesoAsDestino':
@@ -10299,6 +10713,8 @@
      * @property-read QQReverseReferenceNodeDestinatarioFrecuente $DestinatarioFrecuenteAsDestino
      * @property-read QQReverseReferenceNodeDspDespacho $DspDespachoAsCodiOrig
      * @property-read QQReverseReferenceNodeDspDespacho $DspDespachoAsCodiDest
+     * @property-read QQReverseReferenceNodeEstadistica $EstadisticaAsSucursal
+     * @property-read QQReverseReferenceNodeEstadisticas $EstadisticasAsSucursal
      * @property-read QQReverseReferenceNodeFacTarifaPeso $FacTarifaPesoAsOrigen
      * @property-read QQReverseReferenceNodeFacTarifaPeso $FacTarifaPesoAsDestino
      * @property-read QQReverseReferenceNodeFactura $FacturaAsSucursal
@@ -10423,6 +10839,10 @@
 					return new QQReverseReferenceNodeDspDespacho($this, 'dspdespachoascodiorig', 'reverse_reference', 'codi_orig', 'DspDespachoAsCodiOrig');
 				case 'DspDespachoAsCodiDest':
 					return new QQReverseReferenceNodeDspDespacho($this, 'dspdespachoascodidest', 'reverse_reference', 'codi_dest', 'DspDespachoAsCodiDest');
+				case 'EstadisticaAsSucursal':
+					return new QQReverseReferenceNodeEstadistica($this, 'estadisticaassucursal', 'reverse_reference', 'sucursal_id', 'EstadisticaAsSucursal');
+				case 'EstadisticasAsSucursal':
+					return new QQReverseReferenceNodeEstadisticas($this, 'estadisticasassucursal', 'reverse_reference', 'sucursal_id', 'EstadisticasAsSucursal');
 				case 'FacTarifaPesoAsOrigen':
 					return new QQReverseReferenceNodeFacTarifaPeso($this, 'factarifapesoasorigen', 'reverse_reference', 'origen', 'FacTarifaPesoAsOrigen');
 				case 'FacTarifaPesoAsDestino':

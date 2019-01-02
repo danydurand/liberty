@@ -64,6 +64,12 @@ class MasterClienteEditForm extends FormularioBaseKaizen {
     protected $txtUsuaApix;
     protected $txtPassApix;
 
+    protected $txtDctoVolu;
+    protected $txtVoluDcto;
+    protected $txtDctoPeso;
+    protected $txtPesoDcto;
+    protected $dttDctoCadu;
+
     // Boton(es) del Formulario //
     protected $btnLogxCamb;
     protected $btnCargMasi;
@@ -174,6 +180,13 @@ class MasterClienteEditForm extends FormularioBaseKaizen {
         $this->txtUsuaApix_Create();
         $this->txtPassApix_Create();
 
+        $this->txtDctoVolu_Create();
+        $this->txtVoluDcto_Create();
+        $this->txtDctoPeso_Create();
+        $this->txtPesoDcto_Create();
+        $this->dttDctoCadu_Create();
+
+
         $this->dtePrimGuia_Create();
         $this->dteUltiGuia_Create();
         $this->txtCantGuia_Create();
@@ -275,10 +288,40 @@ class MasterClienteEditForm extends FormularioBaseKaizen {
         if ($this->objUsuario->CodiGrup == 1) {
             $this->chkGuiaReto->Visible = true;
         }
+        $this->permisosDeDescuentos();
 
         $strTextMens = 'Evite el uso de caracteres especiales (Ej: \\~°#^*+) en <b>los nombres, las direcciones y los teléfonos</b>';
         $this->mensaje($strTextMens,'n','i','',__iINFO__);
 
+    }
+
+    protected function permisosDeDescuentos() {
+        //------------------------------------------------------------------------------
+        // Unicamente los Usuario autorizados tendran acceso a los campos de descuento
+        //------------------------------------------------------------------------------
+        $this->txtDctoVolu->Enabled = false;
+        $this->txtVoluDcto->Enabled = false;
+        $this->txtDctoPeso->Enabled = false;
+        $this->txtPesoDcto->Enabled = false;
+        $this->dttDctoCadu->Enabled = false;
+        $this->txtDctoVolu->ForeColor = 'blue';
+        $this->txtVoluDcto->ForeColor = 'blue';
+        $this->txtDctoPeso->ForeColor = 'blue';
+        $this->txtPesoDcto->ForeColor = 'blue';
+        $this->dttDctoCadu->ForeColor = 'blue';
+        $blnUsuaAuto = BuscarParametro("DctoClie", $this->objUsuario->LogiUsua, "Val1", 0);
+        if ($blnUsuaAuto) {
+            $this->txtDctoVolu->Enabled = true;
+            $this->txtVoluDcto->Enabled = true;
+            $this->txtDctoPeso->Enabled = true;
+            $this->txtPesoDcto->Enabled = true;
+            $this->dttDctoCadu->Enabled = true;
+            $this->txtDctoVolu->ForeColor = null;
+            $this->txtVoluDcto->ForeColor = null;
+            $this->txtDctoPeso->ForeColor = null;
+            $this->txtPesoDcto->ForeColor = null;
+            $this->dttDctoCadu->ForeColor = null;
+        }
     }
 
 	//----------------------------
@@ -994,6 +1037,61 @@ class MasterClienteEditForm extends FormularioBaseKaizen {
         }
     }
 
+    protected function txtDctoVolu_Create() {
+        $this->txtDctoVolu = new QFloatTextBox($this);
+        $this->txtDctoVolu->Name = '% de Descuento x Volumen';
+        $this->txtDctoVolu->Width = 50;
+        $this->txtDctoVolu->Text = '';
+        if ($this->blnEditMode) {
+            $this->txtDctoVolu->Text = $this->objMasterCliente->DsctoPorVolumen;
+        }
+    }
+
+    protected function txtVoluDcto_Create() {
+        $this->txtVoluDcto = new QFloatTextBox($this);
+        $this->txtVoluDcto->Name = 'Volumen p/obtener Dscto';
+        $this->txtVoluDcto->Width = 50;
+        $this->txtVoluDcto->HtmlAfter = ' (cantidad de guías por mes)';
+        $this->txtVoluDcto->ToolTip = 'El Cliente debe transportar esta cantidad de guías, p/obtener el descuento';
+        $this->txtVoluDcto->Text = '';
+        if ($this->blnEditMode) {
+            $this->txtVoluDcto->Text = $this->objMasterCliente->VolumenParaDscto;
+        }
+    }
+
+    protected function txtDctoPeso_Create() {
+        $this->txtDctoPeso = new QFloatTextBox($this);
+        $this->txtDctoPeso->Name = '% de Descuento x Peso';
+        $this->txtDctoPeso->Width = 50;
+        $this->txtDctoPeso->Text = '';
+        if ($this->blnEditMode) {
+            $this->txtDctoPeso->Text = $this->objMasterCliente->DsctoPorPeso;
+        }
+    }
+
+    protected function txtPesoDcto_Create() {
+        $this->txtPesoDcto = new QFloatTextBox($this);
+        $this->txtPesoDcto->Name = 'Peso p/obtener Dscto';
+        $this->txtPesoDcto->Width = 50;
+        $this->txtPesoDcto->HtmlAfter = ' (suma total de kilos por mes)';
+        $this->txtPesoDcto->ToolTip = 'El Cliente debe transportar esta cantidad de kilos, p/obtener el descuento';
+        $this->txtPesoDcto->Text = '';
+        if ($this->blnEditMode) {
+            $this->txtPesoDcto->Text = $this->objMasterCliente->PesoParaDscto;
+        }
+    }
+
+    protected function dttDctoCadu_Create() {
+        $this->dttDctoCadu = new QCalendar($this);
+        $this->dttDctoCadu->Name = 'Los Descuento Caducan el';
+        $this->dttDctoCadu->ToolTip = 'En esta fecha, los descuentos se colocan en cero (0)';
+        if ($this->blnEditMode) {
+            if (!is_null($this->objMasterCliente->DescuentoCaducaEl)) {
+                $this->dttDctoCadu->DateTime = new QDateTime($this->objMasterCliente->DescuentoCaducaEl);
+            }
+        }
+    }
+
     protected function btnDelete_Create() {
         $this->btnDelete = new QButton($this);
         $this->btnDelete->Text = TextoIcono('trash-o','Borrar','F','fa-lg');
@@ -1507,13 +1605,36 @@ class MasterClienteEditForm extends FormularioBaseKaizen {
     }
     */
 
+    protected function validarDescuentos() {
+        if ($this->txtDctoVolu->Text > 100) {
+            $this->mensaje('Dscto x Volumen, <b>no puede ser mayor a 100%</b>','','d','',__iHAND__);
+            return false;
+        }
+        if ($this->txtDctoPeso->Text > 100) {
+            $this->mensaje('Dscto x Peso, <b>no puede ser mayor a 100%</b>','','d','',__iHAND__);
+            return false;
+        }
+        if ((strlen($this->txtDctoVolu->Text) > 0) && ($this->txtDctoVolu->Text != 0)) {
+            if (strlen($this->txtVoluDcto->Text) == 0) {
+                $this->mensaje('Debe especificar el % de descuento por volumen','','d','',__iHAND__);
+                return false;
+            }
+        }
+        if ((strlen($this->txtDctoPeso->Text) > 0) && ($this->txtDctoPeso->Text != 0)) {
+            if (strlen($this->txtPesoDcto->Text) == 0) {
+                $this->mensaje('Debe especificar el % de descuento por peso','','d','',__iHAND__);
+                return false;
+            }
+        }
+        return true;
+    }
+
     protected function btnSave_Click() {
         $blnTodoOkey = true;
         $this->mensaje();
-        //-----------------------------------------------------------------
-        // Si no se ha seleccionado a un Cliente Maestro como dependencia,
-        // se asume que el mismo es el Genérico del Sistema.
-        //-----------------------------------------------------------------
+        //--------------------------------------------------------------------------------------------
+        // Si no se ha seleccionado a un Cliente como dependencia, se asume el genérico del Sistema.
+        //--------------------------------------------------------------------------------------------
         if (is_null($this->lstCodiDepe->SelectedValue)) {
             $intCodiDepe = 4;
         } else {
@@ -1567,6 +1688,9 @@ class MasterClienteEditForm extends FormularioBaseKaizen {
                 $blnTodoOkey = false;
             }
         }
+
+        $blnTodoOkey = $this->validarDescuentos();
+
         if ($blnTodoOkey) {
             //--------------------------------------------
             // Se clona el objeto para verificar cambios
@@ -1764,6 +1888,11 @@ class MasterClienteEditForm extends FormularioBaseKaizen {
         $this->objMasterCliente->PasswordApi = $this->txtPassApix->Text;
         $this->objMasterCliente->ManejaApi = $this->chkManeApix->Checked ? $this->chkManeApix->Checked : 0;
         $this->objMasterCliente->GuiaRetorno = $this->chkGuiaReto->Checked ? $this->chkGuiaReto->Checked : 0;
+        $this->objMasterCliente->DsctoPorVolumen = $this->txtDctoVolu->Text;
+        $this->objMasterCliente->VolumenParaDscto = $this->txtVoluDcto->Text;
+        $this->objMasterCliente->PesoParaDscto = $this->txtPesoDcto->Text;
+        $this->objMasterCliente->DsctoPorPeso = $this->txtDctoPeso->Text;
+        $this->objMasterCliente->DescuentoCaducaEl = new QDateTime($this->dttDctoCadu->DateTime);
     }
 
     protected function limpiarFormulario() {
@@ -1806,6 +1935,11 @@ class MasterClienteEditForm extends FormularioBaseKaizen {
         $this->txtUsuaApix->Text = '';
         $this->txtPassApix->Text = '';
         $this->chkManeApix->Checked = false;
+        $this->txtDctoVolu->Text = '';
+        $this->txtVoluDcto->Text = '';
+        $this->txtDctoPeso->Text = '';
+        $this->txtPesoDcto->Text = '';
+        $this->dttDctoCadu->DateTime = null;
     }
 }
 

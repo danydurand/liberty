@@ -48,8 +48,8 @@
 	 * @property integer $ProcesoId the value for intProcesoId (Not Null)
 	 * @property string $CodigoContrato the value for strCodigoContrato 
 	 * @property string $ModaPago the value for strModaPago 
+	 * @property integer $ReceptoriaDestino the value for intReceptoriaDestino 
 	 * @property MasterCliente $Cliente the value for the MasterCliente object referenced by intClienteId (Not Null)
-	 * @property ProcesoError $Proceso the value for the ProcesoError object referenced by intProcesoId (Not Null)
 	 * @property-read boolean $__Restored whether or not this object was restored from the database (as opposed to created new)
 	 */
 	class GuiaCacesaGen extends QBaseClass implements IteratorAggregate {
@@ -342,6 +342,14 @@
 
 
 		/**
+		 * Protected member variable that maps to the database column guia_cacesa.receptoria_destino
+		 * @var integer intReceptoriaDestino
+		 */
+		protected $intReceptoriaDestino;
+		const ReceptoriaDestinoDefault = null;
+
+
+		/**
 		 * Protected array of virtual attributes for this object (e.g. extra/other calculated and/or non-object bound
 		 * columns from the run-time database query result for this object).  Used by InstantiateDbRow and
 		 * GetVirtualAttribute.
@@ -372,16 +380,6 @@
 		 * @var MasterCliente objCliente
 		 */
 		protected $objCliente;
-
-		/**
-		 * Protected member variable that contains the object pointed by the reference
-		 * in the database column guia_cacesa.proceso_id.
-		 *
-		 * NOTE: Always use the Proceso property getter to correctly retrieve this ProcesoError object.
-		 * (Because this class implements late binding, this variable reference MAY be null.)
-		 * @var ProcesoError objProceso
-		 */
-		protected $objProceso;
 
 
 
@@ -423,6 +421,7 @@
 			$this->intProcesoId = GuiaCacesa::ProcesoIdDefault;
 			$this->strCodigoContrato = GuiaCacesa::CodigoContratoDefault;
 			$this->strModaPago = GuiaCacesa::ModaPagoDefault;
+			$this->intReceptoriaDestino = GuiaCacesa::ReceptoriaDestinoDefault;
 		}
 
 
@@ -797,6 +796,7 @@
 			    $objBuilder->AddSelectItem($strTableName, 'proceso_id', $strAliasPrefix . 'proceso_id');
 			    $objBuilder->AddSelectItem($strTableName, 'codigo_contrato', $strAliasPrefix . 'codigo_contrato');
 			    $objBuilder->AddSelectItem($strTableName, 'moda_pago', $strAliasPrefix . 'moda_pago');
+			    $objBuilder->AddSelectItem($strTableName, 'receptoria_destino', $strAliasPrefix . 'receptoria_destino');
             }
 		}
 
@@ -1021,6 +1021,9 @@
 			$strAlias = $strAliasPrefix . 'moda_pago';
 			$strAliasName = !empty($strColumnAliasArray[$strAlias]) ? $strColumnAliasArray[$strAlias] : $strAlias;
 			$objToReturn->strModaPago = $objDbRow->GetColumn($strAliasName, 'VarChar');
+			$strAlias = $strAliasPrefix . 'receptoria_destino';
+			$strAliasName = !empty($strColumnAliasArray[$strAlias]) ? $strColumnAliasArray[$strAlias] : $strAlias;
+			$objToReturn->intReceptoriaDestino = $objDbRow->GetColumn($strAliasName, 'Integer');
 
 			if (isset($objPreviousItemArray) && is_array($objPreviousItemArray)) {
 				foreach ($objPreviousItemArray as $objPreviousItem) {
@@ -1057,13 +1060,6 @@
 			if (!is_null($objDbRow->GetColumn($strAliasName))) {
 				$objExpansionNode = (empty($objExpansionAliasArray['cliente_id']) ? null : $objExpansionAliasArray['cliente_id']);
 				$objToReturn->objCliente = MasterCliente::InstantiateDbRow($objDbRow, $strAliasPrefix . 'cliente_id__', $objExpansionNode, null, $strColumnAliasArray);
-			}
-			// Check for Proceso Early Binding
-			$strAlias = $strAliasPrefix . 'proceso_id__id';
-			$strAliasName = !empty($strColumnAliasArray[$strAlias]) ? $strColumnAliasArray[$strAlias] : $strAlias;
-			if (!is_null($objDbRow->GetColumn($strAliasName))) {
-				$objExpansionNode = (empty($objExpansionAliasArray['proceso_id']) ? null : $objExpansionAliasArray['proceso_id']);
-				$objToReturn->objProceso = ProcesoError::InstantiateDbRow($objDbRow, $strAliasPrefix . 'proceso_id__', $objExpansionNode, null, $strColumnAliasArray);
 			}
 
 				
@@ -1287,7 +1283,8 @@
 							`cliente_id`,
 							`proceso_id`,
 							`codigo_contrato`,
-							`moda_pago`
+							`moda_pago`,
+							`receptoria_destino`
 						) VALUES (
 							' . $objDatabase->SqlVariable($this->dttFechCarg) . ',
 							' . $objDatabase->SqlVariable($this->dttHoraCarg) . ',
@@ -1320,7 +1317,8 @@
 							' . $objDatabase->SqlVariable($this->intClienteId) . ',
 							' . $objDatabase->SqlVariable($this->intProcesoId) . ',
 							' . $objDatabase->SqlVariable($this->strCodigoContrato) . ',
-							' . $objDatabase->SqlVariable($this->strModaPago) . '
+							' . $objDatabase->SqlVariable($this->strModaPago) . ',
+							' . $objDatabase->SqlVariable($this->intReceptoriaDestino) . '
 						)
 					');
 
@@ -1367,7 +1365,8 @@
 							`cliente_id` = ' . $objDatabase->SqlVariable($this->intClienteId) . ',
 							`proceso_id` = ' . $objDatabase->SqlVariable($this->intProcesoId) . ',
 							`codigo_contrato` = ' . $objDatabase->SqlVariable($this->strCodigoContrato) . ',
-							`moda_pago` = ' . $objDatabase->SqlVariable($this->strModaPago) . '
+							`moda_pago` = ' . $objDatabase->SqlVariable($this->strModaPago) . ',
+							`receptoria_destino` = ' . $objDatabase->SqlVariable($this->intReceptoriaDestino) . '
 						WHERE
 							`id` = ' . $objDatabase->SqlVariable($this->intId) . '
 					');
@@ -1501,9 +1500,10 @@
 			$this->strObservacion = $objReloaded->strObservacion;
 			$this->intTarifaId = $objReloaded->intTarifaId;
 			$this->ClienteId = $objReloaded->ClienteId;
-			$this->ProcesoId = $objReloaded->ProcesoId;
+			$this->intProcesoId = $objReloaded->intProcesoId;
 			$this->strCodigoContrato = $objReloaded->strCodigoContrato;
 			$this->strModaPago = $objReloaded->strModaPago;
+			$this->intReceptoriaDestino = $objReloaded->intReceptoriaDestino;
 		}
 
 
@@ -1755,6 +1755,13 @@
 					 */
 					return $this->strModaPago;
 
+				case 'ReceptoriaDestino':
+					/**
+					 * Gets the value for intReceptoriaDestino 
+					 * @return integer
+					 */
+					return $this->intReceptoriaDestino;
+
 
 				///////////////////
 				// Member Objects
@@ -1768,20 +1775,6 @@
 						if ((!$this->objCliente) && (!is_null($this->intClienteId)))
 							$this->objCliente = MasterCliente::Load($this->intClienteId);
 						return $this->objCliente;
-					} catch (QCallerException $objExc) {
-						$objExc->IncrementOffset();
-						throw $objExc;
-					}
-
-				case 'Proceso':
-					/**
-					 * Gets the value for the ProcesoError object referenced by intProcesoId (Not Null)
-					 * @return ProcesoError
-					 */
-					try {
-						if ((!$this->objProceso) && (!is_null($this->intProcesoId)))
-							$this->objProceso = ProcesoError::Load($this->intProcesoId);
-						return $this->objProceso;
 					} catch (QCallerException $objExc) {
 						$objExc->IncrementOffset();
 						throw $objExc;
@@ -2205,7 +2198,6 @@
 					 * @return integer
 					 */
 					try {
-						$this->objProceso = null;
 						return ($this->intProcesoId = QType::Cast($mixValue, QType::Integer));
 					} catch (QCallerException $objExc) {
 						$objExc->IncrementOffset();
@@ -2233,6 +2225,19 @@
 					 */
 					try {
 						return ($this->strModaPago = QType::Cast($mixValue, QType::String));
+					} catch (QCallerException $objExc) {
+						$objExc->IncrementOffset();
+						throw $objExc;
+					}
+
+				case 'ReceptoriaDestino':
+					/**
+					 * Sets the value for intReceptoriaDestino 
+					 * @param integer $mixValue
+					 * @return integer
+					 */
+					try {
+						return ($this->intReceptoriaDestino = QType::Cast($mixValue, QType::Integer));
 					} catch (QCallerException $objExc) {
 						$objExc->IncrementOffset();
 						throw $objExc;
@@ -2268,38 +2273,6 @@
 						// Update Local Member Variables
 						$this->objCliente = $mixValue;
 						$this->intClienteId = $mixValue->CodiClie;
-
-						// Return $mixValue
-						return $mixValue;
-					}
-					break;
-
-				case 'Proceso':
-					/**
-					 * Sets the value for the ProcesoError object referenced by intProcesoId (Not Null)
-					 * @param ProcesoError $mixValue
-					 * @return ProcesoError
-					 */
-					if (is_null($mixValue)) {
-						$this->intProcesoId = null;
-						$this->objProceso = null;
-						return null;
-					} else {
-						// Make sure $mixValue actually is a ProcesoError object
-						try {
-							$mixValue = QType::Cast($mixValue, 'ProcesoError');
-						} catch (QInvalidCastException $objExc) {
-							$objExc->IncrementOffset();
-							throw $objExc;
-						}
-
-						// Make sure $mixValue is a SAVED ProcesoError object
-						if (is_null($mixValue->Id))
-							throw new QCallerException('Unable to set an unsaved Proceso for this GuiaCacesa');
-
-						// Update Local Member Variables
-						$this->objProceso = $mixValue;
-						$this->intProcesoId = $mixValue->Id;
 
 						// Return $mixValue
 						return $mixValue;
@@ -2414,9 +2387,10 @@
 			$strToReturn .= '<element name="Observacion" type="xsd:string"/>';
 			$strToReturn .= '<element name="TarifaId" type="xsd:int"/>';
 			$strToReturn .= '<element name="Cliente" type="xsd1:MasterCliente"/>';
-			$strToReturn .= '<element name="Proceso" type="xsd1:ProcesoError"/>';
+			$strToReturn .= '<element name="ProcesoId" type="xsd:int"/>';
 			$strToReturn .= '<element name="CodigoContrato" type="xsd:string"/>';
 			$strToReturn .= '<element name="ModaPago" type="xsd:string"/>';
+			$strToReturn .= '<element name="ReceptoriaDestino" type="xsd:int"/>';
 			$strToReturn .= '<element name="__blnRestored" type="xsd:boolean"/>';
 			$strToReturn .= '</sequence></complexType>';
 			return $strToReturn;
@@ -2426,7 +2400,6 @@
 			if (!array_key_exists('GuiaCacesa', $strComplexTypeArray)) {
 				$strComplexTypeArray['GuiaCacesa'] = GuiaCacesa::GetSoapComplexTypeXml();
 				MasterCliente::AlterSoapComplexTypeArray($strComplexTypeArray);
-				ProcesoError::AlterSoapComplexTypeArray($strComplexTypeArray);
 			}
 		}
 
@@ -2502,13 +2475,14 @@
 			if ((property_exists($objSoapObject, 'Cliente')) &&
 				($objSoapObject->Cliente))
 				$objToReturn->Cliente = MasterCliente::GetObjectFromSoapObject($objSoapObject->Cliente);
-			if ((property_exists($objSoapObject, 'Proceso')) &&
-				($objSoapObject->Proceso))
-				$objToReturn->Proceso = ProcesoError::GetObjectFromSoapObject($objSoapObject->Proceso);
+			if (property_exists($objSoapObject, 'ProcesoId'))
+				$objToReturn->intProcesoId = $objSoapObject->ProcesoId;
 			if (property_exists($objSoapObject, 'CodigoContrato'))
 				$objToReturn->strCodigoContrato = $objSoapObject->CodigoContrato;
 			if (property_exists($objSoapObject, 'ModaPago'))
 				$objToReturn->strModaPago = $objSoapObject->ModaPago;
+			if (property_exists($objSoapObject, 'ReceptoriaDestino'))
+				$objToReturn->intReceptoriaDestino = $objSoapObject->ReceptoriaDestino;
 			if (property_exists($objSoapObject, '__blnRestored'))
 				$objToReturn->__blnRestored = $objSoapObject->__blnRestored;
 			return $objToReturn;
@@ -2539,10 +2513,6 @@
 				$objObject->objCliente = MasterCliente::GetSoapObjectFromObject($objObject->objCliente, false);
 			else if (!$blnBindRelatedObjects)
 				$objObject->intClienteId = null;
-			if ($objObject->objProceso)
-				$objObject->objProceso = ProcesoError::GetSoapObjectFromObject($objObject->objProceso, false);
-			else if (!$blnBindRelatedObjects)
-				$objObject->intProcesoId = null;
 			return $objObject;
 		}
 
@@ -2590,6 +2560,7 @@
 			$iArray['ProcesoId'] = $this->intProcesoId;
 			$iArray['CodigoContrato'] = $this->strCodigoContrato;
 			$iArray['ModaPago'] = $this->strModaPago;
+			$iArray['ReceptoriaDestino'] = $this->intReceptoriaDestino;
 			return new ArrayIterator($iArray);
 		}
 
@@ -2659,9 +2630,9 @@
      * @property-read QQNode $ClienteId
      * @property-read QQNodeMasterCliente $Cliente
      * @property-read QQNode $ProcesoId
-     * @property-read QQNodeProcesoError $Proceso
      * @property-read QQNode $CodigoContrato
      * @property-read QQNode $ModaPago
+     * @property-read QQNode $ReceptoriaDestino
      *
      *
 
@@ -2737,12 +2708,12 @@
 					return new QQNodeMasterCliente('cliente_id', 'Cliente', 'Integer', $this);
 				case 'ProcesoId':
 					return new QQNode('proceso_id', 'ProcesoId', 'Integer', $this);
-				case 'Proceso':
-					return new QQNodeProcesoError('proceso_id', 'Proceso', 'Integer', $this);
 				case 'CodigoContrato':
 					return new QQNode('codigo_contrato', 'CodigoContrato', 'VarChar', $this);
 				case 'ModaPago':
 					return new QQNode('moda_pago', 'ModaPago', 'VarChar', $this);
+				case 'ReceptoriaDestino':
+					return new QQNode('receptoria_destino', 'ReceptoriaDestino', 'Integer', $this);
 
 				case '_PrimaryKeyNode':
 					return new QQNode('id', 'Id', 'Integer', $this);
@@ -2790,9 +2761,9 @@
      * @property-read QQNode $ClienteId
      * @property-read QQNodeMasterCliente $Cliente
      * @property-read QQNode $ProcesoId
-     * @property-read QQNodeProcesoError $Proceso
      * @property-read QQNode $CodigoContrato
      * @property-read QQNode $ModaPago
+     * @property-read QQNode $ReceptoriaDestino
      *
      *
 
@@ -2868,12 +2839,12 @@
 					return new QQNodeMasterCliente('cliente_id', 'Cliente', 'integer', $this);
 				case 'ProcesoId':
 					return new QQNode('proceso_id', 'ProcesoId', 'integer', $this);
-				case 'Proceso':
-					return new QQNodeProcesoError('proceso_id', 'Proceso', 'integer', $this);
 				case 'CodigoContrato':
 					return new QQNode('codigo_contrato', 'CodigoContrato', 'string', $this);
 				case 'ModaPago':
 					return new QQNode('moda_pago', 'ModaPago', 'string', $this);
+				case 'ReceptoriaDestino':
+					return new QQNode('receptoria_destino', 'ReceptoriaDestino', 'integer', $this);
 
 				case '_PrimaryKeyNode':
 					return new QQNode('id', 'Id', 'integer', $this);

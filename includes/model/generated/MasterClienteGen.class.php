@@ -52,6 +52,7 @@
 	 * @property integer $VolumenParaDscto the value for intVolumenParaDscto 
 	 * @property double $DsctoPorPeso the value for fltDsctoPorPeso 
 	 * @property double $PesoParaDscto the value for fltPesoParaDscto 
+	 * @property QDateTime $DescuentoCaducaEl the value for dttDescuentoCaducaEl 
 	 * @property double $PorcentajeSeguro the value for fltPorcentajeSeguro 
 	 * @property string $DirEntregaFactura the value for strDirEntregaFactura (Not Null)
 	 * @property string $ClaveServiciosWeb the value for strClaveServiciosWeb 
@@ -422,6 +423,14 @@
 		 */
 		protected $fltPesoParaDscto;
 		const PesoParaDsctoDefault = null;
+
+
+		/**
+		 * Protected member variable that maps to the database column master_cliente.descuento_caduca_el
+		 * @var QDateTime dttDescuentoCaducaEl
+		 */
+		protected $dttDescuentoCaducaEl;
+		const DescuentoCaducaElDefault = null;
 
 
 		/**
@@ -903,6 +912,7 @@
 			$this->intVolumenParaDscto = MasterCliente::VolumenParaDsctoDefault;
 			$this->fltDsctoPorPeso = MasterCliente::DsctoPorPesoDefault;
 			$this->fltPesoParaDscto = MasterCliente::PesoParaDsctoDefault;
+			$this->dttDescuentoCaducaEl = (MasterCliente::DescuentoCaducaElDefault === null)?null:new QDateTime(MasterCliente::DescuentoCaducaElDefault);
 			$this->fltPorcentajeSeguro = MasterCliente::PorcentajeSeguroDefault;
 			$this->strDirEntregaFactura = MasterCliente::DirEntregaFacturaDefault;
 			$this->strClaveServiciosWeb = MasterCliente::ClaveServiciosWebDefault;
@@ -1302,6 +1312,7 @@
 			    $objBuilder->AddSelectItem($strTableName, 'volumen_para_dscto', $strAliasPrefix . 'volumen_para_dscto');
 			    $objBuilder->AddSelectItem($strTableName, 'dscto_por_peso', $strAliasPrefix . 'dscto_por_peso');
 			    $objBuilder->AddSelectItem($strTableName, 'peso_para_dscto', $strAliasPrefix . 'peso_para_dscto');
+			    $objBuilder->AddSelectItem($strTableName, 'descuento_caduca_el', $strAliasPrefix . 'descuento_caduca_el');
 			    $objBuilder->AddSelectItem($strTableName, 'porcentaje_seguro', $strAliasPrefix . 'porcentaje_seguro');
 			    $objBuilder->AddSelectItem($strTableName, 'dir_entrega_factura', $strAliasPrefix . 'dir_entrega_factura');
 			    $objBuilder->AddSelectItem($strTableName, 'clave_servicios_web', $strAliasPrefix . 'clave_servicios_web');
@@ -1559,6 +1570,9 @@
 			$strAlias = $strAliasPrefix . 'peso_para_dscto';
 			$strAliasName = !empty($strColumnAliasArray[$strAlias]) ? $strColumnAliasArray[$strAlias] : $strAlias;
 			$objToReturn->fltPesoParaDscto = $objDbRow->GetColumn($strAliasName, 'Float');
+			$strAlias = $strAliasPrefix . 'descuento_caduca_el';
+			$strAliasName = !empty($strColumnAliasArray[$strAlias]) ? $strColumnAliasArray[$strAlias] : $strAlias;
+			$objToReturn->dttDescuentoCaducaEl = $objDbRow->GetColumn($strAliasName, 'Date');
 			$strAlias = $strAliasPrefix . 'porcentaje_seguro';
 			$strAliasName = !empty($strColumnAliasArray[$strAlias]) ? $strColumnAliasArray[$strAlias] : $strAlias;
 			$objToReturn->fltPorcentajeSeguro = $objDbRow->GetColumn($strAliasName, 'Float');
@@ -2470,6 +2484,7 @@
 							`volumen_para_dscto`,
 							`dscto_por_peso`,
 							`peso_para_dscto`,
+							`descuento_caduca_el`,
 							`porcentaje_seguro`,
 							`dir_entrega_factura`,
 							`clave_servicios_web`,
@@ -2528,6 +2543,7 @@
 							' . $objDatabase->SqlVariable($this->intVolumenParaDscto) . ',
 							' . $objDatabase->SqlVariable($this->fltDsctoPorPeso) . ',
 							' . $objDatabase->SqlVariable($this->fltPesoParaDscto) . ',
+							' . $objDatabase->SqlVariable($this->dttDescuentoCaducaEl) . ',
 							' . $objDatabase->SqlVariable($this->fltPorcentajeSeguro) . ',
 							' . $objDatabase->SqlVariable($this->strDirEntregaFactura) . ',
 							' . $objDatabase->SqlVariable($this->strClaveServiciosWeb) . ',
@@ -2600,6 +2616,7 @@
 							`volumen_para_dscto` = ' . $objDatabase->SqlVariable($this->intVolumenParaDscto) . ',
 							`dscto_por_peso` = ' . $objDatabase->SqlVariable($this->fltDsctoPorPeso) . ',
 							`peso_para_dscto` = ' . $objDatabase->SqlVariable($this->fltPesoParaDscto) . ',
+							`descuento_caduca_el` = ' . $objDatabase->SqlVariable($this->dttDescuentoCaducaEl) . ',
 							`porcentaje_seguro` = ' . $objDatabase->SqlVariable($this->fltPorcentajeSeguro) . ',
 							`dir_entrega_factura` = ' . $objDatabase->SqlVariable($this->strDirEntregaFactura) . ',
 							`clave_servicios_web` = ' . $objDatabase->SqlVariable($this->strClaveServiciosWeb) . ',
@@ -2819,6 +2836,7 @@
 			$this->intVolumenParaDscto = $objReloaded->intVolumenParaDscto;
 			$this->fltDsctoPorPeso = $objReloaded->fltDsctoPorPeso;
 			$this->fltPesoParaDscto = $objReloaded->fltPesoParaDscto;
+			$this->dttDescuentoCaducaEl = $objReloaded->dttDescuentoCaducaEl;
 			$this->fltPorcentajeSeguro = $objReloaded->fltPorcentajeSeguro;
 			$this->strDirEntregaFactura = $objReloaded->strDirEntregaFactura;
 			$this->strClaveServiciosWeb = $objReloaded->strClaveServiciosWeb;
@@ -3118,6 +3136,13 @@
 					 * @return double
 					 */
 					return $this->fltPesoParaDscto;
+
+				case 'DescuentoCaducaEl':
+					/**
+					 * Gets the value for dttDescuentoCaducaEl 
+					 * @return QDateTime
+					 */
+					return $this->dttDescuentoCaducaEl;
 
 				case 'PorcentajeSeguro':
 					/**
@@ -4036,6 +4061,19 @@
 					 */
 					try {
 						return ($this->fltPesoParaDscto = QType::Cast($mixValue, QType::Float));
+					} catch (QCallerException $objExc) {
+						$objExc->IncrementOffset();
+						throw $objExc;
+					}
+
+				case 'DescuentoCaducaEl':
+					/**
+					 * Sets the value for dttDescuentoCaducaEl 
+					 * @param QDateTime $mixValue
+					 * @return QDateTime
+					 */
+					try {
+						return ($this->dttDescuentoCaducaEl = QType::Cast($mixValue, QType::DateTime));
 					} catch (QCallerException $objExc) {
 						$objExc->IncrementOffset();
 						throw $objExc;
@@ -6077,6 +6115,7 @@
 			$strToReturn .= '<element name="VolumenParaDscto" type="xsd:int"/>';
 			$strToReturn .= '<element name="DsctoPorPeso" type="xsd:float"/>';
 			$strToReturn .= '<element name="PesoParaDscto" type="xsd:float"/>';
+			$strToReturn .= '<element name="DescuentoCaducaEl" type="xsd:dateTime"/>';
 			$strToReturn .= '<element name="PorcentajeSeguro" type="xsd:float"/>';
 			$strToReturn .= '<element name="DirEntregaFactura" type="xsd:string"/>';
 			$strToReturn .= '<element name="ClaveServiciosWeb" type="xsd:string"/>';
@@ -6206,6 +6245,8 @@
 				$objToReturn->fltDsctoPorPeso = $objSoapObject->DsctoPorPeso;
 			if (property_exists($objSoapObject, 'PesoParaDscto'))
 				$objToReturn->fltPesoParaDscto = $objSoapObject->PesoParaDscto;
+			if (property_exists($objSoapObject, 'DescuentoCaducaEl'))
+				$objToReturn->dttDescuentoCaducaEl = new QDateTime($objSoapObject->DescuentoCaducaEl);
 			if (property_exists($objSoapObject, 'PorcentajeSeguro'))
 				$objToReturn->fltPorcentajeSeguro = $objSoapObject->PorcentajeSeguro;
 			if (property_exists($objSoapObject, 'DirEntregaFactura'))
@@ -6290,6 +6331,8 @@
 				$objObject->objRutaEntregaObject = SdeOperacion::GetSoapObjectFromObject($objObject->objRutaEntregaObject, false);
 			else if (!$blnBindRelatedObjects)
 				$objObject->intRutaEntrega = null;
+			if ($objObject->dttDescuentoCaducaEl)
+				$objObject->dttDescuentoCaducaEl = $objObject->dttDescuentoCaducaEl->qFormat(QDateTime::FormatSoap);
 			return $objObject;
 		}
 
@@ -6341,6 +6384,7 @@
 			$iArray['VolumenParaDscto'] = $this->intVolumenParaDscto;
 			$iArray['DsctoPorPeso'] = $this->fltDsctoPorPeso;
 			$iArray['PesoParaDscto'] = $this->fltPesoParaDscto;
+			$iArray['DescuentoCaducaEl'] = $this->dttDescuentoCaducaEl;
 			$iArray['PorcentajeSeguro'] = $this->fltPorcentajeSeguro;
 			$iArray['DirEntregaFactura'] = $this->strDirEntregaFactura;
 			$iArray['ClaveServiciosWeb'] = $this->strClaveServiciosWeb;
@@ -6442,6 +6486,7 @@
      * @property-read QQNode $VolumenParaDscto
      * @property-read QQNode $DsctoPorPeso
      * @property-read QQNode $PesoParaDscto
+     * @property-read QQNode $DescuentoCaducaEl
      * @property-read QQNode $PorcentajeSeguro
      * @property-read QQNode $DirEntregaFactura
      * @property-read QQNode $ClaveServiciosWeb
@@ -6571,6 +6616,8 @@
 					return new QQNode('dscto_por_peso', 'DsctoPorPeso', 'Float', $this);
 				case 'PesoParaDscto':
 					return new QQNode('peso_para_dscto', 'PesoParaDscto', 'Float', $this);
+				case 'DescuentoCaducaEl':
+					return new QQNode('descuento_caduca_el', 'DescuentoCaducaEl', 'Date', $this);
 				case 'PorcentajeSeguro':
 					return new QQNode('porcentaje_seguro', 'PorcentajeSeguro', 'Float', $this);
 				case 'DirEntregaFactura':
@@ -6693,6 +6740,7 @@
      * @property-read QQNode $VolumenParaDscto
      * @property-read QQNode $DsctoPorPeso
      * @property-read QQNode $PesoParaDscto
+     * @property-read QQNode $DescuentoCaducaEl
      * @property-read QQNode $PorcentajeSeguro
      * @property-read QQNode $DirEntregaFactura
      * @property-read QQNode $ClaveServiciosWeb
@@ -6822,6 +6870,8 @@
 					return new QQNode('dscto_por_peso', 'DsctoPorPeso', 'double', $this);
 				case 'PesoParaDscto':
 					return new QQNode('peso_para_dscto', 'PesoParaDscto', 'double', $this);
+				case 'DescuentoCaducaEl':
+					return new QQNode('descuento_caduca_el', 'DescuentoCaducaEl', 'QDateTime', $this);
 				case 'PorcentajeSeguro':
 					return new QQNode('porcentaje_seguro', 'PorcentajeSeguro', 'double', $this);
 				case 'DirEntregaFactura':

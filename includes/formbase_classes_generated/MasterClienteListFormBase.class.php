@@ -113,6 +113,7 @@
 			$this->dtgMasterClientes->MetaAddColumn('VolumenParaDscto');
 			$this->dtgMasterClientes->MetaAddColumn('DsctoPorPeso');
 			$this->dtgMasterClientes->MetaAddColumn('PesoParaDscto');
+			$this->dtgMasterClientes->MetaAddColumn('DescuentoCaducaEl');
 			$this->dtgMasterClientes->MetaAddColumn('PorcentajeSeguro');
 			$this->dtgMasterClientes->MetaAddColumn('DirEntregaFactura');
 			$this->dtgMasterClientes->MetaAddColumn('ClaveServiciosWeb');
