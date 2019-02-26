@@ -181,6 +181,20 @@
 		QApplicationBase::$ClassFile['consultamailmetacontrol'] = __META_CONTROLS__ . '/ConsultaMailMetaControl.class.php';
 		QApplicationBase::$ClassFile['consultamaildatagrid'] = __META_CONTROLS__ . '/ConsultaMailDataGrid.class.php';
 
+	// ClassPaths for the ConsumoDia class
+		QApplicationBase::$ClassFile['consumodia'] = __MODEL__ . '/ConsumoDia.class.php';
+		QApplicationBase::$ClassFile['qqnodeconsumodia'] = __MODEL__ . '/ConsumoDia.class.php';
+		QApplicationBase::$ClassFile['qqreversereferencenodeconsumodia'] = __MODEL__ . '/ConsumoDia.class.php';
+		QApplicationBase::$ClassFile['consumodiametacontrol'] = __META_CONTROLS__ . '/ConsumoDiaMetaControl.class.php';
+		QApplicationBase::$ClassFile['consumodiadatagrid'] = __META_CONTROLS__ . '/ConsumoDiaDataGrid.class.php';
+
+	// ClassPaths for the ConsumoMes class
+		QApplicationBase::$ClassFile['consumomes'] = __MODEL__ . '/ConsumoMes.class.php';
+		QApplicationBase::$ClassFile['qqnodeconsumomes'] = __MODEL__ . '/ConsumoMes.class.php';
+		QApplicationBase::$ClassFile['qqreversereferencenodeconsumomes'] = __MODEL__ . '/ConsumoMes.class.php';
+		QApplicationBase::$ClassFile['consumomesmetacontrol'] = __META_CONTROLS__ . '/ConsumoMesMetaControl.class.php';
+		QApplicationBase::$ClassFile['consumomesdatagrid'] = __META_CONTROLS__ . '/ConsumoMesDataGrid.class.php';
+
 	// ClassPaths for the ContenedorCkpt class
 		QApplicationBase::$ClassFile['contenedorckpt'] = __MODEL__ . '/ContenedorCkpt.class.php';
 		QApplicationBase::$ClassFile['qqnodecontenedorckpt'] = __MODEL__ . '/ContenedorCkpt.class.php';
@@ -215,6 +229,13 @@
 		QApplicationBase::$ClassFile['qqreversereferencenodedatospago'] = __MODEL__ . '/DatosPago.class.php';
 		QApplicationBase::$ClassFile['datospagometacontrol'] = __META_CONTROLS__ . '/DatosPagoMetaControl.class.php';
 		QApplicationBase::$ClassFile['datospagodatagrid'] = __META_CONTROLS__ . '/DatosPagoDataGrid.class.php';
+
+	// ClassPaths for the Descuentos class
+		QApplicationBase::$ClassFile['descuentos'] = __MODEL__ . '/Descuentos.class.php';
+		QApplicationBase::$ClassFile['qqnodedescuentos'] = __MODEL__ . '/Descuentos.class.php';
+		QApplicationBase::$ClassFile['qqreversereferencenodedescuentos'] = __MODEL__ . '/Descuentos.class.php';
+		QApplicationBase::$ClassFile['descuentosmetacontrol'] = __META_CONTROLS__ . '/DescuentosMetaControl.class.php';
+		QApplicationBase::$ClassFile['descuentosdatagrid'] = __META_CONTROLS__ . '/DescuentosDataGrid.class.php';
 
 	// ClassPaths for the DestinatarioFrecuente class
 		QApplicationBase::$ClassFile['destinatariofrecuente'] = __MODEL__ . '/DestinatarioFrecuente.class.php';

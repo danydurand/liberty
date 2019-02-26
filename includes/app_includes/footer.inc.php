@@ -7,7 +7,7 @@
             <style>
                 input[type="radio"], input[type="checkbox"] {
                     margin: 4px 0 0;
-                    margin-top: 9px;
+                    margin-top: 5px;
                     line-height: normal;
                 }
             </style>

@@ -26,15 +26,20 @@ require(__APP_INCLUDES__ . '/botonera_edit.inc.php');
 					<?php $this->lstTipoCkptObject->RenderWithName(); ?>
 					<?php //$this->txtTextObse->RenderWithName(); ?>
                     <?php $this->lstCodiStatObject->RenderWithName(); ?>
+                    <?php $this->lstCodiCcatObject->RenderWithName(); ?>
+                    <?php $this->lstCodiInadObject->RenderWithName(); ?>
 				</div>
 				<div class="col-md-6" style="margin-top: 1em;">
-					<?php $this->lstCodiCcatObject->RenderWithName(); ?>
-					<?php $this->lstCodiInadObject->RenderWithName(); ?>
 					<?php $this->lstNotificarObject->RenderWithName(); ?>
 					<?php $this->txtCodigoSodexo->RenderWithName(); ?>
 					<?php $this->txtDescripcionSodexo->RenderWithName(); ?>
 					<?php $this->lstPais->RenderWithName(); ?>
-					<?php //$this->chkNotificacionSms->RenderWithName(); ?>
+					<?php //$this->txtImagen->RenderWithName(); ?>
+                    <?php $this->lstNombImag->RenderWithName(); ?>
+                    <?php //$this->txtColor->RenderWithName(); ?>
+                    <?php $this->lstColoImag->RenderWithName(); ?>
+                    <?php $this->lblMuesImag->RenderWithName(); ?>
+                    <?php //$this->chkNotificacionSms->RenderWithName(); ?>
 				</div>
 			</div>
 		</div>

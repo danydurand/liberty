@@ -75,16 +75,25 @@ require(__APP_INCLUDES__ . '/header.inc.php');
                         <div class="col-md-offset-2 col-md-4" style="margin-left: 8.5em">
                             <?php $this->txtCantPiez->RenderWithName(); ?>
                         </div>
-                        <div class="col-md-4">
+                        <div class="col-md-4" style="margin-left: 2em">
                             <?php $this->txtPesoGuia->RenderWithName(); ?>
                         </div>
                     </div>
                     <?php $this->txtDescCont->RenderWithName(); ?>
                     <?php $this->txtValoDecl->RenderWithName(); ?>
-                    <?php $this->rdbModaPago->RenderWithName(); ?>
+                    <div class="row">
+                        <div class="col-md-5" style="margin-left: 7.2em">
+                            <?php $this->rdbModaPago->RenderWithName(); ?>
+                        </div>
+                        <div class="col-md-4">
+                            <?php $this->txtPorcDcto->RenderWithName(); ?>
+                        </div>
+                    </div>
+                    <?php $this->chkConsDcto->RenderWithName(); ?>
                 </div>
                 <div class="col-md-3">
                     <?php $this->lblMontBase->RenderWithName(); ?>
+                    <?php $this->lblMontDcto->RenderWithName(); ?>
                     <?php $this->lblMontIvax->RenderWithName(); ?>
                     <?php $this->lblMontFran->RenderWithName(); ?>
                     <?php $this->lblMontSegu->RenderWithName(); ?>
@@ -104,7 +113,7 @@ require(__APP_INCLUDES__ . '/header.inc.php');
             text-align: center;
         }
         .form-controls {
-            line-height: 0.9;
+            line-height: 0.8;
         }
         .form-name {
             width: 31%;

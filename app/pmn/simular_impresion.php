@@ -12,9 +12,6 @@ require_once(__APP_INCLUDES__.'/protected.inc.php');
 require_once(__APP_INCLUDES__.'/FormularioBaseKaizen.class.php');
 
 class SimularImpresion extends FormularioBaseKaizen {
-    //---------------------------
-    // Parámetros de información
-    //---------------------------
     protected $rdbTipoDocu;
     protected $txtNumeDocu;
     protected $txtDocuFisc;
@@ -64,8 +61,6 @@ class SimularImpresion extends FormularioBaseKaizen {
         $this->txtDocuFisc->Name = 'Doc. Fiscal';
         $this->txtDocuFisc->Width = 100;
         $this->txtDocuFisc->Required = true;
-//        $this->txtDocuFisc->Enabled = false;
-//        $this->txtDocuFisc->ForeColor = 'blue';
     }
 
     protected function txtMaquFisc_Create() {
@@ -73,8 +68,6 @@ class SimularImpresion extends FormularioBaseKaizen {
         $this->txtMaquFisc->Name = 'Maquina Fiscal';
         $this->txtMaquFisc->Width = 100;
         $this->txtMaquFisc->Required = true;
-//        $this->txtMaquFisc->Enabled = false;
-//        $this->txtMaquFisc->ForeColor = 'blue';
     }
 
     protected function txtFechImpr_Create() {
@@ -83,8 +76,8 @@ class SimularImpresion extends FormularioBaseKaizen {
         $this->txtFechImpr->Text = date('ymd');
         $this->txtFechImpr->Width = 100;
         $this->txtFechImpr->Required = true;
-//        $this->txtFechImpr->Enabled = false;
-//        $this->txtFechImpr->ForeColor = 'blue';
+        $this->txtFechImpr->ToolTip = 'Fecha en que se imprimió la Factura (p/ el Cuadre de Caja)';
+        $this->txtFechImpr->HtmlAfter = '(YYMMDD) Ej: '.date('ymd');
     }
 
     protected function txtHoraImpr_Create() {
@@ -93,8 +86,8 @@ class SimularImpresion extends FormularioBaseKaizen {
         $this->txtHoraImpr->Text = date('His');
         $this->txtHoraImpr->Width = 100;
         $this->txtHoraImpr->Required = true;
-//        $this->txtHoraImpr->Enabled = false;
-//        $this->txtHoraImpr->ForeColor = 'blue';
+        $this->txtHoraImpr->ToolTip = 'Hora en que se imprimió la Factura';
+        $this->txtHoraImpr->HtmlAfter = ' (HHMMSS) Ej: '.date('His');
     }
 
     //----------------------------------
@@ -126,76 +119,124 @@ class SimularImpresion extends FormularioBaseKaizen {
         $this->txtHoraImpr->Text = date('His');
     }
 
-    protected function btnSave_Click() {
-        $blnTodoOkey = true;
+    protected function Form_Validate() {
+        if (is_null($this->rdbTipoDocu->SelectedValue)) {
+            $this->mensaje('Seleccione el Tipo de Documento','','d','',__iHAND__);
+            return false;
+        }
+        if (strlen(trim($this->txtNumeDocu->Text)) == 0) {
+            $this->mensaje('El Id del Documento es requerido','','d','',__iHAND__);
+            return false;
+        }
+        if (strlen(trim($this->txtDocuFisc->Text)) == 0) {
+            $this->mensaje('El Nro Documento Fiscal es requerido','','d','',__iHAND__);
+            return false;
+        }
+        if (strlen(trim($this->txtMaquFisc->Text)) == 0) {
+            $this->mensaje('El Id de la Máquina Fiscal es requerido','','d','',__iHAND__);
+            return false;
+        }
+        if (strlen(trim($this->txtFechImpr->Text)) == 0) {
+            $this->mensaje('La Fecha de Impresion es requerida','','d','',__iHAND__);
+            return false;
+        }
+        if (strlen(trim($this->txtHoraImpr->Text)) == 0) {
+            $this->mensaje('La Hora de Impresion es requerida','','d','',__iHAND__);
+            return false;
+        }
         if ($this->rdbTipoDocu->SelectedValue == 'F') {
             $objFactPmnx = FacturaPmn::Load($this->txtNumeDocu->Text);
-            if ($objFactPmnx) {
-                if ($objFactPmnx->ImpresaId == SinoType::SI) {
-                    $this->mensaje('La Factura ya fue impresa previamente','','d','',__iEXCL__);
-                    $blnTodoOkey = false;
-                }
-                if ($blnTodoOkey) {
-                    if ($objFactPmnx->MontoCobrado == 0 && !$objFactPmnx->GuiaCODdelSDE()) {
-                        if ($objFactPmnx->TieneRetencion == SinoType::NO) {
-                            $this->mensaje('Factura Sin Retencion, Pendiente de Pago','','d','',__iEXCL__);
-                            $blnTodoOkey = false;
-                        }
-                    } else {
-                        if ($objFactPmnx->MontoCobrado != $objFactPmnx->MontoTotal) {
-                            if ($objFactPmnx->MontoCobrado == null && $objFactPmnx->GuiaCODdelSDE()){
-                                $blnTodoOkey = true;
-                            } else {
-                                $this->mensaje('Factura Pendiente de Pago','','d','',__iEXCL__);
-                                $blnTodoOkey = false;
-                            }
-                        }
-                    }
-                }
-                if ($blnTodoOkey) {
-                    $objFactPmnx->Numero         = $this->txtDocuFisc->Text;
-                    $objFactPmnx->MaquinaFiscal  = $this->txtMaquFisc->Text;
-                    $objFactPmnx->FechaImpresion = $this->txtFechImpr->Text;
-                    $objFactPmnx->HoraImpresion  = $this->txtHoraImpr->Text;
-                    $objFactPmnx->ImpresaId      = SinoType::SI;
-                    $objFactPmnx->Save();
-
-                    $this->mensaje('Transacción Exitosa !','','s','',__iCHEC__);
-                    $this->blanquearCampos();
-                }
-            } else {
-                $this->mensaje('La Factura No Existe','','d','',__iHAND__);
+            if (!$objFactPmnx) {
+                $this->mensaje('El Documento Fiscal, no Existe','','d','',__iHAND__);
+                return false;
             }
-        } else {
+            if ($objFactPmnx->ImpresaId == SinoType::SI) {
+                $this->mensaje('La Factura ya posee datos Fiscales','','d','',__iHAND__);
+                return false;
+            }
+            if ($objFactPmnx->MontoCobrado == 0 && !$objFactPmnx->GuiaCODdelSDE()) {
+                if ($objFactPmnx->TieneRetencion == SinoType::NO) {
+                    $this->mensaje('Factura Sin Retencion, Pendiente de Pago','','d','',__iHAND__);
+                    return false;
+                }
+            }
+            if ($objFactPmnx->MontoCobrado != $objFactPmnx->MontoTotal) {
+                if ($objFactPmnx->MontoCobrado == null && $objFactPmnx->GuiaCODdelSDE()){
+                    return true;
+                } else {
+                    $this->mensaje('Factura Pendiente de Pago','','d','',__iHAND__);
+                    return false;
+                }
+            }
+        }
+        if ($this->rdbTipoDocu->SelectedValue == 'N') {
             $objNotaCred = NotaCredito::Load($this->txtNumeDocu->Text);
             if ($objNotaCred) {
-                if ($objNotaCred->ImpresaId == SinoType::SI) {
-                    $this->mensaje('La NDC ya fue Impresa Previamente','','d','',__iEXCL__);
-                    $blnTodoOkey = false;
-                }
-                if ($blnTodoOkey) {
-                    $objNotaCred->Numero         = $this->txtDocuFisc->Text;
-                    $objNotaCred->MaquinaFiscal  = $this->txtMaquFisc->Text;
-                    // $objNotaCred->FechaImpresion = new QDateTime($this->txtFechImpr->Text);
-                    $objNotaCred->FechaImpresion = $this->txtFechImpr->Text;
-                    $objNotaCred->HoraImpresion  = $this->txtHoraImpr->Text;
-                    $objNotaCred->ImpresaId      = SinoType::SI;
-                    $objNotaCred->Save();
-
-                    $objFactPmnx = FacturaPmn::Load($objNotaCred->FacturaId);
-                    //-----------------------
-                    // Se Anula la Factura
-                    //-----------------------
-                    $arrParaAnul['MotiAnul'] = $objNotaCred->Concepto;
-                    $arrParaAnul['UsuaAnul'] = $this->objUsuario->CodiUsua;
-                    $objFactPmnx->AnularFactura($arrParaAnul);
-
-                    $this->mensaje('Transacción Exitosa !','','s','',__iCHEC__);
-                    $this->blanquearCampos();
-                }
-            } else {
-                $this->mensaje('La Nota de Crédito No Existe','','d','',__iHAND__);
+                $this->mensaje('El Documento Fiscal, no Existe','','d','',__iHAND__);
+                return false;
             }
+            if ($objNotaCred->ImpresaId == SinoType::SI) {
+                $this->mensaje('La NDC ya tiene Datos Fiscales','','d','',__iHAND__);
+                return false;
+            }
+        }
+        $intAnioFech = substr($this->txtFechImpr->Text,0,2);
+        $intAnioActu = date('y');
+        $intAnioPasa = $intAnioActu - 1;
+        if (($intAnioFech != $intAnioActu) && ($intAnioFech != $intAnioPasa)) {
+            $this->mensaje('El Año de la Fecha de Impresión es incorrecto','','d','',__iHAND__);
+            return false;
+        }
+        $intMesxFech = substr($this->txtFechImpr->Text,2,2);
+        $intMesxActu = date('m');
+        $intMesxPasa = $intMesxActu - 1;
+        if (($intMesxFech != $intMesxActu) && ($intMesxFech != $intMesxPasa)) {
+            $this->mensaje('El Mes de la Fecha de Impresión es incorrecto','','d','',__iHAND__);
+            return false;
+        }
+        $intDiaxFech = substr($this->txtFechImpr->Text,4,2);
+        $intDiaxActu = date('d');
+        $intDiaxPasa = $intDiaxActu - 1;
+        if (($intDiaxFech != $intDiaxActu) && ($intDiaxFech != $intDiaxPasa)) {
+            $this->mensaje('El Dia de la Fecha de Impresión es incorrecto','','d','',__iHAND__);
+            return false;
+        }
+
+        return true;
+    }
+
+    protected function btnSave_Click() {
+        if ($this->rdbTipoDocu->SelectedValue == 'F') {
+            $objFactPmnx = FacturaPmn::Load($this->txtNumeDocu->Text);
+            $objFactPmnx->Numero         = $this->txtDocuFisc->Text;
+            $objFactPmnx->MaquinaFiscal  = $this->txtMaquFisc->Text;
+            $objFactPmnx->FechaImpresion = $this->txtFechImpr->Text;
+            $objFactPmnx->HoraImpresion  = $this->txtHoraImpr->Text;
+            $objFactPmnx->ImpresaId      = SinoType::SI;
+            $objFactPmnx->Save();
+
+            $this->mensaje('Transacción Exitosa !','','s','',__iCHEC__);
+            $this->blanquearCampos();
+        }
+        if ($this->rdbTipoDocu->SelectedValue == 'N') {
+            $objNotaCred = NotaCredito::Load($this->txtNumeDocu->Text);
+            $objNotaCred->Numero         = $this->txtDocuFisc->Text;
+            $objNotaCred->MaquinaFiscal  = $this->txtMaquFisc->Text;
+            $objNotaCred->FechaImpresion = $this->txtFechImpr->Text;
+            $objNotaCred->HoraImpresion  = $this->txtHoraImpr->Text;
+            $objNotaCred->ImpresaId      = SinoType::SI;
+            $objNotaCred->Save();
+
+            $objFactPmnx = FacturaPmn::Load($objNotaCred->FacturaId);
+            //-----------------------
+            // Se Anula la Factura
+            //-----------------------
+            $arrParaAnul['MotiAnul'] = $objNotaCred->Concepto;
+            $arrParaAnul['UsuaAnul'] = $this->objUsuario->CodiUsua;
+            $objFactPmnx->AnularFactura($arrParaAnul);
+
+            $this->mensaje('Transacción Exitosa !','','s','',__iCHEC__);
+            $this->blanquearCampos();
         }
     }
 

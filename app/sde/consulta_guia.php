@@ -40,14 +40,17 @@ class ConsultaGuia extends FormularioBaseKaizen {
     // ----- Costos ----- //
     protected $lblTipoTari;
     protected $lblSeguGuia;
+    protected $lblPorcDcto;
     protected $lblPorcSegu;
     protected $lblMontSegu;
+    protected $lblMontDcto;
     protected $lblMontFran;
     protected $lblMontBase;
     protected $lblTariVolu;
     protected $lblPorcIvax;
     protected $lblMontIvax;
     protected $lblMontTota;
+    protected $lblConsDcto;
     // ------ Envío ------ //
     protected $lblNumeGuia;
     protected $lblFechGuia;
@@ -164,8 +167,11 @@ class ConsultaGuia extends FormularioBaseKaizen {
         // - Costos del Servicio - //
         $this->lblTipoTari_Create();
         $this->lblMontBase_Create();
+        $this->lblPorcDcto_Create();
+        $this->lblConsDcto_Create();
         $this->lblSeguGuia_Create();
         $this->lblPorcSegu_Create();
+        $this->lblMontDcto_Create();
         $this->lblMontSegu_Create();
         $this->lblMontFran_Create();
         $this->lblTariVolu_Create();
@@ -513,6 +519,16 @@ class ConsultaGuia extends FormularioBaseKaizen {
         }
     }
 
+    protected function lblPorcDcto_Create() {
+        $this->lblPorcDcto = new QLabel($this);
+        $this->lblPorcDcto->Text = $this->objGuia->PorcentajeDscto;
+    }
+
+    protected function lblConsDcto_Create() {
+        $this->lblConsDcto = new QLabel($this);
+        $this->lblConsDcto->Text = $this->objGuia->ConsiderarDscto ? 'SI' : 'NO';
+    }
+
     protected function lblSeguGuia_Create() {
         $this->lblSeguGuia = new QLabel($this);
         $this->lblSeguGuia->Text = $this->objGuia->Asegurado ? 'SI' : 'NO';
@@ -526,6 +542,11 @@ class ConsultaGuia extends FormularioBaseKaizen {
     protected function lblMontSegu_Create() {
         $this->lblMontSegu = new QLabel($this);
         $this->lblMontSegu->Text  = $this->objGuia->MontoSeguro;
+    }
+
+    protected function lblMontDcto_Create() {
+        $this->lblMontDcto = new QLabel($this);
+        $this->lblMontDcto->Text = $this->objGuia->MontoDscto;
     }
 
     protected function lblMontFran_Create() {

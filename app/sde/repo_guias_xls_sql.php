@@ -65,9 +65,12 @@ $arrEnca2XLS = array(
     '% Sgro',
     'Mto Sgro',
     'Mto Base',
+    '% Dscto',
+    'Mto Dscto',
     'Franqueo',
     'Mto Total',
     'Monto Cancelado',
+    'Cons. Dscto?',
     'Recibio el Pago',
     'F.Pago',
     'T. Documento',
@@ -159,6 +162,9 @@ while ($intCantRepe <= $intCantCicl) {
         $strPorcSgro = nf($objTabla->PorcentajeSeguro);
         $strMontSgro = nf($objTabla->MontoSeguro);
         $strMontBase = nf($objTabla->MontoBase);
+        $strPorcDcto = nf($objTabla->PorcentajeDscto);
+        $strMontDcto = nf($objTabla->MontoDscto);
+        $strConsDcto = $objTabla->ConsiderarDscto ? 'SI' : 'NO';
         $strMontFran = nf($objTabla->MontoFranqueo);
         $strMontTota = nf($objTabla->MontoTotal);
         // echo4;
@@ -254,9 +260,12 @@ while ($intCantRepe <= $intCantCicl) {
             $strPorcSgro,
             $strMontSgro,
             $strMontBase,
+            $strPorcDcto,
+            $strMontDcto,
             $strMontFran,
             $strMontTota,
             $strMontCanc,
+            $strConsDcto,
             $strReciPago,
             $strFechPago,
             $strTipoDocu,

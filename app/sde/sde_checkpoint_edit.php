@@ -22,6 +22,10 @@ require_once(__FORMBASE_CLASSES__ . '/SdeCheckpointEditFormBase.class.php');
  */
 class SdeCheckpointEditForm extends SdeCheckpointEditFormBase {
 
+    protected $lstNombImag;
+    protected $lstColoImag;
+    protected $lblMuesImag;
+
 	// Override Form Event Handlers as Needed
 	protected function Form_Run() {
 		parent::Form_Run();
@@ -110,12 +114,62 @@ class SdeCheckpointEditForm extends SdeCheckpointEditFormBase {
         $this->lstPais->Name = 'País';
         $this->lstPais->Width = 140;
 
+        $this->txtImagen = $this->mctSdeCheckpoint->txtImagen_Create();
+        $this->txtImagen->Name = 'Imagen';
+        $this->txtImagen->MaxLength = SdeCheckpoint::ImagenMaxLength;
+        $this->txtImagen->Width = 200;
+
+        $this->txtColor = $this->mctSdeCheckpoint->txtColor_Create();
+        $this->txtColor->Name = 'Color de la Imagen';
+        $this->txtColor->MaxLength = SdeCheckpoint::ImagenMaxLength;
+        $this->txtColor->Width = 200;
+
+        $this->lstNombImag_Create();
+        $this->lstColoImag_Create();
+        $this->lblMuesImag_Create();
+
         //$this->chkNotificacionSms = $this->mctSdeCheckpoint->chkNotificacionSms_Create();
     }
 
 	//----------------------------
 	// Aquí se Crean los Objetos
 	//----------------------------
+
+    protected function lstNombImag_Create() {
+	    $this->lstNombImag = new QListBox($this);
+	    $this->lstNombImag->Name = 'Imagen';
+	    $objClauWher   = QQ::Clause();
+	    $objClauWher[] = QQ::Equal(QQN::Parametro()->IndiPara,'NombImag');
+	    $arrNombImag   = Parametro::QueryArray(QQ::AndCondition($objClauWher));
+	    $intCantImag   = count($arrNombImag);
+	    $this->lstNombImag->AddItem('- Seleccione Uno - ('.$intCantImag.')',null);
+        foreach ($arrNombImag as $objNombImag) {
+            $blnSeleRegi = trim($this->txtImagen->Text) == trim($objNombImag->ParaTxt1);
+            $this->lstNombImag->AddItem($objNombImag->ParaTxt1,$objNombImag->ParaTxt1,$blnSeleRegi);
+	    }
+    }
+
+    protected function lstColoImag_Create() {
+	    $this->lstColoImag = new QListBox($this);
+	    $this->lstColoImag->Name = 'Color de la Imagen';
+	    $objClauWher   = QQ::Clause();
+	    $objClauWher[] = QQ::Equal(QQN::Parametro()->IndiPara,'ColoImag');
+	    $arrColoImag   = Parametro::QueryArray(QQ::AndCondition($objClauWher));
+	    $intCantImag   = count($arrColoImag);
+	    $this->lstColoImag->AddItem('- Seleccione Uno - ('.$intCantImag.')',null);
+        foreach ($arrColoImag as $objColoImag) {
+            $blnSeleRegi = trim($this->txtColor->Text) == trim($objColoImag->ParaTxt1);
+            $this->lstColoImag->AddItem($objColoImag->ParaTxt1,$objColoImag->ParaTxt1,$blnSeleRegi);
+	    }
+    }
+    
+    protected function lblMuesImag_Create() {
+	    $this->lblMuesImag = new QLabel($this);
+	    $this->lblMuesImag->Name = 'Muestra de la Imagen';
+	    $this->lblMuesImag->Text = TextoIconoColor($this->mctSdeCheckpoint->SdeCheckpoint->Imagen,
+            '','','lg',$this->mctSdeCheckpoint->SdeCheckpoint->Color);
+	    $this->lblMuesImag->HtmlEntities = false;
+    }
 
     protected function btnDelete_Create() {
         $this->btnDelete = new QButton($this);
@@ -191,10 +245,27 @@ class SdeCheckpointEditForm extends SdeCheckpointEditFormBase {
     }
 
     protected function btnSave_Click($strFormId, $strControlId, $strParameter) {
+	    if ($this->lstTipoCkptObject->SelectedValue == SdeTipoCkptType::PUBLICO) {
+	        if (is_null($this->lstNombImag->SelectedValue)) {
+	            $this->mensaje('Debe seleccionar una Imagen','','d',__iHAND__);
+	            return;
+            }
+	        if (is_null($this->lstColoImag->SelectedValue)) {
+	            $this->mensaje('Debe seleccionar un Color para la Imagen','','d',__iHAND__);
+	            return;
+            }
+        }
 		//--------------------------------------------
 		// Se clona el objeto para verificar cambios 
 		//--------------------------------------------
         $this->txtTextObse->Text = 'SDE';  // Este es el Sistema HardCode
+        if (!is_null($this->lstNombImag->SelectedValue)) {
+            $this->txtImagen->Text = $this->lstNombImag->SelectedValue;
+        }
+        if (!is_null($this->lstColoImag->SelectedValue)) {
+            $this->txtColor->Text = $this->lstColoImag->SelectedValue;
+        }
+
 
 		$objRegiViej = clone $this->mctSdeCheckpoint->SdeCheckpoint;
 		$this->mctSdeCheckpoint->SaveSdeCheckpoint();
@@ -226,6 +297,8 @@ class SdeCheckpointEditForm extends SdeCheckpointEditFormBase {
 			LogDeCambios($arrLogxCamb);
             $this->mensaje('Transacción Exitosa','','','check');
 		}
+        $this->lblMuesImag->Text = TextoIconoColor($this->mctSdeCheckpoint->SdeCheckpoint->Imagen,
+            '','','lg',$this->mctSdeCheckpoint->SdeCheckpoint->Color);
 	}
 
     protected function btnDelete_Click($strFormId, $strControlId, $strParameter) {
@@ -244,28 +317,6 @@ class SdeCheckpointEditForm extends SdeCheckpointEditFormBase {
         LogDeCambios($arrLogxCamb);
         $this->RedirectToListPage();
 
-        //--------------------------------------------------------
-        // Esta es la rutina anterior de HardDelete del registro
-        //--------------------------------------------------------
-        // $blnTodoOkey = true;
-        // $arrTablRela = $this->mctSdeCheckpoint->TablasRelacionadasSdeCheckpoint();
-        // if (count($arrTablRela)) {
-        //     $strTablRela = implode(',',$arrTablRela);
-        //
-        //     //$this->lblId->Warning = sprintf('Existen registros relacionados en %s',$strTablRela);
-        //     $this->
-        //     $blnTodoOkey = false;
-        // }
-        // if ($blnTodoOkey) {
-        //     // Delegate "Delete" processing to the ArancelMetaControl
-        //     $this->mctSdeCheckpoint->DeleteSdeCheckpoint();
-        //     $arrLogxCamb['strNombTabl'] = 'SdeCheckpoint';
-        //     $arrLogxCamb['intRefeRegi'] = $this->mctSdeCheckpoint->SdeCheckpoint->CodiCkpt;
-        //     $arrLogxCamb['strNombRegi'] = $this->mctSdeCheckpoint->SdeCheckpoint->DescCkpt;
-        //     $arrLogxCamb['strDescCamb'] = "Borrado";
-        //     LogDeCambios($arrLogxCamb);
-        //     $this->RedirectToListPage();
-        // }
     }
 }
 

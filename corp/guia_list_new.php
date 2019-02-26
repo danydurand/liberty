@@ -252,9 +252,9 @@ class GuiaListNew extends FormularioBaseKaizen {
         $this->dtgGuiaClie->RowActionParameterHtml = '<?= $_ITEM->NumeGuia ?>';
         $this->dtgGuiaClie->AddRowAction(new QClickEvent(), new QAjaxAction('dtgGuiaRowx_Click'));
 
-        $objClauOrde   = QQ::Clause();
-        $objClauOrde[] = QQ::OrderBy(QQN::Guia()->FechGuia,false);
-        $this->dtgGuiaClie->AdditionalClauses = $objClauOrde;
+        //$objClauOrde   = QQ::Clause();
+        //$objClauOrde[] = QQ::OrderBy(QQN::Guia()->NumeGuia,false);
+        //$this->dtgGuiaClie->AdditionalClauses = $objClauOrde;
 
         $colStatGuia = new QDataGridColumn('ST', '<?= $_FORM->StatusColumnRender($_ITEM) ?>');
         $colStatGuia->HtmlEntities = false;
@@ -286,8 +286,8 @@ class GuiaListNew extends FormularioBaseKaizen {
         $this->dtgGuiaClie->AddColumn($colSucuCkpt);
 
         $colFechGuia = new QDataGridColumn('F. ESTATUS','<?= $_FORM->dtgFechCkpt_Render($_ITEM); ?>');
-        $colFechGuia->OrderByClause = QQ::OrderBy(QQN::Guia()->FechCkpt, false);
-        $colFechGuia->ReverseOrderByClause = QQ::OrderBy(QQN::Guia()->FechCkpt);
+        //$colFechGuia->OrderByClause = QQ::OrderBy(QQN::Guia()->FechCkpt, false);
+        //$colFechGuia->ReverseOrderByClause = QQ::OrderBy(QQN::Guia()->FechCkpt);
         $this->dtgGuiaClie->AddColumn($colFechGuia);
 
         $colHoraCkpt = new QDataGridColumn('H. ESTATUS','<?= $_FORM->dtgHoraCkpt_Render($_ITEM); ?>');
@@ -381,17 +381,19 @@ class GuiaListNew extends FormularioBaseKaizen {
         if (!$objGuia) {
             return null;
         }
-        if (is_null($objGuia->CodiCkpt)) {
+        $objUltiCkpt = $objGuia->ultimoCheckpointPublico();
+        if (is_null($objUltiCkpt)) {
             return null;
         }
-        $objCkptGuia = SdeCheckpoint::Load($objGuia->CodiCkpt);
-        if (!$objCkptGuia) {
+        //$objCkptGuia = SdeCheckpoint::Load($objUltiCkpt->CodiCkpt);
+        //if (!$objCkptGuia) {
+        //    return null;
+        //}
+        if (strlen($objUltiCkpt->CodiCkptObject->Imagen) == 0) {
             return null;
         }
-        if (strlen($objCkptGuia->Imagen) == 0) {
-            return null;
-        }
-        return TextoIconoColor($objCkptGuia->Imagen,'','','lg',$objCkptGuia->Color);
+        return TextoIconoColor($objUltiCkpt->CodiCkptObject->Imagen,
+            '','','lg',$objUltiCkpt->CodiCkptObject->Color);
     }
 
     public function dtgNombDest_Render(Guia $objGuiaList) {
@@ -404,7 +406,12 @@ class GuiaListNew extends FormularioBaseKaizen {
 
     public function dtgDescStat_Render(Guia $objGuiaList) {
         if ($objGuiaList) {
-            return substr($objGuiaList->ObseCkpt,0,40).'...';
+            $objUltiCkpt = $objGuiaList->ultimoCheckpointPublico();
+            if (is_null($objUltiCkpt)) {
+                return null;
+            }
+            return substr($objUltiCkpt->TextObse,0,40).'...';
+            //return substr($objGuiaList->ObseCkpt,0,40).'...';
         } else {
             return null;
         }
@@ -414,30 +421,33 @@ class GuiaListNew extends FormularioBaseKaizen {
         if (!$objGuia) {
             return null;
         }
-        if (is_null($objGuia->EstaCkpt)) {
+        $objUltiCkpt = $objGuia->ultimoCheckpointPublico();
+        if (is_null($objUltiCkpt)) {
             return null;
         }
-        return $objGuia->EstaCkpt;
+        return $objUltiCkpt->CodiEsta;
     }
 
     public function dtgFechCkpt_Render(Guia $objGuia) {
         if (!$objGuia) {
             return null;
         }
-        if (is_null($objGuia->FechCkpt)) {
+        $objUltiCkpt = $objGuia->ultimoCheckpointPublico();
+        if (is_null($objUltiCkpt)) {
             return null;
         }
-        return $objGuia->FechCkpt->__toString('DD/MM/YYYY');
+        return $objUltiCkpt->FechCkpt->__toString('DD/MM/YYYY');
     }
 
     public function dtgHoraCkpt_Render(Guia $objGuia) {
         if (!$objGuia) {
             return null;
         }
-        if (is_null($objGuia->HoraCkpt)) {
+        $objUltiCkpt = $objGuia->ultimoCheckpointPublico();
+        if (is_null($objUltiCkpt)) {
             return null;
         }
-        return substr($objGuia->HoraCkpt,0,5);
+        return substr($objUltiCkpt->HoraCkpt,0,5);
     }
 
     //--------------------------

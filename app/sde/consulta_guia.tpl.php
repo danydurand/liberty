@@ -252,6 +252,20 @@ require(__APP_INCLUDES__ . '/header.inc.php');
                     </div>
                     <div class="row">
                         <div class="col-md-3">
+                            <div class="titulo-c">% Descuento</div>
+                        </div>
+                        <div class="col-md-3">
+                            <?php $this->lblPorcDcto->Render(); ?>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="titulo-c">Monto Dscto</div>
+                        </div>
+                        <div class="col-md-3">
+                            <?php $this->lblMontDcto->Render(); ?>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-3">
                             <div class="titulo-c">Seguro?</div>
                         </div>
                         <div class="col-md-3">
@@ -308,10 +322,10 @@ require(__APP_INCLUDES__ . '/header.inc.php');
                     </div>
                     <div class="row">
                         <div class="col-md-3">
-                            <div class="titulo-c">T. Doc.</div>
+                            <div class="titulo-c">Cons Dscto?</div>
                         </div>
                         <div class="col-md-3">
-                            <?php $this->lblTipoDocu->Render(); ?>
+                            <?php $this->lblConsDcto->Render(); ?>
                         </div>
                         <div class="col-md-3">
                             <div class="titulo-c">Mto. Cancelado</div>

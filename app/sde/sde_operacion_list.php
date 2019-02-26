@@ -52,6 +52,11 @@ class SdeOperacionListForm extends SdeOperacionListFormBase {
 		$this->dtgSdeOperacions->AddRowAction(new QMouseOverEvent(), new QCssClassAction('selectedStyle'));
 		$this->dtgSdeOperacions->AddRowAction(new QMouseOutEvent(), new QCssClassAction());
 
+		// Las operaciones que hayan sido eliminadas (soft-delete) se excluyen de la lista
+        $objClauWher   = QQ::Clause();
+        $objClauWher[] = QQ::IsNull(QQN::SdeOperacion()->DeletedAt);
+        $this->dtgSdeOperacions->AdditionalConditions = QQ::AndCondition($objClauWher);
+
 		// Add a click handler for the rows.
 		// We can use $_CONTROL->CurrentRowIndex to pass the row index to dtgPersonsRow_Click()
 		// or $_ITEM->Id to pass the object's id, or any other data grid variable

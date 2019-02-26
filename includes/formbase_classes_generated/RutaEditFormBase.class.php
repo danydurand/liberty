@@ -58,6 +58,7 @@ abstract class RutaEditFormBase extends QForm {
 	protected $lstTipoRutaObject;
 	protected $lstCodiStatObject;
 	protected $txtPorcMedi;
+	protected $calDeletedAt;
 
 	// Other ListBoxes (if applicable) via Unique ReverseReferences and ManyToMany References
 
@@ -130,6 +131,7 @@ abstract class RutaEditFormBase extends QForm {
 		$this->lstTipoRutaObject = $this->mctRuta->lstTipoRutaObject_Create();
 		$this->lstCodiStatObject = $this->mctRuta->lstCodiStatObject_Create();
 		$this->txtPorcMedi = $this->mctRuta->txtPorcMedi_Create();
+		$this->calDeletedAt = $this->mctRuta->calDeletedAt_Create();
 
 		$this->btnSave_Create();
 		$this->btnCancel_Create();

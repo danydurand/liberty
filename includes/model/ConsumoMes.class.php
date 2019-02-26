@@ -1,11 +1,11 @@
 <?php
-	require(__MODEL_GEN__ . '/RutaGen.class.php');
+	require(__MODEL_GEN__ . '/ConsumoMesGen.class.php');
 
 	/**
-	 * The Ruta class defined here contains any
-	 * customized code for the Ruta class in the
-	 * Object Relational Model.  It represents the "ruta" table
-	 * in the database, and extends from the code generated abstract RutaGen
+	 * The ConsumoMes class defined here contains any
+	 * customized code for the ConsumoMes class in the
+	 * Object Relational Model.  It represents the "consumo_mes" table
+	 * in the database, and extends from the code generated abstract ConsumoMesGen
 	 * class, which contains all the basic CRUD-type functionality as well as
 	 * basic methods to handle relationships and index-based loading.
 	 *
@@ -13,34 +13,19 @@
 	 * @subpackage DataObjects
 	 *
 	 */
-	class Ruta extends RutaGen {
+	class ConsumoMes extends ConsumoMesGen {
 		/**
 		 * Default "to string" handler
 		 * Allows pages to _p()/echo()/print() this object, and to define the default
 		 * way this object would be outputted.
 		 *
-		 * Can also be called directly via $objRuta->__toString().
+		 * Can also be called directly via $objConsumoMes->__toString().
 		 *
 		 * @return string a nicely formatted string representation of this object
 		 */
 		public function __toString() {
-			return sprintf('%s',  $this->strDescRuta);
+			return sprintf('ConsumoMes Object %s',  $this->intId);
 		}
-
-		public function eliminarOperacionesRelacionadas() {
-		    $arrOperRela = SdeOperacion::LoadArrayByCodiRuta($this->strCodiRuta);
-		    foreach ($arrOperRela as $objOperRela) {
-		        $objOperRela->DeletedAt = new QDateTime(QDateTime::Now);
-		        $objOperRela->Save();
-                $strDescOper  = $objOperRela->CodiRuta.' | '.$objOperRela->CodiTipoObject->DescTipo;
-                $arrLogxCamb['strNombTabl'] = 'Operacion';
-                $arrLogxCamb['intRefeRegi'] = $objOperRela->CodiOper;
-                $arrLogxCamb['strNombRegi'] = $strDescOper;
-                $arrLogxCamb['strDescCamb'] = "Borrado desde la Ruta";
-                LogDeCambios($arrLogxCamb);
-            }
-
-        }
 
 
 		// Override or Create New Load/Count methods
@@ -48,33 +33,33 @@
 		// but feel free to use these as a starting point)
 /*
 		public static function LoadArrayBySample($strParam1, $intParam2, $objOptionalClauses = null) {
-			// This will return an array of Ruta objects
-			return Ruta::QueryArray(
+			// This will return an array of ConsumoMes objects
+			return ConsumoMes::QueryArray(
 				QQ::AndCondition(
-					QQ::Equal(QQN::Ruta()->Param1, $strParam1),
-					QQ::GreaterThan(QQN::Ruta()->Param2, $intParam2)
+					QQ::Equal(QQN::ConsumoMes()->Param1, $strParam1),
+					QQ::GreaterThan(QQN::ConsumoMes()->Param2, $intParam2)
 				),
 				$objOptionalClauses
 			);
 		}
 
 		public static function LoadBySample($strParam1, $intParam2, $objOptionalClauses = null) {
-			// This will return a single Ruta object
-			return Ruta::QuerySingle(
+			// This will return a single ConsumoMes object
+			return ConsumoMes::QuerySingle(
 				QQ::AndCondition(
-					QQ::Equal(QQN::Ruta()->Param1, $strParam1),
-					QQ::GreaterThan(QQN::Ruta()->Param2, $intParam2)
+					QQ::Equal(QQN::ConsumoMes()->Param1, $strParam1),
+					QQ::GreaterThan(QQN::ConsumoMes()->Param2, $intParam2)
 				),
 				$objOptionalClauses
 			);
 		}
 
 		public static function CountBySample($strParam1, $intParam2, $objOptionalClauses = null) {
-			// This will return a count of Ruta objects
-			return Ruta::QueryCount(
+			// This will return a count of ConsumoMes objects
+			return ConsumoMes::QueryCount(
 				QQ::AndCondition(
-					QQ::Equal(QQN::Ruta()->Param1, $strParam1),
-					QQ::Equal(QQN::Ruta()->Param2, $intParam2)
+					QQ::Equal(QQN::ConsumoMes()->Param1, $strParam1),
+					QQ::Equal(QQN::ConsumoMes()->Param2, $intParam2)
 				),
 				$objOptionalClauses
 			);
@@ -84,7 +69,7 @@
 			// Performing the load manually (instead of using QCubed Query)
 
 			// Get the Database Object for this Class
-			$objDatabase = Ruta::GetDatabase();
+			$objDatabase = ConsumoMes::GetDatabase();
 
 			// Properly Escape All Input Parameters using Database->SqlVariable()
 			$strParam1 = $objDatabase->SqlVariable($strParam1);
@@ -93,9 +78,9 @@
 			// Setup the SQL Query
 			$strQuery = sprintf('
 				SELECT
-					`ruta`.*
+					`consumo_mes`.*
 				FROM
-					`ruta` AS `ruta`
+					`consumo_mes` AS `consumo_mes`
 				WHERE
 					param_1 = %s AND
 					param_2 < %s',
@@ -103,7 +88,7 @@
 
 			// Perform the Query and Instantiate the Result
 			$objDbResult = $objDatabase->Query($strQuery);
-			return Ruta::InstantiateDbResult($objDbResult);
+			return ConsumoMes::InstantiateDbResult($objDbResult);
 		}
 */
 

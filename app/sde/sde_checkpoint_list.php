@@ -73,6 +73,11 @@ class SdeCheckpointListForm extends SdeCheckpointListFormBase {
         $colCodiCkpt = $this->dtgSdeCheckpoints->MetaAddColumn('CodiCkpt');
         $colCodiCkpt->FilterBoxSize = 2;
 
+        $colStatGuia = new QDataGridColumn('IMAGEN', '<?= $_FORM->IconoColumnRender($_ITEM) ?>');
+        $colStatGuia->HtmlEntities = false;
+        $colStatGuia->Width        = 10;
+        $this->dtgSdeCheckpoints->AddColumn($colStatGuia);
+
         $colDescCkpt = $this->dtgSdeCheckpoints->MetaAddColumn('DescCkpt');
         $colDescCkpt->Name = 'Descripción';
         $colDescCkpt->FilterBoxSize = 20;
@@ -93,6 +98,20 @@ class SdeCheckpointListForm extends SdeCheckpointListFormBase {
 
         $this->btnExpoExce_Create();
     }
+
+    public function IconoColumnRender(SdeCheckpoint $objCkpt) {
+        if (!$objCkpt) {
+            return null;
+        }
+        if (is_null($objCkpt->Imagen)) {
+            return null;
+        }
+        if (strlen($objCkpt->Imagen) == 0) {
+            return null;
+        }
+        return TextoIconoColor($objCkpt->Imagen,'','','lg',$objCkpt->Color);
+    }
+
 
     public function dtgSdeCheckpointsRow_Click($strFormId, $strControlId, $strParameter) {
         $strCodiCkpt = trim($strParameter);

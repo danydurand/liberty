@@ -185,7 +185,7 @@ if ($blnTodoOkey) {
 		$pdf->SetXY($intX,$intY);
 		$pdf->Cell(30,5,'Transporte Nacional',0);
 		$pdf->SetXY($intX+50,$intY);
-		$pdf->Cell(30,5,'BsF: ',0);
+		$pdf->Cell(30,5,'Bs: ',0);
 		$pdf->SetXY($intX+58,$intY);
 		$pdf->Cell(12,5,$objGuia->MontoBase,0,0,'R');
 
@@ -193,7 +193,7 @@ if ($blnTodoOkey) {
 		$pdf->SetXY($intX,$intY);
 		$pdf->Cell(30,5,'Monto del Seguro',0);
 		$pdf->SetXY($intX+50,$intY);
-		$pdf->Cell(30,5,'BsF: ',0);
+		$pdf->Cell(30,5,'Bs: ',0);
 		$pdf->SetXY($intX+58,$intY);
 		$pdf->Cell(12,5,$objGuia->MontoSeguro,0,0,'R');
 
@@ -201,7 +201,7 @@ if ($blnTodoOkey) {
 		$pdf->SetXY($intX,$intY);
 		$pdf->Cell(30,5,'Monto I.V.A.',0);
 		$pdf->SetXY($intX+50,$intY);
-		$pdf->Cell(30,5,'BsF: ',0);
+		$pdf->Cell(30,5,'Bs: ',0);
 		$pdf->SetXY($intX+58,$intY);
 		$pdf->Cell(12,5,$objGuia->MontoIva,0,0,'R');
 
@@ -209,7 +209,7 @@ if ($blnTodoOkey) {
 		$pdf->SetXY($intX,$intY);
 		$pdf->Cell(30,5,'Monto Total a Cancelar',0);
 		$pdf->SetXY($intX+50,$intY);
-		$pdf->Cell(30,5,'BsF: ',0);
+		$pdf->Cell(30,5,'Bs: ',0);
 		$pdf->SetXY($intX+58,$intY);
 		$pdf->Cell(12,5,$objGuia->MontoTotal,0,0,'R');
 

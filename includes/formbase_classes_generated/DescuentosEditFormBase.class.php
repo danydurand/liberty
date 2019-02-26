@@ -1,26 +1,26 @@
 <?php
 /**
  * This is a quick-and-dirty draft QForm object to do Create, Edit, and Delete functionality
- * of the Guia class.  It uses the code-generated
- * GuiaMetaControl class, which has meta-methods to help with
- * easily creating/defining controls to modify the fields of a Guia columns.
+ * of the Descuentos class.  It uses the code-generated
+ * DescuentosMetaControl class, which has meta-methods to help with
+ * easily creating/defining controls to modify the fields of a Descuentos columns.
  *
  * Any display customizations and presentation-tier logic can be implemented
  * here by overriding existing or implementing new methods, properties and variables.
  * 
  * NOTE: This file is overwritten on any code regenerations.  If you want to make
- * permanent changes, it is STRONGLY RECOMMENDED to move both guia_edit.php AND
- * guia_edit.tpl.php out of this Form Drafts directory.
+ * permanent changes, it is STRONGLY RECOMMENDED to move both descuentos_edit.php AND
+ * descuentos_edit.tpl.php out of this Form Drafts directory.
  *
  * @package My QCubed Application
  * @subpackage FormBaseObjects
  */
-abstract class GuiaEditFormBase extends QForm {
-	// Local instance of the GuiaMetaControl
+abstract class DescuentosEditFormBase extends QForm {
+	// Local instance of the DescuentosMetaControl
 	/**
-	 * @var GuiaMetaControlGen mctGuia
+	 * @var DescuentosMetaControlGen mctDescuentos
 	 */
-	protected $mctGuia;
+	protected $mctDescuentos;
 	protected $lblMensUsua;
 	protected $lblNotiUsua;
 	protected $lblTituForm;
@@ -50,116 +50,17 @@ abstract class GuiaEditFormBase extends QForm {
     protected $btnProxSmal;
     protected $btnUltiSmal;
 
-	// Controls for Guia's Data Fields
-	protected $txtNumeGuia;
-	protected $lstCodiClieObject;
+	// Controls for Descuentos's Data Fields
+	protected $lblId;
 	protected $lstCliente;
-	protected $calFechGuia;
-	protected $lstEstaOrigObject;
-	protected $lstEstaDestObject;
-	protected $txtPesoGuia;
-	protected $txtNombRemi;
-	protected $txtDireRemi;
-	protected $txtTeleRemi;
-	protected $txtNombDest;
-	protected $txtDireDest;
-	protected $txtTeleDest;
-	protected $txtCantPiez;
-	protected $txtDescCont;
-	protected $lstCodiProdObject;
-	protected $lstTipoGuiaObject;
-	protected $txtValorDeclarado;
-	protected $txtPorcentajeIva;
-	protected $txtMontoIva;
-	protected $txtPorcentajeGas;
-	protected $txtMontoGas;
-	protected $chkAsegurado;
-	protected $txtPorcentajeSeguro;
-	protected $txtPorcentajeDscto;
-	protected $txtMontoSeguro;
-	protected $txtMontoBase;
-	protected $txtMontoFranqueo;
-	protected $txtMontoDscto;
-	protected $txtMontoOtros;
-	protected $txtMontoTotal;
-	protected $chkConsiderarDscto;
-	protected $txtEntregadoA;
-	protected $calFechaEntrega;
-	protected $txtHoraEntrega;
-	protected $txtCodiCkpt;
-	protected $txtEstaCkpt;
-	protected $calFechCkpt;
-	protected $txtHoraCkpt;
-	protected $txtObseCkpt;
-	protected $txtUsuaCkpt;
-	protected $calFechaPod;
-	protected $txtHoraPod;
-	protected $txtUsuarioPod;
-	protected $txtCantAyudantes;
-	protected $txtParadasAdicionales;
-	protected $lstCourier;
-	protected $txtGuiaExterna;
-	protected $chkFleteDirecto;
-	protected $chkTieneGuiaRetorno;
-	protected $txtGuiaRetorno;
-	protected $txtObservacion;
-	protected $txtAlto;
-	protected $txtAncho;
-	protected $txtLargo;
-	protected $lstOperacion;
-	protected $txtMontoBaseInt;
-	protected $txtPorcentajeSgroInt;
-	protected $txtMontoSgroInt;
-	protected $txtMontoTotalInt;
-	protected $txtTotalIntLocal;
-	protected $txtPesoVolumetrico;
-	protected $txtPesoLibras;
-	protected $lstTransFacObject;
-	protected $txtHojaEntrega;
-	protected $txtUsuarioCreacion;
-	protected $calFechaCreacion;
-	protected $txtHoraCreacion;
-	protected $lstSistema;
-	protected $lstRecolecta;
-	protected $lstTipoDocumento;
-	protected $txtCedulaRif;
-	protected $txtCierreCaja;
-	protected $lstCaja;
-	protected $txtAnulada;
-	protected $lstProducto;
-	protected $txtTasaDolar;
-	protected $txtVolMaritimoPies;
-	protected $txtVolMaritimoMts;
-	protected $txtDescripcionGral;
-	protected $txtUbicacion;
-	protected $lstPromocion;
-	protected $lstExcepcionImpuestoObject;
-	protected $txtAirportImportFee;
-	protected $txtServiciosDga;
-	protected $txtProveedorId;
-	protected $lstVendedor;
-	protected $txtEstadoId;
-	protected $txtMunicipioId;
-	protected $txtParroquiaId;
-	protected $txtSecurbarId;
-	protected $txtReceptoriaOrigen;
-	protected $txtReceptoriaDestino;
-	protected $txtFacturaId;
-	protected $txtCedulaDestinatario;
-	protected $txtTarifaId;
-	protected $chkEnEfectivo;
+	protected $txtAnio;
+	protected $txtMes;
+	protected $txtDescuento;
+	protected $txtFactura;
+	protected $calCreatedAt;
+	protected $calUpdatedAt;
 
 	// Other ListBoxes (if applicable) via Unique ReverseReferences and ManyToMany References
-	protected $lstAduana;
-	protected $lstCobroCod;
-	protected $lstEstadisticaDeGuias;
-	protected $lstGuiaAduana;
-	protected $lstGuiaCalculos;
-	protected $lstGuiaCheckpoints;
-	protected $lstGuiaModificada;
-	protected $lstWitecConf;
-	protected $dtgManifiestosAsMani;
-	protected $dtgSdeContenedors;
 
 	// Other Controls
 	/**
@@ -190,9 +91,9 @@ abstract class GuiaEditFormBase extends QForm {
 
         $this->objUsuario = unserialize($_SESSION['User']);
 
-        // Use the CreateFromPathInfo shortcut (this can also be done manually using the GuiaMetaControl constructor)
+        // Use the CreateFromPathInfo shortcut (this can also be done manually using the DescuentosMetaControl constructor)
         // MAKE SURE we specify "$this" as the MetaControl's (and thus all subsequent controls') parent
-        $this->mctGuia = GuiaMetaControl::CreateFromPathInfo($this);
+        $this->mctDescuentos = DescuentosMetaControl::CreateFromPathInfo($this);
 
         $this->determinarPosicion();
 
@@ -222,114 +123,15 @@ abstract class GuiaEditFormBase extends QForm {
 
         $this->verificarNavegacion();
 
-		// Call MetaControl's methods to create qcontrols based on Guia's data fields
-		$this->txtNumeGuia = $this->mctGuia->txtNumeGuia_Create();
-		$this->lstCodiClieObject = $this->mctGuia->lstCodiClieObject_Create();
-		$this->lstCliente = $this->mctGuia->lstCliente_Create();
-		$this->calFechGuia = $this->mctGuia->calFechGuia_Create();
-		$this->lstEstaOrigObject = $this->mctGuia->lstEstaOrigObject_Create();
-		$this->lstEstaDestObject = $this->mctGuia->lstEstaDestObject_Create();
-		$this->txtPesoGuia = $this->mctGuia->txtPesoGuia_Create();
-		$this->txtNombRemi = $this->mctGuia->txtNombRemi_Create();
-		$this->txtDireRemi = $this->mctGuia->txtDireRemi_Create();
-		$this->txtTeleRemi = $this->mctGuia->txtTeleRemi_Create();
-		$this->txtNombDest = $this->mctGuia->txtNombDest_Create();
-		$this->txtDireDest = $this->mctGuia->txtDireDest_Create();
-		$this->txtTeleDest = $this->mctGuia->txtTeleDest_Create();
-		$this->txtCantPiez = $this->mctGuia->txtCantPiez_Create();
-		$this->txtDescCont = $this->mctGuia->txtDescCont_Create();
-		$this->lstCodiProdObject = $this->mctGuia->lstCodiProdObject_Create();
-		$this->lstTipoGuiaObject = $this->mctGuia->lstTipoGuiaObject_Create();
-		$this->txtValorDeclarado = $this->mctGuia->txtValorDeclarado_Create();
-		$this->txtPorcentajeIva = $this->mctGuia->txtPorcentajeIva_Create();
-		$this->txtMontoIva = $this->mctGuia->txtMontoIva_Create();
-		$this->txtPorcentajeGas = $this->mctGuia->txtPorcentajeGas_Create();
-		$this->txtMontoGas = $this->mctGuia->txtMontoGas_Create();
-		$this->chkAsegurado = $this->mctGuia->chkAsegurado_Create();
-		$this->txtPorcentajeSeguro = $this->mctGuia->txtPorcentajeSeguro_Create();
-		$this->txtPorcentajeDscto = $this->mctGuia->txtPorcentajeDscto_Create();
-		$this->txtMontoSeguro = $this->mctGuia->txtMontoSeguro_Create();
-		$this->txtMontoBase = $this->mctGuia->txtMontoBase_Create();
-		$this->txtMontoFranqueo = $this->mctGuia->txtMontoFranqueo_Create();
-		$this->txtMontoDscto = $this->mctGuia->txtMontoDscto_Create();
-		$this->txtMontoOtros = $this->mctGuia->txtMontoOtros_Create();
-		$this->txtMontoTotal = $this->mctGuia->txtMontoTotal_Create();
-		$this->chkConsiderarDscto = $this->mctGuia->chkConsiderarDscto_Create();
-		$this->txtEntregadoA = $this->mctGuia->txtEntregadoA_Create();
-		$this->calFechaEntrega = $this->mctGuia->calFechaEntrega_Create();
-		$this->txtHoraEntrega = $this->mctGuia->txtHoraEntrega_Create();
-		$this->txtCodiCkpt = $this->mctGuia->txtCodiCkpt_Create();
-		$this->txtEstaCkpt = $this->mctGuia->txtEstaCkpt_Create();
-		$this->calFechCkpt = $this->mctGuia->calFechCkpt_Create();
-		$this->txtHoraCkpt = $this->mctGuia->txtHoraCkpt_Create();
-		$this->txtObseCkpt = $this->mctGuia->txtObseCkpt_Create();
-		$this->txtUsuaCkpt = $this->mctGuia->txtUsuaCkpt_Create();
-		$this->calFechaPod = $this->mctGuia->calFechaPod_Create();
-		$this->txtHoraPod = $this->mctGuia->txtHoraPod_Create();
-		$this->txtUsuarioPod = $this->mctGuia->txtUsuarioPod_Create();
-		$this->txtCantAyudantes = $this->mctGuia->txtCantAyudantes_Create();
-		$this->txtParadasAdicionales = $this->mctGuia->txtParadasAdicionales_Create();
-		$this->lstCourier = $this->mctGuia->lstCourier_Create();
-		$this->txtGuiaExterna = $this->mctGuia->txtGuiaExterna_Create();
-		$this->chkFleteDirecto = $this->mctGuia->chkFleteDirecto_Create();
-		$this->chkTieneGuiaRetorno = $this->mctGuia->chkTieneGuiaRetorno_Create();
-		$this->txtGuiaRetorno = $this->mctGuia->txtGuiaRetorno_Create();
-		$this->txtObservacion = $this->mctGuia->txtObservacion_Create();
-		$this->txtAlto = $this->mctGuia->txtAlto_Create();
-		$this->txtAncho = $this->mctGuia->txtAncho_Create();
-		$this->txtLargo = $this->mctGuia->txtLargo_Create();
-		$this->lstOperacion = $this->mctGuia->lstOperacion_Create();
-		$this->txtMontoBaseInt = $this->mctGuia->txtMontoBaseInt_Create();
-		$this->txtPorcentajeSgroInt = $this->mctGuia->txtPorcentajeSgroInt_Create();
-		$this->txtMontoSgroInt = $this->mctGuia->txtMontoSgroInt_Create();
-		$this->txtMontoTotalInt = $this->mctGuia->txtMontoTotalInt_Create();
-		$this->txtTotalIntLocal = $this->mctGuia->txtTotalIntLocal_Create();
-		$this->txtPesoVolumetrico = $this->mctGuia->txtPesoVolumetrico_Create();
-		$this->txtPesoLibras = $this->mctGuia->txtPesoLibras_Create();
-		$this->lstTransFacObject = $this->mctGuia->lstTransFacObject_Create();
-		$this->txtHojaEntrega = $this->mctGuia->txtHojaEntrega_Create();
-		$this->txtUsuarioCreacion = $this->mctGuia->txtUsuarioCreacion_Create();
-		$this->calFechaCreacion = $this->mctGuia->calFechaCreacion_Create();
-		$this->txtHoraCreacion = $this->mctGuia->txtHoraCreacion_Create();
-		$this->lstSistema = $this->mctGuia->lstSistema_Create();
-		$this->lstRecolecta = $this->mctGuia->lstRecolecta_Create();
-		$this->lstTipoDocumento = $this->mctGuia->lstTipoDocumento_Create();
-		$this->txtCedulaRif = $this->mctGuia->txtCedulaRif_Create();
-		$this->txtCierreCaja = $this->mctGuia->txtCierreCaja_Create();
-		$this->lstCaja = $this->mctGuia->lstCaja_Create();
-		$this->txtAnulada = $this->mctGuia->txtAnulada_Create();
-		$this->lstProducto = $this->mctGuia->lstProducto_Create();
-		$this->txtTasaDolar = $this->mctGuia->txtTasaDolar_Create();
-		$this->txtVolMaritimoPies = $this->mctGuia->txtVolMaritimoPies_Create();
-		$this->txtVolMaritimoMts = $this->mctGuia->txtVolMaritimoMts_Create();
-		$this->txtDescripcionGral = $this->mctGuia->txtDescripcionGral_Create();
-		$this->txtUbicacion = $this->mctGuia->txtUbicacion_Create();
-		$this->lstPromocion = $this->mctGuia->lstPromocion_Create();
-		$this->lstExcepcionImpuestoObject = $this->mctGuia->lstExcepcionImpuestoObject_Create();
-		$this->txtAirportImportFee = $this->mctGuia->txtAirportImportFee_Create();
-		$this->txtServiciosDga = $this->mctGuia->txtServiciosDga_Create();
-		$this->txtProveedorId = $this->mctGuia->txtProveedorId_Create();
-		$this->lstVendedor = $this->mctGuia->lstVendedor_Create();
-		$this->txtEstadoId = $this->mctGuia->txtEstadoId_Create();
-		$this->txtMunicipioId = $this->mctGuia->txtMunicipioId_Create();
-		$this->txtParroquiaId = $this->mctGuia->txtParroquiaId_Create();
-		$this->txtSecurbarId = $this->mctGuia->txtSecurbarId_Create();
-		$this->txtReceptoriaOrigen = $this->mctGuia->txtReceptoriaOrigen_Create();
-		$this->txtReceptoriaDestino = $this->mctGuia->txtReceptoriaDestino_Create();
-		$this->txtFacturaId = $this->mctGuia->txtFacturaId_Create();
-		$this->txtCedulaDestinatario = $this->mctGuia->txtCedulaDestinatario_Create();
-		$this->txtTarifaId = $this->mctGuia->txtTarifaId_Create();
-		$this->chkEnEfectivo = $this->mctGuia->chkEnEfectivo_Create();
-			$this->lstAduana = $this->mctGuia->lstAduana_Create();
-			$this->lstCobroCod = $this->mctGuia->lstCobroCod_Create();
-			$this->lstEstadisticaDeGuias = $this->mctGuia->lstEstadisticaDeGuias_Create();
-			$this->lstGuiaAduana = $this->mctGuia->lstGuiaAduana_Create();
-			$this->lstGuiaCalculos = $this->mctGuia->lstGuiaCalculos_Create();
-			$this->lstGuiaCheckpoints = $this->mctGuia->lstGuiaCheckpoints_Create();
-			$this->lstGuiaModificada = $this->mctGuia->lstGuiaModificada_Create();
-			$this->lstWitecConf = $this->mctGuia->lstWitecConf_Create();
-			$this->dtgManifiestosAsMani = $this->mctGuia->dtgManifiestosAsMani_Create();
-			$this->dtgSdeContenedors = $this->mctGuia->dtgSdeContenedors_Create();
+		// Call MetaControl's methods to create qcontrols based on Descuentos's data fields
+		$this->lblId = $this->mctDescuentos->lblId_Create();
+		$this->lstCliente = $this->mctDescuentos->lstCliente_Create();
+		$this->txtAnio = $this->mctDescuentos->txtAnio_Create();
+		$this->txtMes = $this->mctDescuentos->txtMes_Create();
+		$this->txtDescuento = $this->mctDescuentos->txtDescuento_Create();
+		$this->txtFactura = $this->mctDescuentos->txtFactura_Create();
+		$this->calCreatedAt = $this->mctDescuentos->calCreatedAt_Create();
+		$this->calUpdatedAt = $this->mctDescuentos->calUpdatedAt_Create();
 
 		$this->btnSave_Create();
 		$this->btnCancel_Create();
@@ -342,17 +144,17 @@ abstract class GuiaEditFormBase extends QForm {
 	//-----------------------------
 
     protected function determinarPosicion() {
-        if ($this->mctGuia->Guia && !isset($_SESSION['DataGuia'])) {
-            $_SESSION['DataGuia'] = serialize(array($this->mctGuia->Guia));
+        if ($this->mctDescuentos->Descuentos && !isset($_SESSION['DataDescuentos'])) {
+            $_SESSION['DataDescuentos'] = serialize(array($this->mctDescuentos->Descuentos));
         }
-        $this->arrDataTabl = unserialize($_SESSION['DataGuia']);
+        $this->arrDataTabl = unserialize($_SESSION['DataDescuentos']);
         $this->intCantRegi = count($this->arrDataTabl);
         //-------------------------------------------------------------------------------
         // Se determina la posicion del registro actual, dentro del vector de registros
         //-------------------------------------------------------------------------------
         $intContRegi = 0;
         foreach ($this->arrDataTabl as $objTable) {
-            if ($objTable->Id == $this->mctGuia->Guia->Id) {
+            if ($objTable->Id == $this->mctDescuentos->Descuentos->Id) {
                 $this->intPosiRegi = $intContRegi;
                 break;
             } else {
@@ -363,7 +165,7 @@ abstract class GuiaEditFormBase extends QForm {
 
 	protected function lblTituForm_Create() {
         $this->lblTituForm = new QLabel($this);
-        $this->lblTituForm->Text = 'Guia';
+        $this->lblTituForm->Text = 'Descuentos';
         $this->lblTituForm->Text .= ' ('.($this->intPosiRegi+1).'/'.$this->intCantRegi.')';
 	}
 
@@ -389,7 +191,7 @@ abstract class GuiaEditFormBase extends QForm {
         $this->btnNuevRegi->CssClass = 'btn btn-primary btn-sm';
         $this->btnNuevRegi->HtmlEntities = false;
         $this->btnNuevRegi->AddAction(new QClickEvent(), new QServerAction('btnNuevRegi_Click'));
-        $this->btnNuevRegi->Visible = $this->mctGuia->EditMode;
+        $this->btnNuevRegi->Visible = $this->mctDescuentos->EditMode;
     }
 
     protected function btnProxRegi_Create() {
@@ -456,9 +258,9 @@ abstract class GuiaEditFormBase extends QForm {
         $this->btnDelete->Text = '<i class="fa fa-trash-o fa-lg"></i> Borrar';
         $this->btnDelete->CssClass = 'btn btn-danger btn-sm';
         $this->btnDelete->HtmlEntities = false;
-		$this->btnDelete->AddAction(new QClickEvent(), new QConfirmAction(sprintf(QApplication::Translate('Are you SURE you want to DELETE this %s?'), QApplication::Translate('Guia'))));
+		$this->btnDelete->AddAction(new QClickEvent(), new QConfirmAction(sprintf(QApplication::Translate('Are you SURE you want to DELETE this %s?'), QApplication::Translate('Descuentos'))));
 		$this->btnDelete->AddAction(new QClickEvent(), new QAjaxAction('btnDelete_Click'));
-		$this->btnDelete->Visible = $this->mctGuia->EditMode;
+		$this->btnDelete->Visible = $this->mctDescuentos->EditMode;
 	}
 
     protected function btnLogxCamb_Create() {
@@ -467,7 +269,7 @@ abstract class GuiaEditFormBase extends QForm {
         $this->btnLogxCamb->CssClass = 'btn btn-default btn-sm';
         $this->btnLogxCamb->HtmlEntities = false;
         $this->btnLogxCamb->AddAction(new QClickEvent(), new QAjaxAction('btnLogxCamb_Click'));
-        $this->btnLogxCamb->Visible = Log::CountByTablaRef('Guia',$this->mctGuia->Guia->Id);
+        $this->btnLogxCamb->Visible = Log::CountByTablaRef('Descuentos',$this->mctDescuentos->Descuentos->Id);
     }
 
     //-------------------------
@@ -488,7 +290,7 @@ abstract class GuiaEditFormBase extends QForm {
         $this->btnNuevSmal->CssClass = 'btn btn-primary btn-sm';
         $this->btnNuevSmal->HtmlEntities = false;
         $this->btnNuevSmal->AddAction(new QClickEvent(), new QServerAction('btnNuevRegi_Click'));
-        $this->btnNuevSmal->Visible = $this->mctGuia->EditMode;
+        $this->btnNuevSmal->Visible = $this->mctDescuentos->EditMode;
     }
 
     protected function btnGuarSmal_Create() {
@@ -508,7 +310,7 @@ abstract class GuiaEditFormBase extends QForm {
         $this->btnBorrSmal->HtmlEntities = false;
         $this->btnBorrSmal->AddAction(new QClickEvent(), new QConfirmAction(sprintf(QApplication::Translate('Are you SURE you want to DELETE this %s?'), QApplication::Translate('GuiaRoxanne'))));
         $this->btnBorrSmal->AddAction(new QClickEvent(), new QAjaxAction('btnDelete_Click'));
-        $this->btnBorrSmal->Visible = $this->mctGuia->EditMode;
+        $this->btnBorrSmal->Visible = $this->mctDescuentos->EditMode;
     }
 
     protected function btnHistSmal_Create() {
@@ -567,7 +369,14 @@ abstract class GuiaEditFormBase extends QForm {
 
 		// Custom Validation Rules
 		// TODO: Be sure to set $blnToReturn to false if any custom validation fails!
-		
+		// Check for records that may violate Unique Clauses
+			if (($objDescuentos = Descuentos::LoadByClienteIdAnioMes($this->lstCliente->SelectedValue,$this->txtAnio->Text,$this->txtMes->Text)) && ($objDescuentos->Id != $this->mctDescuentos->Descuentos->Id )){
+				$blnToReturn = false;
+				$this->lstCliente->Warning = QApplication::Translate("Already in Use");
+				$this->txtAnio->Warning = QApplication::Translate("Already in Use");
+				$this->txtMes->Warning = QApplication::Translate("Already in Use");
+			}
+
 		$blnFocused = false;
 		foreach ($this->GetErrorControls() as $objControl) {
 			// Set Focus to the top-most invalid control
@@ -589,26 +398,26 @@ abstract class GuiaEditFormBase extends QForm {
 
     protected function btnProxRegi_Click() {
         $objRegiTabl = $this->arrDataTabl[$this->intPosiRegi+1];
-        QApplication::Redirect(__SIST__.'/guia_edit.php/'.$objRegiTabl->Id);
+        QApplication::Redirect(__SIST__.'/descuentos_edit.php/'.$objRegiTabl->Id);
     }
 
     protected function btnRegiAnte_Click() {
         $objRegiTabl = $this->arrDataTabl[$this->intPosiRegi-1];
-        QApplication::Redirect(__SIST__.'/guia_edit.php/'.$objRegiTabl->Id);
+        QApplication::Redirect(__SIST__.'/descuentos_edit.php/'.$objRegiTabl->Id);
     }
 
     protected function btnPrimRegi_Click() {
         $objRegiTabl = $this->arrDataTabl[0];
-        QApplication::Redirect(__SIST__.'/guia_edit.php/'.$objRegiTabl->Id);
+        QApplication::Redirect(__SIST__.'/descuentos_edit.php/'.$objRegiTabl->Id);
     }
 
     protected function btnUltiRegi_Click() {
         $objRegiTabl = $this->arrDataTabl[$this->intCantRegi-1];
-        QApplication::Redirect(__SIST__.'/guia_edit.php/'.$objRegiTabl->Id);
+        QApplication::Redirect(__SIST__.'/descuentos_edit.php/'.$objRegiTabl->Id);
     }
 
     protected function verificarNavegacion() {
-        if ($this->mctGuia->EditMode) {
+        if ($this->mctDescuentos->EditMode) {
             $this->btnRegiAnte->Enabled = !($this->intPosiRegi == 0);
             $this->btnPrimRegi->Enabled = !($this->intPosiRegi == 0);
             $this->btnProxRegi->Enabled = !($this->intPosiRegi == $this->intCantRegi - 1);
@@ -632,8 +441,8 @@ abstract class GuiaEditFormBase extends QForm {
     }
 
 	protected function btnSave_Click($strFormId, $strControlId, $strParameter) {
-		// Delegate "Save" processing to the GuiaMetaControl
-		$this->mctGuia->SaveGuia();
+		// Delegate "Save" processing to the DescuentosMetaControl
+		$this->mctDescuentos->SaveDescuentos();
 		$this->RedirectToListPage();
 	}
 
@@ -642,34 +451,34 @@ abstract class GuiaEditFormBase extends QForm {
 		// Se verifica la integridad referencial
 		//----------------------------------------
 		$blnTodoOkey = true;
-		$arrTablRela = $this->mctGuia->TablasRelacionadasGuia();
+		$arrTablRela = $this->mctDescuentos->TablasRelacionadasDescuentos();
 		if (count($arrTablRela)) {
 			$strTablRela = implode(',',$arrTablRela);
 				
-			//$this->txtNumeGuia->Warning = sprintf('Existen registros relacionados en %s',$strTablRela);
+			//$this->lblId->Warning = sprintf('Existen registros relacionados en %s',$strTablRela);
             $this->mensaje(sprintf('Existen registros relacionados en %s',$strTablRela),'m','d','hand-stop-o');
 			$blnTodoOkey = false;
 		}
 		if ($blnTodoOkey) {
-			// Delegate "Delete" processing to the GuiaMetaControl
-			$this->mctGuia->DeleteGuia();
+			// Delegate "Delete" processing to the DescuentosMetaControl
+			$this->mctDescuentos->DeleteDescuentos();
 			$this->RedirectToListPage();
 		}
 	}
 
     protected function btnLogxCamb_Click() {
-        $_SESSION['RegiRefe'] = $this->mctGuia->Guia->Id;
-        $_SESSION['TablRefe'] = 'Guia';
-        $_SESSION['RegiReto'] = 'guia_edit.php/'.$this->mctGuia->Guia->Id;
+        $_SESSION['RegiRefe'] = $this->mctDescuentos->Descuentos->Id;
+        $_SESSION['TablRefe'] = 'Descuentos';
+        $_SESSION['RegiReto'] = 'descuentos_edit.php/'.$this->mctDescuentos->Descuentos->Id;
         QApplication::Redirect(__SIST__.'/log_list.php');
     }
 
     protected function btnVolvList_Click() {
-        QApplication::Redirect(__SIST__.'/guia_list.php');
+        QApplication::Redirect(__SIST__.'/descuentos_list.php');
     }
 
     protected function btnNuevRegi_Click() {
-        QApplication::Redirect(__SIST__.'/guia_edit.php');
+        QApplication::Redirect(__SIST__.'/descuentos_edit.php');
     }
 
 

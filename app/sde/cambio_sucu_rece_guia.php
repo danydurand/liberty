@@ -36,8 +36,6 @@ class CambioSucuReceGuia extends FormularioBaseKaizen {
 
         $this->btnSave->Visible = false;
         $blnUsuaAuto = BuscarParametro("SucuRece", $this->objUsuario->LogiUsua, "Val1", 0);
-        //$arrUsuaAuto = array('ddurand','ynoriega','jlaya','judithrz','alvarado');
-        //if (in_array($this->objUsuario->LogiUsua,$arrUsuaAuto)) {
         if ($blnUsuaAuto) {
             $this->btnSave->Visible = true;
         }

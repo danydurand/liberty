@@ -58,7 +58,7 @@ require(__APP_INCLUDES__ . '/header.inc.php');
 						<li class="tabs-guias" role="presentation">
 							<a href="#seccion3" aria-controls="seccion3" data-toggle="tab" role="tab">
 								<i class="fa fa-bookmark fa-lg"></i>
-								  Estadísticas
+								  Estadísticas/Dsctos
                             </a>
 						</li>
 						<li class="tabs-guias" role="presentation">
@@ -71,6 +71,12 @@ require(__APP_INCLUDES__ . '/header.inc.php');
 							<a href="#seccion5" aria-controls="seccion5" data-toggle="tab" role="tab">
 								<i class="fa fa-book fa-lg"></i>
 								  Sub-Cuentas (<?= $this->intCantSubc ?>)
+                            </a>
+						</li>
+						<li class="tabs-guias" role="presentation">
+							<a href="#seccion6" aria-controls="seccion6" data-toggle="tab" role="tab">
+								<i class="fa fa-chart fa-lg"></i>
+								  Gráficos
                             </a>
 						</li>
 					</ul>
@@ -132,19 +138,19 @@ require(__APP_INCLUDES__ . '/header.inc.php');
 						<div class="tab-pane" role="tabpanel" id="seccion3">
 							<div class="media">
 								<div class="media-body">
-									<div class="col-md-12">
-										<!--<div class="row" style="padding: 0.1em">-->
-											<!--<div class="titulo">Sistema CORPorativo</div>-->
-										<!--</div>-->
-										<div class="row" style="margin-top: 2em;">
+                                    <div class="row" style="margin-top: 2em;">
+                                        <div class="col-md-5">
                                             <?php $this->dtePrimGuia->RenderWithName(); ?>
                                             <?php $this->dteUltiGuia->RenderWithName(); ?>
                                             <?php $this->txtTiemEmpr->RenderWithName(); ?>
                                             <?php $this->txtCantGuia->RenderWithName(); ?>
                                             <?php $this->txtPesoTota->RenderWithName(); ?>
                                             <?php $this->txtVentTota->RenderWithName(); ?>
-										</div>
-									</div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <?php $this->dtgDctoClie->RenderWithName(); ?>
+                                        </div>
+                                    </div>
 								</div>
 							</div>
 						</div>
@@ -194,6 +200,54 @@ require(__APP_INCLUDES__ . '/header.inc.php');
                                 <div class="media-body"><br>
                                     <div class="col-md-12">
                                         <?php $this->dtgSubcClie->Render(); ?>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="tab-pane" role="tabpanel" id="seccion6">
+                            <div class="media">
+                                <div class="media-body"><br>
+                                    <div class="col-md-12">
+                                        <?php
+                                        $arrData = array(
+                                            "chart" => array(
+                                                "caption"   => "Gráfico de Consumo",
+                                                "xAxisName" => "Meses",
+                                                "yAxisName" => "Cantidad de Guías",
+                                                "theme"     => "fusion"
+                                            )
+                                        );
+                                        $arrData['categories'][] = array(
+                                            'category' => [
+                                                ['label' => 'Ene'],
+                                                ['label' => 'Feb'],
+                                                ['label' => 'Mar'],
+                                                ['label' => 'Abr'],
+                                                ['label' => 'May'],
+                                                ['label' => 'Jun'],
+                                                ['label' => 'Jul'],
+                                                ['label' => 'Ago'],
+                                                ['label' => 'Sep'],
+                                                ['label' => 'Oct'],
+                                                ['label' => 'Nov'],
+                                                ['label' => 'Dic']
+                                            ]
+                                        );
+                                        $arrData['dataset'] = $this->arrDataGraf;
+
+                                        // JSON Encode the data to retrieve the string containing the JSON representation of the data in the array.
+                                        $jsonEncodedData = json_encode($arrData);
+                                        //echo $jsonEncodedData;
+
+                                        // chart object
+                                        $Chart = new FusionCharts("msline", "MyFirstChart" , "700", "370", "chart-container", "json", $jsonEncodedData);
+
+                                        // Render the chart
+                                        $Chart->render();
+                                        ?>
+                                        <center>
+                                            <div id="chart-container">Chart will render here!</div>
+                                        </center>
                                     </div>
                                 </div>
                             </div>

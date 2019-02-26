@@ -1,21 +1,21 @@
 <?php
 	/**
 	 * This is a quick-and-dirty draft QForm object to do the List All functionality
-	 * of the SdeOperacion class.  It uses the code-generated
-	 * SdeOperacionDataGrid control which has meta-methods to help with
-	 * easily creating/defining SdeOperacion columns.
+	 * of the Descuentos class.  It uses the code-generated
+	 * DescuentosDataGrid control which has meta-methods to help with
+	 * easily creating/defining Descuentos columns.
 	 *
 	 * Any display customizations and presentation-tier logic can be implemented
 	 * here by overriding existing or implementing new methods, properties and variables.
 	 * 
 	 * NOTE: This file is overwritten on any code regenerations.  If you want to make
-	 * permanent changes, it is STRONGLY RECOMMENDED to move both sde_operacion_list.php AND
-	 * sde_operacion_list.tpl.php out of this Form Drafts directory.
+	 * permanent changes, it is STRONGLY RECOMMENDED to move both descuentos_list.php AND
+	 * descuentos_list.tpl.php out of this Form Drafts directory.
 	 *
 	 * @package My QCubed Application
 	 * @subpackage FormBaseObjects
 	 */
-	abstract class SdeOperacionListFormBase extends QForm {
+	abstract class DescuentosListFormBase extends QForm {
 		protected $lblMensUsua;
 		protected $lblNotiUsua;
 		protected $lblTituForm;
@@ -23,11 +23,11 @@
         protected $btnFiltAvan;
         protected $btnExpoExce;
 
-		// Local instance of the Meta DataGrid to list SdeOperacions
+		// Local instance of the Meta DataGrid to list Descuentoses
 		/**
-		 * @var SdeOperacionDataGrid dtgSdeOperacions
+		 * @var DescuentosDataGrid dtgDescuentoses
 		 */
-		protected $dtgSdeOperacions;
+		protected $dtgDescuentoses;
 
 		// Create QForm Event Handlers as Needed
 
@@ -50,40 +50,40 @@
             $this->btnFiltAvan_Create();
 
 			// Instantiate the Meta DataGrid
-			$this->dtgSdeOperacions = new SdeOperacionDataGrid($this);
+			$this->dtgDescuentoses = new DescuentosDataGrid($this);
 
 			// Style the DataGrid (if desired)
-			$this->dtgSdeOperacions->CssClass = 'datagrid';
-			$this->dtgSdeOperacions->AlternateRowStyle->CssClass = 'alternate';
-			$this->dtgSdeOperacions->FontSize = 13;
-			$this->dtgSdeOperacions->ShowFilter = false;
+			$this->dtgDescuentoses->CssClass = 'datagrid';
+			$this->dtgDescuentoses->AlternateRowStyle->CssClass = 'alternate';
+			$this->dtgDescuentoses->FontSize = 13;
+			$this->dtgDescuentoses->ShowFilter = false;
 
 			// Add Pagination (if desired)
-			$this->dtgSdeOperacions->Paginator = new QPaginator($this->dtgSdeOperacions);
-			$this->dtgSdeOperacions->ItemsPerPage = __FORM_DRAFTS_FORM_LIST_ITEMS_PER_PAGE__;
+			$this->dtgDescuentoses->Paginator = new QPaginator($this->dtgDescuentoses);
+			$this->dtgDescuentoses->ItemsPerPage = __FORM_DRAFTS_FORM_LIST_ITEMS_PER_PAGE__;
 
 			// Higlight the datagrid rows when mousing over them
-			$this->dtgSdeOperacions->AddRowAction(new QMouseOverEvent(), new QCssClassAction('selectedStyle'));
-			$this->dtgSdeOperacions->AddRowAction(new QMouseOutEvent(), new QCssClassAction());
+			$this->dtgDescuentoses->AddRowAction(new QMouseOverEvent(), new QCssClassAction('selectedStyle'));
+			$this->dtgDescuentoses->AddRowAction(new QMouseOutEvent(), new QCssClassAction());
 
 			// Add a click handler for the rows.
 			// We can use $_CONTROL->CurrentRowIndex to pass the row index to dtgPersonsRow_Click()
 			// or $_ITEM->Id to pass the object's id, or any other data grid variable
-			$this->dtgSdeOperacions->RowActionParameterHtml = '<?= $_ITEM->Id ?>';
-			$this->dtgSdeOperacions->AddRowAction(new QClickEvent(), new QAjaxAction('dtgSdeOperacionsRow_Click'));
+			$this->dtgDescuentoses->RowActionParameterHtml = '<?= $_ITEM->Id ?>';
+			$this->dtgDescuentoses->AddRowAction(new QClickEvent(), new QAjaxAction('dtgDescuentosesRow_Click'));
 
 			// Use the MetaDataGrid functionality to add Columns for this datagrid
 
-			// Create the Other Columns (note that you can use strings for sde_operacion's properties, or you
-			// can traverse down QQN::sde_operacion() to display fields that are down the hierarchy)
-			$this->dtgSdeOperacions->MetaAddColumn('CodiOper');
-			$this->dtgSdeOperacions->MetaAddColumn(QQN::SdeOperacion()->CodiRutaObject);
-			$this->dtgSdeOperacions->MetaAddColumn(QQN::SdeOperacion()->CodiChofObject);
-			$this->dtgSdeOperacions->MetaAddColumn(QQN::SdeOperacion()->CodiVehiObject);
-			$this->dtgSdeOperacions->MetaAddColumn(QQN::SdeOperacion()->CodiEstaObject);
-			$this->dtgSdeOperacions->MetaAddColumn(QQN::SdeOperacion()->CodiTipoObject);
-			$this->dtgSdeOperacions->MetaAddTypeColumn('ExpresoNacional', 'SinoType');
-			$this->dtgSdeOperacions->MetaAddColumn('DeletedAt');
+			// Create the Other Columns (note that you can use strings for descuentos's properties, or you
+			// can traverse down QQN::descuentos() to display fields that are down the hierarchy)
+			$this->dtgDescuentoses->MetaAddColumn('Id');
+			$this->dtgDescuentoses->MetaAddColumn(QQN::Descuentos()->Cliente);
+			$this->dtgDescuentoses->MetaAddColumn('Anio');
+			$this->dtgDescuentoses->MetaAddColumn('Mes');
+			$this->dtgDescuentoses->MetaAddColumn('Descuento');
+			$this->dtgDescuentoses->MetaAddColumn('Factura');
+			$this->dtgDescuentoses->MetaAddColumn('CreatedAt');
+			$this->dtgDescuentoses->MetaAddColumn('UpdatedAt');
 
             $this->btnExpoExce_Create();
 
@@ -91,7 +91,7 @@
 
 		protected function lblTituForm_Create() {
 			$this->lblTituForm = new QLabel($this);
-			$this->lblTituForm->Text = 'SdeOperacions';
+			$this->lblTituForm->Text = 'Descuentoses';
 		}
 
 		protected function lblMensUsua_Create() {
@@ -123,7 +123,7 @@
         }
 
         protected function btnExpoExce_Create() {
-            $this->btnExpoExce = new QDataGridExporterButton($this, $this->dtgSdeOperacions);
+            $this->btnExpoExce = new QDataGridExporterButton($this, $this->dtgDescuentoses);
             $this->btnExpoExce->DownloadFormat = QDataGridExporterButton::EXPORT_AS_XLS;
             $this->btnExpoExce->Text = '<i class="fa fa-download fa-lg"></i> XLS';
             $this->btnExpoExce->HtmlEntities = false;
@@ -132,16 +132,16 @@
         }
 
         protected function btnNuevRegi_Click() {
-            QApplication::Redirect(__SIST__.'/sde_operacion_edit.php');
+            QApplication::Redirect(__SIST__.'/descuentos_edit.php');
         }
 
         protected function btnFiltAvan_Click() {
-            $this->dtgSdeOperacions->ShowFilter = !$this->dtgSdeOperacions->ShowFilter;
+            $this->dtgDescuentoses->ShowFilter = !$this->dtgDescuentoses->ShowFilter;
         }
 
-		public function dtgSdeOperacionsRow_Click($strFormId, $strControlId, $strParameter) {
+		public function dtgDescuentosesRow_Click($strFormId, $strControlId, $strParameter) {
 		  $intId = intval($strParameter);
-		  QApplication::Redirect("sde_operacion_edit.php/$intId");
+		  QApplication::Redirect("descuentos_edit.php/$intId");
 		}
 
 

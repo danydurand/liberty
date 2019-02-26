@@ -140,8 +140,8 @@
         public function HtmlMenuConnectBootstrap() {
             //$objUsuario  = unserialize($_SESSION['User']);
             $objCliente = unserialize($_SESSION['ClieMast']);
-            $strDireProg = __SUBDIRECTORY__."/".$this->strDirectorio."/";
-            //$strDireProg = __YAMAGUCHI__."/".$this->strDirectorio."/";
+            //$strDireProg = __SUBDIRECTORY__."/".$this->strDirectorio."/";
+            $strDireProg = "/".$this->strDirectorio."/";
             //----------------------------------------
             // Se identifica la Opción de Cargar Guía
             //----------------------------------------

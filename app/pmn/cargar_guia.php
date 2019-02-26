@@ -84,8 +84,11 @@ class CargarGuia extends FormularioBaseKaizen {
     protected $txtPesoGuia;
     protected $txtDescCont;
     protected $txtValoDecl;
+    protected $txtPorcDcto;
+    protected $chkConsDcto;
 
     protected $lblMontBase;
+    protected $lblMontDcto;
     protected $lblMontIvax;
     protected $lblMontFran;
     protected $lblMontSegu;
@@ -322,10 +325,13 @@ class CargarGuia extends FormularioBaseKaizen {
         $this->txtDescCont_Create();
         $this->txtValoDecl_Create();
         $this->rdbModaPago_Create();
+        $this->txtPorcDcto_Create();
+        $this->chkConsDcto_Create();
         //---------------------
         // Costos del Servicio
         //---------------------
         $this->lblMontBase_Create();
+        $this->lblMontDcto_Create();
         $this->lblMontIvax_Create();
         $this->lblMontFran_Create();
         $this->lblMontSegu_Create();
@@ -346,8 +352,30 @@ class CargarGuia extends FormularioBaseKaizen {
         $this->lstSucuDest_Change();
 
         $strTextMens = 'Evite el uso de caracteres especiales (Ej: \\~°#^*+) en <b>los nombres, las direcciones, el contenido y los teléfonos</b>';
-        $this->mensaje($strTextMens,'n','i','',__iINFO__);
+        $this->mensaje($strTextMens,'m','w','',__iINFO__);
 
+        //-----------
+        // Permisos
+        //-----------
+        $this->permisosDeDescuentos();
+
+    }
+
+    protected function permisosDeDescuentos() {
+        //------------------------------------------------------------------------------
+        // Unicamente los Usuario autorizados tendran acceso a los campos de descuento
+        //------------------------------------------------------------------------------
+        $this->txtPorcDcto->Enabled   = false;
+        $this->txtPorcDcto->ForeColor = 'blue';
+        $this->chkConsDcto->Enabled   = false;
+        $this->chkConsDcto->ForeColor = 'blue';
+        $blnUsuaAuto = BuscarParametro("DctoClie", $this->objUsuario->LogiUsua, "Val1", 0);
+        if ($blnUsuaAuto) {
+            $this->txtPorcDcto->Enabled   = true;
+            $this->txtPorcDcto->ForeColor = null;
+            $this->chkConsDcto->Enabled   = true;
+            $this->chkConsDcto->ForeColor = null;
+        }
     }
 
     //-------------------------
@@ -424,7 +452,7 @@ class CargarGuia extends FormularioBaseKaizen {
         $this->txtDireClie = new QTextBox($this);
         $this->txtDireClie->Name = 'Direccion';
         $this->txtDireClie->Width = 250;
-        $this->txtDireClie->Height = 60;
+        $this->txtDireClie->Height = 40;
         $this->txtDireClie->TextMode = QTextMode::MultiLine;
         $this->txtDireClie->SetCustomAttribute('onblur',"this.value=this.value.toUpperCase()");
         if ($this->blnEditMode) {
@@ -500,7 +528,7 @@ class CargarGuia extends FormularioBaseKaizen {
         $this->txtDireDest = new QTextBox($this);
         $this->txtDireDest->Name = 'Direccion';
         $this->txtDireDest->Width = 250;
-        $this->txtDireDest->Height = 60;
+        $this->txtDireDest->Height = 40;
         $this->txtDireDest->TextMode = QTextMode::MultiLine;
         $this->txtDireDest->SetCustomAttribute('onblur',"this.value=this.value.toUpperCase()");
         if ($this->blnEditMode) {
@@ -551,7 +579,7 @@ class CargarGuia extends FormularioBaseKaizen {
 
     protected function rdbModaPago_Create() {
         $this->rdbModaPago = new QRadioButtonList($this);
-        $this->rdbModaPago->Name = 'Modalidad de Pago';
+        $this->rdbModaPago->Name = 'F. Pago';
         $this->rdbModaPago->HtmlEntities = false;
         if (!$this->blnEditMode) {
             $this->cargarModalidadesDePago();
@@ -561,20 +589,54 @@ class CargarGuia extends FormularioBaseKaizen {
         $this->rdbModaPago->RepeatColumns = 2;
     }
 
+    protected function txtPorcDcto_Create() {
+        $this->txtPorcDcto = new QFloatTextBox($this);
+        $this->txtPorcDcto->Name = 'Dscto';
+        $this->txtPorcDcto->Width = 50;
+        $this->txtPorcDcto->HtmlAfter = ' %';
+        $this->txtPorcDcto->ToolTip = 'Porcentaje de Descuento a otorgar';
+        if ($this->blnEditMode) {
+            $this->txtPorcDcto->Text = $this->objGuia->PorcentajeDscto;
+        } else {
+            $this->txtPorcDcto->Text = '';
+        }
+    }
+
+    protected function chkConsDcto_Create() {
+        $this->chkConsDcto = new QCheckBox($this);
+        $this->chkConsDcto->Name = 'Cons. Dscto?';
+        $this->chkConsDcto->ToolTip = '¿Considerar este Descuento en las estadísticas mensuales del Cliente?';
+        $this->chkConsDcto->HtmlAfter = ' ¿Considerar en las estadísticas mensuales?';
+        if ($this->blnEditMode) {
+            $this->chkConsDcto->Checked = $this->objGuia->ConsiderarDscto;
+        }
+    }
+
     protected function lblMontBase_Create() {
         $this->lblMontBase = new QLabel($this);
-        $this->lblMontBase->Name = 'Mto. Base';
-        $this->lblMontBase->Width = 80;
+        $this->lblMontBase->Name = 'Base';
+        $this->lblMontBase->Width = 120;
         if ($this->blnEditMode) {
             $this->lblMontBase->Text = nf($this->objGuia->MontoBase);
         }
     }
 
+    protected function lblMontDcto_Create() {
+        $this->lblMontDcto = new QLabel($this);
+        $this->lblMontDcto->Name = 'Dscto';
+        $this->lblMontDcto->Width = 120;
+        if ($this->blnEditMode) {
+            $this->lblMontDcto->Name = 'Dscto('.$this->objGuia->PorcentajeDscto.'%)';
+            $this->lblMontDcto->Text = nf($this->objGuia->MontoDscto);
+        }
+    }
+
     protected function lblMontIvax_Create() {
         $this->lblMontIvax = new QLabel($this);
-        $this->lblMontIvax->Name = 'Monto IVA';
+        $this->lblMontIvax->Name = 'I.V.A.';
         $this->lblMontIvax->Width = 80;
         if ($this->blnEditMode) {
+            $this->lblMontIvax->Name = 'IVA('.$this->objGuia->PorcentajeIva.'%)';
             $this->lblMontIvax->Text = nf($this->objGuia->MontoIva);
         }
     }
@@ -1297,13 +1359,16 @@ class CargarGuia extends FormularioBaseKaizen {
             $arrParaTari['strEstaUsua'] = $this->objUsuario->CodiEsta;
             $arrParaTari['decSgroClie'] = $this->objClieTari->PorcentajeSeguro;
             $arrParaTari['objTariGuia'] = $objTarifa;
+            $arrParaTari['decPorcDcto'] = $this->txtPorcDcto->Text;
 
             $arrValoTari = calcularTarifaParcialPmn($arrParaTari);
 
             $blnTodoOkey = $arrValoTari['blnTodoOkey'];
             $strMensUsua = $arrValoTari['strMensUsua'];
             $dblMontBase = $arrValoTari['dblMontBase'];
+            $decMontDcto = $arrValoTari['decMontDcto'];
             $dblFranPost = $arrValoTari['dblFranPost'];
+            t('El Franqueo Postal que regresa a la creacion de la guia es: '.nfp($dblFranPost));
             $dblMontDiva = $arrValoTari['dblMontDiva'];
             $dblMontSgro = $arrValoTari['dblMontSgro'];
             $dblMontTota = $arrValoTari['dblMontTota'];
@@ -1312,6 +1377,7 @@ class CargarGuia extends FormularioBaseKaizen {
             $this->decPorcIvax = $arrValoTari['dblPorcDiva'];
 
             $this->lblMontBase->Text = nfp($dblMontBase);
+            $this->lblMontDcto->Text = nfp($decMontDcto);
             $this->lblMontFran->Text = nfp($dblFranPost);
             $this->lblMontSegu->Text = nfp($dblMontSgro);
             $this->lblMontIvax->Text = nfp($dblMontDiva);
@@ -1378,6 +1444,9 @@ class CargarGuia extends FormularioBaseKaizen {
         $this->objGuia->Observacion        = '';
         $this->objGuia->TipoDocumentoId    = "V";
         $this->objGuia->CedulaRif          = DejarNumerosVJGuion($this->txtNumeCedu->Text);
+        $this->objGuia->PorcentajeDscto    = $this->txtPorcDcto->Text;
+        $this->objGuia->MontoDscto         = str_replace(",", '', $this->lblMontDcto->Text);
+        $this->objGuia->ConsiderarDscto    = (int)$this->chkConsDcto->Checked;
 
         if (!$this->objGuia->CobroCod) {
             $this->objGuia->CobroCod = null;
@@ -1840,6 +1909,13 @@ class CargarGuia extends FormularioBaseKaizen {
             if ($objReceDest->SucursalId != $strSucuDest) {
                 $strTextMens = 'La Receptoría <b>No pertenece a la Sucursal '.$strSucuDest.'</b>';
                 $this->enviarMensajeDeError($strTextMens);
+                return false;
+            }
+        }
+        if (strlen($this->txtPorcDcto->Text) > 0) {
+            if ($this->txtPorcDcto->Text > 100) {
+                $strMensErro = 'Porcentaje de Descuento <b>No puede ser mayor a 100</b>';
+                $this->enviarMensajeDeError($strMensErro);
                 return false;
             }
         }

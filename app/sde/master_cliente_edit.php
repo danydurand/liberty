@@ -102,6 +102,8 @@ class MasterClienteEditForm extends FormularioBaseKaizen {
     protected $btnProxSmal;
     protected $btnUltiSmal;
 
+    protected $dtgDctoClie;
+    protected $arrDataGraf;
 
     protected function ClienteSetup() {
         $intCodiClie = QApplication::PathInfo(0);
@@ -195,6 +197,8 @@ class MasterClienteEditForm extends FormularioBaseKaizen {
         $this->txtTiemEmpr_Create();
 
         $this->btnNuevClie_Create();
+        $this->dtgDctoClie_Create();
+
 
         //------------------------
         // Botónes de Navegacion
@@ -281,6 +285,8 @@ class MasterClienteEditForm extends FormularioBaseKaizen {
         $this->btnMasxAcci_Create();
         $this->txtCodiInte->SetFocus();
 
+        $this->datosParaGraficos();
+
         //----------------------------------------------------------------------------------------
         // Unicamente los SuperUsuarios podrán permitir a los Usuarios el uso de la Guia Retorno
         //----------------------------------------------------------------------------------------
@@ -293,6 +299,38 @@ class MasterClienteEditForm extends FormularioBaseKaizen {
         $strTextMens = 'Evite el uso de caracteres especiales (Ej: \\~°#^*+) en <b>los nombres, las direcciones y los teléfonos</b>';
         $this->mensaje($strTextMens,'n','i','',__iINFO__);
 
+    }
+
+    protected function datosParaGraficos() {
+        $intCodiClie = $this->objMasterCliente->CodiClie;
+        $this->arrDataGraf = array();
+        $intAnioActu = date('Y');
+        $intMesxActu = date('m');
+        //t('Consumo de guias del Cliente: '.$this->objMasterCliente->NombClie);
+        for ($i = $intAnioActu-2; $i <= $intAnioActu; $i++) {
+            //t('Procesando el anio: '.$i);
+            $arrDataMesx = array();
+            for ($m = 1; $m <= 12; $m++) {
+                if ($i < $intAnioActu) {
+                    //t('Procesando el mes: '.$m);
+                    $objConsMesx = ConsumoMes::LoadByClienteIdAnioMes($intCodiClie,$i,$m);
+                    $intCantGuia = !is_null($objConsMesx) ? $objConsMesx->CantidadGuias : 0;
+                    //t('CG: '.$intCantGuia);
+                    $arrDataMesx[] = ['value' => $intCantGuia];
+                } else {
+                    if ($m <= $intMesxActu) {
+                        $objConsMesx = ConsumoMes::LoadByClienteIdAnioMes($intCodiClie,$i,$m);
+                        $intCantGuia = !is_null($objConsMesx) ? $objConsMesx->CantidadGuias : 0;
+                        //t('CG: '.$intCantGuia);
+                        $arrDataMesx[] = ['value' => $intCantGuia];
+                    }
+                }
+            }
+            $this->arrDataGraf[] = [
+                'seriesname' => quoted_printable_decode($i),
+                'data'       => $arrDataMesx,
+            ];
+        }
     }
 
     protected function permisosDeDescuentos() {
@@ -509,6 +547,57 @@ class MasterClienteEditForm extends FormularioBaseKaizen {
             QQ::Clause($this->dtgSubcClie->OrderByClause, $this->dtgSubcClie->LimitClause)
         );
     }
+
+
+    protected function dtgDctoClie_Create() {
+
+        $this->dtgDctoClie = new DescuentosDataGrid($this);
+        $this->dtgDctoClie->FontSize = 13;
+        $this->dtgDctoClie->ShowFilter = false;
+
+        $this->dtgDctoClie->CssClass = 'datagrid';
+        $this->dtgDctoClie->AlternateRowStyle->CssClass = 'alternate';
+
+        $this->dtgDctoClie->Paginator = new QPaginator($this->dtgDctoClie);
+        $this->dtgDctoClie->ItemsPerPage = 12; //__FORM_DRAFTS_FORM_LIST_ITEMS_PER_PAGE__;
+
+        $this->dtgDctoClie->SortColumnIndex = 0;
+
+        $this->dtgDctoClie->AddRowAction(new QMouseOverEvent(), new QCssClassAction('selectedStyle'));
+        $this->dtgDctoClie->AddRowAction(new QMouseOutEvent(), new QCssClassAction());
+
+        $this->dtgDctoClie->RowActionParameterHtml = '<?= $_ITEM->Id ?>';
+        //$this->dtgDctoClie->AddRowAction(new QClickEvent(), new QAjaxAction('dtgChofSucuRow_Click'));
+
+        $colNumeAnio = $this->dtgDctoClie->MetaAddColumn('Anio');
+        $colNumeAnio->Name = 'Año';
+        $colNumeDmes = $this->dtgDctoClie->MetaAddColumn('Mes');
+        $colNumeDmes->Name = 'Mes';
+        $colNumeFact = $this->dtgDctoClie->MetaAddColumn('Factura');
+        $colNumeFact->Name = 'Factura';
+        $colMontDcto = $this->dtgDctoClie->MetaAddColumn('Descuento');
+        $colMontDcto->Name = 'Descuento';
+        $this->dtgDctoClie->SetDataBinder('dtgDctoClie_Binder');
+
+    }
+
+    protected function dtgDctoClie_Binder(){
+        $objClauWher   = QQ::Clause();
+        $objClauWher[] = QQ::Equal(QQN::Descuentos()->ClienteId,$this->objMasterCliente->CodiClie);
+
+        $arrDctoClie   = Descuentos::QueryArray(QQ::AndCondition($objClauWher));
+        $intCantRegi   = count($arrDctoClie);
+        if ($intCantRegi > 10) {
+            $this->dtgDctoClie->TotalItemCount = count($arrDctoClie);
+        }
+
+        // Bind the datasource to the datagrid
+        $this->dtgDctoClie->DataSource = Descuentos::QueryArray(
+            QQ::AndCondition($objClauWher),
+            QQ::Clause($this->dtgDctoClie->OrderByClause, $this->dtgDctoClie->LimitClause)
+        );
+    }
+
 
     protected function txtCodiInte_Create() {
         $this->txtCodiInte = new QTextBox($this);

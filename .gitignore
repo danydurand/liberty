@@ -6,10 +6,9 @@ app/pmn/tmp/
 app/util/api/
 app/util/v1/
 app/util/v2/
-app/viejo/
 app/yokohama/
 includes/error_log/
-includes/app_includes/font
+includes/app_includes/font/
 sql/
 web/
 

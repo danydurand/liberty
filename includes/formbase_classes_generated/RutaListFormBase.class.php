@@ -83,6 +83,7 @@
 			$this->dtgRutas->MetaAddTypeColumn('TipoRuta', 'TipoRutaType');
 			$this->dtgRutas->MetaAddTypeColumn('CodiStat', 'StatusType');
 			$this->dtgRutas->MetaAddColumn('PorcMedi');
+			$this->dtgRutas->MetaAddColumn('DeletedAt');
 
             $this->btnExpoExce_Create();
 

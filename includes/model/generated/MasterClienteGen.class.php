@@ -82,6 +82,12 @@
 	 * @property SdeOperacion $RutaEntregaObject the value for the SdeOperacion object referenced by intRutaEntrega 
 	 * @property EstadisticaDeClientes $EstadisticaDeClientes the value for the EstadisticaDeClientes object that uniquely references this MasterCliente
 	 * @property FechaUltimaGuia $FechaUltimaGuiaAsCliente the value for the FechaUltimaGuia object that uniquely references this MasterCliente
+	 * @property-read ConsumoDia $_ConsumoDiaAsCliente the value for the private _objConsumoDiaAsCliente (Read-Only) if set due to an expansion on the consumo_dia.cliente_id reverse relationship
+	 * @property-read ConsumoDia[] $_ConsumoDiaAsClienteArray the value for the private _objConsumoDiaAsClienteArray (Read-Only) if set due to an ExpandAsArray on the consumo_dia.cliente_id reverse relationship
+	 * @property-read ConsumoMes $_ConsumoMesAsCliente the value for the private _objConsumoMesAsCliente (Read-Only) if set due to an expansion on the consumo_mes.cliente_id reverse relationship
+	 * @property-read ConsumoMes[] $_ConsumoMesAsClienteArray the value for the private _objConsumoMesAsClienteArray (Read-Only) if set due to an ExpandAsArray on the consumo_mes.cliente_id reverse relationship
+	 * @property-read Descuentos $_DescuentosAsCliente the value for the private _objDescuentosAsCliente (Read-Only) if set due to an expansion on the descuentos.cliente_id reverse relationship
+	 * @property-read Descuentos[] $_DescuentosAsClienteArray the value for the private _objDescuentosAsClienteArray (Read-Only) if set due to an ExpandAsArray on the descuentos.cliente_id reverse relationship
 	 * @property-read DestinatarioFrecuente $_DestinatarioFrecuenteAsCliente the value for the private _objDestinatarioFrecuenteAsCliente (Read-Only) if set due to an expansion on the destinatario_frecuente.cliente_id reverse relationship
 	 * @property-read DestinatarioFrecuente[] $_DestinatarioFrecuenteAsClienteArray the value for the private _objDestinatarioFrecuenteAsClienteArray (Read-Only) if set due to an ExpandAsArray on the destinatario_frecuente.cliente_id reverse relationship
 	 * @property-read DspDespacho $_DspDespachoAsCodiClie the value for the private _objDspDespachoAsCodiClie (Read-Only) if set due to an expansion on the dsp_despacho.codi_clie reverse relationship
@@ -605,6 +611,54 @@
 		protected $intProcesoApi;
 		const ProcesoApiDefault = null;
 
+
+		/**
+		 * Private member variable that stores a reference to a single ConsumoDiaAsCliente object
+		 * (of type ConsumoDia), if this MasterCliente object was restored with
+		 * an expansion on the consumo_dia association table.
+		 * @var ConsumoDia _objConsumoDiaAsCliente;
+		 */
+		private $_objConsumoDiaAsCliente;
+
+		/**
+		 * Private member variable that stores a reference to an array of ConsumoDiaAsCliente objects
+		 * (of type ConsumoDia[]), if this MasterCliente object was restored with
+		 * an ExpandAsArray on the consumo_dia association table.
+		 * @var ConsumoDia[] _objConsumoDiaAsClienteArray;
+		 */
+		private $_objConsumoDiaAsClienteArray = null;
+
+		/**
+		 * Private member variable that stores a reference to a single ConsumoMesAsCliente object
+		 * (of type ConsumoMes), if this MasterCliente object was restored with
+		 * an expansion on the consumo_mes association table.
+		 * @var ConsumoMes _objConsumoMesAsCliente;
+		 */
+		private $_objConsumoMesAsCliente;
+
+		/**
+		 * Private member variable that stores a reference to an array of ConsumoMesAsCliente objects
+		 * (of type ConsumoMes[]), if this MasterCliente object was restored with
+		 * an ExpandAsArray on the consumo_mes association table.
+		 * @var ConsumoMes[] _objConsumoMesAsClienteArray;
+		 */
+		private $_objConsumoMesAsClienteArray = null;
+
+		/**
+		 * Private member variable that stores a reference to a single DescuentosAsCliente object
+		 * (of type Descuentos), if this MasterCliente object was restored with
+		 * an expansion on the descuentos association table.
+		 * @var Descuentos _objDescuentosAsCliente;
+		 */
+		private $_objDescuentosAsCliente;
+
+		/**
+		 * Private member variable that stores a reference to an array of DescuentosAsCliente objects
+		 * (of type Descuentos[]), if this MasterCliente object was restored with
+		 * an ExpandAsArray on the descuentos association table.
+		 * @var Descuentos[] _objDescuentosAsClienteArray;
+		 */
+		private $_objDescuentosAsClienteArray = null;
 
 		/**
 		 * Private member variable that stores a reference to a single DestinatarioFrecuenteAsCliente object
@@ -1740,6 +1794,51 @@
 			}
 
 				
+
+			// Check for ConsumoDiaAsCliente Virtual Binding
+			$strAlias = $strAliasPrefix . 'consumodiaascliente__id';
+			$strAliasName = !empty($strColumnAliasArray[$strAlias]) ? $strColumnAliasArray[$strAlias] : $strAlias;
+			$objExpansionNode = (empty($objExpansionAliasArray['consumodiaascliente']) ? null : $objExpansionAliasArray['consumodiaascliente']);
+			$blnExpanded = ($objExpansionNode && $objExpansionNode->ExpandAsArray);
+			if ($blnExpanded && null === $objToReturn->_objConsumoDiaAsClienteArray)
+				$objToReturn->_objConsumoDiaAsClienteArray = array();
+			if (!is_null($objDbRow->GetColumn($strAliasName))) {
+				if ($blnExpanded) {
+					$objToReturn->_objConsumoDiaAsClienteArray[] = ConsumoDia::InstantiateDbRow($objDbRow, $strAliasPrefix . 'consumodiaascliente__', $objExpansionNode, null, $strColumnAliasArray);
+				} elseif (is_null($objToReturn->_objConsumoDiaAsCliente)) {
+					$objToReturn->_objConsumoDiaAsCliente = ConsumoDia::InstantiateDbRow($objDbRow, $strAliasPrefix . 'consumodiaascliente__', $objExpansionNode, null, $strColumnAliasArray);
+				}
+			}
+
+			// Check for ConsumoMesAsCliente Virtual Binding
+			$strAlias = $strAliasPrefix . 'consumomesascliente__id';
+			$strAliasName = !empty($strColumnAliasArray[$strAlias]) ? $strColumnAliasArray[$strAlias] : $strAlias;
+			$objExpansionNode = (empty($objExpansionAliasArray['consumomesascliente']) ? null : $objExpansionAliasArray['consumomesascliente']);
+			$blnExpanded = ($objExpansionNode && $objExpansionNode->ExpandAsArray);
+			if ($blnExpanded && null === $objToReturn->_objConsumoMesAsClienteArray)
+				$objToReturn->_objConsumoMesAsClienteArray = array();
+			if (!is_null($objDbRow->GetColumn($strAliasName))) {
+				if ($blnExpanded) {
+					$objToReturn->_objConsumoMesAsClienteArray[] = ConsumoMes::InstantiateDbRow($objDbRow, $strAliasPrefix . 'consumomesascliente__', $objExpansionNode, null, $strColumnAliasArray);
+				} elseif (is_null($objToReturn->_objConsumoMesAsCliente)) {
+					$objToReturn->_objConsumoMesAsCliente = ConsumoMes::InstantiateDbRow($objDbRow, $strAliasPrefix . 'consumomesascliente__', $objExpansionNode, null, $strColumnAliasArray);
+				}
+			}
+
+			// Check for DescuentosAsCliente Virtual Binding
+			$strAlias = $strAliasPrefix . 'descuentosascliente__id';
+			$strAliasName = !empty($strColumnAliasArray[$strAlias]) ? $strColumnAliasArray[$strAlias] : $strAlias;
+			$objExpansionNode = (empty($objExpansionAliasArray['descuentosascliente']) ? null : $objExpansionAliasArray['descuentosascliente']);
+			$blnExpanded = ($objExpansionNode && $objExpansionNode->ExpandAsArray);
+			if ($blnExpanded && null === $objToReturn->_objDescuentosAsClienteArray)
+				$objToReturn->_objDescuentosAsClienteArray = array();
+			if (!is_null($objDbRow->GetColumn($strAliasName))) {
+				if ($blnExpanded) {
+					$objToReturn->_objDescuentosAsClienteArray[] = Descuentos::InstantiateDbRow($objDbRow, $strAliasPrefix . 'descuentosascliente__', $objExpansionNode, null, $strColumnAliasArray);
+				} elseif (is_null($objToReturn->_objDescuentosAsCliente)) {
+					$objToReturn->_objDescuentosAsCliente = Descuentos::InstantiateDbRow($objDbRow, $strAliasPrefix . 'descuentosascliente__', $objExpansionNode, null, $strColumnAliasArray);
+				}
+			}
 
 			// Check for DestinatarioFrecuenteAsCliente Virtual Binding
 			$strAlias = $strAliasPrefix . 'destinatariofrecuenteascliente__id';
@@ -3421,6 +3520,54 @@
 				// (If restored via a "Many-to" expansion)
 				////////////////////////////
 
+				case '_ConsumoDiaAsCliente':
+					/**
+					 * Gets the value for the private _objConsumoDiaAsCliente (Read-Only)
+					 * if set due to an expansion on the consumo_dia.cliente_id reverse relationship
+					 * @return ConsumoDia
+					 */
+					return $this->_objConsumoDiaAsCliente;
+
+				case '_ConsumoDiaAsClienteArray':
+					/**
+					 * Gets the value for the private _objConsumoDiaAsClienteArray (Read-Only)
+					 * if set due to an ExpandAsArray on the consumo_dia.cliente_id reverse relationship
+					 * @return ConsumoDia[]
+					 */
+					return $this->_objConsumoDiaAsClienteArray;
+
+				case '_ConsumoMesAsCliente':
+					/**
+					 * Gets the value for the private _objConsumoMesAsCliente (Read-Only)
+					 * if set due to an expansion on the consumo_mes.cliente_id reverse relationship
+					 * @return ConsumoMes
+					 */
+					return $this->_objConsumoMesAsCliente;
+
+				case '_ConsumoMesAsClienteArray':
+					/**
+					 * Gets the value for the private _objConsumoMesAsClienteArray (Read-Only)
+					 * if set due to an ExpandAsArray on the consumo_mes.cliente_id reverse relationship
+					 * @return ConsumoMes[]
+					 */
+					return $this->_objConsumoMesAsClienteArray;
+
+				case '_DescuentosAsCliente':
+					/**
+					 * Gets the value for the private _objDescuentosAsCliente (Read-Only)
+					 * if set due to an expansion on the descuentos.cliente_id reverse relationship
+					 * @return Descuentos
+					 */
+					return $this->_objDescuentosAsCliente;
+
+				case '_DescuentosAsClienteArray':
+					/**
+					 * Gets the value for the private _objDescuentosAsClienteArray (Read-Only)
+					 * if set due to an ExpandAsArray on the descuentos.cliente_id reverse relationship
+					 * @return Descuentos[]
+					 */
+					return $this->_objDescuentosAsClienteArray;
+
 				case '_DestinatarioFrecuenteAsCliente':
 					/**
 					 * Gets the value for the private _objDestinatarioFrecuenteAsCliente (Read-Only)
@@ -4656,6 +4803,15 @@
 		 */
 		public function TablasRelacionadas() {
 			$arrTablRela = array();
+			if ($this->CountConsumoDiasAsCliente()) {
+				$arrTablRela[] = 'consumo_dia';
+			}
+			if ($this->CountConsumoMesesAsCliente()) {
+				$arrTablRela[] = 'consumo_mes';
+			}
+			if ($this->CountDescuentosesAsCliente()) {
+				$arrTablRela[] = 'descuentos';
+			}
 			if ($this->CountDestinatarioFrecuentesAsCliente()) {
 				$arrTablRela[] = 'destinatario_frecuente';
 			}
@@ -4691,6 +4847,453 @@
 		// ASSOCIATED OBJECTS' METHODS
 		///////////////////////////////
 
+
+
+		// Related Objects' Methods for ConsumoDiaAsCliente
+		//-------------------------------------------------------------------
+
+		/**
+		 * Gets all associated ConsumoDiasAsCliente as an array of ConsumoDia objects
+		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
+		 * @return ConsumoDia[]
+		*/
+		public function GetConsumoDiaAsClienteArray($objOptionalClauses = null) {
+			if ((is_null($this->intCodiClie)))
+				return array();
+
+			try {
+				return ConsumoDia::LoadArrayByClienteId($this->intCodiClie, $objOptionalClauses);
+			} catch (QCallerException $objExc) {
+				$objExc->IncrementOffset();
+				throw $objExc;
+			}
+		}
+
+		/**
+		 * Counts all associated ConsumoDiasAsCliente
+		 * @return int
+		*/
+		public function CountConsumoDiasAsCliente() {
+			if ((is_null($this->intCodiClie)))
+				return 0;
+
+			return ConsumoDia::CountByClienteId($this->intCodiClie);
+		}
+
+		/**
+		 * Associates a ConsumoDiaAsCliente
+		 * @param ConsumoDia $objConsumoDia
+		 * @return void
+		*/
+		public function AssociateConsumoDiaAsCliente(ConsumoDia $objConsumoDia) {
+			if ((is_null($this->intCodiClie)))
+				throw new QUndefinedPrimaryKeyException('Unable to call AssociateConsumoDiaAsCliente on this unsaved MasterCliente.');
+			if ((is_null($objConsumoDia->Id)))
+				throw new QUndefinedPrimaryKeyException('Unable to call AssociateConsumoDiaAsCliente on this MasterCliente with an unsaved ConsumoDia.');
+
+			// Get the Database Object for this Class
+			$objDatabase = MasterCliente::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				UPDATE
+					`consumo_dia`
+				SET
+					`cliente_id` = ' . $objDatabase->SqlVariable($this->intCodiClie) . '
+				WHERE
+					`id` = ' . $objDatabase->SqlVariable($objConsumoDia->Id) . '
+			');
+		}
+
+		/**
+		 * Unassociates a ConsumoDiaAsCliente
+		 * @param ConsumoDia $objConsumoDia
+		 * @return void
+		*/
+		public function UnassociateConsumoDiaAsCliente(ConsumoDia $objConsumoDia) {
+			if ((is_null($this->intCodiClie)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateConsumoDiaAsCliente on this unsaved MasterCliente.');
+			if ((is_null($objConsumoDia->Id)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateConsumoDiaAsCliente on this MasterCliente with an unsaved ConsumoDia.');
+
+			// Get the Database Object for this Class
+			$objDatabase = MasterCliente::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				UPDATE
+					`consumo_dia`
+				SET
+					`cliente_id` = null
+				WHERE
+					`id` = ' . $objDatabase->SqlVariable($objConsumoDia->Id) . ' AND
+					`cliente_id` = ' . $objDatabase->SqlVariable($this->intCodiClie) . '
+			');
+		}
+
+		/**
+		 * Unassociates all ConsumoDiasAsCliente
+		 * @return void
+		*/
+		public function UnassociateAllConsumoDiasAsCliente() {
+			if ((is_null($this->intCodiClie)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateConsumoDiaAsCliente on this unsaved MasterCliente.');
+
+			// Get the Database Object for this Class
+			$objDatabase = MasterCliente::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				UPDATE
+					`consumo_dia`
+				SET
+					`cliente_id` = null
+				WHERE
+					`cliente_id` = ' . $objDatabase->SqlVariable($this->intCodiClie) . '
+			');
+		}
+
+		/**
+		 * Deletes an associated ConsumoDiaAsCliente
+		 * @param ConsumoDia $objConsumoDia
+		 * @return void
+		*/
+		public function DeleteAssociatedConsumoDiaAsCliente(ConsumoDia $objConsumoDia) {
+			if ((is_null($this->intCodiClie)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateConsumoDiaAsCliente on this unsaved MasterCliente.');
+			if ((is_null($objConsumoDia->Id)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateConsumoDiaAsCliente on this MasterCliente with an unsaved ConsumoDia.');
+
+			// Get the Database Object for this Class
+			$objDatabase = MasterCliente::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				DELETE FROM
+					`consumo_dia`
+				WHERE
+					`id` = ' . $objDatabase->SqlVariable($objConsumoDia->Id) . ' AND
+					`cliente_id` = ' . $objDatabase->SqlVariable($this->intCodiClie) . '
+			');
+		}
+
+		/**
+		 * Deletes all associated ConsumoDiasAsCliente
+		 * @return void
+		*/
+		public function DeleteAllConsumoDiasAsCliente() {
+			if ((is_null($this->intCodiClie)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateConsumoDiaAsCliente on this unsaved MasterCliente.');
+
+			// Get the Database Object for this Class
+			$objDatabase = MasterCliente::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				DELETE FROM
+					`consumo_dia`
+				WHERE
+					`cliente_id` = ' . $objDatabase->SqlVariable($this->intCodiClie) . '
+			');
+		}
+
+
+		// Related Objects' Methods for ConsumoMesAsCliente
+		//-------------------------------------------------------------------
+
+		/**
+		 * Gets all associated ConsumoMesesAsCliente as an array of ConsumoMes objects
+		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
+		 * @return ConsumoMes[]
+		*/
+		public function GetConsumoMesAsClienteArray($objOptionalClauses = null) {
+			if ((is_null($this->intCodiClie)))
+				return array();
+
+			try {
+				return ConsumoMes::LoadArrayByClienteId($this->intCodiClie, $objOptionalClauses);
+			} catch (QCallerException $objExc) {
+				$objExc->IncrementOffset();
+				throw $objExc;
+			}
+		}
+
+		/**
+		 * Counts all associated ConsumoMesesAsCliente
+		 * @return int
+		*/
+		public function CountConsumoMesesAsCliente() {
+			if ((is_null($this->intCodiClie)))
+				return 0;
+
+			return ConsumoMes::CountByClienteId($this->intCodiClie);
+		}
+
+		/**
+		 * Associates a ConsumoMesAsCliente
+		 * @param ConsumoMes $objConsumoMes
+		 * @return void
+		*/
+		public function AssociateConsumoMesAsCliente(ConsumoMes $objConsumoMes) {
+			if ((is_null($this->intCodiClie)))
+				throw new QUndefinedPrimaryKeyException('Unable to call AssociateConsumoMesAsCliente on this unsaved MasterCliente.');
+			if ((is_null($objConsumoMes->Id)))
+				throw new QUndefinedPrimaryKeyException('Unable to call AssociateConsumoMesAsCliente on this MasterCliente with an unsaved ConsumoMes.');
+
+			// Get the Database Object for this Class
+			$objDatabase = MasterCliente::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				UPDATE
+					`consumo_mes`
+				SET
+					`cliente_id` = ' . $objDatabase->SqlVariable($this->intCodiClie) . '
+				WHERE
+					`id` = ' . $objDatabase->SqlVariable($objConsumoMes->Id) . '
+			');
+		}
+
+		/**
+		 * Unassociates a ConsumoMesAsCliente
+		 * @param ConsumoMes $objConsumoMes
+		 * @return void
+		*/
+		public function UnassociateConsumoMesAsCliente(ConsumoMes $objConsumoMes) {
+			if ((is_null($this->intCodiClie)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateConsumoMesAsCliente on this unsaved MasterCliente.');
+			if ((is_null($objConsumoMes->Id)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateConsumoMesAsCliente on this MasterCliente with an unsaved ConsumoMes.');
+
+			// Get the Database Object for this Class
+			$objDatabase = MasterCliente::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				UPDATE
+					`consumo_mes`
+				SET
+					`cliente_id` = null
+				WHERE
+					`id` = ' . $objDatabase->SqlVariable($objConsumoMes->Id) . ' AND
+					`cliente_id` = ' . $objDatabase->SqlVariable($this->intCodiClie) . '
+			');
+		}
+
+		/**
+		 * Unassociates all ConsumoMesesAsCliente
+		 * @return void
+		*/
+		public function UnassociateAllConsumoMesesAsCliente() {
+			if ((is_null($this->intCodiClie)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateConsumoMesAsCliente on this unsaved MasterCliente.');
+
+			// Get the Database Object for this Class
+			$objDatabase = MasterCliente::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				UPDATE
+					`consumo_mes`
+				SET
+					`cliente_id` = null
+				WHERE
+					`cliente_id` = ' . $objDatabase->SqlVariable($this->intCodiClie) . '
+			');
+		}
+
+		/**
+		 * Deletes an associated ConsumoMesAsCliente
+		 * @param ConsumoMes $objConsumoMes
+		 * @return void
+		*/
+		public function DeleteAssociatedConsumoMesAsCliente(ConsumoMes $objConsumoMes) {
+			if ((is_null($this->intCodiClie)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateConsumoMesAsCliente on this unsaved MasterCliente.');
+			if ((is_null($objConsumoMes->Id)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateConsumoMesAsCliente on this MasterCliente with an unsaved ConsumoMes.');
+
+			// Get the Database Object for this Class
+			$objDatabase = MasterCliente::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				DELETE FROM
+					`consumo_mes`
+				WHERE
+					`id` = ' . $objDatabase->SqlVariable($objConsumoMes->Id) . ' AND
+					`cliente_id` = ' . $objDatabase->SqlVariable($this->intCodiClie) . '
+			');
+		}
+
+		/**
+		 * Deletes all associated ConsumoMesesAsCliente
+		 * @return void
+		*/
+		public function DeleteAllConsumoMesesAsCliente() {
+			if ((is_null($this->intCodiClie)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateConsumoMesAsCliente on this unsaved MasterCliente.');
+
+			// Get the Database Object for this Class
+			$objDatabase = MasterCliente::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				DELETE FROM
+					`consumo_mes`
+				WHERE
+					`cliente_id` = ' . $objDatabase->SqlVariable($this->intCodiClie) . '
+			');
+		}
+
+
+		// Related Objects' Methods for DescuentosAsCliente
+		//-------------------------------------------------------------------
+
+		/**
+		 * Gets all associated DescuentosesAsCliente as an array of Descuentos objects
+		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
+		 * @return Descuentos[]
+		*/
+		public function GetDescuentosAsClienteArray($objOptionalClauses = null) {
+			if ((is_null($this->intCodiClie)))
+				return array();
+
+			try {
+				return Descuentos::LoadArrayByClienteId($this->intCodiClie, $objOptionalClauses);
+			} catch (QCallerException $objExc) {
+				$objExc->IncrementOffset();
+				throw $objExc;
+			}
+		}
+
+		/**
+		 * Counts all associated DescuentosesAsCliente
+		 * @return int
+		*/
+		public function CountDescuentosesAsCliente() {
+			if ((is_null($this->intCodiClie)))
+				return 0;
+
+			return Descuentos::CountByClienteId($this->intCodiClie);
+		}
+
+		/**
+		 * Associates a DescuentosAsCliente
+		 * @param Descuentos $objDescuentos
+		 * @return void
+		*/
+		public function AssociateDescuentosAsCliente(Descuentos $objDescuentos) {
+			if ((is_null($this->intCodiClie)))
+				throw new QUndefinedPrimaryKeyException('Unable to call AssociateDescuentosAsCliente on this unsaved MasterCliente.');
+			if ((is_null($objDescuentos->Id)))
+				throw new QUndefinedPrimaryKeyException('Unable to call AssociateDescuentosAsCliente on this MasterCliente with an unsaved Descuentos.');
+
+			// Get the Database Object for this Class
+			$objDatabase = MasterCliente::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				UPDATE
+					`descuentos`
+				SET
+					`cliente_id` = ' . $objDatabase->SqlVariable($this->intCodiClie) . '
+				WHERE
+					`id` = ' . $objDatabase->SqlVariable($objDescuentos->Id) . '
+			');
+		}
+
+		/**
+		 * Unassociates a DescuentosAsCliente
+		 * @param Descuentos $objDescuentos
+		 * @return void
+		*/
+		public function UnassociateDescuentosAsCliente(Descuentos $objDescuentos) {
+			if ((is_null($this->intCodiClie)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateDescuentosAsCliente on this unsaved MasterCliente.');
+			if ((is_null($objDescuentos->Id)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateDescuentosAsCliente on this MasterCliente with an unsaved Descuentos.');
+
+			// Get the Database Object for this Class
+			$objDatabase = MasterCliente::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				UPDATE
+					`descuentos`
+				SET
+					`cliente_id` = null
+				WHERE
+					`id` = ' . $objDatabase->SqlVariable($objDescuentos->Id) . ' AND
+					`cliente_id` = ' . $objDatabase->SqlVariable($this->intCodiClie) . '
+			');
+		}
+
+		/**
+		 * Unassociates all DescuentosesAsCliente
+		 * @return void
+		*/
+		public function UnassociateAllDescuentosesAsCliente() {
+			if ((is_null($this->intCodiClie)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateDescuentosAsCliente on this unsaved MasterCliente.');
+
+			// Get the Database Object for this Class
+			$objDatabase = MasterCliente::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				UPDATE
+					`descuentos`
+				SET
+					`cliente_id` = null
+				WHERE
+					`cliente_id` = ' . $objDatabase->SqlVariable($this->intCodiClie) . '
+			');
+		}
+
+		/**
+		 * Deletes an associated DescuentosAsCliente
+		 * @param Descuentos $objDescuentos
+		 * @return void
+		*/
+		public function DeleteAssociatedDescuentosAsCliente(Descuentos $objDescuentos) {
+			if ((is_null($this->intCodiClie)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateDescuentosAsCliente on this unsaved MasterCliente.');
+			if ((is_null($objDescuentos->Id)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateDescuentosAsCliente on this MasterCliente with an unsaved Descuentos.');
+
+			// Get the Database Object for this Class
+			$objDatabase = MasterCliente::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				DELETE FROM
+					`descuentos`
+				WHERE
+					`id` = ' . $objDatabase->SqlVariable($objDescuentos->Id) . ' AND
+					`cliente_id` = ' . $objDatabase->SqlVariable($this->intCodiClie) . '
+			');
+		}
+
+		/**
+		 * Deletes all associated DescuentosesAsCliente
+		 * @return void
+		*/
+		public function DeleteAllDescuentosesAsCliente() {
+			if ((is_null($this->intCodiClie)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateDescuentosAsCliente on this unsaved MasterCliente.');
+
+			// Get the Database Object for this Class
+			$objDatabase = MasterCliente::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				DELETE FROM
+					`descuentos`
+				WHERE
+					`cliente_id` = ' . $objDatabase->SqlVariable($this->intCodiClie) . '
+			');
+		}
 
 
 		// Related Objects' Methods for DestinatarioFrecuenteAsCliente
@@ -6510,6 +7113,9 @@
      * @property-read QQNode $ProcesoApi
      *
      *
+     * @property-read QQReverseReferenceNodeConsumoDia $ConsumoDiaAsCliente
+     * @property-read QQReverseReferenceNodeConsumoMes $ConsumoMesAsCliente
+     * @property-read QQReverseReferenceNodeDescuentos $DescuentosAsCliente
      * @property-read QQReverseReferenceNodeDestinatarioFrecuente $DestinatarioFrecuenteAsCliente
      * @property-read QQReverseReferenceNodeDspDespacho $DspDespachoAsCodiClie
      * @property-read QQReverseReferenceNodeEstadisticaDeClientes $EstadisticaDeClientes
@@ -6660,6 +7266,12 @@
 					return new QQNode('guia_retorno', 'GuiaRetorno', 'Bit', $this);
 				case 'ProcesoApi':
 					return new QQNode('proceso_api', 'ProcesoApi', 'Integer', $this);
+				case 'ConsumoDiaAsCliente':
+					return new QQReverseReferenceNodeConsumoDia($this, 'consumodiaascliente', 'reverse_reference', 'cliente_id', 'ConsumoDiaAsCliente');
+				case 'ConsumoMesAsCliente':
+					return new QQReverseReferenceNodeConsumoMes($this, 'consumomesascliente', 'reverse_reference', 'cliente_id', 'ConsumoMesAsCliente');
+				case 'DescuentosAsCliente':
+					return new QQReverseReferenceNodeDescuentos($this, 'descuentosascliente', 'reverse_reference', 'cliente_id', 'DescuentosAsCliente');
 				case 'DestinatarioFrecuenteAsCliente':
 					return new QQReverseReferenceNodeDestinatarioFrecuente($this, 'destinatariofrecuenteascliente', 'reverse_reference', 'cliente_id', 'DestinatarioFrecuenteAsCliente');
 				case 'DspDespachoAsCodiClie':
@@ -6764,6 +7376,9 @@
      * @property-read QQNode $ProcesoApi
      *
      *
+     * @property-read QQReverseReferenceNodeConsumoDia $ConsumoDiaAsCliente
+     * @property-read QQReverseReferenceNodeConsumoMes $ConsumoMesAsCliente
+     * @property-read QQReverseReferenceNodeDescuentos $DescuentosAsCliente
      * @property-read QQReverseReferenceNodeDestinatarioFrecuente $DestinatarioFrecuenteAsCliente
      * @property-read QQReverseReferenceNodeDspDespacho $DspDespachoAsCodiClie
      * @property-read QQReverseReferenceNodeEstadisticaDeClientes $EstadisticaDeClientes
@@ -6914,6 +7529,12 @@
 					return new QQNode('guia_retorno', 'GuiaRetorno', 'boolean', $this);
 				case 'ProcesoApi':
 					return new QQNode('proceso_api', 'ProcesoApi', 'integer', $this);
+				case 'ConsumoDiaAsCliente':
+					return new QQReverseReferenceNodeConsumoDia($this, 'consumodiaascliente', 'reverse_reference', 'cliente_id', 'ConsumoDiaAsCliente');
+				case 'ConsumoMesAsCliente':
+					return new QQReverseReferenceNodeConsumoMes($this, 'consumomesascliente', 'reverse_reference', 'cliente_id', 'ConsumoMesAsCliente');
+				case 'DescuentosAsCliente':
+					return new QQReverseReferenceNodeDescuentos($this, 'descuentosascliente', 'reverse_reference', 'cliente_id', 'DescuentosAsCliente');
 				case 'DestinatarioFrecuenteAsCliente':
 					return new QQReverseReferenceNodeDestinatarioFrecuente($this, 'destinatariofrecuenteascliente', 'reverse_reference', 'cliente_id', 'DestinatarioFrecuenteAsCliente');
 				case 'DspDespachoAsCodiClie':

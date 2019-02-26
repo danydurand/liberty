@@ -2,10 +2,8 @@
 	require_once(__APP_INCLUDES__ . '/funciones_liberty.php');
 	require_once(__APP_INCLUDES__ . '/funciones_kaizen.php');
     require_once(__APP_INCLUDES__ . '/imagenes_standard.php');
-    // require_once(__APP_INCLUDES__ . '/mimemail.inc.php');
+    require_once(__APP_INCLUDES__ . '/fc/fusioncharts.php');
     require_once(__LOG_DIRECTORY__.'/vendor/autoload.php');
-
-    //	require_once('vendor/autoload.php');
 
 	QApplicationBase::$ClassFile['exportardatos'] = __APP_INCLUDES__ . '/classes/ExportarDatos.class.php';
 	/*

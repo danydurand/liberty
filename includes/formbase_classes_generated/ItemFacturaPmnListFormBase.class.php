@@ -78,7 +78,7 @@
 			// can traverse down QQN::item_factura_pmn() to display fields that are down the hierarchy)
 			$this->dtgItemFacturaPmns->MetaAddColumn('Id');
 			$this->dtgItemFacturaPmns->MetaAddColumn(QQN::ItemFacturaPmn()->Factura);
-			$this->dtgItemFacturaPmns->MetaAddColumn('GuiaId');
+			$this->dtgItemFacturaPmns->MetaAddColumn(QQN::ItemFacturaPmn()->Guia);
 			$this->dtgItemFacturaPmns->MetaAddColumn('MontoBase');
 			$this->dtgItemFacturaPmns->MetaAddColumn('PorcentajeDscto');
 			$this->dtgItemFacturaPmns->MetaAddColumn('MontoDscto');

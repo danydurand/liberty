@@ -86,7 +86,6 @@
 			$this->dtgGuias->MetaAddColumn('NombRemi');
 			$this->dtgGuias->MetaAddColumn('DireRemi');
 			$this->dtgGuias->MetaAddColumn('TeleRemi');
-			$this->dtgGuias->MetaAddColumn('TeleRem2');
 			$this->dtgGuias->MetaAddColumn('NombDest');
 			$this->dtgGuias->MetaAddColumn('DireDest');
 			$this->dtgGuias->MetaAddColumn('TeleDest');
@@ -101,11 +100,14 @@
 			$this->dtgGuias->MetaAddColumn('MontoGas');
 			$this->dtgGuias->MetaAddColumn('Asegurado');
 			$this->dtgGuias->MetaAddColumn('PorcentajeSeguro');
+			$this->dtgGuias->MetaAddColumn('PorcentajeDscto');
 			$this->dtgGuias->MetaAddColumn('MontoSeguro');
 			$this->dtgGuias->MetaAddColumn('MontoBase');
 			$this->dtgGuias->MetaAddColumn('MontoFranqueo');
+			$this->dtgGuias->MetaAddColumn('MontoDscto');
 			$this->dtgGuias->MetaAddColumn('MontoOtros');
 			$this->dtgGuias->MetaAddColumn('MontoTotal');
+			$this->dtgGuias->MetaAddColumn('ConsiderarDscto');
 			$this->dtgGuias->MetaAddColumn('EntregadoA');
 			$this->dtgGuias->MetaAddColumn('FechaEntrega');
 			$this->dtgGuias->MetaAddColumn('HoraEntrega');

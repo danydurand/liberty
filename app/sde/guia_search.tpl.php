@@ -52,9 +52,11 @@ require(__APP_INCLUDES__ . '/header.inc.php');
                     <?php $this->txtUsuaPodx->RenderWithName(); ?>
                     <?php $this->lstCodiCkpt->RenderWithName(); ?>
                     <?php $this->txtSepaColu->RenderWithName(); ?>
+                    <?php $this->chkConxDesc->RenderWithName(); ?>
                     <?php $this->chkMostQuer->RenderWithName(); ?>
                 </div>
             </div>
         </div>
     </div>
 <?php require(__APP_INCLUDES__ .'/footer.inc.php'); ?>
+

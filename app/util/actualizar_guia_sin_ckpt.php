@@ -24,7 +24,7 @@ fputs($mixManeArch,"\n====================\n\n");
 $strCadeSqlx  = "select nume_guia, fech_guia, codi_ckpt, anulada as guia_anul ";
 $strCadeSqlx .= "   from guia ";
 $strCadeSqlx .= "  where fech_guia >= '2018-04-01' ";
-$strCadeSqlx .= "    and length(codi_ckpt) = 0 ";
+$strCadeSqlx .= "    and (length(codi_ckpt) = 0 or isnull(codi_ckpt)) ";
 $strCadeSqlx .= "    and sistema_id = 'con'";
 $objResuChec  = $objDatabase->Query($strCadeSqlx);
 $intContBuen  = 0;

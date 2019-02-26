@@ -1,44 +1,39 @@
 <?php
 	/**
-	 * The abstract ItemFacturaPmnGen class defined here is
+	 * The abstract DescuentosGen class defined here is
 	 * code-generated and contains all the basic CRUD-type functionality as well as
 	 * basic methods to handle relationships and index-based loading.
 	 *
-	 * To use, you should use the ItemFacturaPmn subclass which
-	 * extends this ItemFacturaPmnGen class.
+	 * To use, you should use the Descuentos subclass which
+	 * extends this DescuentosGen class.
 	 *
 	 * Because subsequent re-code generations will overwrite any changes to this
 	 * file, you should leave this file unaltered to prevent yourself from losing
 	 * any information or code changes.  All customizations should be done by
 	 * overriding existing or implementing new methods, properties and variables
-	 * in the ItemFacturaPmn class.
+	 * in the Descuentos class.
 	 *
 	 * @package My QCubed Application
 	 * @subpackage GeneratedDataObjects
 	 * @property-read integer $Id the value for intId (Read-Only PK)
-	 * @property integer $FacturaId the value for intFacturaId (Not Null)
-	 * @property string $GuiaId the value for strGuiaId (Not Null)
-	 * @property double $MontoBase the value for fltMontoBase (Not Null)
-	 * @property double $PorcentajeDscto the value for fltPorcentajeDscto (Not Null)
-	 * @property double $MontoDscto the value for fltMontoDscto (Not Null)
-	 * @property double $MontoFranqueo the value for fltMontoFranqueo (Not Null)
-	 * @property double $PorcentajeIva the value for fltPorcentajeIva (Not Null)
-	 * @property double $MontoIva the value for fltMontoIva (Not Null)
-	 * @property double $MontoSeguro the value for fltMontoSeguro (Not Null)
-	 * @property double $MontoOtros the value for fltMontoOtros (Not Null)
-	 * @property double $MontoTotal the value for fltMontoTotal (Not Null)
-	 * @property FacturaPmn $Factura the value for the FacturaPmn object referenced by intFacturaId (Not Null)
-	 * @property Guia $Guia the value for the Guia object referenced by strGuiaId (Not Null)
+	 * @property integer $ClienteId the value for intClienteId (Not Null)
+	 * @property integer $Anio the value for intAnio (Not Null)
+	 * @property integer $Mes the value for intMes (Not Null)
+	 * @property double $Descuento the value for fltDescuento (Not Null)
+	 * @property integer $Factura the value for intFactura (Not Null)
+	 * @property QDateTime $CreatedAt the value for dttCreatedAt 
+	 * @property QDateTime $UpdatedAt the value for dttUpdatedAt 
+	 * @property MasterCliente $Cliente the value for the MasterCliente object referenced by intClienteId (Not Null)
 	 * @property-read boolean $__Restored whether or not this object was restored from the database (as opposed to created new)
 	 */
-	class ItemFacturaPmnGen extends QBaseClass implements IteratorAggregate {
+	class DescuentosGen extends QBaseClass implements IteratorAggregate {
 
 		///////////////////////////////////////////////////////////////////////
 		// PROTECTED MEMBER VARIABLES and TEXT FIELD MAXLENGTHS (if applicable)
 		///////////////////////////////////////////////////////////////////////
 
 		/**
-		 * Protected member variable that maps to the database PK Identity column item_factura_pmn.id
+		 * Protected member variable that maps to the database PK Identity column descuentos.id
 		 * @var integer intId
 		 */
 		protected $intId;
@@ -46,92 +41,59 @@
 
 
 		/**
-		 * Protected member variable that maps to the database column item_factura_pmn.factura_id
-		 * @var integer intFacturaId
+		 * Protected member variable that maps to the database column descuentos.cliente_id
+		 * @var integer intClienteId
 		 */
-		protected $intFacturaId;
-		const FacturaIdDefault = null;
+		protected $intClienteId;
+		const ClienteIdDefault = null;
 
 
 		/**
-		 * Protected member variable that maps to the database column item_factura_pmn.guia_id
-		 * @var string strGuiaId
+		 * Protected member variable that maps to the database column descuentos.anio
+		 * @var integer intAnio
 		 */
-		protected $strGuiaId;
-		const GuiaIdMaxLength = 10;
-		const GuiaIdDefault = null;
+		protected $intAnio;
+		const AnioDefault = null;
 
 
 		/**
-		 * Protected member variable that maps to the database column item_factura_pmn.monto_base
-		 * @var double fltMontoBase
+		 * Protected member variable that maps to the database column descuentos.mes
+		 * @var integer intMes
 		 */
-		protected $fltMontoBase;
-		const MontoBaseDefault = 0;
+		protected $intMes;
+		const MesDefault = null;
 
 
 		/**
-		 * Protected member variable that maps to the database column item_factura_pmn.porcentaje_dscto
-		 * @var double fltPorcentajeDscto
+		 * Protected member variable that maps to the database column descuentos.descuento
+		 * @var double fltDescuento
 		 */
-		protected $fltPorcentajeDscto;
-		const PorcentajeDsctoDefault = 0;
+		protected $fltDescuento;
+		const DescuentoDefault = null;
 
 
 		/**
-		 * Protected member variable that maps to the database column item_factura_pmn.monto_dscto
-		 * @var double fltMontoDscto
+		 * Protected member variable that maps to the database column descuentos.factura
+		 * @var integer intFactura
 		 */
-		protected $fltMontoDscto;
-		const MontoDsctoDefault = 0;
+		protected $intFactura;
+		const FacturaDefault = null;
 
 
 		/**
-		 * Protected member variable that maps to the database column item_factura_pmn.monto_franqueo
-		 * @var double fltMontoFranqueo
+		 * Protected member variable that maps to the database column descuentos.created_at
+		 * @var QDateTime dttCreatedAt
 		 */
-		protected $fltMontoFranqueo;
-		const MontoFranqueoDefault = 0;
+		protected $dttCreatedAt;
+		const CreatedAtDefault = null;
 
 
 		/**
-		 * Protected member variable that maps to the database column item_factura_pmn.porcentaje_iva
-		 * @var double fltPorcentajeIva
+		 * Protected member variable that maps to the database column descuentos.updated_at
+		 * @var QDateTime dttUpdatedAt
 		 */
-		protected $fltPorcentajeIva;
-		const PorcentajeIvaDefault = 0;
-
-
-		/**
-		 * Protected member variable that maps to the database column item_factura_pmn.monto_iva
-		 * @var double fltMontoIva
-		 */
-		protected $fltMontoIva;
-		const MontoIvaDefault = 0;
-
-
-		/**
-		 * Protected member variable that maps to the database column item_factura_pmn.monto_seguro
-		 * @var double fltMontoSeguro
-		 */
-		protected $fltMontoSeguro;
-		const MontoSeguroDefault = 0;
-
-
-		/**
-		 * Protected member variable that maps to the database column item_factura_pmn.monto_otros
-		 * @var double fltMontoOtros
-		 */
-		protected $fltMontoOtros;
-		const MontoOtrosDefault = 0;
-
-
-		/**
-		 * Protected member variable that maps to the database column item_factura_pmn.monto_total
-		 * @var double fltMontoTotal
-		 */
-		protected $fltMontoTotal;
-		const MontoTotalDefault = 0;
+		protected $dttUpdatedAt;
+		const UpdatedAtDefault = null;
 
 
 		/**
@@ -158,23 +120,13 @@
 
 		/**
 		 * Protected member variable that contains the object pointed by the reference
-		 * in the database column item_factura_pmn.factura_id.
+		 * in the database column descuentos.cliente_id.
 		 *
-		 * NOTE: Always use the Factura property getter to correctly retrieve this FacturaPmn object.
+		 * NOTE: Always use the Cliente property getter to correctly retrieve this MasterCliente object.
 		 * (Because this class implements late binding, this variable reference MAY be null.)
-		 * @var FacturaPmn objFactura
+		 * @var MasterCliente objCliente
 		 */
-		protected $objFactura;
-
-		/**
-		 * Protected member variable that contains the object pointed by the reference
-		 * in the database column item_factura_pmn.guia_id.
-		 *
-		 * NOTE: Always use the Guia property getter to correctly retrieve this Guia object.
-		 * (Because this class implements late binding, this variable reference MAY be null.)
-		 * @var Guia objGuia
-		 */
-		protected $objGuia;
+		protected $objCliente;
 
 
 
@@ -183,18 +135,14 @@
 		 */
 		public function Initialize()
 		{
-			$this->intId = ItemFacturaPmn::IdDefault;
-			$this->intFacturaId = ItemFacturaPmn::FacturaIdDefault;
-			$this->strGuiaId = ItemFacturaPmn::GuiaIdDefault;
-			$this->fltMontoBase = ItemFacturaPmn::MontoBaseDefault;
-			$this->fltPorcentajeDscto = ItemFacturaPmn::PorcentajeDsctoDefault;
-			$this->fltMontoDscto = ItemFacturaPmn::MontoDsctoDefault;
-			$this->fltMontoFranqueo = ItemFacturaPmn::MontoFranqueoDefault;
-			$this->fltPorcentajeIva = ItemFacturaPmn::PorcentajeIvaDefault;
-			$this->fltMontoIva = ItemFacturaPmn::MontoIvaDefault;
-			$this->fltMontoSeguro = ItemFacturaPmn::MontoSeguroDefault;
-			$this->fltMontoOtros = ItemFacturaPmn::MontoOtrosDefault;
-			$this->fltMontoTotal = ItemFacturaPmn::MontoTotalDefault;
+			$this->intId = Descuentos::IdDefault;
+			$this->intClienteId = Descuentos::ClienteIdDefault;
+			$this->intAnio = Descuentos::AnioDefault;
+			$this->intMes = Descuentos::MesDefault;
+			$this->fltDescuento = Descuentos::DescuentoDefault;
+			$this->intFactura = Descuentos::FacturaDefault;
+			$this->dttCreatedAt = (Descuentos::CreatedAtDefault === null)?null:new QDateTime(Descuentos::CreatedAtDefault);
+			$this->dttUpdatedAt = (Descuentos::UpdatedAtDefault === null)?null:new QDateTime(Descuentos::UpdatedAtDefault);
 		}
 
 
@@ -211,24 +159,24 @@
 		}
 
 		/**
-		 * Load a ItemFacturaPmn from PK Info
+		 * Load a Descuentos from PK Info
 		 * @param integer $intId
 		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
-		 * @return ItemFacturaPmn
+		 * @return Descuentos
 		 */
 		public static function Load($intId, $objOptionalClauses = null) {
 			$strCacheKey = false;
 			if (QApplication::$objCacheProvider && !$objOptionalClauses && QApplication::$Database[1]->Caching) {
-				$strCacheKey = QApplication::$objCacheProvider->CreateKey(QApplication::$Database[1]->Database, 'ItemFacturaPmn', $intId);
+				$strCacheKey = QApplication::$objCacheProvider->CreateKey(QApplication::$Database[1]->Database, 'Descuentos', $intId);
 				$objCachedObject = QApplication::$objCacheProvider->Get($strCacheKey);
 				if ($objCachedObject !== false) {
 					return $objCachedObject;
 				}
 			}
 			// Use QuerySingle to Perform the Query
-			$objToReturn = ItemFacturaPmn::QuerySingle(
+			$objToReturn = Descuentos::QuerySingle(
 				QQ::AndCondition(
-					QQ::Equal(QQN::ItemFacturaPmn()->Id, $intId)
+					QQ::Equal(QQN::Descuentos()->Id, $intId)
 				),
 				$objOptionalClauses
 			);
@@ -239,17 +187,17 @@
 		}
 
 		/**
-		 * Load all ItemFacturaPmns
+		 * Load all Descuentoses
 		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
-		 * @return ItemFacturaPmn[]
+		 * @return Descuentos[]
 		 */
 		public static function LoadAll($objOptionalClauses = null) {
 			if (func_num_args() > 1) {
 				throw new QCallerException("LoadAll must be called with an array of optional clauses as a single argument");
 			}
-			// Call ItemFacturaPmn::QueryArray to perform the LoadAll query
+			// Call Descuentos::QueryArray to perform the LoadAll query
 			try {
-				return ItemFacturaPmn::QueryArray(QQ::All(), $objOptionalClauses);
+				return Descuentos::QueryArray(QQ::All(), $objOptionalClauses);
 			} catch (QCallerException $objExc) {
 				$objExc->IncrementOffset();
 				throw $objExc;
@@ -257,12 +205,12 @@
 		}
 
 		/**
-		 * Count all ItemFacturaPmns
+		 * Count all Descuentoses
 		 * @return int
 		 */
 		public static function CountAll() {
-			// Call ItemFacturaPmn::QueryCount to perform the CountAll query
-			return ItemFacturaPmn::QueryCount(QQ::All());
+			// Call Descuentos::QueryCount to perform the CountAll query
+			return Descuentos::QueryCount(QQ::All());
 		}
 
 
@@ -284,10 +232,10 @@
 		 */
 		protected static function BuildQueryStatement(&$objQueryBuilder, QQCondition $objConditions, $objOptionalClauses, $mixParameterArray, $blnCountOnly) {
 			// Get the Database Object for this Class
-			$objDatabase = ItemFacturaPmn::GetDatabase();
+			$objDatabase = Descuentos::GetDatabase();
 
-			// Create/Build out the QueryBuilder object with ItemFacturaPmn-specific SELET and FROM fields
-			$objQueryBuilder = new QQueryBuilder($objDatabase, 'item_factura_pmn');
+			// Create/Build out the QueryBuilder object with Descuentos-specific SELET and FROM fields
+			$objQueryBuilder = new QQueryBuilder($objDatabase, 'descuentos');
 
 			$blnAddAllFieldsToSelect = true;
 			if ($objDatabase->OnlyFullGroupBy) {
@@ -306,9 +254,9 @@
 				}
 			}
 			if ($blnAddAllFieldsToSelect) {
-				ItemFacturaPmn::GetSelectFields($objQueryBuilder, null, QQuery::extractSelectClause($objOptionalClauses));
+				Descuentos::GetSelectFields($objQueryBuilder, null, QQuery::extractSelectClause($objOptionalClauses));
 			}
-			$objQueryBuilder->AddFromItem('item_factura_pmn');
+			$objQueryBuilder->AddFromItem('descuentos');
 
 			// Set "CountOnly" option (if applicable)
 			if ($blnCountOnly)
@@ -355,23 +303,23 @@
 		}
 
 		/**
-		 * Static Qcubed Query method to query for a single ItemFacturaPmn object.
+		 * Static Qcubed Query method to query for a single Descuentos object.
 		 * Uses BuildQueryStatment to perform most of the work.
 		 * @param QQCondition $objConditions any conditions on the query, itself
 		 * @param QQClause[] $objOptionalClausees additional optional QQClause objects for this query
 		 * @param mixed[] $mixParameterArray a array of name-value pairs to perform PrepareStatement with
-		 * @return ItemFacturaPmn the queried object
+		 * @return Descuentos the queried object
 		 */
 		public static function QuerySingle(QQCondition $objConditions, $objOptionalClauses = null, $mixParameterArray = null) {
 			// Get the Query Statement
 			try {
-				$strQuery = ItemFacturaPmn::BuildQueryStatement($objQueryBuilder, $objConditions, $objOptionalClauses, $mixParameterArray, false);
+				$strQuery = Descuentos::BuildQueryStatement($objQueryBuilder, $objConditions, $objOptionalClauses, $mixParameterArray, false);
 			} catch (QCallerException $objExc) {
 				$objExc->IncrementOffset();
 				throw $objExc;
 			}
 
-			// Perform the Query, Get the First Row, and Instantiate a new ItemFacturaPmn object
+			// Perform the Query, Get the First Row, and Instantiate a new Descuentos object
 			$objDbResult = $objQueryBuilder->Database->Query($strQuery);
 
 			// Do we have to expand anything?
@@ -379,7 +327,7 @@
 				$objToReturn = array();
 				$objPrevItemArray = array();
 				while ($objDbRow = $objDbResult->GetNextRow()) {
-					$objItem = ItemFacturaPmn::InstantiateDbRow($objDbRow, null, $objQueryBuilder->ExpandAsArrayNode, $objPrevItemArray, $objQueryBuilder->ColumnAliasArray);
+					$objItem = Descuentos::InstantiateDbRow($objDbRow, null, $objQueryBuilder->ExpandAsArrayNode, $objPrevItemArray, $objQueryBuilder->ColumnAliasArray);
 					if ($objItem) {
 						$objToReturn[] = $objItem;
 						$objPrevItemArray[$objItem->intId][] = $objItem;
@@ -397,22 +345,22 @@
 				$objDbRow = $objDbResult->GetNextRow();
 				if(null === $objDbRow)
 					return null;
-				return ItemFacturaPmn::InstantiateDbRow($objDbRow, null, null, null, $objQueryBuilder->ColumnAliasArray);
+				return Descuentos::InstantiateDbRow($objDbRow, null, null, null, $objQueryBuilder->ColumnAliasArray);
 			}
 		}
 
 		/**
-		 * Static Qcubed Query method to query for an array of ItemFacturaPmn objects.
+		 * Static Qcubed Query method to query for an array of Descuentos objects.
 		 * Uses BuildQueryStatment to perform most of the work.
 		 * @param QQCondition $objConditions any conditions on the query, itself
 		 * @param QQClause[] $objOptionalClausees additional optional QQClause objects for this query
 		 * @param mixed[] $mixParameterArray a array of name-value pairs to perform PrepareStatement with
-		 * @return ItemFacturaPmn[] the queried objects as an array
+		 * @return Descuentos[] the queried objects as an array
 		 */
 		public static function QueryArray(QQCondition $objConditions, $objOptionalClauses = null, $mixParameterArray = null) {
 			// Get the Query Statement
 			try {
-				$strQuery = ItemFacturaPmn::BuildQueryStatement($objQueryBuilder, $objConditions, $objOptionalClauses, $mixParameterArray, false);
+				$strQuery = Descuentos::BuildQueryStatement($objQueryBuilder, $objConditions, $objOptionalClauses, $mixParameterArray, false);
 			} catch (QCallerException $objExc) {
 				$objExc->IncrementOffset();
 				throw $objExc;
@@ -420,7 +368,7 @@
 
 			// Perform the Query and Instantiate the Array Result
 			$objDbResult = $objQueryBuilder->Database->Query($strQuery);
-			return ItemFacturaPmn::InstantiateDbResult($objDbResult, $objQueryBuilder->ExpandAsArrayNode, $objQueryBuilder->ColumnAliasArray);
+			return Descuentos::InstantiateDbResult($objDbResult, $objQueryBuilder->ExpandAsArrayNode, $objQueryBuilder->ColumnAliasArray);
 		}
 
 		/**
@@ -434,7 +382,7 @@
 		public static function QueryCursor(QQCondition $objConditions, $objOptionalClauses = null, $mixParameterArray = null) {
 			// Get the query statement
 			try {
-				$strQuery = ItemFacturaPmn::BuildQueryStatement($objQueryBuilder, $objConditions, $objOptionalClauses, $mixParameterArray, false);
+				$strQuery = Descuentos::BuildQueryStatement($objQueryBuilder, $objConditions, $objOptionalClauses, $mixParameterArray, false);
 			} catch (QCallerException $objExc) {
 				$objExc->IncrementOffset();
 				throw $objExc;
@@ -449,7 +397,7 @@
 		}
 
 		/**
-		 * Static Qcubed Query method to query for a count of ItemFacturaPmn objects.
+		 * Static Qcubed Query method to query for a count of Descuentos objects.
 		 * Uses BuildQueryStatment to perform most of the work.
 		 * @param QQCondition $objConditions any conditions on the query, itself
 		 * @param QQClause[] $objOptionalClausees additional optional QQClause objects for this query
@@ -459,7 +407,7 @@
 		public static function QueryCount(QQCondition $objConditions, $objOptionalClauses = null, $mixParameterArray = null) {
 			// Get the Query Statement
 			try {
-				$strQuery = ItemFacturaPmn::BuildQueryStatement($objQueryBuilder, $objConditions, $objOptionalClauses, $mixParameterArray, true);
+				$strQuery = Descuentos::BuildQueryStatement($objQueryBuilder, $objConditions, $objOptionalClauses, $mixParameterArray, true);
 			} catch (QCallerException $objExc) {
 				$objExc->IncrementOffset();
 				throw $objExc;
@@ -500,16 +448,16 @@
 
 		public static function QueryArrayCached(QQCondition $objConditions, $objOptionalClauses = null, $mixParameterArray = null, $blnForceUpdate = false) {
 			// Get the Database Object for this Class
-			$objDatabase = ItemFacturaPmn::GetDatabase();
+			$objDatabase = Descuentos::GetDatabase();
 
-			$strQuery = ItemFacturaPmn::BuildQueryStatement($objQueryBuilder, $objConditions, $objOptionalClauses, $mixParameterArray, false);
+			$strQuery = Descuentos::BuildQueryStatement($objQueryBuilder, $objConditions, $objOptionalClauses, $mixParameterArray, false);
 
-			$objCache = new QCache('qquery/itemfacturapmn', $strQuery);
+			$objCache = new QCache('qquery/descuentos', $strQuery);
 			$cacheData = $objCache->GetData();
 
 			if (!$cacheData || $blnForceUpdate) {
 				$objDbResult = $objQueryBuilder->Database->Query($strQuery);
-				$arrResult = ItemFacturaPmn::InstantiateDbResult($objDbResult, $objQueryBuilder->ExpandAsArrayNode, $objQueryBuilder->ColumnAliasArray);
+				$arrResult = Descuentos::InstantiateDbResult($objDbResult, $objQueryBuilder->ExpandAsArrayNode, $objQueryBuilder->ColumnAliasArray);
 				$objCache->SaveData(serialize($arrResult));
 			} else {
 				$arrResult = unserialize($cacheData);
@@ -519,7 +467,7 @@
 		}
 
 		/**
-		 * Updates a QQueryBuilder with the SELECT fields for this ItemFacturaPmn
+		 * Updates a QQueryBuilder with the SELECT fields for this Descuentos
 		 * @param QQueryBuilder $objBuilder the Query Builder object to update
 		 * @param string $strPrefix optional prefix to add to the SELECT fields
 		 */
@@ -528,7 +476,7 @@
 				$strTableName = $strPrefix;
 				$strAliasPrefix = $strPrefix . '__';
 			} else {
-				$strTableName = 'item_factura_pmn';
+				$strTableName = 'descuentos';
 				$strAliasPrefix = '';
 			}
 
@@ -537,17 +485,13 @@
                 $objSelect->AddSelectItems($objBuilder, $strTableName, $strAliasPrefix);
             } else {
 			    $objBuilder->AddSelectItem($strTableName, 'id', $strAliasPrefix . 'id');
-			    $objBuilder->AddSelectItem($strTableName, 'factura_id', $strAliasPrefix . 'factura_id');
-			    $objBuilder->AddSelectItem($strTableName, 'guia_id', $strAliasPrefix . 'guia_id');
-			    $objBuilder->AddSelectItem($strTableName, 'monto_base', $strAliasPrefix . 'monto_base');
-			    $objBuilder->AddSelectItem($strTableName, 'porcentaje_dscto', $strAliasPrefix . 'porcentaje_dscto');
-			    $objBuilder->AddSelectItem($strTableName, 'monto_dscto', $strAliasPrefix . 'monto_dscto');
-			    $objBuilder->AddSelectItem($strTableName, 'monto_franqueo', $strAliasPrefix . 'monto_franqueo');
-			    $objBuilder->AddSelectItem($strTableName, 'porcentaje_iva', $strAliasPrefix . 'porcentaje_iva');
-			    $objBuilder->AddSelectItem($strTableName, 'monto_iva', $strAliasPrefix . 'monto_iva');
-			    $objBuilder->AddSelectItem($strTableName, 'monto_seguro', $strAliasPrefix . 'monto_seguro');
-			    $objBuilder->AddSelectItem($strTableName, 'monto_otros', $strAliasPrefix . 'monto_otros');
-			    $objBuilder->AddSelectItem($strTableName, 'monto_total', $strAliasPrefix . 'monto_total');
+			    $objBuilder->AddSelectItem($strTableName, 'cliente_id', $strAliasPrefix . 'cliente_id');
+			    $objBuilder->AddSelectItem($strTableName, 'anio', $strAliasPrefix . 'anio');
+			    $objBuilder->AddSelectItem($strTableName, 'mes', $strAliasPrefix . 'mes');
+			    $objBuilder->AddSelectItem($strTableName, 'descuento', $strAliasPrefix . 'descuento');
+			    $objBuilder->AddSelectItem($strTableName, 'factura', $strAliasPrefix . 'factura');
+			    $objBuilder->AddSelectItem($strTableName, 'created_at', $strAliasPrefix . 'created_at');
+			    $objBuilder->AddSelectItem($strTableName, 'updated_at', $strAliasPrefix . 'updated_at');
             }
 		}
 
@@ -635,16 +579,16 @@
 		}
 		
 		/**
-		 * Instantiate a ItemFacturaPmn from a Database Row.
+		 * Instantiate a Descuentos from a Database Row.
 		 * Takes in an optional strAliasPrefix, used in case another Object::InstantiateDbRow
-		 * is calling this ItemFacturaPmn::InstantiateDbRow in order to perform
+		 * is calling this Descuentos::InstantiateDbRow in order to perform
 		 * early binding on referenced objects.
 		 * @param DatabaseRowBase $objDbRow
 		 * @param string $strAliasPrefix
 		 * @param QQBaseNode $objExpandAsArrayNode
 		 * @param QBaseClass $arrPreviousItem
 		 * @param string[] $strColumnAliasArray
-		 * @return mixed Either a ItemFacturaPmn, or false to indicate the dbrow was used in an expansion, or null to indicate that this leaf is a duplicate.
+		 * @return mixed Either a Descuentos, or false to indicate the dbrow was used in an expansion, or null to indicate that this leaf is a duplicate.
 		*/
 		public static function InstantiateDbRow($objDbRow, $strAliasPrefix = null, $objExpandAsArrayNode = null, $objPreviousItemArray = null, $strColumnAliasArray = array()) {
 			// If blank row, return null
@@ -664,51 +608,39 @@
 					is_array($objPreviousItemArray) && 
 					count($objPreviousItemArray)) {
 
-				if (ItemFacturaPmn::ExpandArray ($objDbRow, $strAliasPrefix, $objExpandAsArrayNode, $objPreviousItemArray, $strColumnAliasArray)) {
+				if (Descuentos::ExpandArray ($objDbRow, $strAliasPrefix, $objExpandAsArrayNode, $objPreviousItemArray, $strColumnAliasArray)) {
 					return false; // db row was used but no new object was created
 				}
 			}
 
-			// Create a new instance of the ItemFacturaPmn object
-			$objToReturn = new ItemFacturaPmn();
+			// Create a new instance of the Descuentos object
+			$objToReturn = new Descuentos();
 			$objToReturn->__blnRestored = true;
 
 			$strAlias = $strAliasPrefix . 'id';
 			$strAliasName = !empty($strColumnAliasArray[$strAlias]) ? $strColumnAliasArray[$strAlias] : $strAlias;
 			$objToReturn->intId = $objDbRow->GetColumn($strAliasName, 'Integer');
-			$strAlias = $strAliasPrefix . 'factura_id';
+			$strAlias = $strAliasPrefix . 'cliente_id';
 			$strAliasName = !empty($strColumnAliasArray[$strAlias]) ? $strColumnAliasArray[$strAlias] : $strAlias;
-			$objToReturn->intFacturaId = $objDbRow->GetColumn($strAliasName, 'Integer');
-			$strAlias = $strAliasPrefix . 'guia_id';
+			$objToReturn->intClienteId = $objDbRow->GetColumn($strAliasName, 'Integer');
+			$strAlias = $strAliasPrefix . 'anio';
 			$strAliasName = !empty($strColumnAliasArray[$strAlias]) ? $strColumnAliasArray[$strAlias] : $strAlias;
-			$objToReturn->strGuiaId = $objDbRow->GetColumn($strAliasName, 'VarChar');
-			$strAlias = $strAliasPrefix . 'monto_base';
+			$objToReturn->intAnio = $objDbRow->GetColumn($strAliasName, 'Integer');
+			$strAlias = $strAliasPrefix . 'mes';
 			$strAliasName = !empty($strColumnAliasArray[$strAlias]) ? $strColumnAliasArray[$strAlias] : $strAlias;
-			$objToReturn->fltMontoBase = $objDbRow->GetColumn($strAliasName, 'Float');
-			$strAlias = $strAliasPrefix . 'porcentaje_dscto';
+			$objToReturn->intMes = $objDbRow->GetColumn($strAliasName, 'Integer');
+			$strAlias = $strAliasPrefix . 'descuento';
 			$strAliasName = !empty($strColumnAliasArray[$strAlias]) ? $strColumnAliasArray[$strAlias] : $strAlias;
-			$objToReturn->fltPorcentajeDscto = $objDbRow->GetColumn($strAliasName, 'Float');
-			$strAlias = $strAliasPrefix . 'monto_dscto';
+			$objToReturn->fltDescuento = $objDbRow->GetColumn($strAliasName, 'Float');
+			$strAlias = $strAliasPrefix . 'factura';
 			$strAliasName = !empty($strColumnAliasArray[$strAlias]) ? $strColumnAliasArray[$strAlias] : $strAlias;
-			$objToReturn->fltMontoDscto = $objDbRow->GetColumn($strAliasName, 'Float');
-			$strAlias = $strAliasPrefix . 'monto_franqueo';
+			$objToReturn->intFactura = $objDbRow->GetColumn($strAliasName, 'Integer');
+			$strAlias = $strAliasPrefix . 'created_at';
 			$strAliasName = !empty($strColumnAliasArray[$strAlias]) ? $strColumnAliasArray[$strAlias] : $strAlias;
-			$objToReturn->fltMontoFranqueo = $objDbRow->GetColumn($strAliasName, 'Float');
-			$strAlias = $strAliasPrefix . 'porcentaje_iva';
+			$objToReturn->dttCreatedAt = $objDbRow->GetColumn($strAliasName, 'DateTime');
+			$strAlias = $strAliasPrefix . 'updated_at';
 			$strAliasName = !empty($strColumnAliasArray[$strAlias]) ? $strColumnAliasArray[$strAlias] : $strAlias;
-			$objToReturn->fltPorcentajeIva = $objDbRow->GetColumn($strAliasName, 'Float');
-			$strAlias = $strAliasPrefix . 'monto_iva';
-			$strAliasName = !empty($strColumnAliasArray[$strAlias]) ? $strColumnAliasArray[$strAlias] : $strAlias;
-			$objToReturn->fltMontoIva = $objDbRow->GetColumn($strAliasName, 'Float');
-			$strAlias = $strAliasPrefix . 'monto_seguro';
-			$strAliasName = !empty($strColumnAliasArray[$strAlias]) ? $strColumnAliasArray[$strAlias] : $strAlias;
-			$objToReturn->fltMontoSeguro = $objDbRow->GetColumn($strAliasName, 'Float');
-			$strAlias = $strAliasPrefix . 'monto_otros';
-			$strAliasName = !empty($strColumnAliasArray[$strAlias]) ? $strColumnAliasArray[$strAlias] : $strAlias;
-			$objToReturn->fltMontoOtros = $objDbRow->GetColumn($strAliasName, 'Float');
-			$strAlias = $strAliasPrefix . 'monto_total';
-			$strAliasName = !empty($strColumnAliasArray[$strAlias]) ? $strColumnAliasArray[$strAlias] : $strAlias;
-			$objToReturn->fltMontoTotal = $objDbRow->GetColumn($strAliasName, 'Float');
+			$objToReturn->dttUpdatedAt = $objDbRow->GetColumn($strAliasName, 'DateTime');
 
 			if (isset($objPreviousItemArray) && is_array($objPreviousItemArray)) {
 				foreach ($objPreviousItemArray as $objPreviousItem) {
@@ -737,21 +669,14 @@
 			}
 
 			if (!$strAliasPrefix)
-				$strAliasPrefix = 'item_factura_pmn__';
+				$strAliasPrefix = 'descuentos__';
 
-			// Check for Factura Early Binding
-			$strAlias = $strAliasPrefix . 'factura_id__id';
+			// Check for Cliente Early Binding
+			$strAlias = $strAliasPrefix . 'cliente_id__codi_clie';
 			$strAliasName = !empty($strColumnAliasArray[$strAlias]) ? $strColumnAliasArray[$strAlias] : $strAlias;
 			if (!is_null($objDbRow->GetColumn($strAliasName))) {
-				$objExpansionNode = (empty($objExpansionAliasArray['factura_id']) ? null : $objExpansionAliasArray['factura_id']);
-				$objToReturn->objFactura = FacturaPmn::InstantiateDbRow($objDbRow, $strAliasPrefix . 'factura_id__', $objExpansionNode, null, $strColumnAliasArray);
-			}
-			// Check for Guia Early Binding
-			$strAlias = $strAliasPrefix . 'guia_id__nume_guia';
-			$strAliasName = !empty($strColumnAliasArray[$strAlias]) ? $strColumnAliasArray[$strAlias] : $strAlias;
-			if (!is_null($objDbRow->GetColumn($strAliasName))) {
-				$objExpansionNode = (empty($objExpansionAliasArray['guia_id']) ? null : $objExpansionAliasArray['guia_id']);
-				$objToReturn->objGuia = Guia::InstantiateDbRow($objDbRow, $strAliasPrefix . 'guia_id__', $objExpansionNode, null, $strColumnAliasArray);
+				$objExpansionNode = (empty($objExpansionAliasArray['cliente_id']) ? null : $objExpansionAliasArray['cliente_id']);
+				$objToReturn->objCliente = MasterCliente::InstantiateDbRow($objDbRow, $strAliasPrefix . 'cliente_id__', $objExpansionNode, null, $strColumnAliasArray);
 			}
 
 				
@@ -760,11 +685,11 @@
 		}
 		
 		/**
-		 * Instantiate an array of ItemFacturaPmns from a Database Result
+		 * Instantiate an array of Descuentoses from a Database Result
 		 * @param DatabaseResultBase $objDbResult
 		 * @param QQBaseNode $objExpandAsArrayNode
 		 * @param string[] $strColumnAliasArray
-		 * @return ItemFacturaPmn[]
+		 * @return Descuentos[]
 		 */
 		public static function InstantiateDbResult(QDatabaseResultBase $objDbResult, $objExpandAsArrayNode = null, $strColumnAliasArray = null) {
 			$objToReturn = array();
@@ -781,7 +706,7 @@
 				$objToReturn = array();
 				$objPrevItemArray = array();
 				while ($objDbRow = $objDbResult->GetNextRow()) {
-					$objItem = ItemFacturaPmn::InstantiateDbRow($objDbRow, null, $objExpandAsArrayNode, $objPrevItemArray, $strColumnAliasArray);
+					$objItem = Descuentos::InstantiateDbRow($objDbRow, null, $objExpandAsArrayNode, $objPrevItemArray, $strColumnAliasArray);
 					if ($objItem) {
 						$objToReturn[] = $objItem;
 						$objPrevItemArray[$objItem->intId][] = $objItem;
@@ -790,7 +715,7 @@
 				}
 			} else {
 				while ($objDbRow = $objDbResult->GetNextRow())
-					$objToReturn[] = ItemFacturaPmn::InstantiateDbRow($objDbRow, null, null, null, $strColumnAliasArray);
+					$objToReturn[] = Descuentos::InstantiateDbRow($objDbRow, null, null, null, $strColumnAliasArray);
 			}
 
 			return $objToReturn;
@@ -798,11 +723,11 @@
 
 
 		/**
-		 * Instantiate a single ItemFacturaPmn object from a query cursor (e.g. a DB ResultSet).
+		 * Instantiate a single Descuentos object from a query cursor (e.g. a DB ResultSet).
 		 * Cursor is automatically moved to the "next row" of the result set.
 		 * Will return NULL if no cursor or if the cursor has no more rows in the resultset.
 		 * @param QDatabaseResultBase $objDbResult cursor resource
-		 * @return ItemFacturaPmn next row resulting from the query
+		 * @return Descuentos next row resulting from the query
 		 */
 		public static function InstantiateCursor(QDatabaseResultBase $objDbResult) {
 			// If blank resultset, then return empty result
@@ -823,7 +748,7 @@
 			}
 
 			// Load up the return result with a row and return it
-			return ItemFacturaPmn::InstantiateDbRow($objDbRow, null, null, null, $strColumnAliasArray);
+			return Descuentos::InstantiateDbRow($objDbRow, null, null, null, $strColumnAliasArray);
 		}
 
 
@@ -834,65 +759,53 @@
 		///////////////////////////////////////////////////
 
 		/**
-		 * Load a single ItemFacturaPmn object,
+		 * Load a single Descuentos object,
 		 * by Id Index(es)
 		 * @param integer $intId
 		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
-		 * @return ItemFacturaPmn
+		 * @return Descuentos
 		*/
 		public static function LoadById($intId, $objOptionalClauses = null) {
-			return ItemFacturaPmn::QuerySingle(
+			return Descuentos::QuerySingle(
 				QQ::AndCondition(
-					QQ::Equal(QQN::ItemFacturaPmn()->Id, $intId)
+					QQ::Equal(QQN::Descuentos()->Id, $intId)
 				),
 				$objOptionalClauses
 			);
 		}
 
 		/**
-		 * Load an array of ItemFacturaPmn objects,
-		 * by FacturaId Index(es)
-		 * @param integer $intFacturaId
+		 * Load a single Descuentos object,
+		 * by ClienteId, Anio, Mes Index(es)
+		 * @param integer $intClienteId
+		 * @param integer $intAnio
+		 * @param integer $intMes
 		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
-		 * @return ItemFacturaPmn[]
+		 * @return Descuentos
 		*/
-		public static function LoadArrayByFacturaId($intFacturaId, $objOptionalClauses = null) {
-			// Call ItemFacturaPmn::QueryArray to perform the LoadArrayByFacturaId query
-			try {
-				return ItemFacturaPmn::QueryArray(
-					QQ::Equal(QQN::ItemFacturaPmn()->FacturaId, $intFacturaId),
-					$objOptionalClauses);
-			} catch (QCallerException $objExc) {
-				$objExc->IncrementOffset();
-				throw $objExc;
-			}
-		}
-
-		/**
-		 * Count ItemFacturaPmns
-		 * by FacturaId Index(es)
-		 * @param integer $intFacturaId
-		 * @return int
-		*/
-		public static function CountByFacturaId($intFacturaId) {
-			// Call ItemFacturaPmn::QueryCount to perform the CountByFacturaId query
-			return ItemFacturaPmn::QueryCount(
-				QQ::Equal(QQN::ItemFacturaPmn()->FacturaId, $intFacturaId)
+		public static function LoadByClienteIdAnioMes($intClienteId, $intAnio, $intMes, $objOptionalClauses = null) {
+			return Descuentos::QuerySingle(
+				QQ::AndCondition(
+					QQ::Equal(QQN::Descuentos()->ClienteId, $intClienteId),
+					QQ::Equal(QQN::Descuentos()->Anio, $intAnio),
+					QQ::Equal(QQN::Descuentos()->Mes, $intMes)
+				),
+				$objOptionalClauses
 			);
 		}
 
 		/**
-		 * Load an array of ItemFacturaPmn objects,
-		 * by GuiaId Index(es)
-		 * @param string $strGuiaId
+		 * Load an array of Descuentos objects,
+		 * by ClienteId Index(es)
+		 * @param integer $intClienteId
 		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
-		 * @return ItemFacturaPmn[]
+		 * @return Descuentos[]
 		*/
-		public static function LoadArrayByGuiaId($strGuiaId, $objOptionalClauses = null) {
-			// Call ItemFacturaPmn::QueryArray to perform the LoadArrayByGuiaId query
+		public static function LoadArrayByClienteId($intClienteId, $objOptionalClauses = null) {
+			// Call Descuentos::QueryArray to perform the LoadArrayByClienteId query
 			try {
-				return ItemFacturaPmn::QueryArray(
-					QQ::Equal(QQN::ItemFacturaPmn()->GuiaId, $strGuiaId),
+				return Descuentos::QueryArray(
+					QQ::Equal(QQN::Descuentos()->ClienteId, $intClienteId),
 					$objOptionalClauses);
 			} catch (QCallerException $objExc) {
 				$objExc->IncrementOffset();
@@ -901,15 +814,15 @@
 		}
 
 		/**
-		 * Count ItemFacturaPmns
-		 * by GuiaId Index(es)
-		 * @param string $strGuiaId
+		 * Count Descuentoses
+		 * by ClienteId Index(es)
+		 * @param integer $intClienteId
 		 * @return int
 		*/
-		public static function CountByGuiaId($strGuiaId) {
-			// Call ItemFacturaPmn::QueryCount to perform the CountByGuiaId query
-			return ItemFacturaPmn::QueryCount(
-				QQ::Equal(QQN::ItemFacturaPmn()->GuiaId, $strGuiaId)
+		public static function CountByClienteId($intClienteId) {
+			// Call Descuentos::QueryCount to perform the CountByClienteId query
+			return Descuentos::QueryCount(
+				QQ::Equal(QQN::Descuentos()->ClienteId, $intClienteId)
 			);
 		}
 
@@ -928,14 +841,14 @@
 		//////////////////////////
 
 		/**
-		 * Save this ItemFacturaPmn
+		 * Save this Descuentos
 		 * @param bool $blnForceInsert
 		 * @param bool $blnForceUpdate
 		 * @return int
 		 */
 		public function Save($blnForceInsert = false, $blnForceUpdate = false) {
 			// Get the Database Object for this Class
-			$objDatabase = ItemFacturaPmn::GetDatabase();
+			$objDatabase = Descuentos::GetDatabase();
 
 			$mixToReturn = null;
 
@@ -943,35 +856,27 @@
 				if ((!$this->__blnRestored) || ($blnForceInsert)) {
 					// Perform an INSERT query
 					$objDatabase->NonQuery('
-						INSERT INTO `item_factura_pmn` (
-							`factura_id`,
-							`guia_id`,
-							`monto_base`,
-							`porcentaje_dscto`,
-							`monto_dscto`,
-							`monto_franqueo`,
-							`porcentaje_iva`,
-							`monto_iva`,
-							`monto_seguro`,
-							`monto_otros`,
-							`monto_total`
+						INSERT INTO `descuentos` (
+							`cliente_id`,
+							`anio`,
+							`mes`,
+							`descuento`,
+							`factura`,
+							`created_at`,
+							`updated_at`
 						) VALUES (
-							' . $objDatabase->SqlVariable($this->intFacturaId) . ',
-							' . $objDatabase->SqlVariable($this->strGuiaId) . ',
-							' . $objDatabase->SqlVariable($this->fltMontoBase) . ',
-							' . $objDatabase->SqlVariable($this->fltPorcentajeDscto) . ',
-							' . $objDatabase->SqlVariable($this->fltMontoDscto) . ',
-							' . $objDatabase->SqlVariable($this->fltMontoFranqueo) . ',
-							' . $objDatabase->SqlVariable($this->fltPorcentajeIva) . ',
-							' . $objDatabase->SqlVariable($this->fltMontoIva) . ',
-							' . $objDatabase->SqlVariable($this->fltMontoSeguro) . ',
-							' . $objDatabase->SqlVariable($this->fltMontoOtros) . ',
-							' . $objDatabase->SqlVariable($this->fltMontoTotal) . '
+							' . $objDatabase->SqlVariable($this->intClienteId) . ',
+							' . $objDatabase->SqlVariable($this->intAnio) . ',
+							' . $objDatabase->SqlVariable($this->intMes) . ',
+							' . $objDatabase->SqlVariable($this->fltDescuento) . ',
+							' . $objDatabase->SqlVariable($this->intFactura) . ',
+							' . $objDatabase->SqlVariable($this->dttCreatedAt) . ',
+							' . $objDatabase->SqlVariable($this->dttUpdatedAt) . '
 						)
 					');
 
 					// Update Identity column and return its value
-					$mixToReturn = $this->intId = $objDatabase->InsertId('item_factura_pmn', 'id');
+					$mixToReturn = $this->intId = $objDatabase->InsertId('descuentos', 'id');
 				} else {
 					// Perform an UPDATE query
 
@@ -980,19 +885,15 @@
 					// Perform the UPDATE query
 					$objDatabase->NonQuery('
 						UPDATE
-							`item_factura_pmn`
+							`descuentos`
 						SET
-							`factura_id` = ' . $objDatabase->SqlVariable($this->intFacturaId) . ',
-							`guia_id` = ' . $objDatabase->SqlVariable($this->strGuiaId) . ',
-							`monto_base` = ' . $objDatabase->SqlVariable($this->fltMontoBase) . ',
-							`porcentaje_dscto` = ' . $objDatabase->SqlVariable($this->fltPorcentajeDscto) . ',
-							`monto_dscto` = ' . $objDatabase->SqlVariable($this->fltMontoDscto) . ',
-							`monto_franqueo` = ' . $objDatabase->SqlVariable($this->fltMontoFranqueo) . ',
-							`porcentaje_iva` = ' . $objDatabase->SqlVariable($this->fltPorcentajeIva) . ',
-							`monto_iva` = ' . $objDatabase->SqlVariable($this->fltMontoIva) . ',
-							`monto_seguro` = ' . $objDatabase->SqlVariable($this->fltMontoSeguro) . ',
-							`monto_otros` = ' . $objDatabase->SqlVariable($this->fltMontoOtros) . ',
-							`monto_total` = ' . $objDatabase->SqlVariable($this->fltMontoTotal) . '
+							`cliente_id` = ' . $objDatabase->SqlVariable($this->intClienteId) . ',
+							`anio` = ' . $objDatabase->SqlVariable($this->intAnio) . ',
+							`mes` = ' . $objDatabase->SqlVariable($this->intMes) . ',
+							`descuento` = ' . $objDatabase->SqlVariable($this->fltDescuento) . ',
+							`factura` = ' . $objDatabase->SqlVariable($this->intFactura) . ',
+							`created_at` = ' . $objDatabase->SqlVariable($this->dttCreatedAt) . ',
+							`updated_at` = ' . $objDatabase->SqlVariable($this->dttUpdatedAt) . '
 						WHERE
 							`id` = ' . $objDatabase->SqlVariable($this->intId) . '
 					');
@@ -1015,21 +916,21 @@
 		}
 
 		/**
-		 * Delete this ItemFacturaPmn
+		 * Delete this Descuentos
 		 * @return void
 		 */
 		public function Delete() {
 			if ((is_null($this->intId)))
-				throw new QUndefinedPrimaryKeyException('Cannot delete this ItemFacturaPmn with an unset primary key.');
+				throw new QUndefinedPrimaryKeyException('Cannot delete this Descuentos with an unset primary key.');
 
 			// Get the Database Object for this Class
-			$objDatabase = ItemFacturaPmn::GetDatabase();
+			$objDatabase = Descuentos::GetDatabase();
 
 
 			// Perform the SQL Query
 			$objDatabase->NonQuery('
 				DELETE FROM
-					`item_factura_pmn`
+					`descuentos`
 				WHERE
 					`id` = ' . $objDatabase->SqlVariable($this->intId) . '');
 
@@ -1037,28 +938,28 @@
 		}
 
         /**
- 	     * Delete this ItemFacturaPmn ONLY from the cache
+ 	     * Delete this Descuentos ONLY from the cache
  		 * @return void
 		 */
 		public function DeleteCache() {
 			if (QApplication::$objCacheProvider && QApplication::$Database[1]->Caching) {
-				$strCacheKey = QApplication::$objCacheProvider->CreateKey(QApplication::$Database[1]->Database, 'ItemFacturaPmn', $this->intId);
+				$strCacheKey = QApplication::$objCacheProvider->CreateKey(QApplication::$Database[1]->Database, 'Descuentos', $this->intId);
 				QApplication::$objCacheProvider->Delete($strCacheKey);
 			}
 		}
 
 		/**
-		 * Delete all ItemFacturaPmns
+		 * Delete all Descuentoses
 		 * @return void
 		 */
 		public static function DeleteAll() {
 			// Get the Database Object for this Class
-			$objDatabase = ItemFacturaPmn::GetDatabase();
+			$objDatabase = Descuentos::GetDatabase();
 
 			// Perform the Query
 			$objDatabase->NonQuery('
 				DELETE FROM
-					`item_factura_pmn`');
+					`descuentos`');
 
 			if (QApplication::$objCacheProvider && QApplication::$Database[1]->Caching) {
 				QApplication::$objCacheProvider->DeleteAll();
@@ -1066,16 +967,16 @@
 		}
 
 		/**
-		 * Truncate item_factura_pmn table
+		 * Truncate descuentos table
 		 * @return void
 		 */
 		public static function Truncate() {
 			// Get the Database Object for this Class
-			$objDatabase = ItemFacturaPmn::GetDatabase();
+			$objDatabase = Descuentos::GetDatabase();
 
 			// Perform the Query
 			$objDatabase->NonQuery('
-				TRUNCATE `item_factura_pmn`');
+				TRUNCATE `descuentos`');
 
 			if (QApplication::$objCacheProvider && QApplication::$Database[1]->Caching) {
 				QApplication::$objCacheProvider->DeleteAll();
@@ -1083,31 +984,27 @@
 		}
 
 		/**
-		 * Reload this ItemFacturaPmn from the database.
+		 * Reload this Descuentos from the database.
 		 * @return void
 		 */
 		public function Reload() {
 			// Make sure we are actually Restored from the database
 			if (!$this->__blnRestored)
-				throw new QCallerException('Cannot call Reload() on a new, unsaved ItemFacturaPmn object.');
+				throw new QCallerException('Cannot call Reload() on a new, unsaved Descuentos object.');
 
 			$this->DeleteCache();
 
 			// Reload the Object
-			$objReloaded = ItemFacturaPmn::Load($this->intId);
+			$objReloaded = Descuentos::Load($this->intId);
 
 			// Update $this's local variables to match
-			$this->FacturaId = $objReloaded->FacturaId;
-			$this->GuiaId = $objReloaded->GuiaId;
-			$this->fltMontoBase = $objReloaded->fltMontoBase;
-			$this->fltPorcentajeDscto = $objReloaded->fltPorcentajeDscto;
-			$this->fltMontoDscto = $objReloaded->fltMontoDscto;
-			$this->fltMontoFranqueo = $objReloaded->fltMontoFranqueo;
-			$this->fltPorcentajeIva = $objReloaded->fltPorcentajeIva;
-			$this->fltMontoIva = $objReloaded->fltMontoIva;
-			$this->fltMontoSeguro = $objReloaded->fltMontoSeguro;
-			$this->fltMontoOtros = $objReloaded->fltMontoOtros;
-			$this->fltMontoTotal = $objReloaded->fltMontoTotal;
+			$this->ClienteId = $objReloaded->ClienteId;
+			$this->intAnio = $objReloaded->intAnio;
+			$this->intMes = $objReloaded->intMes;
+			$this->fltDescuento = $objReloaded->fltDescuento;
+			$this->intFactura = $objReloaded->intFactura;
+			$this->dttCreatedAt = $objReloaded->dttCreatedAt;
+			$this->dttUpdatedAt = $objReloaded->dttUpdatedAt;
 		}
 
 
@@ -1135,110 +1032,68 @@
 					 */
 					return $this->intId;
 
-				case 'FacturaId':
+				case 'ClienteId':
 					/**
-					 * Gets the value for intFacturaId (Not Null)
+					 * Gets the value for intClienteId (Not Null)
 					 * @return integer
 					 */
-					return $this->intFacturaId;
+					return $this->intClienteId;
 
-				case 'GuiaId':
+				case 'Anio':
 					/**
-					 * Gets the value for strGuiaId (Not Null)
-					 * @return string
+					 * Gets the value for intAnio (Not Null)
+					 * @return integer
 					 */
-					return $this->strGuiaId;
+					return $this->intAnio;
 
-				case 'MontoBase':
+				case 'Mes':
 					/**
-					 * Gets the value for fltMontoBase (Not Null)
+					 * Gets the value for intMes (Not Null)
+					 * @return integer
+					 */
+					return $this->intMes;
+
+				case 'Descuento':
+					/**
+					 * Gets the value for fltDescuento (Not Null)
 					 * @return double
 					 */
-					return $this->fltMontoBase;
+					return $this->fltDescuento;
 
-				case 'PorcentajeDscto':
+				case 'Factura':
 					/**
-					 * Gets the value for fltPorcentajeDscto (Not Null)
-					 * @return double
+					 * Gets the value for intFactura (Not Null)
+					 * @return integer
 					 */
-					return $this->fltPorcentajeDscto;
+					return $this->intFactura;
 
-				case 'MontoDscto':
+				case 'CreatedAt':
 					/**
-					 * Gets the value for fltMontoDscto (Not Null)
-					 * @return double
+					 * Gets the value for dttCreatedAt 
+					 * @return QDateTime
 					 */
-					return $this->fltMontoDscto;
+					return $this->dttCreatedAt;
 
-				case 'MontoFranqueo':
+				case 'UpdatedAt':
 					/**
-					 * Gets the value for fltMontoFranqueo (Not Null)
-					 * @return double
+					 * Gets the value for dttUpdatedAt 
+					 * @return QDateTime
 					 */
-					return $this->fltMontoFranqueo;
-
-				case 'PorcentajeIva':
-					/**
-					 * Gets the value for fltPorcentajeIva (Not Null)
-					 * @return double
-					 */
-					return $this->fltPorcentajeIva;
-
-				case 'MontoIva':
-					/**
-					 * Gets the value for fltMontoIva (Not Null)
-					 * @return double
-					 */
-					return $this->fltMontoIva;
-
-				case 'MontoSeguro':
-					/**
-					 * Gets the value for fltMontoSeguro (Not Null)
-					 * @return double
-					 */
-					return $this->fltMontoSeguro;
-
-				case 'MontoOtros':
-					/**
-					 * Gets the value for fltMontoOtros (Not Null)
-					 * @return double
-					 */
-					return $this->fltMontoOtros;
-
-				case 'MontoTotal':
-					/**
-					 * Gets the value for fltMontoTotal (Not Null)
-					 * @return double
-					 */
-					return $this->fltMontoTotal;
+					return $this->dttUpdatedAt;
 
 
 				///////////////////
 				// Member Objects
 				///////////////////
-				case 'Factura':
+				case 'Cliente':
 					/**
-					 * Gets the value for the FacturaPmn object referenced by intFacturaId (Not Null)
-					 * @return FacturaPmn
+					 * Gets the value for the MasterCliente object referenced by intClienteId (Not Null)
+					 * @return MasterCliente
 					 */
 					try {
-						if ((!$this->objFactura) && (!is_null($this->intFacturaId)))
-							$this->objFactura = FacturaPmn::Load($this->intFacturaId);
-						return $this->objFactura;
-					} catch (QCallerException $objExc) {
-						$objExc->IncrementOffset();
-						throw $objExc;
-					}
-
-				case 'Guia':
-					/**
-					 * Gets the value for the Guia object referenced by strGuiaId (Not Null)
-					 * @return Guia
-					 */
-					try {
-						if ((!$this->objGuia) && (!is_null($this->strGuiaId)))
-							$this->objGuia = Guia::Load($this->strGuiaId);
-						return $this->objGuia;
+						if ((!$this->objCliente) && (!is_null($this->intClienteId)))
+							$this->objCliente = MasterCliente::Load($this->intClienteId);
+						return $this->objCliente;
 					} catch (QCallerException $objExc) {
 						$objExc->IncrementOffset();
 						throw $objExc;
@@ -1277,146 +1132,93 @@
 				///////////////////
 				// Member Variables
 				///////////////////
-				case 'FacturaId':
+				case 'ClienteId':
 					/**
-					 * Sets the value for intFacturaId (Not Null)
+					 * Sets the value for intClienteId (Not Null)
 					 * @param integer $mixValue
 					 * @return integer
 					 */
 					try {
-						$this->objFactura = null;
-						return ($this->intFacturaId = QType::Cast($mixValue, QType::Integer));
+						$this->objCliente = null;
+						return ($this->intClienteId = QType::Cast($mixValue, QType::Integer));
 					} catch (QCallerException $objExc) {
 						$objExc->IncrementOffset();
 						throw $objExc;
 					}
 
-				case 'GuiaId':
+				case 'Anio':
 					/**
-					 * Sets the value for strGuiaId (Not Null)
-					 * @param string $mixValue
-					 * @return string
+					 * Sets the value for intAnio (Not Null)
+					 * @param integer $mixValue
+					 * @return integer
 					 */
 					try {
-						$this->objGuia = null;
-						return ($this->strGuiaId = QType::Cast($mixValue, QType::String));
+						return ($this->intAnio = QType::Cast($mixValue, QType::Integer));
 					} catch (QCallerException $objExc) {
 						$objExc->IncrementOffset();
 						throw $objExc;
 					}
 
-				case 'MontoBase':
+				case 'Mes':
 					/**
-					 * Sets the value for fltMontoBase (Not Null)
+					 * Sets the value for intMes (Not Null)
+					 * @param integer $mixValue
+					 * @return integer
+					 */
+					try {
+						return ($this->intMes = QType::Cast($mixValue, QType::Integer));
+					} catch (QCallerException $objExc) {
+						$objExc->IncrementOffset();
+						throw $objExc;
+					}
+
+				case 'Descuento':
+					/**
+					 * Sets the value for fltDescuento (Not Null)
 					 * @param double $mixValue
 					 * @return double
 					 */
 					try {
-						return ($this->fltMontoBase = QType::Cast($mixValue, QType::Float));
+						return ($this->fltDescuento = QType::Cast($mixValue, QType::Float));
 					} catch (QCallerException $objExc) {
 						$objExc->IncrementOffset();
 						throw $objExc;
 					}
 
-				case 'PorcentajeDscto':
+				case 'Factura':
 					/**
-					 * Sets the value for fltPorcentajeDscto (Not Null)
-					 * @param double $mixValue
-					 * @return double
+					 * Sets the value for intFactura (Not Null)
+					 * @param integer $mixValue
+					 * @return integer
 					 */
 					try {
-						return ($this->fltPorcentajeDscto = QType::Cast($mixValue, QType::Float));
+						return ($this->intFactura = QType::Cast($mixValue, QType::Integer));
 					} catch (QCallerException $objExc) {
 						$objExc->IncrementOffset();
 						throw $objExc;
 					}
 
-				case 'MontoDscto':
+				case 'CreatedAt':
 					/**
-					 * Sets the value for fltMontoDscto (Not Null)
-					 * @param double $mixValue
-					 * @return double
+					 * Sets the value for dttCreatedAt 
+					 * @param QDateTime $mixValue
+					 * @return QDateTime
 					 */
 					try {
-						return ($this->fltMontoDscto = QType::Cast($mixValue, QType::Float));
+						return ($this->dttCreatedAt = QType::Cast($mixValue, QType::DateTime));
 					} catch (QCallerException $objExc) {
 						$objExc->IncrementOffset();
 						throw $objExc;
 					}
 
-				case 'MontoFranqueo':
+				case 'UpdatedAt':
 					/**
-					 * Sets the value for fltMontoFranqueo (Not Null)
-					 * @param double $mixValue
-					 * @return double
+					 * Sets the value for dttUpdatedAt 
+					 * @param QDateTime $mixValue
+					 * @return QDateTime
 					 */
 					try {
-						return ($this->fltMontoFranqueo = QType::Cast($mixValue, QType::Float));
-					} catch (QCallerException $objExc) {
-						$objExc->IncrementOffset();
-						throw $objExc;
-					}
-
-				case 'PorcentajeIva':
-					/**
-					 * Sets the value for fltPorcentajeIva (Not Null)
-					 * @param double $mixValue
-					 * @return double
-					 */
-					try {
-						return ($this->fltPorcentajeIva = QType::Cast($mixValue, QType::Float));
-					} catch (QCallerException $objExc) {
-						$objExc->IncrementOffset();
-						throw $objExc;
-					}
-
-				case 'MontoIva':
-					/**
-					 * Sets the value for fltMontoIva (Not Null)
-					 * @param double $mixValue
-					 * @return double
-					 */
-					try {
-						return ($this->fltMontoIva = QType::Cast($mixValue, QType::Float));
-					} catch (QCallerException $objExc) {
-						$objExc->IncrementOffset();
-						throw $objExc;
-					}
-
-				case 'MontoSeguro':
-					/**
-					 * Sets the value for fltMontoSeguro (Not Null)
-					 * @param double $mixValue
-					 * @return double
-					 */
-					try {
-						return ($this->fltMontoSeguro = QType::Cast($mixValue, QType::Float));
-					} catch (QCallerException $objExc) {
-						$objExc->IncrementOffset();
-						throw $objExc;
-					}
-
-				case 'MontoOtros':
-					/**
-					 * Sets the value for fltMontoOtros (Not Null)
-					 * @param double $mixValue
-					 * @return double
-					 */
-					try {
-						return ($this->fltMontoOtros = QType::Cast($mixValue, QType::Float));
-					} catch (QCallerException $objExc) {
-						$objExc->IncrementOffset();
-						throw $objExc;
-					}
-
-				case 'MontoTotal':
-					/**
-					 * Sets the value for fltMontoTotal (Not Null)
-					 * @param double $mixValue
-					 * @return double
-					 */
-					try {
-						return ($this->fltMontoTotal = QType::Cast($mixValue, QType::Float));
+						return ($this->dttUpdatedAt = QType::Cast($mixValue, QType::DateTime));
 					} catch (QCallerException $objExc) {
 						$objExc->IncrementOffset();
 						throw $objExc;
@@ -1426,64 +1228,32 @@
 				///////////////////
 				// Member Objects
 				///////////////////
-				case 'Factura':
+				case 'Cliente':
 					/**
-					 * Sets the value for the FacturaPmn object referenced by intFacturaId (Not Null)
-					 * @param FacturaPmn $mixValue
-					 * @return FacturaPmn
+					 * Sets the value for the MasterCliente object referenced by intClienteId (Not Null)
+					 * @param MasterCliente $mixValue
+					 * @return MasterCliente
 					 */
 					if (is_null($mixValue)) {
-						$this->intFacturaId = null;
-						$this->objFactura = null;
+						$this->intClienteId = null;
+						$this->objCliente = null;
 						return null;
 					} else {
-						// Make sure $mixValue actually is a FacturaPmn object
+						// Make sure $mixValue actually is a MasterCliente object
 						try {
-							$mixValue = QType::Cast($mixValue, 'FacturaPmn');
+							$mixValue = QType::Cast($mixValue, 'MasterCliente');
 						} catch (QInvalidCastException $objExc) {
 							$objExc->IncrementOffset();
 							throw $objExc;
 						}
 
-						// Make sure $mixValue is a SAVED FacturaPmn object
-						if (is_null($mixValue->Id))
-							throw new QCallerException('Unable to set an unsaved Factura for this ItemFacturaPmn');
+						// Make sure $mixValue is a SAVED MasterCliente object
+						if (is_null($mixValue->CodiClie))
+							throw new QCallerException('Unable to set an unsaved Cliente for this Descuentos');
 
 						// Update Local Member Variables
-						$this->objFactura = $mixValue;
-						$this->intFacturaId = $mixValue->Id;
-
-						// Return $mixValue
-						return $mixValue;
-					}
-					break;
-
-				case 'Guia':
-					/**
-					 * Sets the value for the Guia object referenced by strGuiaId (Not Null)
-					 * @param Guia $mixValue
-					 * @return Guia
-					 */
-					if (is_null($mixValue)) {
-						$this->strGuiaId = null;
-						$this->objGuia = null;
-						return null;
-					} else {
-						// Make sure $mixValue actually is a Guia object
-						try {
-							$mixValue = QType::Cast($mixValue, 'Guia');
-						} catch (QInvalidCastException $objExc) {
-							$objExc->IncrementOffset();
-							throw $objExc;
-						}
-
-						// Make sure $mixValue is a SAVED Guia object
-						if (is_null($mixValue->NumeGuia))
-							throw new QCallerException('Unable to set an unsaved Guia for this ItemFacturaPmn');
-
-						// Update Local Member Variables
-						$this->objGuia = $mixValue;
-						$this->strGuiaId = $mixValue->NumeGuia;
+						$this->objCliente = $mixValue;
+						$this->intClienteId = $mixValue->CodiClie;
 
 						// Return $mixValue
 						return $mixValue;
@@ -1540,7 +1310,7 @@
 		 * @return string Name of the table from which this class has been created.
 		 */
 		public static function GetTableName() {
-			return "item_factura_pmn";
+			return "descuentos";
 		}
 
 		/**
@@ -1548,7 +1318,7 @@
 		 * @return string Name of the table from which this class has been created.
 		 */
 		public static function GetDatabaseName() {
-			return QApplication::$Database[ItemFacturaPmn::GetDatabaseIndex()]->Database;
+			return QApplication::$Database[Descuentos::GetDatabaseIndex()]->Database;
 		}
 
 		/**
@@ -1567,29 +1337,24 @@
 		////////////////////////////////////////
 
 		public static function GetSoapComplexTypeXml() {
-			$strToReturn = '<complexType name="ItemFacturaPmn"><sequence>';
+			$strToReturn = '<complexType name="Descuentos"><sequence>';
 			$strToReturn .= '<element name="Id" type="xsd:int"/>';
-			$strToReturn .= '<element name="Factura" type="xsd1:FacturaPmn"/>';
-			$strToReturn .= '<element name="Guia" type="xsd1:Guia"/>';
-			$strToReturn .= '<element name="MontoBase" type="xsd:float"/>';
-			$strToReturn .= '<element name="PorcentajeDscto" type="xsd:float"/>';
-			$strToReturn .= '<element name="MontoDscto" type="xsd:float"/>';
-			$strToReturn .= '<element name="MontoFranqueo" type="xsd:float"/>';
-			$strToReturn .= '<element name="PorcentajeIva" type="xsd:float"/>';
-			$strToReturn .= '<element name="MontoIva" type="xsd:float"/>';
-			$strToReturn .= '<element name="MontoSeguro" type="xsd:float"/>';
-			$strToReturn .= '<element name="MontoOtros" type="xsd:float"/>';
-			$strToReturn .= '<element name="MontoTotal" type="xsd:float"/>';
+			$strToReturn .= '<element name="Cliente" type="xsd1:MasterCliente"/>';
+			$strToReturn .= '<element name="Anio" type="xsd:int"/>';
+			$strToReturn .= '<element name="Mes" type="xsd:int"/>';
+			$strToReturn .= '<element name="Descuento" type="xsd:float"/>';
+			$strToReturn .= '<element name="Factura" type="xsd:int"/>';
+			$strToReturn .= '<element name="CreatedAt" type="xsd:dateTime"/>';
+			$strToReturn .= '<element name="UpdatedAt" type="xsd:dateTime"/>';
 			$strToReturn .= '<element name="__blnRestored" type="xsd:boolean"/>';
 			$strToReturn .= '</sequence></complexType>';
 			return $strToReturn;
 		}
 
 		public static function AlterSoapComplexTypeArray(&$strComplexTypeArray) {
-			if (!array_key_exists('ItemFacturaPmn', $strComplexTypeArray)) {
-				$strComplexTypeArray['ItemFacturaPmn'] = ItemFacturaPmn::GetSoapComplexTypeXml();
-				FacturaPmn::AlterSoapComplexTypeArray($strComplexTypeArray);
-				Guia::AlterSoapComplexTypeArray($strComplexTypeArray);
+			if (!array_key_exists('Descuentos', $strComplexTypeArray)) {
+				$strComplexTypeArray['Descuentos'] = Descuentos::GetSoapComplexTypeXml();
+				MasterCliente::AlterSoapComplexTypeArray($strComplexTypeArray);
 			}
 		}
 
@@ -1597,39 +1362,30 @@
 			$objArrayToReturn = array();
 
 			foreach ($objSoapArray as $objSoapObject)
-				array_push($objArrayToReturn, ItemFacturaPmn::GetObjectFromSoapObject($objSoapObject));
+				array_push($objArrayToReturn, Descuentos::GetObjectFromSoapObject($objSoapObject));
 
 			return $objArrayToReturn;
 		}
 
 		public static function GetObjectFromSoapObject($objSoapObject) {
-			$objToReturn = new ItemFacturaPmn();
+			$objToReturn = new Descuentos();
 			if (property_exists($objSoapObject, 'Id'))
 				$objToReturn->intId = $objSoapObject->Id;
-			if ((property_exists($objSoapObject, 'Factura')) &&
-				($objSoapObject->Factura))
-				$objToReturn->Factura = FacturaPmn::GetObjectFromSoapObject($objSoapObject->Factura);
-			if ((property_exists($objSoapObject, 'Guia')) &&
-				($objSoapObject->Guia))
-				$objToReturn->Guia = Guia::GetObjectFromSoapObject($objSoapObject->Guia);
-			if (property_exists($objSoapObject, 'MontoBase'))
-				$objToReturn->fltMontoBase = $objSoapObject->MontoBase;
-			if (property_exists($objSoapObject, 'PorcentajeDscto'))
-				$objToReturn->fltPorcentajeDscto = $objSoapObject->PorcentajeDscto;
-			if (property_exists($objSoapObject, 'MontoDscto'))
-				$objToReturn->fltMontoDscto = $objSoapObject->MontoDscto;
-			if (property_exists($objSoapObject, 'MontoFranqueo'))
-				$objToReturn->fltMontoFranqueo = $objSoapObject->MontoFranqueo;
-			if (property_exists($objSoapObject, 'PorcentajeIva'))
-				$objToReturn->fltPorcentajeIva = $objSoapObject->PorcentajeIva;
-			if (property_exists($objSoapObject, 'MontoIva'))
-				$objToReturn->fltMontoIva = $objSoapObject->MontoIva;
-			if (property_exists($objSoapObject, 'MontoSeguro'))
-				$objToReturn->fltMontoSeguro = $objSoapObject->MontoSeguro;
-			if (property_exists($objSoapObject, 'MontoOtros'))
-				$objToReturn->fltMontoOtros = $objSoapObject->MontoOtros;
-			if (property_exists($objSoapObject, 'MontoTotal'))
-				$objToReturn->fltMontoTotal = $objSoapObject->MontoTotal;
+			if ((property_exists($objSoapObject, 'Cliente')) &&
+				($objSoapObject->Cliente))
+				$objToReturn->Cliente = MasterCliente::GetObjectFromSoapObject($objSoapObject->Cliente);
+			if (property_exists($objSoapObject, 'Anio'))
+				$objToReturn->intAnio = $objSoapObject->Anio;
+			if (property_exists($objSoapObject, 'Mes'))
+				$objToReturn->intMes = $objSoapObject->Mes;
+			if (property_exists($objSoapObject, 'Descuento'))
+				$objToReturn->fltDescuento = $objSoapObject->Descuento;
+			if (property_exists($objSoapObject, 'Factura'))
+				$objToReturn->intFactura = $objSoapObject->Factura;
+			if (property_exists($objSoapObject, 'CreatedAt'))
+				$objToReturn->dttCreatedAt = new QDateTime($objSoapObject->CreatedAt);
+			if (property_exists($objSoapObject, 'UpdatedAt'))
+				$objToReturn->dttUpdatedAt = new QDateTime($objSoapObject->UpdatedAt);
 			if (property_exists($objSoapObject, '__blnRestored'))
 				$objToReturn->__blnRestored = $objSoapObject->__blnRestored;
 			return $objToReturn;
@@ -1642,20 +1398,20 @@
 			$objArrayToReturn = array();
 
 			foreach ($objArray as $objObject)
-				array_push($objArrayToReturn, ItemFacturaPmn::GetSoapObjectFromObject($objObject, true));
+				array_push($objArrayToReturn, Descuentos::GetSoapObjectFromObject($objObject, true));
 
 			return unserialize(serialize($objArrayToReturn));
 		}
 
 		public static function GetSoapObjectFromObject($objObject, $blnBindRelatedObjects) {
-			if ($objObject->objFactura)
-				$objObject->objFactura = FacturaPmn::GetSoapObjectFromObject($objObject->objFactura, false);
+			if ($objObject->objCliente)
+				$objObject->objCliente = MasterCliente::GetSoapObjectFromObject($objObject->objCliente, false);
 			else if (!$blnBindRelatedObjects)
-				$objObject->intFacturaId = null;
-			if ($objObject->objGuia)
-				$objObject->objGuia = Guia::GetSoapObjectFromObject($objObject->objGuia, false);
-			else if (!$blnBindRelatedObjects)
-				$objObject->strGuiaId = null;
+				$objObject->intClienteId = null;
+			if ($objObject->dttCreatedAt)
+				$objObject->dttCreatedAt = $objObject->dttCreatedAt->qFormat(QDateTime::FormatSoap);
+			if ($objObject->dttUpdatedAt)
+				$objObject->dttUpdatedAt = $objObject->dttUpdatedAt->qFormat(QDateTime::FormatSoap);
 			return $objObject;
 		}
 
@@ -1671,17 +1427,13 @@
 			// Member Variables
 			///////////////////
 			$iArray['Id'] = $this->intId;
-			$iArray['FacturaId'] = $this->intFacturaId;
-			$iArray['GuiaId'] = $this->strGuiaId;
-			$iArray['MontoBase'] = $this->fltMontoBase;
-			$iArray['PorcentajeDscto'] = $this->fltPorcentajeDscto;
-			$iArray['MontoDscto'] = $this->fltMontoDscto;
-			$iArray['MontoFranqueo'] = $this->fltMontoFranqueo;
-			$iArray['PorcentajeIva'] = $this->fltPorcentajeIva;
-			$iArray['MontoIva'] = $this->fltMontoIva;
-			$iArray['MontoSeguro'] = $this->fltMontoSeguro;
-			$iArray['MontoOtros'] = $this->fltMontoOtros;
-			$iArray['MontoTotal'] = $this->fltMontoTotal;
+			$iArray['ClienteId'] = $this->intClienteId;
+			$iArray['Anio'] = $this->intAnio;
+			$iArray['Mes'] = $this->intMes;
+			$iArray['Descuento'] = $this->fltDescuento;
+			$iArray['Factura'] = $this->intFactura;
+			$iArray['CreatedAt'] = $this->dttCreatedAt;
+			$iArray['UpdatedAt'] = $this->dttUpdatedAt;
 			return new ArrayIterator($iArray);
 		}
 
@@ -1720,58 +1472,43 @@
      * @uses QQNode
      *
      * @property-read QQNode $Id
-     * @property-read QQNode $FacturaId
-     * @property-read QQNodeFacturaPmn $Factura
-     * @property-read QQNode $GuiaId
-     * @property-read QQNodeGuia $Guia
-     * @property-read QQNode $MontoBase
-     * @property-read QQNode $PorcentajeDscto
-     * @property-read QQNode $MontoDscto
-     * @property-read QQNode $MontoFranqueo
-     * @property-read QQNode $PorcentajeIva
-     * @property-read QQNode $MontoIva
-     * @property-read QQNode $MontoSeguro
-     * @property-read QQNode $MontoOtros
-     * @property-read QQNode $MontoTotal
+     * @property-read QQNode $ClienteId
+     * @property-read QQNodeMasterCliente $Cliente
+     * @property-read QQNode $Anio
+     * @property-read QQNode $Mes
+     * @property-read QQNode $Descuento
+     * @property-read QQNode $Factura
+     * @property-read QQNode $CreatedAt
+     * @property-read QQNode $UpdatedAt
      *
      *
 
      * @property-read QQNode $_PrimaryKeyNode
      **/
-	class QQNodeItemFacturaPmn extends QQNode {
-		protected $strTableName = 'item_factura_pmn';
+	class QQNodeDescuentos extends QQNode {
+		protected $strTableName = 'descuentos';
 		protected $strPrimaryKey = 'id';
-		protected $strClassName = 'ItemFacturaPmn';
+		protected $strClassName = 'Descuentos';
 		public function __get($strName) {
 			switch ($strName) {
 				case 'Id':
 					return new QQNode('id', 'Id', 'Integer', $this);
-				case 'FacturaId':
-					return new QQNode('factura_id', 'FacturaId', 'Integer', $this);
+				case 'ClienteId':
+					return new QQNode('cliente_id', 'ClienteId', 'Integer', $this);
+				case 'Cliente':
+					return new QQNodeMasterCliente('cliente_id', 'Cliente', 'Integer', $this);
+				case 'Anio':
+					return new QQNode('anio', 'Anio', 'Integer', $this);
+				case 'Mes':
+					return new QQNode('mes', 'Mes', 'Integer', $this);
+				case 'Descuento':
+					return new QQNode('descuento', 'Descuento', 'Float', $this);
 				case 'Factura':
-					return new QQNodeFacturaPmn('factura_id', 'Factura', 'Integer', $this);
-				case 'GuiaId':
-					return new QQNode('guia_id', 'GuiaId', 'VarChar', $this);
-				case 'Guia':
-					return new QQNodeGuia('guia_id', 'Guia', 'VarChar', $this);
-				case 'MontoBase':
-					return new QQNode('monto_base', 'MontoBase', 'Float', $this);
-				case 'PorcentajeDscto':
-					return new QQNode('porcentaje_dscto', 'PorcentajeDscto', 'Float', $this);
-				case 'MontoDscto':
-					return new QQNode('monto_dscto', 'MontoDscto', 'Float', $this);
-				case 'MontoFranqueo':
-					return new QQNode('monto_franqueo', 'MontoFranqueo', 'Float', $this);
-				case 'PorcentajeIva':
-					return new QQNode('porcentaje_iva', 'PorcentajeIva', 'Float', $this);
-				case 'MontoIva':
-					return new QQNode('monto_iva', 'MontoIva', 'Float', $this);
-				case 'MontoSeguro':
-					return new QQNode('monto_seguro', 'MontoSeguro', 'Float', $this);
-				case 'MontoOtros':
-					return new QQNode('monto_otros', 'MontoOtros', 'Float', $this);
-				case 'MontoTotal':
-					return new QQNode('monto_total', 'MontoTotal', 'Float', $this);
+					return new QQNode('factura', 'Factura', 'Integer', $this);
+				case 'CreatedAt':
+					return new QQNode('created_at', 'CreatedAt', 'DateTime', $this);
+				case 'UpdatedAt':
+					return new QQNode('updated_at', 'UpdatedAt', 'DateTime', $this);
 
 				case '_PrimaryKeyNode':
 					return new QQNode('id', 'Id', 'Integer', $this);
@@ -1788,58 +1525,43 @@
 
     /**
      * @property-read QQNode $Id
-     * @property-read QQNode $FacturaId
-     * @property-read QQNodeFacturaPmn $Factura
-     * @property-read QQNode $GuiaId
-     * @property-read QQNodeGuia $Guia
-     * @property-read QQNode $MontoBase
-     * @property-read QQNode $PorcentajeDscto
-     * @property-read QQNode $MontoDscto
-     * @property-read QQNode $MontoFranqueo
-     * @property-read QQNode $PorcentajeIva
-     * @property-read QQNode $MontoIva
-     * @property-read QQNode $MontoSeguro
-     * @property-read QQNode $MontoOtros
-     * @property-read QQNode $MontoTotal
+     * @property-read QQNode $ClienteId
+     * @property-read QQNodeMasterCliente $Cliente
+     * @property-read QQNode $Anio
+     * @property-read QQNode $Mes
+     * @property-read QQNode $Descuento
+     * @property-read QQNode $Factura
+     * @property-read QQNode $CreatedAt
+     * @property-read QQNode $UpdatedAt
      *
      *
 
      * @property-read QQNode $_PrimaryKeyNode
      **/
-	class QQReverseReferenceNodeItemFacturaPmn extends QQReverseReferenceNode {
-		protected $strTableName = 'item_factura_pmn';
+	class QQReverseReferenceNodeDescuentos extends QQReverseReferenceNode {
+		protected $strTableName = 'descuentos';
 		protected $strPrimaryKey = 'id';
-		protected $strClassName = 'ItemFacturaPmn';
+		protected $strClassName = 'Descuentos';
 		public function __get($strName) {
 			switch ($strName) {
 				case 'Id':
 					return new QQNode('id', 'Id', 'integer', $this);
-				case 'FacturaId':
-					return new QQNode('factura_id', 'FacturaId', 'integer', $this);
+				case 'ClienteId':
+					return new QQNode('cliente_id', 'ClienteId', 'integer', $this);
+				case 'Cliente':
+					return new QQNodeMasterCliente('cliente_id', 'Cliente', 'integer', $this);
+				case 'Anio':
+					return new QQNode('anio', 'Anio', 'integer', $this);
+				case 'Mes':
+					return new QQNode('mes', 'Mes', 'integer', $this);
+				case 'Descuento':
+					return new QQNode('descuento', 'Descuento', 'double', $this);
 				case 'Factura':
-					return new QQNodeFacturaPmn('factura_id', 'Factura', 'integer', $this);
-				case 'GuiaId':
-					return new QQNode('guia_id', 'GuiaId', 'string', $this);
-				case 'Guia':
-					return new QQNodeGuia('guia_id', 'Guia', 'string', $this);
-				case 'MontoBase':
-					return new QQNode('monto_base', 'MontoBase', 'double', $this);
-				case 'PorcentajeDscto':
-					return new QQNode('porcentaje_dscto', 'PorcentajeDscto', 'double', $this);
-				case 'MontoDscto':
-					return new QQNode('monto_dscto', 'MontoDscto', 'double', $this);
-				case 'MontoFranqueo':
-					return new QQNode('monto_franqueo', 'MontoFranqueo', 'double', $this);
-				case 'PorcentajeIva':
-					return new QQNode('porcentaje_iva', 'PorcentajeIva', 'double', $this);
-				case 'MontoIva':
-					return new QQNode('monto_iva', 'MontoIva', 'double', $this);
-				case 'MontoSeguro':
-					return new QQNode('monto_seguro', 'MontoSeguro', 'double', $this);
-				case 'MontoOtros':
-					return new QQNode('monto_otros', 'MontoOtros', 'double', $this);
-				case 'MontoTotal':
-					return new QQNode('monto_total', 'MontoTotal', 'double', $this);
+					return new QQNode('factura', 'Factura', 'integer', $this);
+				case 'CreatedAt':
+					return new QQNode('created_at', 'CreatedAt', 'QDateTime', $this);
+				case 'UpdatedAt':
+					return new QQNode('updated_at', 'UpdatedAt', 'QDateTime', $this);
 
 				case '_PrimaryKeyNode':
 					return new QQNode('id', 'Id', 'integer', $this);

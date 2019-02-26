@@ -25,7 +25,6 @@
 	 * @property string $NombRemi the value for strNombRemi (Not Null)
 	 * @property string $DireRemi the value for strDireRemi (Not Null)
 	 * @property string $TeleRemi the value for strTeleRemi (Not Null)
-	 * @property string $TeleRem2 the value for strTeleRem2 
 	 * @property string $NombDest the value for strNombDest (Not Null)
 	 * @property string $DireDest the value for strDireDest (Not Null)
 	 * @property string $TeleDest the value for strTeleDest (Not Null)
@@ -40,11 +39,14 @@
 	 * @property double $MontoGas the value for fltMontoGas 
 	 * @property boolean $Asegurado the value for blnAsegurado 
 	 * @property double $PorcentajeSeguro the value for fltPorcentajeSeguro (Not Null)
+	 * @property double $PorcentajeDscto the value for fltPorcentajeDscto 
 	 * @property double $MontoSeguro the value for fltMontoSeguro (Not Null)
 	 * @property double $MontoBase the value for fltMontoBase (Not Null)
 	 * @property double $MontoFranqueo the value for fltMontoFranqueo (Not Null)
+	 * @property double $MontoDscto the value for fltMontoDscto 
 	 * @property double $MontoOtros the value for fltMontoOtros 
 	 * @property double $MontoTotal the value for fltMontoTotal (Not Null)
+	 * @property boolean $ConsiderarDscto the value for blnConsiderarDscto 
 	 * @property string $EntregadoA the value for strEntregadoA 
 	 * @property QDateTime $FechaEntrega the value for dttFechaEntrega 
 	 * @property string $HoraEntrega the value for strHoraEntrega 
@@ -138,6 +140,8 @@
 	 * @property-read SdeContenedor[] $_SdeContenedorArray the value for the private _objSdeContenedorArray (Read-Only) if set due to an ExpandAsArray on the sde_contenedor_guia_assn association table
 	 * @property-read GuiaCkpt $_GuiaCkptAsNume the value for the private _objGuiaCkptAsNume (Read-Only) if set due to an expansion on the guia_ckpt.nume_guia reverse relationship
 	 * @property-read GuiaCkpt[] $_GuiaCkptAsNumeArray the value for the private _objGuiaCkptAsNumeArray (Read-Only) if set due to an ExpandAsArray on the guia_ckpt.nume_guia reverse relationship
+	 * @property-read ItemFacturaPmn $_ItemFacturaPmn the value for the private _objItemFacturaPmn (Read-Only) if set due to an expansion on the item_factura_pmn.guia_id reverse relationship
+	 * @property-read ItemFacturaPmn[] $_ItemFacturaPmnArray the value for the private _objItemFacturaPmnArray (Read-Only) if set due to an ExpandAsArray on the item_factura_pmn.guia_id reverse relationship
 	 * @property-read ItemNotaCredito $_ItemNotaCredito the value for the private _objItemNotaCredito (Read-Only) if set due to an expansion on the item_nota_credito.guia_id reverse relationship
 	 * @property-read ItemNotaCredito[] $_ItemNotaCreditoArray the value for the private _objItemNotaCreditoArray (Read-Only) if set due to an ExpandAsArray on the item_nota_credito.guia_id reverse relationship
 	 * @property-read Notificacion $_Notificacion the value for the private _objNotificacion (Read-Only) if set due to an expansion on the notificacion.guia_id reverse relationship
@@ -245,15 +249,6 @@
 		protected $strTeleRemi;
 		const TeleRemiMaxLength = 50;
 		const TeleRemiDefault = null;
-
-
-		/**
-		 * Protected member variable that maps to the database column guia.tele_rem2
-		 * @var string strTeleRem2
-		 */
-		protected $strTeleRem2;
-		const TeleRem2MaxLength = 50;
-		const TeleRem2Default = null;
 
 
 		/**
@@ -373,6 +368,14 @@
 
 
 		/**
+		 * Protected member variable that maps to the database column guia.porcentaje_dscto
+		 * @var double fltPorcentajeDscto
+		 */
+		protected $fltPorcentajeDscto;
+		const PorcentajeDsctoDefault = null;
+
+
+		/**
 		 * Protected member variable that maps to the database column guia.monto_seguro
 		 * @var double fltMontoSeguro
 		 */
@@ -397,6 +400,14 @@
 
 
 		/**
+		 * Protected member variable that maps to the database column guia.monto_dscto
+		 * @var double fltMontoDscto
+		 */
+		protected $fltMontoDscto;
+		const MontoDsctoDefault = null;
+
+
+		/**
 		 * Protected member variable that maps to the database column guia.monto_otros
 		 * @var double fltMontoOtros
 		 */
@@ -410,6 +421,14 @@
 		 */
 		protected $fltMontoTotal;
 		const MontoTotalDefault = null;
+
+
+		/**
+		 * Protected member variable that maps to the database column guia.considerar_dscto
+		 * @var boolean blnConsiderarDscto
+		 */
+		protected $blnConsiderarDscto;
+		const ConsiderarDsctoDefault = null;
 
 
 		/**
@@ -1002,6 +1021,22 @@
 		private $_objGuiaCkptAsNumeArray = null;
 
 		/**
+		 * Private member variable that stores a reference to a single ItemFacturaPmn object
+		 * (of type ItemFacturaPmn), if this Guia object was restored with
+		 * an expansion on the item_factura_pmn association table.
+		 * @var ItemFacturaPmn _objItemFacturaPmn;
+		 */
+		private $_objItemFacturaPmn;
+
+		/**
+		 * Private member variable that stores a reference to an array of ItemFacturaPmn objects
+		 * (of type ItemFacturaPmn[]), if this Guia object was restored with
+		 * an ExpandAsArray on the item_factura_pmn association table.
+		 * @var ItemFacturaPmn[] _objItemFacturaPmnArray;
+		 */
+		private $_objItemFacturaPmnArray = null;
+
+		/**
 		 * Private member variable that stores a reference to a single ItemNotaCredito object
 		 * (of type ItemNotaCredito), if this Guia object was restored with
 		 * an expansion on the item_nota_credito association table.
@@ -1388,7 +1423,6 @@
 			$this->strNombRemi = Guia::NombRemiDefault;
 			$this->strDireRemi = Guia::DireRemiDefault;
 			$this->strTeleRemi = Guia::TeleRemiDefault;
-			$this->strTeleRem2 = Guia::TeleRem2Default;
 			$this->strNombDest = Guia::NombDestDefault;
 			$this->strDireDest = Guia::DireDestDefault;
 			$this->strTeleDest = Guia::TeleDestDefault;
@@ -1403,11 +1437,14 @@
 			$this->fltMontoGas = Guia::MontoGasDefault;
 			$this->blnAsegurado = Guia::AseguradoDefault;
 			$this->fltPorcentajeSeguro = Guia::PorcentajeSeguroDefault;
+			$this->fltPorcentajeDscto = Guia::PorcentajeDsctoDefault;
 			$this->fltMontoSeguro = Guia::MontoSeguroDefault;
 			$this->fltMontoBase = Guia::MontoBaseDefault;
 			$this->fltMontoFranqueo = Guia::MontoFranqueoDefault;
+			$this->fltMontoDscto = Guia::MontoDsctoDefault;
 			$this->fltMontoOtros = Guia::MontoOtrosDefault;
 			$this->fltMontoTotal = Guia::MontoTotalDefault;
+			$this->blnConsiderarDscto = Guia::ConsiderarDsctoDefault;
 			$this->strEntregadoA = Guia::EntregadoADefault;
 			$this->dttFechaEntrega = (Guia::FechaEntregaDefault === null)?null:new QDateTime(Guia::FechaEntregaDefault);
 			$this->strHoraEntrega = Guia::HoraEntregaDefault;
@@ -1824,7 +1861,6 @@
 			    $objBuilder->AddSelectItem($strTableName, 'nomb_remi', $strAliasPrefix . 'nomb_remi');
 			    $objBuilder->AddSelectItem($strTableName, 'dire_remi', $strAliasPrefix . 'dire_remi');
 			    $objBuilder->AddSelectItem($strTableName, 'tele_remi', $strAliasPrefix . 'tele_remi');
-			    $objBuilder->AddSelectItem($strTableName, 'tele_rem2', $strAliasPrefix . 'tele_rem2');
 			    $objBuilder->AddSelectItem($strTableName, 'nomb_dest', $strAliasPrefix . 'nomb_dest');
 			    $objBuilder->AddSelectItem($strTableName, 'dire_dest', $strAliasPrefix . 'dire_dest');
 			    $objBuilder->AddSelectItem($strTableName, 'tele_dest', $strAliasPrefix . 'tele_dest');
@@ -1839,11 +1875,14 @@
 			    $objBuilder->AddSelectItem($strTableName, 'monto_gas', $strAliasPrefix . 'monto_gas');
 			    $objBuilder->AddSelectItem($strTableName, 'asegurado', $strAliasPrefix . 'asegurado');
 			    $objBuilder->AddSelectItem($strTableName, 'porcentaje_seguro', $strAliasPrefix . 'porcentaje_seguro');
+			    $objBuilder->AddSelectItem($strTableName, 'porcentaje_dscto', $strAliasPrefix . 'porcentaje_dscto');
 			    $objBuilder->AddSelectItem($strTableName, 'monto_seguro', $strAliasPrefix . 'monto_seguro');
 			    $objBuilder->AddSelectItem($strTableName, 'monto_base', $strAliasPrefix . 'monto_base');
 			    $objBuilder->AddSelectItem($strTableName, 'monto_franqueo', $strAliasPrefix . 'monto_franqueo');
+			    $objBuilder->AddSelectItem($strTableName, 'monto_dscto', $strAliasPrefix . 'monto_dscto');
 			    $objBuilder->AddSelectItem($strTableName, 'monto_otros', $strAliasPrefix . 'monto_otros');
 			    $objBuilder->AddSelectItem($strTableName, 'monto_total', $strAliasPrefix . 'monto_total');
+			    $objBuilder->AddSelectItem($strTableName, 'considerar_dscto', $strAliasPrefix . 'considerar_dscto');
 			    $objBuilder->AddSelectItem($strTableName, 'entregado_a', $strAliasPrefix . 'entregado_a');
 			    $objBuilder->AddSelectItem($strTableName, 'fecha_entrega', $strAliasPrefix . 'fecha_entrega');
 			    $objBuilder->AddSelectItem($strTableName, 'hora_entrega', $strAliasPrefix . 'hora_entrega');
@@ -2065,9 +2104,6 @@
 			$strAlias = $strAliasPrefix . 'tele_remi';
 			$strAliasName = !empty($strColumnAliasArray[$strAlias]) ? $strColumnAliasArray[$strAlias] : $strAlias;
 			$objToReturn->strTeleRemi = $objDbRow->GetColumn($strAliasName, 'VarChar');
-			$strAlias = $strAliasPrefix . 'tele_rem2';
-			$strAliasName = !empty($strColumnAliasArray[$strAlias]) ? $strColumnAliasArray[$strAlias] : $strAlias;
-			$objToReturn->strTeleRem2 = $objDbRow->GetColumn($strAliasName, 'VarChar');
 			$strAlias = $strAliasPrefix . 'nomb_dest';
 			$strAliasName = !empty($strColumnAliasArray[$strAlias]) ? $strColumnAliasArray[$strAlias] : $strAlias;
 			$objToReturn->strNombDest = $objDbRow->GetColumn($strAliasName, 'VarChar');
@@ -2110,6 +2146,9 @@
 			$strAlias = $strAliasPrefix . 'porcentaje_seguro';
 			$strAliasName = !empty($strColumnAliasArray[$strAlias]) ? $strColumnAliasArray[$strAlias] : $strAlias;
 			$objToReturn->fltPorcentajeSeguro = $objDbRow->GetColumn($strAliasName, 'Float');
+			$strAlias = $strAliasPrefix . 'porcentaje_dscto';
+			$strAliasName = !empty($strColumnAliasArray[$strAlias]) ? $strColumnAliasArray[$strAlias] : $strAlias;
+			$objToReturn->fltPorcentajeDscto = $objDbRow->GetColumn($strAliasName, 'Float');
 			$strAlias = $strAliasPrefix . 'monto_seguro';
 			$strAliasName = !empty($strColumnAliasArray[$strAlias]) ? $strColumnAliasArray[$strAlias] : $strAlias;
 			$objToReturn->fltMontoSeguro = $objDbRow->GetColumn($strAliasName, 'Float');
@@ -2119,12 +2158,18 @@
 			$strAlias = $strAliasPrefix . 'monto_franqueo';
 			$strAliasName = !empty($strColumnAliasArray[$strAlias]) ? $strColumnAliasArray[$strAlias] : $strAlias;
 			$objToReturn->fltMontoFranqueo = $objDbRow->GetColumn($strAliasName, 'Float');
+			$strAlias = $strAliasPrefix . 'monto_dscto';
+			$strAliasName = !empty($strColumnAliasArray[$strAlias]) ? $strColumnAliasArray[$strAlias] : $strAlias;
+			$objToReturn->fltMontoDscto = $objDbRow->GetColumn($strAliasName, 'Float');
 			$strAlias = $strAliasPrefix . 'monto_otros';
 			$strAliasName = !empty($strColumnAliasArray[$strAlias]) ? $strColumnAliasArray[$strAlias] : $strAlias;
 			$objToReturn->fltMontoOtros = $objDbRow->GetColumn($strAliasName, 'Float');
 			$strAlias = $strAliasPrefix . 'monto_total';
 			$strAliasName = !empty($strColumnAliasArray[$strAlias]) ? $strColumnAliasArray[$strAlias] : $strAlias;
 			$objToReturn->fltMontoTotal = $objDbRow->GetColumn($strAliasName, 'Float');
+			$strAlias = $strAliasPrefix . 'considerar_dscto';
+			$strAliasName = !empty($strColumnAliasArray[$strAlias]) ? $strColumnAliasArray[$strAlias] : $strAlias;
+			$objToReturn->blnConsiderarDscto = $objDbRow->GetColumn($strAliasName, 'Bit');
 			$strAlias = $strAliasPrefix . 'entregado_a';
 			$strAliasName = !empty($strColumnAliasArray[$strAlias]) ? $strColumnAliasArray[$strAlias] : $strAlias;
 			$objToReturn->strEntregadoA = $objDbRow->GetColumn($strAliasName, 'VarChar');
@@ -2615,6 +2660,21 @@
 					$objToReturn->_objGuiaCkptAsNumeArray[] = GuiaCkpt::InstantiateDbRow($objDbRow, $strAliasPrefix . 'guiackptasnume__', $objExpansionNode, null, $strColumnAliasArray);
 				} elseif (is_null($objToReturn->_objGuiaCkptAsNume)) {
 					$objToReturn->_objGuiaCkptAsNume = GuiaCkpt::InstantiateDbRow($objDbRow, $strAliasPrefix . 'guiackptasnume__', $objExpansionNode, null, $strColumnAliasArray);
+				}
+			}
+
+			// Check for ItemFacturaPmn Virtual Binding
+			$strAlias = $strAliasPrefix . 'itemfacturapmn__id';
+			$strAliasName = !empty($strColumnAliasArray[$strAlias]) ? $strColumnAliasArray[$strAlias] : $strAlias;
+			$objExpansionNode = (empty($objExpansionAliasArray['itemfacturapmn']) ? null : $objExpansionAliasArray['itemfacturapmn']);
+			$blnExpanded = ($objExpansionNode && $objExpansionNode->ExpandAsArray);
+			if ($blnExpanded && null === $objToReturn->_objItemFacturaPmnArray)
+				$objToReturn->_objItemFacturaPmnArray = array();
+			if (!is_null($objDbRow->GetColumn($strAliasName))) {
+				if ($blnExpanded) {
+					$objToReturn->_objItemFacturaPmnArray[] = ItemFacturaPmn::InstantiateDbRow($objDbRow, $strAliasPrefix . 'itemfacturapmn__', $objExpansionNode, null, $strColumnAliasArray);
+				} elseif (is_null($objToReturn->_objItemFacturaPmn)) {
+					$objToReturn->_objItemFacturaPmn = ItemFacturaPmn::InstantiateDbRow($objDbRow, $strAliasPrefix . 'itemfacturapmn__', $objExpansionNode, null, $strColumnAliasArray);
 				}
 			}
 
@@ -3830,7 +3890,6 @@
 							`nomb_remi`,
 							`dire_remi`,
 							`tele_remi`,
-							`tele_rem2`,
 							`nomb_dest`,
 							`dire_dest`,
 							`tele_dest`,
@@ -3845,11 +3904,14 @@
 							`monto_gas`,
 							`asegurado`,
 							`porcentaje_seguro`,
+							`porcentaje_dscto`,
 							`monto_seguro`,
 							`monto_base`,
 							`monto_franqueo`,
+							`monto_dscto`,
 							`monto_otros`,
 							`monto_total`,
+							`considerar_dscto`,
 							`entregado_a`,
 							`fecha_entrega`,
 							`hora_entrega`,
@@ -3926,7 +3988,6 @@
 							' . $objDatabase->SqlVariable($this->strNombRemi) . ',
 							' . $objDatabase->SqlVariable($this->strDireRemi) . ',
 							' . $objDatabase->SqlVariable($this->strTeleRemi) . ',
-							' . $objDatabase->SqlVariable($this->strTeleRem2) . ',
 							' . $objDatabase->SqlVariable($this->strNombDest) . ',
 							' . $objDatabase->SqlVariable($this->strDireDest) . ',
 							' . $objDatabase->SqlVariable($this->strTeleDest) . ',
@@ -3941,11 +4002,14 @@
 							' . $objDatabase->SqlVariable($this->fltMontoGas) . ',
 							' . $objDatabase->SqlVariable($this->blnAsegurado) . ',
 							' . $objDatabase->SqlVariable($this->fltPorcentajeSeguro) . ',
+							' . $objDatabase->SqlVariable($this->fltPorcentajeDscto) . ',
 							' . $objDatabase->SqlVariable($this->fltMontoSeguro) . ',
 							' . $objDatabase->SqlVariable($this->fltMontoBase) . ',
 							' . $objDatabase->SqlVariable($this->fltMontoFranqueo) . ',
+							' . $objDatabase->SqlVariable($this->fltMontoDscto) . ',
 							' . $objDatabase->SqlVariable($this->fltMontoOtros) . ',
 							' . $objDatabase->SqlVariable($this->fltMontoTotal) . ',
+							' . $objDatabase->SqlVariable($this->blnConsiderarDscto) . ',
 							' . $objDatabase->SqlVariable($this->strEntregadoA) . ',
 							' . $objDatabase->SqlVariable($this->dttFechaEntrega) . ',
 							' . $objDatabase->SqlVariable($this->strHoraEntrega) . ',
@@ -4035,7 +4099,6 @@
 							`nomb_remi` = ' . $objDatabase->SqlVariable($this->strNombRemi) . ',
 							`dire_remi` = ' . $objDatabase->SqlVariable($this->strDireRemi) . ',
 							`tele_remi` = ' . $objDatabase->SqlVariable($this->strTeleRemi) . ',
-							`tele_rem2` = ' . $objDatabase->SqlVariable($this->strTeleRem2) . ',
 							`nomb_dest` = ' . $objDatabase->SqlVariable($this->strNombDest) . ',
 							`dire_dest` = ' . $objDatabase->SqlVariable($this->strDireDest) . ',
 							`tele_dest` = ' . $objDatabase->SqlVariable($this->strTeleDest) . ',
@@ -4050,11 +4113,14 @@
 							`monto_gas` = ' . $objDatabase->SqlVariable($this->fltMontoGas) . ',
 							`asegurado` = ' . $objDatabase->SqlVariable($this->blnAsegurado) . ',
 							`porcentaje_seguro` = ' . $objDatabase->SqlVariable($this->fltPorcentajeSeguro) . ',
+							`porcentaje_dscto` = ' . $objDatabase->SqlVariable($this->fltPorcentajeDscto) . ',
 							`monto_seguro` = ' . $objDatabase->SqlVariable($this->fltMontoSeguro) . ',
 							`monto_base` = ' . $objDatabase->SqlVariable($this->fltMontoBase) . ',
 							`monto_franqueo` = ' . $objDatabase->SqlVariable($this->fltMontoFranqueo) . ',
+							`monto_dscto` = ' . $objDatabase->SqlVariable($this->fltMontoDscto) . ',
 							`monto_otros` = ' . $objDatabase->SqlVariable($this->fltMontoOtros) . ',
 							`monto_total` = ' . $objDatabase->SqlVariable($this->fltMontoTotal) . ',
+							`considerar_dscto` = ' . $objDatabase->SqlVariable($this->blnConsiderarDscto) . ',
 							`entregado_a` = ' . $objDatabase->SqlVariable($this->strEntregadoA) . ',
 							`fecha_entrega` = ' . $objDatabase->SqlVariable($this->dttFechaEntrega) . ',
 							`hora_entrega` = ' . $objDatabase->SqlVariable($this->strHoraEntrega) . ',
@@ -4468,7 +4534,6 @@
 			$this->strNombRemi = $objReloaded->strNombRemi;
 			$this->strDireRemi = $objReloaded->strDireRemi;
 			$this->strTeleRemi = $objReloaded->strTeleRemi;
-			$this->strTeleRem2 = $objReloaded->strTeleRem2;
 			$this->strNombDest = $objReloaded->strNombDest;
 			$this->strDireDest = $objReloaded->strDireDest;
 			$this->strTeleDest = $objReloaded->strTeleDest;
@@ -4483,11 +4548,14 @@
 			$this->fltMontoGas = $objReloaded->fltMontoGas;
 			$this->blnAsegurado = $objReloaded->blnAsegurado;
 			$this->fltPorcentajeSeguro = $objReloaded->fltPorcentajeSeguro;
+			$this->fltPorcentajeDscto = $objReloaded->fltPorcentajeDscto;
 			$this->fltMontoSeguro = $objReloaded->fltMontoSeguro;
 			$this->fltMontoBase = $objReloaded->fltMontoBase;
 			$this->fltMontoFranqueo = $objReloaded->fltMontoFranqueo;
+			$this->fltMontoDscto = $objReloaded->fltMontoDscto;
 			$this->fltMontoOtros = $objReloaded->fltMontoOtros;
 			$this->fltMontoTotal = $objReloaded->fltMontoTotal;
+			$this->blnConsiderarDscto = $objReloaded->blnConsiderarDscto;
 			$this->strEntregadoA = $objReloaded->strEntregadoA;
 			$this->dttFechaEntrega = $objReloaded->dttFechaEntrega;
 			$this->strHoraEntrega = $objReloaded->strHoraEntrega;
@@ -4643,13 +4711,6 @@
 					 */
 					return $this->strTeleRemi;
 
-				case 'TeleRem2':
-					/**
-					 * Gets the value for strTeleRem2 
-					 * @return string
-					 */
-					return $this->strTeleRem2;
-
 				case 'NombDest':
 					/**
 					 * Gets the value for strNombDest (Not Null)
@@ -4748,6 +4809,13 @@
 					 */
 					return $this->fltPorcentajeSeguro;
 
+				case 'PorcentajeDscto':
+					/**
+					 * Gets the value for fltPorcentajeDscto 
+					 * @return double
+					 */
+					return $this->fltPorcentajeDscto;
+
 				case 'MontoSeguro':
 					/**
 					 * Gets the value for fltMontoSeguro (Not Null)
@@ -4769,6 +4837,13 @@
 					 */
 					return $this->fltMontoFranqueo;
 
+				case 'MontoDscto':
+					/**
+					 * Gets the value for fltMontoDscto 
+					 * @return double
+					 */
+					return $this->fltMontoDscto;
+
 				case 'MontoOtros':
 					/**
 					 * Gets the value for fltMontoOtros 
@@ -4782,6 +4857,13 @@
 					 * @return double
 					 */
 					return $this->fltMontoTotal;
+
+				case 'ConsiderarDscto':
+					/**
+					 * Gets the value for blnConsiderarDscto 
+					 * @return boolean
+					 */
+					return $this->blnConsiderarDscto;
 
 				case 'EntregadoA':
 					/**
@@ -5636,6 +5718,22 @@
 					 */
 					return $this->_objGuiaCkptAsNumeArray;
 
+				case '_ItemFacturaPmn':
+					/**
+					 * Gets the value for the private _objItemFacturaPmn (Read-Only)
+					 * if set due to an expansion on the item_factura_pmn.guia_id reverse relationship
+					 * @return ItemFacturaPmn
+					 */
+					return $this->_objItemFacturaPmn;
+
+				case '_ItemFacturaPmnArray':
+					/**
+					 * Gets the value for the private _objItemFacturaPmnArray (Read-Only)
+					 * if set due to an ExpandAsArray on the item_factura_pmn.guia_id reverse relationship
+					 * @return ItemFacturaPmn[]
+					 */
+					return $this->_objItemFacturaPmnArray;
+
 				case '_ItemNotaCredito':
 					/**
 					 * Gets the value for the private _objItemNotaCredito (Read-Only)
@@ -5861,19 +5959,6 @@
 						throw $objExc;
 					}
 
-				case 'TeleRem2':
-					/**
-					 * Sets the value for strTeleRem2 
-					 * @param string $mixValue
-					 * @return string
-					 */
-					try {
-						return ($this->strTeleRem2 = QType::Cast($mixValue, QType::String));
-					} catch (QCallerException $objExc) {
-						$objExc->IncrementOffset();
-						throw $objExc;
-					}
-
 				case 'NombDest':
 					/**
 					 * Sets the value for strNombDest (Not Null)
@@ -6057,6 +6142,19 @@
 						throw $objExc;
 					}
 
+				case 'PorcentajeDscto':
+					/**
+					 * Sets the value for fltPorcentajeDscto 
+					 * @param double $mixValue
+					 * @return double
+					 */
+					try {
+						return ($this->fltPorcentajeDscto = QType::Cast($mixValue, QType::Float));
+					} catch (QCallerException $objExc) {
+						$objExc->IncrementOffset();
+						throw $objExc;
+					}
+
 				case 'MontoSeguro':
 					/**
 					 * Sets the value for fltMontoSeguro (Not Null)
@@ -6096,6 +6194,19 @@
 						throw $objExc;
 					}
 
+				case 'MontoDscto':
+					/**
+					 * Sets the value for fltMontoDscto 
+					 * @param double $mixValue
+					 * @return double
+					 */
+					try {
+						return ($this->fltMontoDscto = QType::Cast($mixValue, QType::Float));
+					} catch (QCallerException $objExc) {
+						$objExc->IncrementOffset();
+						throw $objExc;
+					}
+
 				case 'MontoOtros':
 					/**
 					 * Sets the value for fltMontoOtros 
@@ -6117,6 +6228,19 @@
 					 */
 					try {
 						return ($this->fltMontoTotal = QType::Cast($mixValue, QType::Float));
+					} catch (QCallerException $objExc) {
+						$objExc->IncrementOffset();
+						throw $objExc;
+					}
+
+				case 'ConsiderarDscto':
+					/**
+					 * Sets the value for blnConsiderarDscto 
+					 * @param boolean $mixValue
+					 * @return boolean
+					 */
+					try {
+						return ($this->blnConsiderarDscto = QType::Cast($mixValue, QType::Boolean));
 					} catch (QCallerException $objExc) {
 						$objExc->IncrementOffset();
 						throw $objExc;
@@ -7773,6 +7897,9 @@
 			if ($this->CountGuiaCkptsAsNume()) {
 				$arrTablRela[] = 'guia_ckpt';
 			}
+			if ($this->CountItemFacturaPmns()) {
+				$arrTablRela[] = 'item_factura_pmn';
+			}
 			if ($this->CountItemNotaCreditos()) {
 				$arrTablRela[] = 'item_nota_credito';
 			}
@@ -7952,6 +8079,155 @@
 					`guia_ckpt`
 				WHERE
 					`nume_guia` = ' . $objDatabase->SqlVariable($this->strNumeGuia) . '
+			');
+		}
+
+
+		// Related Objects' Methods for ItemFacturaPmn
+		//-------------------------------------------------------------------
+
+		/**
+		 * Gets all associated ItemFacturaPmns as an array of ItemFacturaPmn objects
+		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
+		 * @return ItemFacturaPmn[]
+		*/
+		public function GetItemFacturaPmnArray($objOptionalClauses = null) {
+			if ((is_null($this->strNumeGuia)))
+				return array();
+
+			try {
+				return ItemFacturaPmn::LoadArrayByGuiaId($this->strNumeGuia, $objOptionalClauses);
+			} catch (QCallerException $objExc) {
+				$objExc->IncrementOffset();
+				throw $objExc;
+			}
+		}
+
+		/**
+		 * Counts all associated ItemFacturaPmns
+		 * @return int
+		*/
+		public function CountItemFacturaPmns() {
+			if ((is_null($this->strNumeGuia)))
+				return 0;
+
+			return ItemFacturaPmn::CountByGuiaId($this->strNumeGuia);
+		}
+
+		/**
+		 * Associates a ItemFacturaPmn
+		 * @param ItemFacturaPmn $objItemFacturaPmn
+		 * @return void
+		*/
+		public function AssociateItemFacturaPmn(ItemFacturaPmn $objItemFacturaPmn) {
+			if ((is_null($this->strNumeGuia)))
+				throw new QUndefinedPrimaryKeyException('Unable to call AssociateItemFacturaPmn on this unsaved Guia.');
+			if ((is_null($objItemFacturaPmn->Id)))
+				throw new QUndefinedPrimaryKeyException('Unable to call AssociateItemFacturaPmn on this Guia with an unsaved ItemFacturaPmn.');
+
+			// Get the Database Object for this Class
+			$objDatabase = Guia::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				UPDATE
+					`item_factura_pmn`
+				SET
+					`guia_id` = ' . $objDatabase->SqlVariable($this->strNumeGuia) . '
+				WHERE
+					`id` = ' . $objDatabase->SqlVariable($objItemFacturaPmn->Id) . '
+			');
+		}
+
+		/**
+		 * Unassociates a ItemFacturaPmn
+		 * @param ItemFacturaPmn $objItemFacturaPmn
+		 * @return void
+		*/
+		public function UnassociateItemFacturaPmn(ItemFacturaPmn $objItemFacturaPmn) {
+			if ((is_null($this->strNumeGuia)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateItemFacturaPmn on this unsaved Guia.');
+			if ((is_null($objItemFacturaPmn->Id)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateItemFacturaPmn on this Guia with an unsaved ItemFacturaPmn.');
+
+			// Get the Database Object for this Class
+			$objDatabase = Guia::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				UPDATE
+					`item_factura_pmn`
+				SET
+					`guia_id` = null
+				WHERE
+					`id` = ' . $objDatabase->SqlVariable($objItemFacturaPmn->Id) . ' AND
+					`guia_id` = ' . $objDatabase->SqlVariable($this->strNumeGuia) . '
+			');
+		}
+
+		/**
+		 * Unassociates all ItemFacturaPmns
+		 * @return void
+		*/
+		public function UnassociateAllItemFacturaPmns() {
+			if ((is_null($this->strNumeGuia)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateItemFacturaPmn on this unsaved Guia.');
+
+			// Get the Database Object for this Class
+			$objDatabase = Guia::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				UPDATE
+					`item_factura_pmn`
+				SET
+					`guia_id` = null
+				WHERE
+					`guia_id` = ' . $objDatabase->SqlVariable($this->strNumeGuia) . '
+			');
+		}
+
+		/**
+		 * Deletes an associated ItemFacturaPmn
+		 * @param ItemFacturaPmn $objItemFacturaPmn
+		 * @return void
+		*/
+		public function DeleteAssociatedItemFacturaPmn(ItemFacturaPmn $objItemFacturaPmn) {
+			if ((is_null($this->strNumeGuia)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateItemFacturaPmn on this unsaved Guia.');
+			if ((is_null($objItemFacturaPmn->Id)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateItemFacturaPmn on this Guia with an unsaved ItemFacturaPmn.');
+
+			// Get the Database Object for this Class
+			$objDatabase = Guia::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				DELETE FROM
+					`item_factura_pmn`
+				WHERE
+					`id` = ' . $objDatabase->SqlVariable($objItemFacturaPmn->Id) . ' AND
+					`guia_id` = ' . $objDatabase->SqlVariable($this->strNumeGuia) . '
+			');
+		}
+
+		/**
+		 * Deletes all associated ItemFacturaPmns
+		 * @return void
+		*/
+		public function DeleteAllItemFacturaPmns() {
+			if ((is_null($this->strNumeGuia)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateItemFacturaPmn on this unsaved Guia.');
+
+			// Get the Database Object for this Class
+			$objDatabase = Guia::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				DELETE FROM
+					`item_factura_pmn`
+				WHERE
+					`guia_id` = ' . $objDatabase->SqlVariable($this->strNumeGuia) . '
 			');
 		}
 
@@ -8856,7 +9132,6 @@
 			$strToReturn .= '<element name="NombRemi" type="xsd:string"/>';
 			$strToReturn .= '<element name="DireRemi" type="xsd:string"/>';
 			$strToReturn .= '<element name="TeleRemi" type="xsd:string"/>';
-			$strToReturn .= '<element name="TeleRem2" type="xsd:string"/>';
 			$strToReturn .= '<element name="NombDest" type="xsd:string"/>';
 			$strToReturn .= '<element name="DireDest" type="xsd:string"/>';
 			$strToReturn .= '<element name="TeleDest" type="xsd:string"/>';
@@ -8871,11 +9146,14 @@
 			$strToReturn .= '<element name="MontoGas" type="xsd:float"/>';
 			$strToReturn .= '<element name="Asegurado" type="xsd:boolean"/>';
 			$strToReturn .= '<element name="PorcentajeSeguro" type="xsd:float"/>';
+			$strToReturn .= '<element name="PorcentajeDscto" type="xsd:float"/>';
 			$strToReturn .= '<element name="MontoSeguro" type="xsd:float"/>';
 			$strToReturn .= '<element name="MontoBase" type="xsd:float"/>';
 			$strToReturn .= '<element name="MontoFranqueo" type="xsd:float"/>';
+			$strToReturn .= '<element name="MontoDscto" type="xsd:float"/>';
 			$strToReturn .= '<element name="MontoOtros" type="xsd:float"/>';
 			$strToReturn .= '<element name="MontoTotal" type="xsd:float"/>';
+			$strToReturn .= '<element name="ConsiderarDscto" type="xsd:boolean"/>';
 			$strToReturn .= '<element name="EntregadoA" type="xsd:string"/>';
 			$strToReturn .= '<element name="FechaEntrega" type="xsd:dateTime"/>';
 			$strToReturn .= '<element name="HoraEntrega" type="xsd:string"/>';
@@ -9001,8 +9279,6 @@
 				$objToReturn->strDireRemi = $objSoapObject->DireRemi;
 			if (property_exists($objSoapObject, 'TeleRemi'))
 				$objToReturn->strTeleRemi = $objSoapObject->TeleRemi;
-			if (property_exists($objSoapObject, 'TeleRem2'))
-				$objToReturn->strTeleRem2 = $objSoapObject->TeleRem2;
 			if (property_exists($objSoapObject, 'NombDest'))
 				$objToReturn->strNombDest = $objSoapObject->NombDest;
 			if (property_exists($objSoapObject, 'DireDest'))
@@ -9032,16 +9308,22 @@
 				$objToReturn->blnAsegurado = $objSoapObject->Asegurado;
 			if (property_exists($objSoapObject, 'PorcentajeSeguro'))
 				$objToReturn->fltPorcentajeSeguro = $objSoapObject->PorcentajeSeguro;
+			if (property_exists($objSoapObject, 'PorcentajeDscto'))
+				$objToReturn->fltPorcentajeDscto = $objSoapObject->PorcentajeDscto;
 			if (property_exists($objSoapObject, 'MontoSeguro'))
 				$objToReturn->fltMontoSeguro = $objSoapObject->MontoSeguro;
 			if (property_exists($objSoapObject, 'MontoBase'))
 				$objToReturn->fltMontoBase = $objSoapObject->MontoBase;
 			if (property_exists($objSoapObject, 'MontoFranqueo'))
 				$objToReturn->fltMontoFranqueo = $objSoapObject->MontoFranqueo;
+			if (property_exists($objSoapObject, 'MontoDscto'))
+				$objToReturn->fltMontoDscto = $objSoapObject->MontoDscto;
 			if (property_exists($objSoapObject, 'MontoOtros'))
 				$objToReturn->fltMontoOtros = $objSoapObject->MontoOtros;
 			if (property_exists($objSoapObject, 'MontoTotal'))
 				$objToReturn->fltMontoTotal = $objSoapObject->MontoTotal;
+			if (property_exists($objSoapObject, 'ConsiderarDscto'))
+				$objToReturn->blnConsiderarDscto = $objSoapObject->ConsiderarDscto;
 			if (property_exists($objSoapObject, 'EntregadoA'))
 				$objToReturn->strEntregadoA = $objSoapObject->EntregadoA;
 			if (property_exists($objSoapObject, 'FechaEntrega'))
@@ -9289,7 +9571,6 @@
 			$iArray['NombRemi'] = $this->strNombRemi;
 			$iArray['DireRemi'] = $this->strDireRemi;
 			$iArray['TeleRemi'] = $this->strTeleRemi;
-			$iArray['TeleRem2'] = $this->strTeleRem2;
 			$iArray['NombDest'] = $this->strNombDest;
 			$iArray['DireDest'] = $this->strDireDest;
 			$iArray['TeleDest'] = $this->strTeleDest;
@@ -9304,11 +9585,14 @@
 			$iArray['MontoGas'] = $this->fltMontoGas;
 			$iArray['Asegurado'] = $this->blnAsegurado;
 			$iArray['PorcentajeSeguro'] = $this->fltPorcentajeSeguro;
+			$iArray['PorcentajeDscto'] = $this->fltPorcentajeDscto;
 			$iArray['MontoSeguro'] = $this->fltMontoSeguro;
 			$iArray['MontoBase'] = $this->fltMontoBase;
 			$iArray['MontoFranqueo'] = $this->fltMontoFranqueo;
+			$iArray['MontoDscto'] = $this->fltMontoDscto;
 			$iArray['MontoOtros'] = $this->fltMontoOtros;
 			$iArray['MontoTotal'] = $this->fltMontoTotal;
+			$iArray['ConsiderarDscto'] = $this->blnConsiderarDscto;
 			$iArray['EntregadoA'] = $this->strEntregadoA;
 			$iArray['FechaEntrega'] = $this->dttFechaEntrega;
 			$iArray['HoraEntrega'] = $this->strHoraEntrega;
@@ -9497,7 +9781,6 @@
      * @property-read QQNode $NombRemi
      * @property-read QQNode $DireRemi
      * @property-read QQNode $TeleRemi
-     * @property-read QQNode $TeleRem2
      * @property-read QQNode $NombDest
      * @property-read QQNode $DireDest
      * @property-read QQNode $TeleDest
@@ -9513,11 +9796,14 @@
      * @property-read QQNode $MontoGas
      * @property-read QQNode $Asegurado
      * @property-read QQNode $PorcentajeSeguro
+     * @property-read QQNode $PorcentajeDscto
      * @property-read QQNode $MontoSeguro
      * @property-read QQNode $MontoBase
      * @property-read QQNode $MontoFranqueo
+     * @property-read QQNode $MontoDscto
      * @property-read QQNode $MontoOtros
      * @property-read QQNode $MontoTotal
+     * @property-read QQNode $ConsiderarDscto
      * @property-read QQNode $EntregadoA
      * @property-read QQNode $FechaEntrega
      * @property-read QQNode $HoraEntrega
@@ -9604,6 +9890,7 @@
      * @property-read QQReverseReferenceNodeGuiaCheckpoints $GuiaCheckpoints
      * @property-read QQReverseReferenceNodeGuiaCkpt $GuiaCkptAsNume
      * @property-read QQReverseReferenceNodeGuiaModificada $GuiaModificada
+     * @property-read QQReverseReferenceNodeItemFacturaPmn $ItemFacturaPmn
      * @property-read QQReverseReferenceNodeItemNotaCredito $ItemNotaCredito
      * @property-read QQReverseReferenceNodeNotificacion $Notificacion
      * @property-read QQReverseReferenceNodeRegistroTrabajo $RegistroTrabajo
@@ -9646,8 +9933,6 @@
 					return new QQNode('dire_remi', 'DireRemi', 'VarChar', $this);
 				case 'TeleRemi':
 					return new QQNode('tele_remi', 'TeleRemi', 'VarChar', $this);
-				case 'TeleRem2':
-					return new QQNode('tele_rem2', 'TeleRem2', 'VarChar', $this);
 				case 'NombDest':
 					return new QQNode('nomb_dest', 'NombDest', 'VarChar', $this);
 				case 'DireDest':
@@ -9678,16 +9963,22 @@
 					return new QQNode('asegurado', 'Asegurado', 'Bit', $this);
 				case 'PorcentajeSeguro':
 					return new QQNode('porcentaje_seguro', 'PorcentajeSeguro', 'Float', $this);
+				case 'PorcentajeDscto':
+					return new QQNode('porcentaje_dscto', 'PorcentajeDscto', 'Float', $this);
 				case 'MontoSeguro':
 					return new QQNode('monto_seguro', 'MontoSeguro', 'Float', $this);
 				case 'MontoBase':
 					return new QQNode('monto_base', 'MontoBase', 'Float', $this);
 				case 'MontoFranqueo':
 					return new QQNode('monto_franqueo', 'MontoFranqueo', 'Float', $this);
+				case 'MontoDscto':
+					return new QQNode('monto_dscto', 'MontoDscto', 'Float', $this);
 				case 'MontoOtros':
 					return new QQNode('monto_otros', 'MontoOtros', 'Float', $this);
 				case 'MontoTotal':
 					return new QQNode('monto_total', 'MontoTotal', 'Float', $this);
+				case 'ConsiderarDscto':
+					return new QQNode('considerar_dscto', 'ConsiderarDscto', 'Bit', $this);
 				case 'EntregadoA':
 					return new QQNode('entregado_a', 'EntregadoA', 'VarChar', $this);
 				case 'FechaEntrega':
@@ -9856,6 +10147,8 @@
 					return new QQReverseReferenceNodeGuiaCkpt($this, 'guiackptasnume', 'reverse_reference', 'nume_guia', 'GuiaCkptAsNume');
 				case 'GuiaModificada':
 					return new QQReverseReferenceNodeGuiaModificada($this, 'guiamodificada', 'reverse_reference', 'guia_id', 'GuiaModificada');
+				case 'ItemFacturaPmn':
+					return new QQReverseReferenceNodeItemFacturaPmn($this, 'itemfacturapmn', 'reverse_reference', 'guia_id', 'ItemFacturaPmn');
 				case 'ItemNotaCredito':
 					return new QQReverseReferenceNodeItemNotaCredito($this, 'itemnotacredito', 'reverse_reference', 'guia_id', 'ItemNotaCredito');
 				case 'Notificacion':
@@ -9895,7 +10188,6 @@
      * @property-read QQNode $NombRemi
      * @property-read QQNode $DireRemi
      * @property-read QQNode $TeleRemi
-     * @property-read QQNode $TeleRem2
      * @property-read QQNode $NombDest
      * @property-read QQNode $DireDest
      * @property-read QQNode $TeleDest
@@ -9911,11 +10203,14 @@
      * @property-read QQNode $MontoGas
      * @property-read QQNode $Asegurado
      * @property-read QQNode $PorcentajeSeguro
+     * @property-read QQNode $PorcentajeDscto
      * @property-read QQNode $MontoSeguro
      * @property-read QQNode $MontoBase
      * @property-read QQNode $MontoFranqueo
+     * @property-read QQNode $MontoDscto
      * @property-read QQNode $MontoOtros
      * @property-read QQNode $MontoTotal
+     * @property-read QQNode $ConsiderarDscto
      * @property-read QQNode $EntregadoA
      * @property-read QQNode $FechaEntrega
      * @property-read QQNode $HoraEntrega
@@ -10002,6 +10297,7 @@
      * @property-read QQReverseReferenceNodeGuiaCheckpoints $GuiaCheckpoints
      * @property-read QQReverseReferenceNodeGuiaCkpt $GuiaCkptAsNume
      * @property-read QQReverseReferenceNodeGuiaModificada $GuiaModificada
+     * @property-read QQReverseReferenceNodeItemFacturaPmn $ItemFacturaPmn
      * @property-read QQReverseReferenceNodeItemNotaCredito $ItemNotaCredito
      * @property-read QQReverseReferenceNodeNotificacion $Notificacion
      * @property-read QQReverseReferenceNodeRegistroTrabajo $RegistroTrabajo
@@ -10044,8 +10340,6 @@
 					return new QQNode('dire_remi', 'DireRemi', 'string', $this);
 				case 'TeleRemi':
 					return new QQNode('tele_remi', 'TeleRemi', 'string', $this);
-				case 'TeleRem2':
-					return new QQNode('tele_rem2', 'TeleRem2', 'string', $this);
 				case 'NombDest':
 					return new QQNode('nomb_dest', 'NombDest', 'string', $this);
 				case 'DireDest':
@@ -10076,16 +10370,22 @@
 					return new QQNode('asegurado', 'Asegurado', 'boolean', $this);
 				case 'PorcentajeSeguro':
 					return new QQNode('porcentaje_seguro', 'PorcentajeSeguro', 'double', $this);
+				case 'PorcentajeDscto':
+					return new QQNode('porcentaje_dscto', 'PorcentajeDscto', 'double', $this);
 				case 'MontoSeguro':
 					return new QQNode('monto_seguro', 'MontoSeguro', 'double', $this);
 				case 'MontoBase':
 					return new QQNode('monto_base', 'MontoBase', 'double', $this);
 				case 'MontoFranqueo':
 					return new QQNode('monto_franqueo', 'MontoFranqueo', 'double', $this);
+				case 'MontoDscto':
+					return new QQNode('monto_dscto', 'MontoDscto', 'double', $this);
 				case 'MontoOtros':
 					return new QQNode('monto_otros', 'MontoOtros', 'double', $this);
 				case 'MontoTotal':
 					return new QQNode('monto_total', 'MontoTotal', 'double', $this);
+				case 'ConsiderarDscto':
+					return new QQNode('considerar_dscto', 'ConsiderarDscto', 'boolean', $this);
 				case 'EntregadoA':
 					return new QQNode('entregado_a', 'EntregadoA', 'string', $this);
 				case 'FechaEntrega':
@@ -10254,6 +10554,8 @@
 					return new QQReverseReferenceNodeGuiaCkpt($this, 'guiackptasnume', 'reverse_reference', 'nume_guia', 'GuiaCkptAsNume');
 				case 'GuiaModificada':
 					return new QQReverseReferenceNodeGuiaModificada($this, 'guiamodificada', 'reverse_reference', 'guia_id', 'GuiaModificada');
+				case 'ItemFacturaPmn':
+					return new QQReverseReferenceNodeItemFacturaPmn($this, 'itemfacturapmn', 'reverse_reference', 'guia_id', 'ItemFacturaPmn');
 				case 'ItemNotaCredito':
 					return new QQReverseReferenceNodeItemNotaCredito($this, 'itemnotacredito', 'reverse_reference', 'guia_id', 'ItemNotaCredito');
 				case 'Notificacion':

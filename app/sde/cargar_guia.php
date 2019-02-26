@@ -76,7 +76,10 @@ class CargarGuia extends FormularioBaseKaizen {
     protected $txtDireDest;
     protected $txtTextObse;
     protected $chkDestFrec;
+    protected $chkConsDcto;
     protected $txtMontBase;
+    protected $txtPorcDcto;
+    protected $txtMontDcto;
     protected $txtMontIvax;
     protected $txtMontFran;
     protected $txtMontSegu;
@@ -197,7 +200,10 @@ class CargarGuia extends FormularioBaseKaizen {
         $this->txtDireDest_Create();
         $this->txtTextObse_Create();
         $this->chkDestFrec_Create();
+        $this->chkConsDcto_Create();
         $this->txtMontBase_Create();
+        $this->txtPorcDcto_Create();
+        $this->txtMontDcto_Create();
         $this->txtMontIvax_Create();
         $this->txtMontFran_Create();
         $this->txtMontSegu_Create();
@@ -222,8 +228,30 @@ class CargarGuia extends FormularioBaseKaizen {
         $this->SetupValues();
 
         $strTextMens = 'Evite el uso de caracteres especiales (Ej: \\~°#^*+) en <b>los nombres, las direcciones, el contenido, los teléfono y la observación</b>';
-        $this->mensaje($strTextMens,'n','i','',__iINFO__);
+        $this->mensaje($strTextMens,'m','w','',__iINFO__);
 
+        //-----------
+        // Permisos
+        //-----------
+        $this->permisosDeDescuentos();
+
+    }
+
+    protected function permisosDeDescuentos() {
+        //------------------------------------------------------------------------------
+        // Unicamente los Usuario autorizados tendran acceso a los campos de descuento
+        //------------------------------------------------------------------------------
+        $this->txtPorcDcto->Enabled = false;
+        $this->chkConsDcto->Enabled = false;
+        $this->txtPorcDcto->ForeColor = 'blue';
+        $this->chkConsDcto->ForeColor = 'blue';
+        $blnUsuaAuto = BuscarParametro("DctoClie", $this->objUsuario->LogiUsua, "Val1", 0);
+        if ($blnUsuaAuto) {
+            $this->txtPorcDcto->Enabled = true;
+            $this->chkConsDcto->Enabled = true;
+            $this->txtPorcDcto->ForeColor = null;
+            $this->chkConsDcto->ForeColor = null;
+        }
     }
 
     //----------------------------
@@ -372,7 +400,7 @@ class CargarGuia extends FormularioBaseKaizen {
 
     protected function txtDescCont_Create() {
         $this->txtDescCont = new QTextBox($this);
-        $this->txtDescCont->Width = 485;
+        $this->txtDescCont->Width = 530;
         $this->txtDescCont->TextMode = QTextMode::MultiLine;
         $this->txtDescCont->SetCustomAttribute('onblur',"this.value=this.value.toUpperCase()");
     }
@@ -395,12 +423,12 @@ class CargarGuia extends FormularioBaseKaizen {
         $this->lstDestFrec->Name = QApplication::Translate('Destinatarios Frecuentes');
         $this->lstDestFrec->AddItem(QApplication::Translate('- Seleccione Uno -'),null);
         $this->lstDestFrec->AddAction(new QChangeEvent(), new QAjaxAction('lstDestFrec_Change'));
-        $this->lstDestFrec->Width =200;
+        $this->lstDestFrec->Width = 245;
     }
 
     protected function txtNombDest_Create() {
         $this->txtNombDest = new QTextBox($this);
-        $this->txtNombDest->Width = 250;
+        $this->txtNombDest->Width = 300;
         $this->txtNombDest->SetCustomAttribute('onblur',"this.value=this.value.toUpperCase()");
     }
 
@@ -411,7 +439,7 @@ class CargarGuia extends FormularioBaseKaizen {
 
     protected function txtDireDest_Create() {
         $this->txtDireDest = new QTextBox($this);
-        $this->txtDireDest->Width = 485;
+        $this->txtDireDest->Width = 530;
         $this->txtDireDest->TextMode = QTextMode::MultiLine;
         $this->txtDireDest->SetCustomAttribute('onblur',"this.value=this.value.toUpperCase()");
     }
@@ -427,6 +455,11 @@ class CargarGuia extends FormularioBaseKaizen {
         $this->chkDestFrec = new QCheckBox($this);
     }
 
+    protected function chkConsDcto_Create() {
+        $this->chkConsDcto = new QCheckBox($this);
+        $this->chkConsDcto->ToolTip = '¿Considerar este Dscto en la estadísticas mensuales del Cliente?';
+    }
+
     protected function txtMontBase_Create() {
         $this->txtMontBase = new QTextBox($this);
         $this->txtMontBase->Width = 90;
@@ -434,23 +467,35 @@ class CargarGuia extends FormularioBaseKaizen {
         $this->txtMontBase->ForeColor = 'blue';
     }
 
+    protected function txtPorcDcto_Create() {
+        $this->txtPorcDcto = new QFloatTextBox($this);
+        $this->txtPorcDcto->Width = 50;
+    }
+
+    protected function txtMontDcto_Create() {
+        $this->txtMontDcto = new QTextBox($this);
+        $this->txtMontDcto->Width = 80;
+        $this->txtMontDcto->Enabled = false;
+        $this->txtMontDcto->ForeColor = 'blue';
+    }
+
     protected function txtMontIvax_Create() {
         $this->txtMontIvax = new QTextBox($this);
-        $this->txtMontIvax->Width = 90;
+        $this->txtMontIvax->Width = 80;
         $this->txtMontIvax->Enabled = false;
         $this->txtMontIvax->ForeColor = 'blue';
     }
 
     protected function txtMontFran_Create() {
         $this->txtMontFran = new QTextBox($this);
-        $this->txtMontFran->Width = 80;
+        $this->txtMontFran->Width = 70;
         $this->txtMontFran->Enabled = false;
         $this->txtMontFran->ForeColor = 'blue';
     }
 
     protected function txtMontSegu_Create() {
         $this->txtMontSegu = new QTextBox($this);
-        $this->txtMontSegu->Width = 90;
+        $this->txtMontSegu->Width = 60;
         $this->txtMontSegu->Enabled = false;
         $this->txtMontSegu->ForeColor = 'blue';
     }
@@ -467,7 +512,7 @@ class CargarGuia extends FormularioBaseKaizen {
 
     protected function txtMontTota_Create() {
         $this->txtMontTota = new QTextBox($this);
-        $this->txtMontTota->Width = 105;
+        $this->txtMontTota->Width = 70;
         $this->txtMontTota->Enabled = false;
         $this->txtMontTota->ForeColor = 'blue';
         $this->txtMontTota->AddAction(new QBlurEvent(), new QAjaxAction('txtMontTota_Blur'));
@@ -806,12 +851,14 @@ class CargarGuia extends FormularioBaseKaizen {
                 $arrParaTari['intChecAseg'] = $this->chkEnviSegu->Checked;
                 $arrParaTari['decSgroClie'] = $this->objCliente->PorcentajeSeguro;
                 $arrParaTari['strModaPago'] = $strModaPago;
+                $arrParaTari['decPorcDcto'] = $this->txtPorcDcto->Text;
 
                 $arrValoTari = calcularTarifaParcialNew($arrParaTari);
 
                 $blnTodoOkey = $arrValoTari['blnTodoOkey'];
                 $strMensUsua = $arrValoTari['strMensUsua'];
                 $dblMontBase = $arrValoTari['dblMontBase'];
+                $decMontDcto = $arrValoTari['decMontDcto'];
                 $dblFranPost = $arrValoTari['dblFranPost'];
                 $dblMontDiva = $arrValoTari['dblMontDiva'];
                 $dblMontSgro = $arrValoTari['dblMontSgro'];
@@ -824,6 +871,7 @@ class CargarGuia extends FormularioBaseKaizen {
                 $this->decPorcIvax = $decPorcIvax;
 
                 $this->txtMontBase->Text = nf($dblMontBase);
+                $this->txtMontDcto->Text = nf($decMontDcto);
                 $this->txtMontFran->Text = nf($dblFranPost);
                 $this->txtMontSegu->Text = nf($dblMontSgro);
                 $this->txtMontIvax->Text = nf($dblMontDiva);
@@ -1020,7 +1068,7 @@ class CargarGuia extends FormularioBaseKaizen {
         $this->objGuia->MontoIva           = str2num($this->txtMontIvax->Text);
         $this->objGuia->Asegurado          = str2num($this->chkEnviSegu->Checked);
         $this->objGuia->PorcentajeSeguro   = str2num($this->decPorcSegu);
-        $this->objGuia->MontoSeguro        = str2num($this->txtMontSegu->Text);
+        $this->objGuia->MontoSeguro        = -str2num($this->txtMontSegu->Text);
         $this->objGuia->MontoBase          = str2num($this->txtMontBase->Text);
         $this->objGuia->MontoFranqueo      = str2num($this->txtMontFran->Text);
         $this->objGuia->MontoTotal         = str2num($this->txtMontTota->Text);
@@ -1040,6 +1088,9 @@ class CargarGuia extends FormularioBaseKaizen {
         $this->objGuia->HoraCreacion       = $this->lblHoraCrea->Text;
         $this->objGuia->CobroCod           = CobroCod::Load($this->txtNumeGuia->Text);
         $this->objGuia->VendedorId         = $this->objCliente->VendedorId;
+        $this->objGuia->PorcentajeDscto    = str2num($this->txtPorcDcto->Text);
+        $this->objGuia->MontoDscto         = str2num($this->txtMontDcto->Text);
+        $this->objGuia->ConsiderarDscto    = (int)$this->chkConsDcto->Checked;
 
         if (!$this->blnEditMode) {
             //------------------------------------------------------------------------
@@ -1195,6 +1246,20 @@ class CargarGuia extends FormularioBaseKaizen {
             $strMensErro = 'Forma de Pago <b>Requerida</b>';
             $this->enviarMensajeDeError($strMensErro);
             return false;
+        }
+        if (strlen($this->txtPorcDcto->Text) > 0) {
+            if ($this->txtPorcDcto->Text > 100) {
+                $strMensErro = 'Porcentaje de Descuento <b>No puede ser mayor a 100</b>';
+                $this->enviarMensajeDeError($strMensErro);
+                return false;
+            }
+        }
+        if ($this->chkConsDcto->Checked) {
+            if (strlen($this->txtPorcDcto->Text) == 0) {
+                $strMensErro = 'Debe especificar un Porcentaje de Descuento';
+                $this->enviarMensajeDeError($strMensErro);
+                return false;
+            }
         }
         return true;
     }

@@ -28,6 +28,23 @@
         }
 
         /**
+         * Esta rutina devuelve el ultimo checkpoint publico asociado a la guía
+         *
+         * @return GuiaCkpt|null
+         */
+        public function ultimoCheckpointPublico()
+        {
+            $objClauWher   = QQ::Clause();
+            $objClauWher[] = QQ::Equal(QQN::GuiaCkpt()->NumeGuia,$this->strNumeGuia);
+            $objClauWher[] = QQ::Equal(QQN::GuiaCkpt()->CodiCkptObject->TipoCkpt,SdeTipoCkptType::PUBLICO);
+            $objClausula   = QQ::Clause();
+            $objClausula[] = QQ::OrderBy(QQN::GuiaCkpt()->FechCkpt,false,QQN::GuiaCkpt()->HoraCkpt,false);
+            $objClausula[] = QQ::LimitInfo(1);
+            $arrGuiaCkpt   = GuiaCkpt::QueryArray(QQ::AndCondition($objClauWher),$objClausula);
+            return (count($arrGuiaCkpt)) ? $arrGuiaCkpt[0] : null;
+        }
+
+        /**
          * Esta rutina devuelve la cantidad de veces que la guia ha salido a ruta
          *
          * @return integer
@@ -161,19 +178,22 @@
             // Remitente y Destinatario, se intercambian
             //--------------------------------------------
             $strSucuDest = $this->EstaDest;
+            $strReceDest = $this->ReceptoriaDestino;
             $strNombDest = $this->NombDest;
             $strDireDest = $this->DireDest;
             $strTeleDest = $this->TeleDest;
 
-            $this->EstaDest = $this->EstaOrig;
-            $this->NombDest = $this->NombRemi;
-            $this->DireDest = $this->DireRemi;
-            $this->TeleDest = $this->TeleRemi;
+            $this->EstaDest          = $this->EstaOrig;
+            $this->ReceptoriaDestino = $this->ReceptoriaOrigen;
+            $this->NombDest          = $this->NombRemi;
+            $this->DireDest          = $this->DireRemi;
+            $this->TeleDest          = $this->TeleRemi;
 
-            $this->EstaOrig = $strSucuDest;
-            $this->NombRemi = $strNombDest;
-            $this->DireRemi = $strDireDest;
-            $this->TeleRemi = $strTeleDest;
+            $this->EstaOrig         = $strSucuDest;
+            $this->ReceptoriaOrigen = $strReceDest;
+            $this->NombRemi         = $strNombDest;
+            $this->DireRemi         = $strDireDest;
+            $this->TeleRemi         = $strTeleDest;
             //-------------------------
             // Los montos se duplican
             //-------------------------
@@ -183,6 +203,14 @@
             $this->MontoIva      += $this->MontoIva;
             $this->MontoTotal    += $this->MontoTotal;
             $this->Save();
+            //-----------------------------------------------
+            // Se deja registro de la transaccion realizada
+            //-----------------------------------------------
+            $arrLogxCamb['strNombTabl'] = 'Guia';
+            $arrLogxCamb['intRefeRegi'] = $this->NumeGuia;
+            $arrLogxCamb['strNombRegi'] = $this->NombRemi;
+            $arrLogxCamb['strDescCamb'] = "Se devolvio al Remitente";
+            LogDeCambios($arrLogxCamb);
             //-----------------------------------------
             // Se graba el checkpoint correspondiente
             //-----------------------------------------
@@ -450,12 +478,12 @@
         }
 
         public function EliminarPOD() {
-            $this->strEntregadoA = '';
+            $this->strEntregadoA   = null;
             $this->dttFechaEntrega = null;
-            $this->strHojaEntrega = '';
-            $this->dttFechaPod = null;
-            $this->strHoraPod = '';
-            $this->intUsuarioPod = null;
+            $this->strHoraEntrega  = null;
+            $this->dttFechaPod     = null;
+            $this->strHoraPod      = null;
+            $this->intUsuarioPod   = null;
             $this->Save();
             //------------------------------------------------------
             // Se elimina el checkpoint "OK" relacionado a la Guia

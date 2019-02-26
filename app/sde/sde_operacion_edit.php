@@ -139,22 +139,22 @@ class SdeOperacionEditForm extends SdeOperacionEditFormBase {
 
     protected function btnProxRegi_Click() {
         $objRegiTabl = $this->arrDataTabl[$this->intPosiRegi+1];
-        QApplication::Redirect(__SIST__.'/sde_operacion_edit.php/'.$objRegiTabl->Id);
+        QApplication::Redirect(__SIST__.'/sde_operacion_edit.php/'.$objRegiTabl->CodiOper);
     }
 
     protected function btnRegiAnte_Click() {
         $objRegiTabl = $this->arrDataTabl[$this->intPosiRegi-1];
-        QApplication::Redirect(__SIST__.'/sde_operacion_edit.php/'.$objRegiTabl->Id);
+        QApplication::Redirect(__SIST__.'/sde_operacion_edit.php/'.$objRegiTabl->CodiOper);
     }
 
     protected function btnPrimRegi_Click() {
         $objRegiTabl = $this->arrDataTabl[0];
-        QApplication::Redirect(__SIST__.'/sde_operacion_edit.php/'.$objRegiTabl->Id);
+        QApplication::Redirect(__SIST__.'/sde_operacion_edit.php/'.$objRegiTabl->CodiOper);
     }
 
     protected function btnUltiRegi_Click() {
         $objRegiTabl = $this->arrDataTabl[$this->intCantRegi-1];
-        QApplication::Redirect(__SIST__.'/sde_operacion_edit.php/'.$objRegiTabl->Id);
+        QApplication::Redirect(__SIST__.'/sde_operacion_edit.php/'.$objRegiTabl->CodiOper);
     }
 
     protected function btnSave_Click($strFormId, $strControlId, $strParameter) {
@@ -200,6 +200,7 @@ class SdeOperacionEditForm extends SdeOperacionEditFormBase {
         // Se verifica la integridad referencial
         //----------------------------------------
         $blnTodoOkey = true;
+        /*
         $arrTablRela = $this->mctSdeOperacion->TablasRelacionadasSdeOperacion();
         if (count($arrTablRela)) {
             $strTablRela = implode(',',$arrTablRela);
@@ -208,12 +209,15 @@ class SdeOperacionEditForm extends SdeOperacionEditFormBase {
             $this->mensaje($strMensUsua,'','w','exclamation-triangle');
             $blnTodoOkey = false;
         }
+        */
         if ($blnTodoOkey) {
-            // Delegate "Delete" processing to the ArancelMetaControl
-            $this->mctSdeOperacion->DeleteSdeOperacion();
+            //$this->mctSdeOperacion->DeleteSdeOperacion();
+
+            $this->mctSdeOperacion->SdeOperacion->DeletedAt = new QDateTime(QDateTime::Now);
+            $this->mctSdeOperacion->SdeOperacion->Save();
             $strDescOper  = $this->mctSdeOperacion->SdeOperacion->CodiRuta.' | ';
             $strDescOper .= $this->mctSdeOperacion->SdeOperacion->CodiTipoObject->DescTipo;
-            $arrLogxCamb['strNombTabl'] = 'SdeOperacion';
+            $arrLogxCamb['strNombTabl'] = 'Operacion';
             $arrLogxCamb['intRefeRegi'] = $this->mctSdeOperacion->SdeOperacion->CodiOper;
             $arrLogxCamb['strNombRegi'] = $strDescOper;
             $arrLogxCamb['strDescCamb'] = "Borrado";

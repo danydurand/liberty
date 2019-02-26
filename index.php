@@ -358,29 +358,30 @@ class Index extends QForm {
             //-----------------------------------------------------------
             // Vector de Checkpoints con notificacion por SMS habilitada.
             //-----------------------------------------------------------
-            $objSeleColu   = QQ::Select(QQN::Notificacion()->CheckpointId,QQN::Notificacion()->NotificadoSms);
-            $objClauWher   = QQ::Clause();
-            $objClauWher[] = QQ::IsNotNull(QQN::Notificacion()->NotificadoSms);
-            $arrReceAuxi   = Notificacion::QueryArray(QQ::OrCondition($objClauWher),QQ::Clause($objSeleColu));
-            $arrCkptSmsx   = array();
-            foreach ($arrReceAuxi as $objCkptSmsx) {
-                if ($objCkptSmsx->NotificadoSms) {
-                    $arrCkptSmsx[] = $objCkptSmsx->CheckpointId;
-                }
-            }
+            //$objSeleColu   = QQ::Select(QQN::Notificacion()->CheckpointId,QQN::Notificacion()->NotificadoSms);
+            //$objClauWher   = QQ::Clause();
+            //$objClauWher[] = QQ::IsNotNull(QQN::Notificacion()->NotificadoSms);
+            //$arrReceAuxi   = Notificacion::QueryArray(QQ::OrCondition($objClauWher),QQ::Clause($objSeleColu));
+            //$arrCkptSmsx   = array();
+            //foreach ($arrReceAuxi as $objCkptSmsx) {
+            //    if ($objCkptSmsx->NotificadoSms) {
+            //        $arrCkptSmsx[] = $objCkptSmsx->CheckpointId;
+            //    }
+            //}
             //-----------------------------------------------------------------------------
             // Otra rutina paralela para obtención de Ckpt con notificación SMS habilitada.
             //-----------------------------------------------------------------------------
-            $objSeleColu = QQ::Select(QQN::SdeCheckpoint()->CodiCkpt, QQN::SdeCheckpoint()->NotificacionSms);
-            $objClauWher = QQ::Clause();
+            $objSeleColu   = QQ::Select(QQN::SdeCheckpoint()->CodiCkpt, QQN::SdeCheckpoint()->NotificacionSms);
+            $objClauWher   = QQ::Clause();
             $objClauWher[] = QQ::IsNotNull(QQN::SdeCheckpoint()->NotificacionSms);
-            $arrReceAuxi = SdeCheckpoint::QueryArray(QQ::AndCondition($objClauWher), QQ::Clause($objSeleColu));
-            $arrCkptSmsy = array();
+            $arrReceAuxi   = SdeCheckpoint::QueryArray(QQ::AndCondition($objClauWher), QQ::Clause($objSeleColu));
+            $arrCkptSmsy   = array();
             foreach ($arrReceAuxi as $objCkptSmsy) {
                 if ($objCkptSmsy->NotificacionSms) {
                     $arrCkptSmsy[] = $objCkptSmsy->CodiCkpt;
                 }
             }
+            $arrCkptSmsx = $arrCkptSmsy;
             //-------------------------------------------------------------
             // Variables de Session que se usan a lo largo del Sistema PMN
             //-------------------------------------------------------------

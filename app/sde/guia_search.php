@@ -41,6 +41,7 @@ class GuiaSearchForm extends FormularioBaseKaizen {
     protected $txtSepaColu;
     protected $lstReceOrig;
     protected $lstTariIdxx;
+    protected $chkConxDesc;
 
     protected function Form_Create() {
         parent::Form_Create();
@@ -79,6 +80,7 @@ class GuiaSearchForm extends FormularioBaseKaizen {
         $this->txtUbicFisi_Create();
         $this->lstCodiCkpt_Create();
         $this->chkMostQuer_Create();
+        $this->chkConxDesc_Create();
 
         // Botónes del Formulario //
         
@@ -322,6 +324,12 @@ class GuiaSearchForm extends FormularioBaseKaizen {
         } else {
             $this->chkMostQuer->Visible = false;
         }
+    }
+
+    protected function chkConxDesc_Create() {
+        $this->chkConxDesc = new QCheckBox($this);
+        $this->chkConxDesc->Name = QApplication::Translate('Con Descuento ?');
+        $this->chkConxDesc->Checked = false;
     }
 
     protected function btnExpoExce_Create() {
@@ -697,12 +705,16 @@ class GuiaSearchForm extends FormularioBaseKaizen {
                 $strCadeSqlx  .= " and g.ubicacion like '%".$this->txtUbicFisi->Text."%'";
             }
             if (!is_null($this->lstCodiCkpt->SelectedValue)) {
-                $objClausula[]= QQ::Equal(QQN::Guia()->CodiCkpt,$this->lstCodiCkpt->SelectedValue);
+                $objClausula[] = QQ::Equal(QQN::Guia()->CodiCkpt,$this->lstCodiCkpt->SelectedValue);
                 $strCadeSqlx  .= " and g.codi_ckpt = '".$this->lstCodiCkpt->SelectedValue."'";
             }
             if (!is_null($this->lstTariIdxx->SelectedValue)) {
-                $objClausula[]= QQ::Equal(QQN::Guia()->TarifaId,$this->lstTariIdxx->SelectedValue);
+                $objClausula[] = QQ::Equal(QQN::Guia()->TarifaId,$this->lstTariIdxx->SelectedValue);
                 $strCadeSqlx  .= " and g.tarifa_id = ".$this->lstTariIdxx->SelectedValue;
+            }
+            if ($this->chkConxDesc->Checked) {
+                $objClausula[] = QQ::GreaterThan(QQN::Guia()->MontoDscto,0);
+                $strCadeSqlx  .= " and g.monto_dscto >= 0";
             }
             $objClausula[] = QQ::Equal(QQN::Guia()->Anulada,0);
             $strCadeSqlx  .= " and g.anulada = 0 ";

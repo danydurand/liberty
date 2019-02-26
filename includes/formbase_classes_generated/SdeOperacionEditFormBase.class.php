@@ -58,6 +58,7 @@ abstract class SdeOperacionEditFormBase extends QForm {
 	protected $lstCodiEstaObject;
 	protected $lstCodiTipoObject;
 	protected $lstExpresoNacionalObject;
+	protected $calDeletedAt;
 
 	// Other ListBoxes (if applicable) via Unique ReverseReferences and ManyToMany References
 	protected $dtgEstacionsAsOperacionDestino;
@@ -131,6 +132,7 @@ abstract class SdeOperacionEditFormBase extends QForm {
 		$this->lstCodiEstaObject = $this->mctSdeOperacion->lstCodiEstaObject_Create();
 		$this->lstCodiTipoObject = $this->mctSdeOperacion->lstCodiTipoObject_Create();
 		$this->lstExpresoNacionalObject = $this->mctSdeOperacion->lstExpresoNacionalObject_Create();
+		$this->calDeletedAt = $this->mctSdeOperacion->calDeletedAt_Create();
 			$this->dtgEstacionsAsOperacionDestino = $this->mctSdeOperacion->dtgEstacionsAsOperacionDestino_Create();
 
 		$this->btnSave_Create();

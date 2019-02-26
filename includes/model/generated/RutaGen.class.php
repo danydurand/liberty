@@ -22,6 +22,7 @@
 	 * @property integer $TipoRuta the value for intTipoRuta (Not Null)
 	 * @property integer $CodiStat the value for intCodiStat (Not Null)
 	 * @property string $PorcMedi the value for strPorcMedi 
+	 * @property QDateTime $DeletedAt the value for dttDeletedAt 
 	 * @property Estacion $CodiEstaObject the value for the Estacion object referenced by strCodiEsta (Not Null)
 	 * @property-read Counter $_Counter the value for the private _objCounter (Read-Only) if set due to an expansion on the counter.ruta_id reverse relationship
 	 * @property-read Counter[] $_CounterArray the value for the private _objCounterArray (Read-Only) if set due to an ExpandAsArray on the counter.ruta_id reverse relationship
@@ -103,6 +104,14 @@
 
 
 		/**
+		 * Protected member variable that maps to the database column ruta.deleted_at
+		 * @var QDateTime dttDeletedAt
+		 */
+		protected $dttDeletedAt;
+		const DeletedAtDefault = null;
+
+
+		/**
 		 * Private member variable that stores a reference to a single Counter object
 		 * (of type Counter), if this Ruta object was restored with
 		 * an expansion on the counter association table.
@@ -180,6 +189,7 @@
 			$this->intTipoRuta = Ruta::TipoRutaDefault;
 			$this->intCodiStat = Ruta::CodiStatDefault;
 			$this->strPorcMedi = Ruta::PorcMediDefault;
+			$this->dttDeletedAt = (Ruta::DeletedAtDefault === null)?null:new QDateTime(Ruta::DeletedAtDefault);
 		}
 
 
@@ -528,6 +538,7 @@
 			    $objBuilder->AddSelectItem($strTableName, 'tipo_ruta', $strAliasPrefix . 'tipo_ruta');
 			    $objBuilder->AddSelectItem($strTableName, 'codi_stat', $strAliasPrefix . 'codi_stat');
 			    $objBuilder->AddSelectItem($strTableName, 'porc_medi', $strAliasPrefix . 'porc_medi');
+			    $objBuilder->AddSelectItem($strTableName, 'deleted_at', $strAliasPrefix . 'deleted_at');
             }
 		}
 
@@ -675,6 +686,9 @@
 			$strAlias = $strAliasPrefix . 'porc_medi';
 			$strAliasName = !empty($strColumnAliasArray[$strAlias]) ? $strColumnAliasArray[$strAlias] : $strAlias;
 			$objToReturn->strPorcMedi = $objDbRow->GetColumn($strAliasName, 'VarChar');
+			$strAlias = $strAliasPrefix . 'deleted_at';
+			$strAliasName = !empty($strColumnAliasArray[$strAlias]) ? $strColumnAliasArray[$strAlias] : $strAlias;
+			$objToReturn->dttDeletedAt = $objDbRow->GetColumn($strAliasName, 'Date');
 
 			if (isset($objPreviousItemArray) && is_array($objPreviousItemArray)) {
 				foreach ($objPreviousItemArray as $objPreviousItem) {
@@ -971,7 +985,8 @@
 							`codi_esta`,
 							`tipo_ruta`,
 							`codi_stat`,
-							`porc_medi`
+							`porc_medi`,
+							`deleted_at`
 						) VALUES (
 							' . $objDatabase->SqlVariable($this->strCodiRuta) . ',
 							' . $objDatabase->SqlVariable($this->strDescRuta) . ',
@@ -979,7 +994,8 @@
 							' . $objDatabase->SqlVariable($this->strCodiEsta) . ',
 							' . $objDatabase->SqlVariable($this->intTipoRuta) . ',
 							' . $objDatabase->SqlVariable($this->intCodiStat) . ',
-							' . $objDatabase->SqlVariable($this->strPorcMedi) . '
+							' . $objDatabase->SqlVariable($this->strPorcMedi) . ',
+							' . $objDatabase->SqlVariable($this->dttDeletedAt) . '
 						)
 					');
 
@@ -1000,7 +1016,8 @@
 							`codi_esta` = ' . $objDatabase->SqlVariable($this->strCodiEsta) . ',
 							`tipo_ruta` = ' . $objDatabase->SqlVariable($this->intTipoRuta) . ',
 							`codi_stat` = ' . $objDatabase->SqlVariable($this->intCodiStat) . ',
-							`porc_medi` = ' . $objDatabase->SqlVariable($this->strPorcMedi) . '
+							`porc_medi` = ' . $objDatabase->SqlVariable($this->strPorcMedi) . ',
+							`deleted_at` = ' . $objDatabase->SqlVariable($this->dttDeletedAt) . '
 						WHERE
 							`codi_ruta` = ' . $objDatabase->SqlVariable($this->__strCodiRuta) . '
 					');
@@ -1114,6 +1131,7 @@
 			$this->TipoRuta = $objReloaded->TipoRuta;
 			$this->CodiStat = $objReloaded->CodiStat;
 			$this->strPorcMedi = $objReloaded->strPorcMedi;
+			$this->dttDeletedAt = $objReloaded->dttDeletedAt;
 		}
 
 
@@ -1182,6 +1200,13 @@
 					 * @return string
 					 */
 					return $this->strPorcMedi;
+
+				case 'DeletedAt':
+					/**
+					 * Gets the value for dttDeletedAt 
+					 * @return QDateTime
+					 */
+					return $this->dttDeletedAt;
 
 
 				///////////////////
@@ -1353,6 +1378,19 @@
 					 */
 					try {
 						return ($this->strPorcMedi = QType::Cast($mixValue, QType::String));
+					} catch (QCallerException $objExc) {
+						$objExc->IncrementOffset();
+						throw $objExc;
+					}
+
+				case 'DeletedAt':
+					/**
+					 * Sets the value for dttDeletedAt 
+					 * @param QDateTime $mixValue
+					 * @return QDateTime
+					 */
+					try {
+						return ($this->dttDeletedAt = QType::Cast($mixValue, QType::DateTime));
 					} catch (QCallerException $objExc) {
 						$objExc->IncrementOffset();
 						throw $objExc;
@@ -1783,6 +1821,7 @@
 			$strToReturn .= '<element name="TipoRuta" type="xsd:int"/>';
 			$strToReturn .= '<element name="CodiStat" type="xsd:int"/>';
 			$strToReturn .= '<element name="PorcMedi" type="xsd:string"/>';
+			$strToReturn .= '<element name="DeletedAt" type="xsd:dateTime"/>';
 			$strToReturn .= '<element name="__blnRestored" type="xsd:boolean"/>';
 			$strToReturn .= '</sequence></complexType>';
 			return $strToReturn;
@@ -1821,6 +1860,8 @@
 				$objToReturn->intCodiStat = $objSoapObject->CodiStat;
 			if (property_exists($objSoapObject, 'PorcMedi'))
 				$objToReturn->strPorcMedi = $objSoapObject->PorcMedi;
+			if (property_exists($objSoapObject, 'DeletedAt'))
+				$objToReturn->dttDeletedAt = new QDateTime($objSoapObject->DeletedAt);
 			if (property_exists($objSoapObject, '__blnRestored'))
 				$objToReturn->__blnRestored = $objSoapObject->__blnRestored;
 			return $objToReturn;
@@ -1843,6 +1884,8 @@
 				$objObject->objCodiEstaObject = Estacion::GetSoapObjectFromObject($objObject->objCodiEstaObject, false);
 			else if (!$blnBindRelatedObjects)
 				$objObject->strCodiEsta = null;
+			if ($objObject->dttDeletedAt)
+				$objObject->dttDeletedAt = $objObject->dttDeletedAt->qFormat(QDateTime::FormatSoap);
 			return $objObject;
 		}
 
@@ -1864,6 +1907,7 @@
 			$iArray['TipoRuta'] = $this->intTipoRuta;
 			$iArray['CodiStat'] = $this->intCodiStat;
 			$iArray['PorcMedi'] = $this->strPorcMedi;
+			$iArray['DeletedAt'] = $this->dttDeletedAt;
 			return new ArrayIterator($iArray);
 		}
 
@@ -1909,6 +1953,7 @@
      * @property-read QQNode $TipoRuta
      * @property-read QQNode $CodiStat
      * @property-read QQNode $PorcMedi
+     * @property-read QQNode $DeletedAt
      *
      *
      * @property-read QQReverseReferenceNodeCounter $Counter
@@ -1938,6 +1983,8 @@
 					return new QQNode('codi_stat', 'CodiStat', 'Integer', $this);
 				case 'PorcMedi':
 					return new QQNode('porc_medi', 'PorcMedi', 'VarChar', $this);
+				case 'DeletedAt':
+					return new QQNode('deleted_at', 'DeletedAt', 'Date', $this);
 				case 'Counter':
 					return new QQReverseReferenceNodeCounter($this, 'counter', 'reverse_reference', 'ruta_id', 'Counter');
 				case 'SdeOperacionAsCodi':
@@ -1965,6 +2012,7 @@
      * @property-read QQNode $TipoRuta
      * @property-read QQNode $CodiStat
      * @property-read QQNode $PorcMedi
+     * @property-read QQNode $DeletedAt
      *
      *
      * @property-read QQReverseReferenceNodeCounter $Counter
@@ -1994,6 +2042,8 @@
 					return new QQNode('codi_stat', 'CodiStat', 'integer', $this);
 				case 'PorcMedi':
 					return new QQNode('porc_medi', 'PorcMedi', 'string', $this);
+				case 'DeletedAt':
+					return new QQNode('deleted_at', 'DeletedAt', 'QDateTime', $this);
 				case 'Counter':
 					return new QQReverseReferenceNodeCounter($this, 'counter', 'reverse_reference', 'ruta_id', 'Counter');
 				case 'SdeOperacionAsCodi':

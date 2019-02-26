@@ -21,6 +21,7 @@ require_once(__FORMBASE_CLASSES__ . '/RutaEditFormBase.class.php');
  * @subpackage Drafts
  */
 class RutaEditForm extends RutaEditFormBase {
+    protected $btnConfBorr;
 
 	// Override Form Event Handlers as Needed
 	protected function Form_Run() {
@@ -51,11 +52,23 @@ class RutaEditForm extends RutaEditFormBase {
 		$this->lstTipoRutaObject = $this->mctRuta->lstTipoRutaObject_Create();
 		$this->lstCodiStatObject = $this->mctRuta->lstCodiStatObject_Create();
 		$this->txtPorcMedi = $this->mctRuta->txtPorcMedi_Create();
+
+		$this->btnConfBorr_Create();
 	}
 
 	//----------------------------
 	// Aquí se crean los objetos 
 	//----------------------------
+
+    protected function btnConfBorr_Create() {
+        $this->btnConfBorr = new QButtonS($this);
+        $this->btnConfBorr->Text = '<i class="fa fa-check fa-lg"></i> Confirmar';
+        $this->btnConfBorr->HtmlEntities = false;
+        $this->btnConfBorr->AddAction(new QClickEvent(), new QAjaxAction('btnDelete_Click'));
+        $this->btnConfBorr->Visible = false;
+    }
+
+
     protected function determinarPosicion() {
         if ($this->mctRuta->Ruta && !isset($_SESSION['DataRuta'])) {
             $_SESSION['DataRuta'] = serialize(array($this->mctRuta->Ruta));
@@ -162,16 +175,21 @@ class RutaEditForm extends RutaEditFormBase {
         //----------------------------------------
         $blnTodoOkey = true;
         $arrTablRela = $this->mctRuta->TablasRelacionadasRuta();
-        if (count($arrTablRela)) {
+        if (count($arrTablRela) && (!$this->btnConfBorr->Visible)) {
             $strTablRela = implode(',',$arrTablRela);
-
-            //$this->lblId->Warning = sprintf('Existen registros relacionados en %s',$strTablRela);
-            $this->
+            $strTextMens = 'Existen registros relacionados en: '.$strTablRela.'. Presione el botón <b>Confirmar</b> para eliminar el registro';
+            $this->mensaje($strTextMens,'m','w',__iEXCL__);
             $blnTodoOkey = false;
+            $this->confirmarEliminacion(true);
         }
         if ($blnTodoOkey) {
-            // Delegate "Delete" processing to the ArancelMetaControl
-            $this->mctRuta->DeleteRuta();
+            //$this->mctRuta->DeleteRuta();
+            //--------------------------------------------------------------------------
+            // Las Operaciones relacionadas a esta ruta, seran eliminadas (soft-delete)
+            //--------------------------------------------------------------------------
+            $this->mctRuta->Ruta->eliminarOperacionesRelacionadas();
+            $this->mctRuta->Ruta->DeletedAt = new QDateTime(QDateTime::Now);
+            $this->mctRuta->Ruta->Save();
             $arrLogxCamb['strNombTabl'] = 'Ruta';
             $arrLogxCamb['intRefeRegi'] = $this->mctRuta->Ruta->CodiRuta;
             $arrLogxCamb['strNombRegi'] = $this->mctRuta->Ruta->DescRuta;
@@ -179,6 +197,14 @@ class RutaEditForm extends RutaEditFormBase {
             LogDeCambios($arrLogxCamb);
             $this->RedirectToListPage();
         }
+    }
+
+    protected function confirmarEliminacion($blnVisuBoto) {
+	    $this->btnNuevRegi->Visible = !$blnVisuBoto;
+	    $this->btnSave->Visible     = !$blnVisuBoto;
+	    $this->btnDelete->Visible   = !$blnVisuBoto;
+	    $this->btnLogxCamb->Visible = !$blnVisuBoto;
+        $this->btnConfBorr->Visible = $blnVisuBoto;
     }
 }
 

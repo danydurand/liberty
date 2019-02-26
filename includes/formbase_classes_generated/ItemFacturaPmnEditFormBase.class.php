@@ -53,7 +53,7 @@ abstract class ItemFacturaPmnEditFormBase extends QForm {
 	// Controls for ItemFacturaPmn's Data Fields
 	protected $lblId;
 	protected $lstFactura;
-	protected $txtGuiaId;
+	protected $lstGuia;
 	protected $txtMontoBase;
 	protected $txtPorcentajeDscto;
 	protected $txtMontoDscto;
@@ -130,7 +130,7 @@ abstract class ItemFacturaPmnEditFormBase extends QForm {
 		// Call MetaControl's methods to create qcontrols based on ItemFacturaPmn's data fields
 		$this->lblId = $this->mctItemFacturaPmn->lblId_Create();
 		$this->lstFactura = $this->mctItemFacturaPmn->lstFactura_Create();
-		$this->txtGuiaId = $this->mctItemFacturaPmn->txtGuiaId_Create();
+		$this->lstGuia = $this->mctItemFacturaPmn->lstGuia_Create();
 		$this->txtMontoBase = $this->mctItemFacturaPmn->txtMontoBase_Create();
 		$this->txtPorcentajeDscto = $this->mctItemFacturaPmn->txtPorcentajeDscto_Create();
 		$this->txtMontoDscto = $this->mctItemFacturaPmn->txtMontoDscto_Create();

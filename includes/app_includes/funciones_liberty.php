@@ -916,7 +916,7 @@ function calcularTarifaParcialPmn($arrParaTari) {
     $strEstaUsua = $arrParaTari['strEstaUsua'];
     $dblMontOtro = isset($arrParaTari['dblMontOtro']) ? $arrParaTari['dblMontOtro'] : 0;
     $decSgroClie = isset($arrParaTari['decSgroClie']) ? $arrParaTari['decSgroClie'] : 0;
-    $decPorcDesc = isset($arrParaTari['decPorcDesc']) ? $arrParaTari['decPorcDesc'] : 0;
+    $decPorcDcto = isset($arrParaTari['decPorcDcto']) ? $arrParaTari['decPorcDcto'] : 0;
     $objTariGuia = isset($arrParaTari['objTariGuia']) ? $arrParaTari['objTariGuia'] : null;
     //-------------------------------------------------------------------------------------
     // Si el Cliente tiene algun porcentaje de Seguro definido (especifico y particular)
@@ -932,20 +932,26 @@ function calcularTarifaParcialPmn($arrParaTari) {
     }
     t('Voy a buscarMontoBaseTarifaPmn');
     $arrParaTari = buscarMontoBaseTarifaPmn($intDispTari,$decPesoGuia,$strModaPago,$strCodiDest,$strEstaUsua,$dttFechGuia);
+    t('Regresé de buscarMontoBaseTarifaPmn');
 
     $blnTodoOkey = $arrParaTari[0];
+    t('La variable TodoOk tiene: '.$blnTodoOkey);
     $dblPorcDiva = $blnTodoOkey ? $arrParaTari[6] : 0;
 
     if ($blnTodoOkey) {
         $decMontBase = str_replace(',','',$arrParaTari[2]);
-        $decMontDesc = $decMontBase * $decPorcDesc / 100;
-        $dblMontBase = $decMontBase - $decMontDesc;
+        $decMontDcto = $decMontBase * $decPorcDcto / 100;
+        $dblMontBase = $decMontBase - $decMontDcto;
 
         if ($dttFechGuia <= '2016-04-30') {
+            t('Se trata de una guia con fecha <= 2016-04-30');
             $dblFranPost = $arrParaTari[3];
         } else {
             $decPorcFran = $arrParaTari[3];
+            t('El % franqueo postal es: '.$decPorcFran);
+            t('El monto base es: '.$dblMontBase);
             $dblFranPost = $dblMontBase * $decPorcFran / 100;
+            t('El monto de franqueo postal es: '.$dblFranPost);
         }
 
         if ($intChecAseg) {
@@ -961,7 +967,7 @@ function calcularTarifaParcialPmn($arrParaTari) {
     } else {
         $strMensUsua = $arrParaTari[1];
         $dblMontBase = 0;
-        $decMontDesc = 0;
+        $decMontDcto = 0;
         $dblFranPost = 0;
         $dblMontDiva = 0;
         $dblMontSgro = 0;
@@ -978,7 +984,7 @@ function calcularTarifaParcialPmn($arrParaTari) {
     $arrValoTari['dblMontSgro'] = $dblMontSgro;
     $arrValoTari['dblMontTota'] = $dblMontTota;
     $arrValoTari['dblMontOtro'] = $dblMontOtro;
-    $arrValoTari['decMontDesc'] = $decMontDesc;
+    $arrValoTari['decMontDcto'] = $decMontDcto;
 
     return $arrValoTari;
 }
@@ -1040,7 +1046,6 @@ function calcularTarifaParcialNew($arrParaTari) {
         t('*** CalcularTarifaParcialNew ***');
     }
 
-
     $dttFechGuia = $arrParaTari['dttFechGuia'];
     $intCodiTari = $arrParaTari['intCodiTari'];
     $intCodiProd = $arrParaTari['intCodiProd'];
@@ -1052,6 +1057,7 @@ function calcularTarifaParcialNew($arrParaTari) {
     $strModaPago = $arrParaTari['strModaPago'];
     $dblMontOtro = isset($arrParaTari['dblMontOtro']) ? $arrParaTari['dblMontOtro'] : 0;
     $decSgroClie = isset($arrParaTari['decSgroClie']) ? $arrParaTari['decSgroClie'] : 0;
+    $decPorcDcto = isset($arrParaTari['decPorcDcto']) ? $arrParaTari['decPorcDcto'] : 0;
 
     //-------------------------------------------------------------------------------------
     // Si el Cliente tiene algun porcentaje de Seguro definido (especifico y particular)
@@ -1076,10 +1082,28 @@ function calcularTarifaParcialNew($arrParaTari) {
     }
     $blnTodoOkey = $arrParaTari[0];
     $dblPorcDiva = $blnTodoOkey ? $arrParaTari[6] : 0;
+    $decMontDcto = 0;
     if ($blnTodoOkey) {
         $dblMontBase = str_replace(',','',$arrParaTari[2]);
+
+        if ($decPorcDcto > 0) {
+            t('Monto Base para Dscto: '.$dblMontBase);
+            $decMontDcto = $dblMontBase * $decPorcDcto / 100;
+            if ($blnRegiTraz) {
+                $strTextMens = "Porcentaje de Dscto: $decPorcDcto";
+                t($strTextMens);
+                $objRegiTraz->ParaTxt1 .= $strTextMens."<br>";
+                $objRegiTraz->Save();
+            }
+        }
+        //$dblMontBase = $dblMontBase - $decMontDcto;
+
         if ($blnRegiTraz) {
-            $strTextMens = "Monto base: $dblMontBase";
+            $strTextMens = "Monto Base: $dblMontBase";
+            t($strTextMens);
+            $objRegiTraz->ParaTxt1 .= $strTextMens."<br>";
+            $objRegiTraz->Save();
+            $strTextMens = "Monto Dscto: $decMontDcto";
             t($strTextMens);
             $objRegiTraz->ParaTxt1 .= $strTextMens."<br>";
             $objRegiTraz->Save();
@@ -1107,14 +1131,14 @@ function calcularTarifaParcialNew($arrParaTari) {
             $objRegiTraz->ParaTxt1 .= $strTextMens."<br>";
             $objRegiTraz->Save();
         }
-        $dblBaseImpo = $dblMontBase + $dblMontSgro;
+        $dblBaseImpo = $dblMontBase - $decMontDcto + $dblMontSgro;
         if ($blnRegiTraz) {
             $strTextMens = "Base Imponible: $dblBaseImpo";
             t($strTextMens);
             $objRegiTraz->ParaTxt1 .= $strTextMens."<br>";
             $objRegiTraz->Save();
         }
-        $dblMontDiva = round(($dblMontBase * $dblPorcDiva / 100),2);
+        $dblMontDiva = round((($dblMontBase - $decMontDcto) * $dblPorcDiva / 100),2);
         if ($blnRegiTraz) {
             $strTextMens = "Monto del Iva: $dblMontDiva";
             t($strTextMens);
@@ -1142,6 +1166,7 @@ function calcularTarifaParcialNew($arrParaTari) {
     $arrValoTari['blnTodoOkey'] = $blnTodoOkey;
     $arrValoTari['strMensUsua'] = $strMensUsua;
     $arrValoTari['dblMontBase'] = $dblMontBase;
+    $arrValoTari['decMontDcto'] = $decMontDcto;
     $arrValoTari['dblFranPost'] = $dblFranPost;
     $arrValoTari['dblPorcDiva'] = $dblPorcDiva;
     $arrValoTari['dblMontDiva'] = $dblMontDiva;

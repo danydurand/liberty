@@ -39,8 +39,8 @@ require(__APP_INCLUDES__ . '/header.inc.php');
                     <div class="titulo">Información del Destinatario</div>
                 </div>
             </div>
-            <div class="row" style="margin-bottom: 2em;">
-                <div class="col-md-6" style="margin-top: .3em;">
+            <div class="row" style="margin-bottom: .1em;">
+                <div class="col-md-6" style="margin-top: .1em;">
                     <div class="row">
                         <div class="col-lg-1 visible-lg"></div>
                         <div class="col-md-6 col-lg-5">
@@ -136,7 +136,7 @@ require(__APP_INCLUDES__ . '/header.inc.php');
                         </div>
                     </div>
                 </div>
-                <div class="col-md-6" style="margin-top: .3em;">
+                <div class="col-md-6" style="margin-top: .1em;">
                     <div class="row">
                         <div class="col-md-12">
                             <div class="titulo-c">Contenido del Envío</div>
@@ -152,17 +152,17 @@ require(__APP_INCLUDES__ . '/header.inc.php');
                             <div class="titulo-c">Busc. Nombre</div>
                             <?php $this->txtNombBus2->Render(); ?>
                         </div>
-                        <div class="col-md-6">
+                        <div class="col-md-6 col-lg-6">
                             <div class="titulo-c">Destinatario</div>
                             <?php $this->lstDestFrec->Render(); ?>
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-md-12 col-lg-6">
+                        <div class="col-md-12 col-lg-7">
                             <div class="titulo-c">Nombre/Razón Social</div>
                             <?php $this->txtNombDest->Render(); ?>
                         </div>
-                        <div class="col-md-12 col-lg-6">
+                        <div class="col-md-12 col-lg-5">
                             <div class="titulo-c">Teléfono (Solo Números)</div>
                             <?php $this->txtTeleDest->Render(); ?>
                         </div>
@@ -185,44 +185,60 @@ require(__APP_INCLUDES__ . '/header.inc.php');
                             </div>
                         </div>
                     </div>
-                    <div class="row">
-                        <div class="col-md-4 col-lg-3">
-                            <div class="titulo-c">Mto. Base</div>
+                    <div class="row" style="text-align: right">
+                        <div class="col-md-2 col-lg-2">
+                            <div class="titulo-r">Base</div>
                             <?php $this->txtMontBase->Render(); ?>
                         </div>
-                        <div class="col-md-4 col-lg-3">
-                            <div class="titulo-c">Mto. IVA</div>
+                        <div class="col-md-2 col-lg-2">
+                            <div class="titulo-r">% Dscto</div>
+                            <?php $this->txtPorcDcto->Render(); ?>
+                        </div>
+                        <div class="col-md-2 col-lg-2">
+                            <div class="titulo-r">Dscto</div>
+                            <?php $this->txtMontDcto->Render(); ?>
+                        </div>
+                        <div class="col-md-2 col-lg-2">
+                            <div class="titulo-r">I.V.A.</div>
                             <?php $this->txtMontIvax->Render(); ?>
                         </div>
-                        <div class="col-md-4 col-lg-3">
-                            <div class="titulo-c">Mto. Franq.</div>
+                        <div class="col-md-2 col-lg-2">
+                            <div class="titulo-r">Franqueo</div>
                             <?php $this->txtMontFran->Render(); ?>
                         </div>
-                        <div class="col-md-4 col-lg-3">
-                            <div class="titulo-c">Mto. Seg.</div>
+                        <div class="col-md-2 col-lg-2">
+                            <div class="titulo-r">Seguro</div>
                             <?php $this->txtMontSegu->Render(); ?>
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-md-4 col-lg-3">
-                            <div class="titulo-c">Flete Directo?</div>
-                            <div style="margin-left: 3em">
+                        <div class="col-md-2">
+                            <div class="titulo-l">F. Direc</div>
+                            <div style="margin-left: 2em">
                                 <?php $this->chkFletDire->Render(); ?>
                             </div>
                         </div>
-                        <div class="col-md-4 col-lg-3">
-                            <div class="titulo-c">Tipo Vehículo</div>
+                        <div class="col-md-3">
+                            <div class="titulo-l">Cons Dscto</div>
+                            <div style="margin-left: 3em">
+                                <?php $this->chkConsDcto->Render(); ?>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="titulo-l">Tipo Vehiculo</div>
                             <?php $this->lstVehiSuge->Render(); ?>
                         </div>
-                        <div class="col-md-4 col-lg-3">
-                            <div class="titulo-c" style="margin-left: 1.1em">F.Pago</div>
-                            <div style="margin-left: 1.2em;">
+                        <div class="col-md-2">
+                            <div class="titulo-c">F.Pago</div>
+                            <div style="">
                                 <?php $this->lstModaPago->Render(); ?>
                             </div>
                         </div>
-                        <div class="col-md-4 col-lg-3">
-                            <div class="titulo-c">Mto. Total</div>
-                            <?php $this->txtMontTota->Render(); ?>
+                        <div class="col-md-2">
+                            <div class="titulo-r">Total</div>
+                            <div style="text-align: right">
+                                <?php $this->txtMontTota->Render(); ?>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -238,6 +254,16 @@ require(__APP_INCLUDES__ . '/header.inc.php');
             text-align: center;
         }
         .titulo-c {
+            font-weight: bold;
+            padding: 0.6em;
+            text-align: left;
+        }
+        .titulo-r {
+            font-weight: bold;
+            padding: 0.6em;
+            text-align: right;
+        }
+        .titulo-l {
             font-weight: bold;
             padding: 0.6em;
             text-align: left;

@@ -21,6 +21,9 @@ require_once(__FORMBASE_CLASSES__ . '/TarifaPesoListFormBase.class.php');
  * @subpackage Drafts
  */
 class TarifaPesoListForm extends TarifaPesoListFormBase {
+    /**
+     * @var $objUsuario UsuarioConnect
+     */
 	protected $objUsuario;
 	protected $dtgTariNaci;
 	protected $mctTariDefi;
@@ -61,7 +64,17 @@ class TarifaPesoListForm extends TarifaPesoListFormBase {
 		//----------
 		// Cabecera
 		//----------
+		$strTextMens  = '<b>Tarifa:</b> '.$this->mctTariDefi->FacTarifa->Descripcion;
+		$strTextMens .= ' | <b>Incremento x Kilo Urbano:</b> '.nf($this->mctTariDefi->FacTarifa->IncrementoUrbano);
+		$strTextMens .= ' | <b>Incremento x Kilo Nacional:</b> '.nf($this->mctTariDefi->FacTarifa->ValorIncremento);
+        if ($this->objUsuario->Cliente->DsctoPorPeso > 0) {
+            $strTextMens .= ' | <b>% Dscto x Peso:</b> '.nf($this->objUsuario->Cliente->DsctoPorPeso);
+        }
+        if ($this->objUsuario->Cliente->DsctoPorVolumen > 0) {
+            $strTextMens .= ' | <b>% Dscto x Volumen:</b> '.nf($this->objUsuario->Cliente->DsctoPorVolumen);
+        }
 		$this->lblDescTari = $this->mctTariDefi->lblDescripcionConTipo_Create();
+		$this->lblDescTari->Text = $strTextMens;
 
 		//$this->lblTipoTari = $this->mctTariDefi->lblTipoTarifa_Create();
 		//$this->lblTipoTari->Name = 'Tipo Tarifa';

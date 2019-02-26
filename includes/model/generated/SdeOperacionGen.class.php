@@ -22,6 +22,7 @@
 	 * @property string $CodiEsta the value for strCodiEsta (Not Null)
 	 * @property integer $CodiTipo the value for intCodiTipo (Not Null)
 	 * @property integer $ExpresoNacional the value for intExpresoNacional 
+	 * @property QDateTime $DeletedAt the value for dttDeletedAt 
 	 * @property Ruta $CodiRutaObject the value for the Ruta object referenced by strCodiRuta (Not Null)
 	 * @property Chofer $CodiChofObject the value for the Chofer object referenced by intCodiChof (Not Null)
 	 * @property Vehiculo $CodiVehiObject the value for the Vehiculo object referenced by intCodiVehi (Not Null)
@@ -107,6 +108,14 @@
 		 */
 		protected $intExpresoNacional;
 		const ExpresoNacionalDefault = null;
+
+
+		/**
+		 * Protected member variable that maps to the database column sde_operacion.deleted_at
+		 * @var QDateTime dttDeletedAt
+		 */
+		protected $dttDeletedAt;
+		const DeletedAtDefault = null;
 
 
 		/**
@@ -323,6 +332,7 @@
 			$this->strCodiEsta = SdeOperacion::CodiEstaDefault;
 			$this->intCodiTipo = SdeOperacion::CodiTipoDefault;
 			$this->intExpresoNacional = SdeOperacion::ExpresoNacionalDefault;
+			$this->dttDeletedAt = (SdeOperacion::DeletedAtDefault === null)?null:new QDateTime(SdeOperacion::DeletedAtDefault);
 		}
 
 
@@ -671,6 +681,7 @@
 			    $objBuilder->AddSelectItem($strTableName, 'codi_esta', $strAliasPrefix . 'codi_esta');
 			    $objBuilder->AddSelectItem($strTableName, 'codi_tipo', $strAliasPrefix . 'codi_tipo');
 			    $objBuilder->AddSelectItem($strTableName, 'expreso_nacional', $strAliasPrefix . 'expreso_nacional');
+			    $objBuilder->AddSelectItem($strTableName, 'deleted_at', $strAliasPrefix . 'deleted_at');
             }
 		}
 
@@ -817,6 +828,9 @@
 			$strAlias = $strAliasPrefix . 'expreso_nacional';
 			$strAliasName = !empty($strColumnAliasArray[$strAlias]) ? $strColumnAliasArray[$strAlias] : $strAlias;
 			$objToReturn->intExpresoNacional = $objDbRow->GetColumn($strAliasName, 'Integer');
+			$strAlias = $strAliasPrefix . 'deleted_at';
+			$strAliasName = !empty($strColumnAliasArray[$strAlias]) ? $strColumnAliasArray[$strAlias] : $strAlias;
+			$objToReturn->dttDeletedAt = $objDbRow->GetColumn($strAliasName, 'Date');
 
 			if (isset($objPreviousItemArray) && is_array($objPreviousItemArray)) {
 				foreach ($objPreviousItemArray as $objPreviousItem) {
@@ -1398,14 +1412,16 @@
 							`codi_vehi`,
 							`codi_esta`,
 							`codi_tipo`,
-							`expreso_nacional`
+							`expreso_nacional`,
+							`deleted_at`
 						) VALUES (
 							' . $objDatabase->SqlVariable($this->strCodiRuta) . ',
 							' . $objDatabase->SqlVariable($this->intCodiChof) . ',
 							' . $objDatabase->SqlVariable($this->intCodiVehi) . ',
 							' . $objDatabase->SqlVariable($this->strCodiEsta) . ',
 							' . $objDatabase->SqlVariable($this->intCodiTipo) . ',
-							' . $objDatabase->SqlVariable($this->intExpresoNacional) . '
+							' . $objDatabase->SqlVariable($this->intExpresoNacional) . ',
+							' . $objDatabase->SqlVariable($this->dttDeletedAt) . '
 						)
 					');
 
@@ -1426,7 +1442,8 @@
 							`codi_vehi` = ' . $objDatabase->SqlVariable($this->intCodiVehi) . ',
 							`codi_esta` = ' . $objDatabase->SqlVariable($this->strCodiEsta) . ',
 							`codi_tipo` = ' . $objDatabase->SqlVariable($this->intCodiTipo) . ',
-							`expreso_nacional` = ' . $objDatabase->SqlVariable($this->intExpresoNacional) . '
+							`expreso_nacional` = ' . $objDatabase->SqlVariable($this->intExpresoNacional) . ',
+							`deleted_at` = ' . $objDatabase->SqlVariable($this->dttDeletedAt) . '
 						WHERE
 							`codi_oper` = ' . $objDatabase->SqlVariable($this->intCodiOper) . '
 					');
@@ -1537,6 +1554,7 @@
 			$this->CodiEsta = $objReloaded->CodiEsta;
 			$this->CodiTipo = $objReloaded->CodiTipo;
 			$this->ExpresoNacional = $objReloaded->ExpresoNacional;
+			$this->dttDeletedAt = $objReloaded->dttDeletedAt;
 		}
 
 
@@ -1605,6 +1623,13 @@
 					 * @return integer
 					 */
 					return $this->intExpresoNacional;
+
+				case 'DeletedAt':
+					/**
+					 * Gets the value for dttDeletedAt 
+					 * @return QDateTime
+					 */
+					return $this->dttDeletedAt;
 
 
 				///////////////////
@@ -1919,6 +1944,19 @@
 					 */
 					try {
 						return ($this->intExpresoNacional = QType::Cast($mixValue, QType::Integer));
+					} catch (QCallerException $objExc) {
+						$objExc->IncrementOffset();
+						throw $objExc;
+					}
+
+				case 'DeletedAt':
+					/**
+					 * Sets the value for dttDeletedAt 
+					 * @param QDateTime $mixValue
+					 * @return QDateTime
+					 */
+					try {
+						return ($this->dttDeletedAt = QType::Cast($mixValue, QType::DateTime));
 					} catch (QCallerException $objExc) {
 						$objExc->IncrementOffset();
 						throw $objExc;
@@ -3359,6 +3397,7 @@
 			$strToReturn .= '<element name="CodiEstaObject" type="xsd1:Estacion"/>';
 			$strToReturn .= '<element name="CodiTipoObject" type="xsd1:SdeTipoOper"/>';
 			$strToReturn .= '<element name="ExpresoNacional" type="xsd:int"/>';
+			$strToReturn .= '<element name="DeletedAt" type="xsd:dateTime"/>';
 			$strToReturn .= '<element name="__blnRestored" type="xsd:boolean"/>';
 			$strToReturn .= '</sequence></complexType>';
 			return $strToReturn;
@@ -3405,6 +3444,8 @@
 				$objToReturn->CodiTipoObject = SdeTipoOper::GetObjectFromSoapObject($objSoapObject->CodiTipoObject);
 			if (property_exists($objSoapObject, 'ExpresoNacional'))
 				$objToReturn->intExpresoNacional = $objSoapObject->ExpresoNacional;
+			if (property_exists($objSoapObject, 'DeletedAt'))
+				$objToReturn->dttDeletedAt = new QDateTime($objSoapObject->DeletedAt);
 			if (property_exists($objSoapObject, '__blnRestored'))
 				$objToReturn->__blnRestored = $objSoapObject->__blnRestored;
 			return $objToReturn;
@@ -3443,6 +3484,8 @@
 				$objObject->objCodiTipoObject = SdeTipoOper::GetSoapObjectFromObject($objObject->objCodiTipoObject, false);
 			else if (!$blnBindRelatedObjects)
 				$objObject->intCodiTipo = null;
+			if ($objObject->dttDeletedAt)
+				$objObject->dttDeletedAt = $objObject->dttDeletedAt->qFormat(QDateTime::FormatSoap);
 			return $objObject;
 		}
 
@@ -3464,6 +3507,7 @@
 			$iArray['CodiEsta'] = $this->strCodiEsta;
 			$iArray['CodiTipo'] = $this->intCodiTipo;
 			$iArray['ExpresoNacional'] = $this->intExpresoNacional;
+			$iArray['DeletedAt'] = $this->dttDeletedAt;
 			return new ArrayIterator($iArray);
 		}
 
@@ -3549,6 +3593,7 @@
      * @property-read QQNode $CodiTipo
      * @property-read QQNodeSdeTipoOper $CodiTipoObject
      * @property-read QQNode $ExpresoNacional
+     * @property-read QQNode $DeletedAt
      *
      * @property-read QQNodeSdeOperacionEstacionAsOperacionDestino $EstacionAsOperacionDestino
      *
@@ -3592,6 +3637,8 @@
 					return new QQNodeSdeTipoOper('codi_tipo', 'CodiTipoObject', 'Integer', $this);
 				case 'ExpresoNacional':
 					return new QQNode('expreso_nacional', 'ExpresoNacional', 'Integer', $this);
+				case 'DeletedAt':
+					return new QQNode('deleted_at', 'DeletedAt', 'Date', $this);
 				case 'EstacionAsOperacionDestino':
 					return new QQNodeSdeOperacionEstacionAsOperacionDestino($this);
 				case 'DspDespachoAsCodiOper':
@@ -3635,6 +3682,7 @@
      * @property-read QQNode $CodiTipo
      * @property-read QQNodeSdeTipoOper $CodiTipoObject
      * @property-read QQNode $ExpresoNacional
+     * @property-read QQNode $DeletedAt
      *
      * @property-read QQNodeSdeOperacionEstacionAsOperacionDestino $EstacionAsOperacionDestino
      *
@@ -3678,6 +3726,8 @@
 					return new QQNodeSdeTipoOper('codi_tipo', 'CodiTipoObject', 'integer', $this);
 				case 'ExpresoNacional':
 					return new QQNode('expreso_nacional', 'ExpresoNacional', 'integer', $this);
+				case 'DeletedAt':
+					return new QQNode('deleted_at', 'DeletedAt', 'QDateTime', $this);
 				case 'EstacionAsOperacionDestino':
 					return new QQNodeSdeOperacionEstacionAsOperacionDestino($this);
 				case 'DspDespachoAsCodiOper':

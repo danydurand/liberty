@@ -160,7 +160,7 @@ if ($blnTodoOkey) {
 		$pdf->Cell(30,5,'Fecha/Hora:',0);
 
 		$intX -= 75;
-		$intY += 8;
+		$intY += 4;
 		$pdf->SetXY($intX,$intY);
 		$pdf->Cell(30,5,'Servicio',0);
 
@@ -197,6 +197,14 @@ if ($blnTodoOkey) {
 		$pdf->Cell(30,5,'BsF: ',0);
 		$pdf->SetXY($intX+58,$intY);
 		$pdf->Cell(12,5,$objGuia->MontoTotal,0,0,'R');
+
+		$intY += 4;
+		$pdf->SetXY($intX,$intY);
+		$pdf->Cell(30,5,'Descuento',0);
+		$pdf->SetXY($intX+50,$intY);
+		$pdf->Cell(30,5,'BsF: ',0);
+		$pdf->SetXY($intX+58,$intY);
+		$pdf->Cell(12,5,$objGuia->MontoDscto,0,0,'R');
 
 		$intY += 4;
 		$pdf->SetXY($intX,$intY);

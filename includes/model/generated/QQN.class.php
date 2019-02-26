@@ -157,6 +157,18 @@
 			return new QQNodeConsultaMail('consulta_mail', null, null);
 		}
 		/**
+		 * @return QQNodeConsumoDia
+		 */
+		static public function ConsumoDia() {
+			return new QQNodeConsumoDia('consumo_dia', null, null);
+		}
+		/**
+		 * @return QQNodeConsumoMes
+		 */
+		static public function ConsumoMes() {
+			return new QQNodeConsumoMes('consumo_mes', null, null);
+		}
+		/**
 		 * @return QQNodeContenedorCkpt
 		 */
 		static public function ContenedorCkpt() {
@@ -185,6 +197,12 @@
 		 */
 		static public function DatosPago() {
 			return new QQNodeDatosPago('datos_pago', null, null);
+		}
+		/**
+		 * @return QQNodeDescuentos
+		 */
+		static public function Descuentos() {
+			return new QQNodeDescuentos('descuentos', null, null);
 		}
 		/**
 		 * @return QQNodeDestinatarioFrecuente

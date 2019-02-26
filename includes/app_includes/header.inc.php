@@ -44,6 +44,11 @@ if ($_SESSION['NombSist'] == 'DESPACHO DE ENVIOS') {
         <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
         <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
     <![endif]-->
+
+    <!-- Fusion Charts -->
+    <script src="http://cdn.fusioncharts.com/fusioncharts/latest/fusioncharts.js"></script>
+    <script src="http://cdn.fusioncharts.com/fusioncharts/latest/themes/fusioncharts.theme.fusion.js"></script>
+
     <style>
         .navbar-default {
             background: #A52422;

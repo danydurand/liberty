@@ -163,18 +163,27 @@ class ConsultaGuia extends FormularioBaseKaizen {
         // Se verifica si la guia es Facturable
         //--------------------------------------
         $this->blnGuiaFact = false;
-
+	t('=======================================================');
+	t('Evaluando si la Guia Nro: '.$this->objGuia->NumeGuia.' es Facturable');
         if ($this->objGuia->TipoGuia == TipoGuiaType::CODCOBROENDESTINO) {
+	    t('La Mod. de Pago es COD');
             //--------------------------------------------------------------------
             // La Guia es COD y el Destino coincide con la localidad del Usuario
             //--------------------------------------------------------------------
+            t('Receptoria Destino de la Guia: '.$this->objGuia->ReceptoriaDestino);
+            t('Receptoria del Usuario: '.$this->strReceOrig);
             if (trim($this->objGuia->ReceptoriaDestino) == trim($this->strReceOrig)) {
+                t('Las Receptorias coinciden, la guia se puede facturar');
                 $this->blnGuiaFact = true;
             } elseif ($this->objGuia->SistemaId == 'sde') {
+                t('La guia fue hecho en el SisCO');
                 //------------------------------------
                 // Se trata de una Guía SDE o CORP
                 //------------------------------------
+                t('El Destino de la Guia es: '.$this->objGuia->EstaDest);
+                t('La Sucursal del Usuario: '.$this->strSucuOrig);
                 if (trim($this->objGuia->EstaDest) == trim($this->strSucuOrig)) {
+                    t('El Usuario esta en la Sucursal Destino, la guia se puede facturar');
                     $this->blnGuiaFact = true;
                 }
             }
@@ -184,8 +193,11 @@ class ConsultaGuia extends FormularioBaseKaizen {
             if (trim($this->objGuia->ReceptoriaDestino) == trim($this->strSucuOrig)) {
                 $this->blnGuiaFact = true;
             }
+            t('El Destino de la Guia es: '.$this->objGuia->EstaDest);
+            t('La Sucursal del Usuario: '.$this->strSucuOrig);
             if ((trim($this->objGuia->EstaDest) == trim($this->strSucuOrig)) &&
                 (strlen(trim($this->objGuia->ReceptoriaDestino)) == 0)) {
+                t('El Usuario esta en la Sucursal Destino y no hay Receptoria Destino, la guia se puede facturar');
                 $this->blnGuiaFact = true;
             }
 
@@ -194,14 +206,18 @@ class ConsultaGuia extends FormularioBaseKaizen {
                 // Otra posibilidad para que una guia sea Facturable, es que la Sucursal en la que se encuentra
                 // el Usuario, se el "Centro de Facturacion" del Destino de la guia.
                 //-----------------------------------------------------------------------------------------------
+                t('La Sucursal Destino de la guia se factura en: '.$this->objGuia->EstaDestObject->SeFacturaEn);
                 if (strlen($this->objGuia->EstaDestObject->SeFacturaEn) > 0) {
                     if (trim($this->objGuia->EstaDestObject->SeFacturaEnObject->Siglas) == trim($this->strSucuOrig)) {
+                        t('El Usuario esta en la Sucursal en la cual se factura la guia, la guia se puede facturar');
                         $this->blnGuiaFact = true;
                     } elseif ($this->objMastClie) {
+                        t('Se trata de una guia SisCO o CORP');
                         //------------------------------------
                         // Se trata de una Guía SDE o CORP
                         //------------------------------------
                         if (trim($this->objGuia->EstaDestObject->SeFacturaEnObject->Siglas) == trim($this->strReceOrig)) {
+                            t('El Usuario esta en la Sucursal en la cual se factura la guia, la guia se puede facturar');
                             $this->blnGuiaFact = true;
                         }
                     }
@@ -209,12 +225,14 @@ class ConsultaGuia extends FormularioBaseKaizen {
             }
         } else {
             if (!$this->objMastClie) {
+                t('Se trata de una guia PPD creada en el Exp Nac, la guia se puede factura');
                 //-----------------------------------------------------------
                 // La Guia es PrePagada y fue creada en el Expreso Nacional
                 //-----------------------------------------------------------
                 $this->blnGuiaFact = true;
             }
         }
+        t('La Variable tiene: '.$this->blnGuiaFact);
     }
 
     protected function Form_Create() {
