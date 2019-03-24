@@ -125,7 +125,7 @@ class AjustarConsecutivo extends FormularioBaseKaizen {
     }
 
     protected function btnSave_Click() {
-        if (in_array($this->objUsuario->LogiUsua,array('ddurand','jlaya'))) {
+        if (in_array($this->objUsuario->LogiUsua,array('ddurand','al'))) {
             $strSecuProp = $this->txtSecuProp->Text;
             $strCadeSqlx = "INSERT INTO liberty.guia_consecutivo VALUES ($strSecuProp,'X')";
             $objDataBase = GuiaConsecutivo::GetDatabase();

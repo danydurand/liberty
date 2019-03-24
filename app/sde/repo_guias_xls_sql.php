@@ -157,16 +157,32 @@ while ($intCantRepe <= $intCantCicl) {
         if ($intPosiCade !== false) {
             $strGuiaOrig = QuitarCaracteresEspeciales2(utf8_decode(substr($objTabla->Observacion, 20)));
         }
+        //-------------------------------------------------------------------------------
+        // A solicitud de la Gte de Ventas (Yelimar Roth) hemos hecho reconversión
+        // de los montos anteriores a la fecha de implementación real de dicho proceso
+        //-------------------------------------------------------------------------------
+        $decMontBase = $objTabla->MontoBase;
+        $decMontIvax = $objTabla->MontoIva;
+        $decMontFran = $objTabla->MontoFranqueo;
+        $decMontSgro = $objTabla->MontoSeguro;
+        $decMontTota = $objTabla->MontoTotal;
+        if ($strFechGuia < '2018-08-20') {
+            $decMontBase = $objTabla->MontoBase / 100000;
+            $decMontIvax = $objTabla->MontoIva / 100000;
+            $decMontFran = $objTabla->MontoFranqueo / 100000;
+            $decMontSgro = $objTabla->MontoSeguro / 100000;
+            $decMontTota = $objTabla->MontoTotal / 100000;
+        }
         $strPorcIvax = nf($objTabla->PorcentajeIva);
-        $strMontIvax = nf($objTabla->MontoIva);
+        $strMontIvax = nf($decMontIvax);
         $strPorcSgro = nf($objTabla->PorcentajeSeguro);
-        $strMontSgro = nf($objTabla->MontoSeguro);
-        $strMontBase = nf($objTabla->MontoBase);
+        $strMontSgro = nf($decMontSgro);
+        $strMontBase = nf($decMontBase);
         $strPorcDcto = nf($objTabla->PorcentajeDscto);
         $strMontDcto = nf($objTabla->MontoDscto);
         $strConsDcto = $objTabla->ConsiderarDscto ? 'SI' : 'NO';
-        $strMontFran = nf($objTabla->MontoFranqueo);
-        $strMontTota = nf($objTabla->MontoTotal);
+        $strMontFran = nf($decMontFran);
+        $strMontTota = nf($decMontTota);
         // echo4;
         //---------------------------
         // Datos del Pago Realizado

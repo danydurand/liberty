@@ -14,6 +14,7 @@ require(__APP_INCLUDES__ . '/header.inc.php');
         <?php $this->lblTituForm->Render(); ?>
     </div>
     <div class="hidden-xs hidden-sm col-md-7" style="text-align: left; margin-top: -0.25em;">
+        <?php $this->btnCancel->Render(); ?>
         <?php $this->btnSave->Render(); ?>
     </div>
 </div>

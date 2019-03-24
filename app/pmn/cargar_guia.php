@@ -352,7 +352,7 @@ class CargarGuia extends FormularioBaseKaizen {
         $this->lstSucuDest_Change();
 
         $strTextMens = 'Evite el uso de caracteres especiales (Ej: \\~°#^*+) en <b>los nombres, las direcciones, el contenido y los teléfonos</b>';
-        $this->mensaje($strTextMens,'m','w','',__iINFO__);
+        $this->mensaje($strTextMens,'m','i','',__iINFO__);
 
         //-----------
         // Permisos
@@ -1266,7 +1266,6 @@ class CargarGuia extends FormularioBaseKaizen {
                 $arrLogxCamb['strDescCamb'] = 'Ejecutado';
                 $arrLogxCamb['strEnlaEnti'] = __SIST__.'/proceso_error_list.php/'.$objProcEjec->Id;
                 LogDeCambios($arrLogxCamb);
-
             }
         }
     }
@@ -1305,21 +1304,15 @@ class CargarGuia extends FormularioBaseKaizen {
         //-------------------------------------------------------------------
         $objConfReco = BuscarParametro('ConfReco','RecoMone','TODO',null);
         if ($objConfReco) {
-            t('El Parametro de configuracion existe..');
             $objApliReco->blnApliReco = (boolean)$objConfReco->ParaVal1;
             $objApliReco->decFactReco = (float)$objConfReco->ParaVal2;
             $intTariRefe = (int)$objConfReco->ParaVal3;
-            t('Factor de Reconversion: '.$objApliReco->decFactReco);
-            t('Tarifa Referencial: '.$intTariRefe);
             //---------------------------------------------------------------
             // Aqui se determina si la reconversion debe ser aplicada o no
             //---------------------------------------------------------------
             if ($objApliReco->blnApliReco) {
-                t('Si se debe aplicar la reconversión');
                 $objApliReco->blnApliReco = false;
-                t('La tarifa asociada a la guia es: '.$objGuiaReco->TarifaId);
                 if ($objGuiaReco->TarifaId < $intTariRefe) {
-                    t('En funcion de la tarifa de la guia, si se aplicara la reconversion');
                     $objApliReco->blnApliReco = true;
                 }
             }
@@ -1331,8 +1324,6 @@ class CargarGuia extends FormularioBaseKaizen {
     // Función responsable del cálculo de la Tarifa del Expreso Nacional
     //-------------------------------------------------------------------
     protected function calcularTarifa() {
-        t('=========================');
-        t('Entrando a CalcularTarifa');
         $blnTodoOkey = false;
 
         if (!$this->blnEditMode) {
@@ -1359,7 +1350,7 @@ class CargarGuia extends FormularioBaseKaizen {
             $arrParaTari['strEstaUsua'] = $this->objUsuario->CodiEsta;
             $arrParaTari['decSgroClie'] = $this->objClieTari->PorcentajeSeguro;
             $arrParaTari['objTariGuia'] = $objTarifa;
-            $arrParaTari['decPorcDcto'] = $this->txtPorcDcto->Text;
+            $arrParaTari['decPorcDcto'] = strlen($this->txtPorcDcto->Text) > 0 ? $this->txtPorcDcto->Text : 0 ;
 
             $arrValoTari = calcularTarifaParcialPmn($arrParaTari);
 
@@ -1368,7 +1359,6 @@ class CargarGuia extends FormularioBaseKaizen {
             $dblMontBase = $arrValoTari['dblMontBase'];
             $decMontDcto = $arrValoTari['decMontDcto'];
             $dblFranPost = $arrValoTari['dblFranPost'];
-            t('El Franqueo Postal que regresa a la creacion de la guia es: '.nfp($dblFranPost));
             $dblMontDiva = $arrValoTari['dblMontDiva'];
             $dblMontSgro = $arrValoTari['dblMontSgro'];
             $dblMontTota = $arrValoTari['dblMontTota'];

@@ -19,8 +19,18 @@ class SimularImpresion extends FormularioBaseKaizen {
     protected $txtFechImpr;
     protected $txtHoraImpr;
 
+    protected $strTipoDocu = null;
+    protected $strNumeDocu = null;
+
+    protected function SetupValores() {
+        $this->strTipoDocu = QApplication::PathInfo(0);
+        $this->strNumeDocu = QApplication::PathInfo(1);
+    }
+
     protected function Form_Create() {
         parent::Form_Create();
+
+        $this->SetupValores();
 
         $this->lblTituForm->Text = 'Capturar Datos Fiscales';
 
@@ -47,6 +57,15 @@ class SimularImpresion extends FormularioBaseKaizen {
         $this->rdbTipoDocu->Required = true;
         $this->rdbTipoDocu->RepeatColumns = 2;
         $this->rdbTipoDocu->AddAction(new QChangeEvent(), new QAjaxAction('rdbTipoDocu_Change'));
+        if (strlen($this->strTipoDocu)) {
+            if ($this->strTipoDocu == 'F') {
+                $this->rdbTipoDocu->SelectedIndex = 0;
+            } else {
+                $this->rdbTipoDocu->SelectedIndex = 1;
+            }
+            $this->rdbTipoDocu->Enabled = false;
+            $this->rdbTipoDocu->ForeColor = 'blue';
+        }
     }
 
     protected function txtNumeDocu_Create() {
@@ -54,6 +73,11 @@ class SimularImpresion extends FormularioBaseKaizen {
         $this->txtNumeDocu->Name = 'Id Documento';
         $this->txtNumeDocu->Width = 60;
         $this->txtNumeDocu->Required = true;
+        if (strlen($this->strNumeDocu)) {
+            $this->txtNumeDocu->Text = $this->strNumeDocu;
+            $this->txtNumeDocu->Enabled = false;
+            $this->txtNumeDocu->ForeColor = 'blue';
+        }
     }
 
     protected function txtDocuFisc_Create() {
@@ -238,6 +262,12 @@ class SimularImpresion extends FormularioBaseKaizen {
             $this->mensaje('Transacción Exitosa !','','s','',__iCHEC__);
             $this->blanquearCampos();
         }
+    }
+
+    protected function btnCancel_Click() {
+        $objUltiAcce = PilaAcceso::Pop('D');
+        QApplication::Redirect(__SIST__.'/'.$objUltiAcce->__toString());
+        //QApplication::Redirect(__SIST__.'/'.$objUltiAcce->__toString());
     }
 
     //------------------------------

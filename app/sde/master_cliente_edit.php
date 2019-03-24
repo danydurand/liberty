@@ -104,6 +104,7 @@ class MasterClienteEditForm extends FormularioBaseKaizen {
 
     protected $dtgDctoClie;
     protected $arrDataGraf;
+    protected $intRankClie;
 
     protected function ClienteSetup() {
         $intCodiClie = QApplication::PathInfo(0);
@@ -286,6 +287,7 @@ class MasterClienteEditForm extends FormularioBaseKaizen {
         $this->txtCodiInte->SetFocus();
 
         $this->datosParaGraficos();
+        $this->intRankClie = $this->blnEditMode ? $this->objMasterCliente->_ranking() : '';
 
         //----------------------------------------------------------------------------------------
         // Unicamente los SuperUsuarios podrán permitir a los Usuarios el uso de la Guia Retorno
@@ -300,6 +302,7 @@ class MasterClienteEditForm extends FormularioBaseKaizen {
         $this->mensaje($strTextMens,'n','i','',__iINFO__);
 
     }
+
 
     protected function datosParaGraficos() {
         $intCodiClie = $this->objMasterCliente->CodiClie;
@@ -1582,117 +1585,6 @@ class MasterClienteEditForm extends FormularioBaseKaizen {
         QApplication::Redirect(__SIST__.'/master_cliente_edit.php');
     }
 
-    /*
-    protected function enviarMensajeDeError($strMensErro) {
-        $this->mensaje($strMensErro,'','d','',__iHAND__);
-    }
-
-    protected function Form_Validate() {
-        $this->mensaje();
-        if (strlen($this->txtNumeGuia->Text) == 0) {
-            $strMensErro = 'Número Guía <b>Requerido</b>';
-            $this->enviarMensajeDeError($strMensErro);
-            return false;
-        } else {
-            $this->txtNumeGuia->Text = limpiarCadena($this->txtNumeGuia->Text);
-        }
-        if (is_null($this->lstCodiClie->SelectedValue)) {
-            $strMensErro = 'Cliente A Facturar <b>Requerido</b>';
-            $this->enviarMensajeDeError($strMensErro);
-            return false;
-        }
-        if (strlen($this->txtNombRemi->Text) == 0) {
-            $strMensErro = 'Nombre del Remitente <b>Requerido</b>';
-            $this->enviarMensajeDeError($strMensErro);
-            return false;
-        } else {
-            $this->txtNombRemi->Text = limpiarCadena($this->txtNombRemi->Text);
-        }
-        if (strlen($this->txtTeleRemi->Text) == 0) {
-            $strMensErro = 'Teléfono del Remitente <b>Requerido</b>';
-            $this->enviarMensajeDeError($strMensErro);
-            return false;
-        } else {
-            $this->txtTeleRemi->Text = DejarSoloLosNumeros($this->txtTeleRemi->Text);
-        }
-        if (strlen($this->txtDireRemi->Text) == 0) {
-            $strMensErro = 'Dirección de Recolecta <b>Requerida</b>';
-            $this->enviarMensajeDeError($strMensErro);
-            return false;
-        } else {
-            $this->txtDireRemi->Text = limpiarCadena($this->txtDireRemi->Text);
-        }
-        if (is_null($this->lstCodiOrig->SelectedValue)) {
-            $strMensErro = 'Origen <b>Requerido</b>';
-            $this->enviarMensajeDeError($strMensErro);
-            return false;
-        }
-        if (is_null($this->lstCodiDest->SelectedValue)) {
-            $strMensErro = 'Destino <b>Requerido</b>';
-            $this->enviarMensajeDeError($strMensErro);
-            return false;
-        }
-        if (strlen($this->txtCantPiez->Text) == 0 || ($this->txtCantPiez->Text == 0)) {
-            $strMensErro = 'La Cantidad de Piezas <b>Requerida y Mayor a Cero (0)</b>';
-            $this->enviarMensajeDeError($strMensErro);
-            return false;
-        }
-        if ((strlen($this->txtPesoGuia->Text) == 0) || ($this->txtPesoGuia->Text == 0)) {
-            $strMensErro = 'Peso <b>Requerido y Mayor a Cero (0)</b>';
-            $this->enviarMensajeDeError($strMensErro);
-            return false;
-        }
-        if (strlen($this->txtValoDecl->Text) == 0) {
-            $strMensErro = 'Valor Declarado <b>Requerido</b>';
-            $this->enviarMensajeDeError($strMensErro);
-            return false;
-        }
-        if ($this->chkGuiaInte->Checked && strlen($this->txtGuiaInte->Text) == 0) {
-            $strMensErro = 'Guía Externa <b>Requerida</b>';
-            $this->enviarMensajeDeError($strMensErro);
-            return false;
-        }
-        if (strlen($this->txtDescCont->Text) == 0) {
-            $strMensErro = 'Contenido del Envío <b>Requerido</b>';
-            $this->enviarMensajeDeError($strMensErro);
-            return false;
-        } else {
-            $this->txtDescCont->Text = limpiarCadena($this->txtDescCont->Text);
-        }
-        if (strlen($this->txtNombDest->Text) == 0) {
-            $strMensErro = 'Nombre del Destinatario <b>Requerido</b>';
-            $this->enviarMensajeDeError($strMensErro);
-            return false;
-        } else {
-            $this->txtNombDest->Text = limpiarCadena($this->txtNombDest->Text);
-        }
-        if (strlen($this->txtTeleDest->Text) == 0) {
-            $strMensErro = 'Teléfono del Destinatario <b>Requerido</b>';
-            $this->enviarMensajeDeError($strMensErro);
-            return false;
-        } else {
-            $this->txtTeleDest->Text = DejarSoloLosNumeros($this->txtTeleDest->Text);
-        }
-        if (strlen($this->txtDireDest->Text) == 0) {
-            $strMensErro = 'Dirección de Entrega <b>Requerida</b>';
-            $this->enviarMensajeDeError($strMensErro);
-            return false;
-        } else {
-            $this->txtDireDest->Text = limpiarCadena($this->txtDireDest->Text);
-        }
-        if ($this->chkFletDire->Checked && is_null($this->lstVehiSuge->SelectedValue)) {
-            $strMensErro = 'Tipo Vehículo <b>Requerido</b>';
-            $this->enviarMensajeDeError($strMensErro);
-            return false;
-        }
-        if (is_null($this->lstModaPago->SelectedValue)) {
-            $strMensErro = 'Forma de Pago <b>Requerida</b>';
-            $this->enviarMensajeDeError($strMensErro);
-            return false;
-        }
-        return true;
-    }
-    */
 
     protected function validarDescuentos() {
         if ($this->txtDctoVolu->Text > 100) {
@@ -1807,7 +1699,7 @@ class MasterClienteEditForm extends FormularioBaseKaizen {
                     //-----------------------------------------
                     // En caso de que el objeto haya cambiado
                     //-----------------------------------------
-                    $arrLogxCamb['strNombTabl'] = 'MasterCliente';
+                    $arrLogxCamb['strNombTabl'] = 'Cliente';
                     $arrLogxCamb['intRefeRegi'] = $this->objMasterCliente->CodiClie;
                     $arrLogxCamb['strNombRegi'] = '('.$this->objMasterCliente->CodigoInterno .') - '. $this->objMasterCliente->NombClie;
                     $arrLogxCamb['strDescCamb'] = implode(',',$objResuComp->DifferentFields);
@@ -1819,7 +1711,7 @@ class MasterClienteEditForm extends FormularioBaseKaizen {
                     $this->mensaje('Transacción Exitosa','','','',__iCHEC__);
                 }
             } else {
-                $arrLogxCamb['strNombTabl'] = 'MasterCliente';
+                $arrLogxCamb['strNombTabl'] = 'Cliente';
                 $arrLogxCamb['intRefeRegi'] = $this->objMasterCliente->CodiClie;
                 $arrLogxCamb['strNombRegi'] = '('.$this->objMasterCliente->CodigoInterno .') - '. $this->objMasterCliente->NombClie;
                 $arrLogxCamb['strDescCamb'] = "Creado";
@@ -1838,6 +1730,10 @@ class MasterClienteEditForm extends FormularioBaseKaizen {
         // Se verifica la integridad referencial
         //----------------------------------------
         $blnTodoOkey = true;
+        $this->objMasterCliente->DeletedAt = new QDateTime(QDateTime::Now());
+        $this->objMasterCliente->Save();
+
+        /*
         $arrTablRela = $this->objMasterCliente->TablasRelacionadas();
         if (count($arrTablRela)) {
             $strTablRela = implode(',',$arrTablRela);
@@ -1845,17 +1741,19 @@ class MasterClienteEditForm extends FormularioBaseKaizen {
             $this->mensaje($strTextMens,'','w','',__iEXCL__);
             $blnTodoOkey = false;
         }
+        */
+
         if ($blnTodoOkey) {
 
-            $arrLogxCamb['strNombTabl'] = 'MasterCliente';
+            $arrLogxCamb['strNombTabl'] = 'Cliente';
             $arrLogxCamb['intRefeRegi'] = $this->objMasterCliente->CodiClie;
             $arrLogxCamb['strNombRegi'] = '('.$this->objMasterCliente->CodigoInterno .') - '. $this->objMasterCliente->NombClie;
-            $arrLogxCamb['strDescCamb'] = "Borrado";
+            $arrLogxCamb['strDescCamb'] = "Eliminado (SoftDelete)";
             // $arrLogxCamb['strEnlaEnti'] = __SIST__.'/master_cliente_edit.php/'.$this->objMasterCliente->CodiClie;
             $arrLogxCamb['blnCambDeli'] = true;
             LogDeCambios($arrLogxCamb);
 
-            $this->objMasterCliente->Delete();
+            //$this->objMasterCliente->Delete();
             $this->limpiarFormulario();
             $strTextMens = 'Transaccion Exitosa. El Cliente '.trim($this->objMasterCliente->CodigoInterno).' ha sido Eliminado.';
             $this->mensaje($strTextMens,'','','',__iCHEC__);

@@ -7,7 +7,8 @@ class GuiaSearchForm extends FormularioBaseKaizen {
     // Parámetros Regulares //
     protected $arrRegiSucu;
     protected $intCantSucu;
-    // Lado Izquierdo del Formulario //
+
+    // Zona 1
     protected $txtNumeGuia;
     protected $txtGuiaExte;
     protected $txtNumeMast;
@@ -16,9 +17,11 @@ class GuiaSearchForm extends FormularioBaseKaizen {
     protected $lstCodiClie;
     protected $calFechInic;
     protected $calFechFina;
+    protected $chkInclSubc;
+
+    // Zona 2
     protected $txtNumePrec;
     protected $lstTipoPago;
-    // Lado Derecho del Formulario //
     protected $lstCodiOrig;
     protected $lstCodiDest;
     protected $lstCodiRece;
@@ -27,21 +30,23 @@ class GuiaSearchForm extends FormularioBaseKaizen {
     protected $lstCodiVend;
     protected $calInicPodx;
     protected $calFinaPodx;
-    protected $calFechTrx1;
-    protected $calFechTrx2;
     protected $rdbTienPodx;
     protected $chkPesoVolu;
-    protected $txtUsuaPodx;
     protected $txtUsuaCrea;
     protected $txtUbicFisi;
-    protected $lstCodiCkpt;
-    protected $chkMostQuer;
     protected $btnExpoExce;
     protected $btnExpoEsta;
-    protected $txtSepaColu;
     protected $lstReceOrig;
+
+    // Zona 3
     protected $lstTariIdxx;
+    protected $calFechTrx1;
+    protected $calFechTrx2;
+    protected $txtUsuaPodx;
+    protected $lstCodiCkpt;
+    protected $txtSepaColu;
     protected $chkConxDesc;
+    protected $chkMostQuer;
 
     protected function Form_Create() {
         parent::Form_Create();
@@ -57,6 +62,7 @@ class GuiaSearchForm extends FormularioBaseKaizen {
         $this->txtCodiInte_Create();
         $this->txtNombBusc_Create();
         $this->lstCodiClie_Create();
+        $this->chkInclSubc_Create();
         $this->calFechInic_Create();
         $this->calFechFina_Create();
         $this->txtNumePrec_Create();
@@ -135,6 +141,12 @@ class GuiaSearchForm extends FormularioBaseKaizen {
         $this->lstCodiClie->Name = QApplication::Translate('Cliente');
         $this->lstCodiClie->Width = 180;
         $this->lstCodiClie->AddItem(QApplication::Translate('- Seleccione Uno - (0)'),null);
+    }
+
+    protected function chkInclSubc_Create() {
+        $this->chkInclSubc = new QCheckBox($this);
+        $this->chkInclSubc->Name = 'Incluir Sub-Cuentas ?';
+        $this->chkInclSubc->Checked = false;
     }
 
     protected function calFechInic_Create() {
@@ -519,8 +531,8 @@ class GuiaSearchForm extends FormularioBaseKaizen {
                 on g.tipo_guia = t.id
                    left join usuario u
                 on g.usua_ckpt = u.codi_usua
-                   left join fac_tarifa t
-                on g.tarifa_id = t.id
+                   left join fac_tarifa ta
+                on g.tarifa_id = ta.id
              where 1 = 1
         ";
         $objClausula = QQ::Clause();
@@ -555,9 +567,21 @@ class GuiaSearchForm extends FormularioBaseKaizen {
                 $objClausula[] = QQ::Equal(QQN::Guia()->NumeGuia,DejarSoloLosNumeros($this->txtNumeGuia->Text));
                 $strCadeSqlx  .= " and g.nume_guia = '".$this->txtNumeGuia->Text."'";
             }
-            if (!is_null($this->lstCodiClie->SelectedValue)) {
+            if (!is_null($this->lstCodiClie->SelectedValue) && (!$this->chkInclSubc->Checked)) {
                 $objClausula[] = QQ::Equal(QQN::Guia()->CodiClie,$this->lstCodiClie->SelectedValue);
                 $strCadeSqlx  .= " and g.codi_clie = ".$this->lstCodiClie->SelectedValue;
+            }
+            if ($this->chkInclSubc->Checked) {
+                if (!is_null($this->lstCodiClie->SelectedValue)) {
+                    $objClieSele   = MasterCliente::Load($this->lstCodiClie->SelectedValue);
+                    if ($objClieSele->tieneSubCuentas()) {
+                        $arrSubcClie   = $objClieSele->subCuentas();
+                        array_push($arrSubcClie,$objClieSele->CodiClie);
+                        $strSubcClie   = implode(',',$arrSubcClie);
+                        $objClausula[] = QQ::In(QQN::Guia()->CodiClie,$arrSubcClie);
+                        $strCadeSqlx  .= " or g.codi_clie in ($strSubcClie)";
+                    }
+                }
             }
             if (strlen($this->txtNumeMast->Text) > 0) {
                 $objGuiaMast = SdeContenedor::Load($this->txtNumeMast->Text);

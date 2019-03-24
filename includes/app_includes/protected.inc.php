@@ -12,11 +12,13 @@ require_once(__CONFIGURATION__.'/prepend.inc.php');
 // Aqui se verifica la existencia de la session 
 //-----------------------------------------------
 if (!isset($_SESSION['User'])) {
-    QApplication::Redirect(__SUBDIRECTORY__.'/index.php');
+    QApplication::Redirect('/index.php');
+    //QApplication::Redirect(__SUBDIRECTORY__.'/index.php');
 }
 $objUser = unserialize($_SESSION['User']);
 if (!($objUser instanceof Usuario)) {
-    QApplication::Redirect(__SUBDIRECTORY__.'/index.php');
+    QApplication::Redirect('/index.php');
+    //QApplication::Redirect(__SUBDIRECTORY__.'/index.php');
 }
 if (!defined('__SIST__')) {
     //define ('__SIST__', '/newliberty/app/'.$_SESSION['Sistema']);

@@ -74,6 +74,7 @@
 	 * @property string $TokenApi the value for strTokenApi 
 	 * @property boolean $GuiaRetorno the value for blnGuiaRetorno 
 	 * @property integer $ProcesoApi the value for intProcesoApi (Unique)
+	 * @property QDateTime $DeletedAt the value for dttDeletedAt 
 	 * @property MasterCliente $CodiDepeObject the value for the MasterCliente object referenced by intCodiDepe (Not Null)
 	 * @property Estacion $CodiEstaObject the value for the Estacion object referenced by strCodiEsta (Not Null)
 	 * @property FacVendedor $Vendedor the value for the FacVendedor object referenced by intVendedorId (Not Null)
@@ -613,6 +614,14 @@
 
 
 		/**
+		 * Protected member variable that maps to the database column master_cliente.deleted_at
+		 * @var QDateTime dttDeletedAt
+		 */
+		protected $dttDeletedAt;
+		const DeletedAtDefault = null;
+
+
+		/**
 		 * Private member variable that stores a reference to a single ConsumoDiaAsCliente object
 		 * (of type ConsumoDia), if this MasterCliente object was restored with
 		 * an expansion on the consumo_dia association table.
@@ -988,6 +997,7 @@
 			$this->strTokenApi = MasterCliente::TokenApiDefault;
 			$this->blnGuiaRetorno = MasterCliente::GuiaRetornoDefault;
 			$this->intProcesoApi = MasterCliente::ProcesoApiDefault;
+			$this->dttDeletedAt = (MasterCliente::DeletedAtDefault === null)?null:new QDateTime(MasterCliente::DeletedAtDefault);
 		}
 
 
@@ -1388,6 +1398,7 @@
 			    $objBuilder->AddSelectItem($strTableName, 'token_api', $strAliasPrefix . 'token_api');
 			    $objBuilder->AddSelectItem($strTableName, 'guia_retorno', $strAliasPrefix . 'guia_retorno');
 			    $objBuilder->AddSelectItem($strTableName, 'proceso_api', $strAliasPrefix . 'proceso_api');
+			    $objBuilder->AddSelectItem($strTableName, 'deleted_at', $strAliasPrefix . 'deleted_at');
             }
 		}
 
@@ -1690,6 +1701,9 @@
 			$strAlias = $strAliasPrefix . 'proceso_api';
 			$strAliasName = !empty($strColumnAliasArray[$strAlias]) ? $strColumnAliasArray[$strAlias] : $strAlias;
 			$objToReturn->intProcesoApi = $objDbRow->GetColumn($strAliasName, 'Integer');
+			$strAlias = $strAliasPrefix . 'deleted_at';
+			$strAliasName = !empty($strColumnAliasArray[$strAlias]) ? $strColumnAliasArray[$strAlias] : $strAlias;
+			$objToReturn->dttDeletedAt = $objDbRow->GetColumn($strAliasName, 'DateTime');
 
 			if (isset($objPreviousItemArray) && is_array($objPreviousItemArray)) {
 				foreach ($objPreviousItemArray as $objPreviousItem) {
@@ -2516,6 +2530,38 @@
 			);
 		}
 
+		/**
+		 * Load an array of MasterCliente objects,
+		 * by DeletedAt Index(es)
+		 * @param QDateTime $dttDeletedAt
+		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
+		 * @return MasterCliente[]
+		*/
+		public static function LoadArrayByDeletedAt($dttDeletedAt, $objOptionalClauses = null) {
+			// Call MasterCliente::QueryArray to perform the LoadArrayByDeletedAt query
+			try {
+				return MasterCliente::QueryArray(
+					QQ::Equal(QQN::MasterCliente()->DeletedAt, $dttDeletedAt),
+					$objOptionalClauses);
+			} catch (QCallerException $objExc) {
+				$objExc->IncrementOffset();
+				throw $objExc;
+			}
+		}
+
+		/**
+		 * Count MasterClientes
+		 * by DeletedAt Index(es)
+		 * @param QDateTime $dttDeletedAt
+		 * @return int
+		*/
+		public static function CountByDeletedAt($dttDeletedAt) {
+			// Call MasterCliente::QueryCount to perform the CountByDeletedAt query
+			return MasterCliente::QueryCount(
+				QQ::Equal(QQN::MasterCliente()->DeletedAt, $dttDeletedAt)
+			);
+		}
+
 
 
 		////////////////////////////////////////////////////
@@ -2604,7 +2650,8 @@
 							`maneja_api`,
 							`token_api`,
 							`guia_retorno`,
-							`proceso_api`
+							`proceso_api`,
+							`deleted_at`
 						) VALUES (
 							' . $objDatabase->SqlVariable($this->intCodiDepe) . ',
 							' . $objDatabase->SqlVariable($this->strNombClie) . ',
@@ -2663,7 +2710,8 @@
 							' . $objDatabase->SqlVariable($this->blnManejaApi) . ',
 							' . $objDatabase->SqlVariable($this->strTokenApi) . ',
 							' . $objDatabase->SqlVariable($this->blnGuiaRetorno) . ',
-							' . $objDatabase->SqlVariable($this->intProcesoApi) . '
+							' . $objDatabase->SqlVariable($this->intProcesoApi) . ',
+							' . $objDatabase->SqlVariable($this->dttDeletedAt) . '
 						)
 					');
 
@@ -2736,7 +2784,8 @@
 							`maneja_api` = ' . $objDatabase->SqlVariable($this->blnManejaApi) . ',
 							`token_api` = ' . $objDatabase->SqlVariable($this->strTokenApi) . ',
 							`guia_retorno` = ' . $objDatabase->SqlVariable($this->blnGuiaRetorno) . ',
-							`proceso_api` = ' . $objDatabase->SqlVariable($this->intProcesoApi) . '
+							`proceso_api` = ' . $objDatabase->SqlVariable($this->intProcesoApi) . ',
+							`deleted_at` = ' . $objDatabase->SqlVariable($this->dttDeletedAt) . '
 						WHERE
 							`codi_clie` = ' . $objDatabase->SqlVariable($this->intCodiClie) . '
 					');
@@ -2957,6 +3006,7 @@
 			$this->strTokenApi = $objReloaded->strTokenApi;
 			$this->blnGuiaRetorno = $objReloaded->blnGuiaRetorno;
 			$this->intProcesoApi = $objReloaded->intProcesoApi;
+			$this->dttDeletedAt = $objReloaded->dttDeletedAt;
 		}
 
 
@@ -3389,6 +3439,13 @@
 					 * @return integer
 					 */
 					return $this->intProcesoApi;
+
+				case 'DeletedAt':
+					/**
+					 * Gets the value for dttDeletedAt 
+					 * @return QDateTime
+					 */
+					return $this->dttDeletedAt;
 
 
 				///////////////////
@@ -4494,6 +4551,19 @@
 					 */
 					try {
 						return ($this->intProcesoApi = QType::Cast($mixValue, QType::Integer));
+					} catch (QCallerException $objExc) {
+						$objExc->IncrementOffset();
+						throw $objExc;
+					}
+
+				case 'DeletedAt':
+					/**
+					 * Sets the value for dttDeletedAt 
+					 * @param QDateTime $mixValue
+					 * @return QDateTime
+					 */
+					try {
+						return ($this->dttDeletedAt = QType::Cast($mixValue, QType::DateTime));
 					} catch (QCallerException $objExc) {
 						$objExc->IncrementOffset();
 						throw $objExc;
@@ -6740,6 +6810,7 @@
 			$strToReturn .= '<element name="TokenApi" type="xsd:string"/>';
 			$strToReturn .= '<element name="GuiaRetorno" type="xsd:boolean"/>';
 			$strToReturn .= '<element name="ProcesoApi" type="xsd:int"/>';
+			$strToReturn .= '<element name="DeletedAt" type="xsd:dateTime"/>';
 			$strToReturn .= '<element name="__blnRestored" type="xsd:boolean"/>';
 			$strToReturn .= '</sequence></complexType>';
 			return $strToReturn;
@@ -6892,6 +6963,8 @@
 				$objToReturn->blnGuiaRetorno = $objSoapObject->GuiaRetorno;
 			if (property_exists($objSoapObject, 'ProcesoApi'))
 				$objToReturn->intProcesoApi = $objSoapObject->ProcesoApi;
+			if (property_exists($objSoapObject, 'DeletedAt'))
+				$objToReturn->dttDeletedAt = new QDateTime($objSoapObject->DeletedAt);
 			if (property_exists($objSoapObject, '__blnRestored'))
 				$objToReturn->__blnRestored = $objSoapObject->__blnRestored;
 			return $objToReturn;
@@ -6936,6 +7009,8 @@
 				$objObject->intRutaEntrega = null;
 			if ($objObject->dttDescuentoCaducaEl)
 				$objObject->dttDescuentoCaducaEl = $objObject->dttDescuentoCaducaEl->qFormat(QDateTime::FormatSoap);
+			if ($objObject->dttDeletedAt)
+				$objObject->dttDeletedAt = $objObject->dttDeletedAt->qFormat(QDateTime::FormatSoap);
 			return $objObject;
 		}
 
@@ -7009,6 +7084,7 @@
 			$iArray['TokenApi'] = $this->strTokenApi;
 			$iArray['GuiaRetorno'] = $this->blnGuiaRetorno;
 			$iArray['ProcesoApi'] = $this->intProcesoApi;
+			$iArray['DeletedAt'] = $this->dttDeletedAt;
 			return new ArrayIterator($iArray);
 		}
 
@@ -7111,6 +7187,7 @@
      * @property-read QQNode $TokenApi
      * @property-read QQNode $GuiaRetorno
      * @property-read QQNode $ProcesoApi
+     * @property-read QQNode $DeletedAt
      *
      *
      * @property-read QQReverseReferenceNodeConsumoDia $ConsumoDiaAsCliente
@@ -7266,6 +7343,8 @@
 					return new QQNode('guia_retorno', 'GuiaRetorno', 'Bit', $this);
 				case 'ProcesoApi':
 					return new QQNode('proceso_api', 'ProcesoApi', 'Integer', $this);
+				case 'DeletedAt':
+					return new QQNode('deleted_at', 'DeletedAt', 'DateTime', $this);
 				case 'ConsumoDiaAsCliente':
 					return new QQReverseReferenceNodeConsumoDia($this, 'consumodiaascliente', 'reverse_reference', 'cliente_id', 'ConsumoDiaAsCliente');
 				case 'ConsumoMesAsCliente':
@@ -7374,6 +7453,7 @@
      * @property-read QQNode $TokenApi
      * @property-read QQNode $GuiaRetorno
      * @property-read QQNode $ProcesoApi
+     * @property-read QQNode $DeletedAt
      *
      *
      * @property-read QQReverseReferenceNodeConsumoDia $ConsumoDiaAsCliente
@@ -7529,6 +7609,8 @@
 					return new QQNode('guia_retorno', 'GuiaRetorno', 'boolean', $this);
 				case 'ProcesoApi':
 					return new QQNode('proceso_api', 'ProcesoApi', 'integer', $this);
+				case 'DeletedAt':
+					return new QQNode('deleted_at', 'DeletedAt', 'QDateTime', $this);
 				case 'ConsumoDiaAsCliente':
 					return new QQReverseReferenceNodeConsumoDia($this, 'consumodiaascliente', 'reverse_reference', 'cliente_id', 'ConsumoDiaAsCliente');
 				case 'ConsumoMesAsCliente':

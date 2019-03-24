@@ -31,6 +31,16 @@ class MasterCliente extends MasterClienteGen {
         return sprintf('%s - %s', $this->strCodigoInterno, $this->strNombClie);
     }
 
+    public function _ranking() {
+        $strCadeSqlx  = "select rnk ";
+        $strCadeSqlx .= "  from v_ranking ";
+        $strCadeSqlx .= " where id = ".$this->intCodiClie;
+        $objDataBase  = $this::GetDatabase();
+        $objDbResult  = $objDataBase->Query($strCadeSqlx);
+        $mixRegistro  = $objDbResult->FetchArray();
+        return !is_null($mixRegistro['rnk']) ? '(Top: '.$mixRegistro['rnk'].')' : null;
+    }
+
     /**
      * Esta rutina devuelve algunos codigos de Clientes que no deben ser considerados
      * en los reportes estadisticos
@@ -47,12 +57,20 @@ class MasterCliente extends MasterClienteGen {
         // Esta función devuelve "true" si el Cliente tiene una o
         // más subcuentas, o devuelve "false" en caso contrario.
         //---------------------------------------------------------
-        $blnTieneSucu = false;
         $intSubxCuen = MasterCliente::CountByCodiDepe($this->CodiClie);
         if ($intSubxCuen > 0) {
-            $blnTieneSucu = true;
+            return true;
         }
-        return $blnTieneSucu;
+        return false;
+    }
+
+    public function subCuentas() {
+        $arrSubcMast = MasterCliente::LoadArrayByCodiDepe($this->CodiClie);
+        $arrSubcClie = array();
+        foreach ($arrSubcMast as $objSubcClie) {
+            $arrSubcClie[] = $objSubcClie->CodiClie;
+        }
+        return $arrSubcClie;
     }
 
     public function tieneMsjYamaguchiAlerta() {

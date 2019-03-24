@@ -85,16 +85,17 @@ class CargarGuia extends FormularioBaseKaizen {
     protected $lblBotoPopu;
     protected $lblPopuModa;
 
-    protected function setupGuia() {
-        $strNumeGuia = QApplication::PathInfo(0);
+
+    protected function setupGuia($strNumeGuia=null) {
+        if (is_null($strNumeGuia)) {
+            $strNumeGuia = QApplication::PathInfo(0);
+        }
 
         if ($strNumeGuia) {
             $this->objGuia = Guia::Load($strNumeGuia);
-
             if (!$this->objGuia) {
                 throw new Exception('Could not find a Guia object with PK arguments: ' . $strNumeGuia);
             }
-
             $this->blnEditMode = true;
         } else {
             $this->objGuia = new Guia();
@@ -261,6 +262,7 @@ class CargarGuia extends FormularioBaseKaizen {
         $strTextMens = 'Evite el uso de caracteres especiales (Ej: \\~°#^*+) en <b>los nombres, la dirección, el contenido, el teléfono y la persona contacto</b>';
         $this->mensaje($strTextMens,'n','i','',__iINFO__);
 
+
     }
 
     //----------------------------
@@ -294,7 +296,6 @@ class CargarGuia extends FormularioBaseKaizen {
         } else {
             $this->cargarOrigen();
         }
-//        $this->lstSucuOrig->AddAction(new QChangeEvent(), new QAjaxAction('lstSucuDest_Change'));
     }
 
     protected function calFechReco_Create() {
@@ -372,9 +373,11 @@ class CargarGuia extends FormularioBaseKaizen {
             $this->txtContReto->Visible = false;
         }
     }
+
     //-------------------------------------
     // ---- Información del Remitente ----
     //-------------------------------------
+
     protected function txtNombRemi_Create() {
         $this->txtNombRemi = new QTextBox($this);
         $this->txtNombRemi->Name = 'Nombre/R. Social';
@@ -515,6 +518,7 @@ class CargarGuia extends FormularioBaseKaizen {
         $this->btnCreaNuev = new QButtonP($this);
         $this->btnCreaNuev->Text = TextoIcono('plus-circle fa-lg','Nueva');
         $this->btnCreaNuev->AddAction(new QClickEvent(), new QServerAction('btnCreaNuev_Click'));
+        $this->btnCreaNuev->Visible = false;
     }
 
     protected function btnBorrGuia_Create() {
@@ -542,6 +546,7 @@ class CargarGuia extends FormularioBaseKaizen {
     //-----------------------------------
     // Acciones Asociadas a los Objetos
     //-----------------------------------
+
 
     protected function recrearBotonPopup() {
         $strTextModa =
@@ -897,6 +902,7 @@ class CargarGuia extends FormularioBaseKaizen {
     }
 
     protected function btnSave_Click() {
+        $this->btnSave->Enabled = false;
         $blnTodoOkey = true;
         // t('Salvando la Guia en el CORP');
         // t('===========================');
@@ -1066,9 +1072,11 @@ class CargarGuia extends FormularioBaseKaizen {
             $this->mensaje($strMensInfo,'n',$strTipoInfo,'',$strSimbInfo);
         }
         // t('Mensaje mostrado al Usuario...');
-        $this->setupGuia();
+        $this->setupGuia($this->txtNumeGuia->Text);
         $this->setupValues();
         // t('Setups ejecutados...');
+        $this->btnCreaNuev->Visible = true;
+        $this->btnSave->Enabled = true;
     }
 
     protected function btnBorrGuia_Click() {
@@ -1103,14 +1111,12 @@ class CargarGuia extends FormularioBaseKaizen {
         if ($this->objCliente->CodiStat == StatusType::INACTIVO) {
             $blnGuarGuia = false;
             $strMensUsua = 'Su Cuenta ha sido inactivada! No puede crear nuevas Guías!';
+            $this->mensaje($strMensUsua,'','d','',__iEXCL__);
         }
 
         $this->btnSave->Visible = $blnGuarGuia;
-        $this->btnCreaNuev->Visible = $blnGuarGuia;
+        //$this->btnCreaNuev->Visible = $blnGuarGuia;
 
-        if (!$blnGuarGuia) {
-            $this->mensaje($strMensUsua,'','d','',__iEXCL__);
-        }
     }
 
     protected function habilitaRetorno() {

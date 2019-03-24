@@ -46,7 +46,8 @@ require(__APP_INCLUDES__ . '/header.inc.php');
 						<li class="active" role="presentation">
 							<a href="#seccion1" aria-controls="seccion1" data-toggle="tab" role="tab">
 								<i class="fa fa-user fa-lg"></i>
-								  Datos del Cliente
+								  Cliente <?php echo $this->intRankClie ?>
+
                             </a>
 						</li>
 						<li class="tabs-guias" role="presentation">
@@ -211,7 +212,7 @@ require(__APP_INCLUDES__ . '/header.inc.php');
                                         <?php
                                         $arrData = array(
                                             "chart" => array(
-                                                "caption"   => "Gráfico de Consumo",
+                                                "caption"   => "Consumo de: ".$this->txtNombClie->Text.' '.$this->intRankClie,
                                                 "xAxisName" => "Meses",
                                                 "yAxisName" => "Cantidad de Guías",
                                                 "theme"     => "fusion"

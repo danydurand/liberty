@@ -812,6 +812,46 @@
 			);
 		}
 
+		/**
+		 * Load an array of ConsumoMes objects,
+		 * by Anio, Mes Index(es)
+		 * @param integer $intAnio
+		 * @param integer $intMes
+		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
+		 * @return ConsumoMes[]
+		*/
+		public static function LoadArrayByAnioMes($intAnio, $intMes, $objOptionalClauses = null) {
+			// Call ConsumoMes::QueryArray to perform the LoadArrayByAnioMes query
+			try {
+				return ConsumoMes::QueryArray(
+					QQ::AndCondition(
+					QQ::Equal(QQN::ConsumoMes()->Anio, $intAnio),
+					QQ::Equal(QQN::ConsumoMes()->Mes, $intMes)					)
+,
+					$objOptionalClauses);
+			} catch (QCallerException $objExc) {
+				$objExc->IncrementOffset();
+				throw $objExc;
+			}
+		}
+
+		/**
+		 * Count ConsumoMeses
+		 * by Anio, Mes Index(es)
+		 * @param integer $intAnio
+		 * @param integer $intMes
+		 * @return int
+		*/
+		public static function CountByAnioMes($intAnio, $intMes) {
+			// Call ConsumoMes::QueryCount to perform the CountByAnioMes query
+			return ConsumoMes::QueryCount(
+				QQ::AndCondition(
+				QQ::Equal(QQN::ConsumoMes()->Anio, $intAnio),
+				QQ::Equal(QQN::ConsumoMes()->Mes, $intMes)				)
+
+			);
+		}
+
 
 
 		////////////////////////////////////////////////////

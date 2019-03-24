@@ -28,11 +28,12 @@ require(__APP_INCLUDES__ . '/header.inc.php');
                     <?php $this->txtCodiInte->RenderWithName(); ?>
                     <?php $this->txtNombBusc->RenderWithName(); ?>
                     <?php $this->lstCodiClie->RenderWithName(); ?>
+                    <?php $this->chkInclSubc->RenderWithName(); ?>
                     <?php $this->calFechInic->RenderWithName(); ?>
                     <?php $this->calFechFina->RenderWithName(); ?>
-                    <?php $this->txtNumePrec->RenderWithName(); ?>
                 </div>
                 <div class="col-xs-12 col-md-4">
+                    <?php $this->txtNumePrec->RenderWithName(); ?>
                     <?php $this->lstTipoPago->RenderWithName(); ?>
                     <?php $this->txtUbicFisi->RenderWithName(); ?>
                     <?php $this->lstCodiOrig->RenderWithName(); ?>
@@ -43,9 +44,9 @@ require(__APP_INCLUDES__ . '/header.inc.php');
                     <?php $this->chkPesoVolu->RenderWithName(); ?>
                     <?php $this->calInicPodx->RenderWithName(); ?>
                     <?php $this->calFinaPodx->RenderWithName(); ?>
-                    <?php $this->rdbTienPodx->RenderWithName(); ?>
                 </div>
                 <div class="col-xs-12 col-md-4">
+                    <?php $this->rdbTienPodx->RenderWithName(); ?>
                     <?php $this->lstTariIdxx->RenderWithName(); ?>
                     <?php $this->calFechTrx1->RenderWithName(); ?>
                     <?php $this->calFechTrx2->RenderWithName(); ?>

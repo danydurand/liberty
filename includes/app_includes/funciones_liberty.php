@@ -903,8 +903,8 @@ function asignarPorcIVA($strCodiOrig,$strCodiDest,$strModaPago,$dblMontTari=0) {
  * @return array $arrValoTari
  */
 function calcularTarifaParcialPmn($arrParaTari) {
-    t('===================================');
-    t('Entrando a CalcularTarifaParcialPmn');
+    //t('===================================');
+    //t('Entrando a CalcularTarifaParcialPmn');
     $dttFechGuia = $arrParaTari['dttFechGuia'];
     $strCodiOrig = $arrParaTari['strCodiOrig'];
     $strCodiDest = $arrParaTari['strCodiDest'];
@@ -930,28 +930,32 @@ function calcularTarifaParcialPmn($arrParaTari) {
     if ($objTariGuia) {
         $_SESSION['TariPmnx'] = serialize($objTariGuia);
     }
-    t('Voy a buscarMontoBaseTarifaPmn');
+    //t('Voy a buscarMontoBaseTarifaPmn');
     $arrParaTari = buscarMontoBaseTarifaPmn($intDispTari,$decPesoGuia,$strModaPago,$strCodiDest,$strEstaUsua,$dttFechGuia);
-    t('Regresé de buscarMontoBaseTarifaPmn');
+    //t('Regresé de buscarMontoBaseTarifaPmn');
 
     $blnTodoOkey = $arrParaTari[0];
-    t('La variable TodoOk tiene: '.$blnTodoOkey);
+    //t('La variable TodoOk tiene: '.$blnTodoOkey);
     $dblPorcDiva = $blnTodoOkey ? $arrParaTari[6] : 0;
 
     if ($blnTodoOkey) {
+        //t('Como todo esta bien, sigo mi camino');
         $decMontBase = str_replace(',','',$arrParaTari[2]);
+        //t('Monto Base: '.$decMontBase);
         $decMontDcto = $decMontBase * $decPorcDcto / 100;
+        //t('Monto Descuento: '.$decMontDcto);
         $dblMontBase = $decMontBase - $decMontDcto;
+        //t('Monto Base menos Dscto: '.$decMontBase);
 
         if ($dttFechGuia <= '2016-04-30') {
-            t('Se trata de una guia con fecha <= 2016-04-30');
+            //t('Se trata de una guia con fecha <= 2016-04-30');
             $dblFranPost = $arrParaTari[3];
         } else {
             $decPorcFran = $arrParaTari[3];
-            t('El % franqueo postal es: '.$decPorcFran);
-            t('El monto base es: '.$dblMontBase);
+            //t('El % franqueo postal es: '.$decPorcFran);
+            //t('El monto base es: '.$dblMontBase);
             $dblFranPost = $dblMontBase * $decPorcFran / 100;
-            t('El monto de franqueo postal es: '.$dblFranPost);
+            //t('El monto de franqueo postal es: '.$dblFranPost);
         }
 
         if ($intChecAseg) {
@@ -2107,7 +2111,7 @@ function GrabarCheckpointOptimizado($arrDatoCkpt) {
         return $arrResuGrab;
     }
     if ($objGuiaProc->tieneCheckpointDeCierre()) {
-        $arrResuGrab['MotiNook'] = "La Guia ya cerró su Ciclo. No Adtmite Incidencias";
+        $arrResuGrab['MotiNook'] = "La Guia ya cerro su ciclo. No adtmite incidencias";
         $arrResuGrab['TodoOkey'] = false;
         return $arrResuGrab;
     }

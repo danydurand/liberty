@@ -156,21 +156,24 @@ class CopiarTarifa extends FormularioBaseKaizen {
             foreach ($arrTariOrig as $objTariOrig) {
                 $decMontTari = $objTariOrig->MontoTarifa;
                 $decMontBase = $objTariOrig->MontoBase;
+                $decFranPost = $objTariOrig->FranqueoPostal;
                 if ($decPorcAume > 0) {
                     //-------------------------------------------------------
                     // Se implementa el aumento, en caso que sea necesario
                     //-------------------------------------------------------
                     $decMontTari += $decMontTari * ($decPorcAume/100);
+                    $decFranPost += $decFranPost * ($decPorcAume/100);
                     //-------------------------------------------------------
                     // Se calcula el monto base en funcion del aumento
                     //-------------------------------------------------------
-                    $decBaseImpo = $decMontTari - $objTariOrig->FranqueoPostal;
+                    $decBaseImpo = $decMontTari - $decFranPost; //$objTariOrig->FranqueoPostal;
                     $decMontIvax = $decBaseImpo - ($decBaseImpo / $decFactIvax);
                     $decMontBase = round($decBaseImpo - $decMontIvax,2);
                 }
                 if ($decTasaIvax != $this->objTariOrig->TasaIva) {
                     $decMontIvax = round(($decMontBase * $decTasaIvax / 100),2);
-                    $decMontTari = $decMontBase + $objTariOrig->FranqueoPostal + $decMontIvax;
+                    //$decMontTari = $decMontBase + $objTariOrig->FranqueoPostal + $decMontIvax;
+                    $decMontTari = $decMontBase + $decFranPost + $decMontIvax;
                 }
 
                 $objTariDest = new TarifaPeso();
@@ -179,7 +182,7 @@ class CopiarTarifa extends FormularioBaseKaizen {
                 $objTariDest->PesoInicial    = $objTariOrig->PesoInicial;
                 $objTariDest->PesoFinal      = $objTariOrig->PesoFinal;
                 $objTariDest->MontoTarifa    = $decMontTari; //$objTariOrig->MontoTarifa;
-                $objTariDest->FranqueoPostal = $objTariOrig->FranqueoPostal;
+                $objTariDest->FranqueoPostal = $decFranPost; //$objTariOrig->FranqueoPostal;
                 $objTariDest->MontoBase      = $decMontBase; //$objTariOrig->MontoBase;
                 $objTariDest->PorcentajeFp   = $objTariOrig->PorcentajeFp;
                 $objTariDest->Save();

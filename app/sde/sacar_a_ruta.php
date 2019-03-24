@@ -79,6 +79,7 @@ class SacarARuta extends FormularioBaseKaizen {
         $this->btnImprReto_Create();
 
         $this->validarCampos();
+        $this->mensajeInicial();
     }
 
     //-----------------------------
@@ -175,11 +176,14 @@ class SacarARuta extends FormularioBaseKaizen {
         $this->dtgChofSucu->Paginator = new QPaginator($this->dtgChofSucu);
         $this->dtgChofSucu->ItemsPerPage = 12; //__FORM_DRAFTS_FORM_LIST_ITEMS_PER_PAGE__;
 
+        $this->dtgChofSucu->SortColumnIndex = 0;
+
         $this->dtgChofSucu->AddRowAction(new QMouseOverEvent(), new QCssClassAction('selectedStyle'));
         $this->dtgChofSucu->AddRowAction(new QMouseOutEvent(), new QCssClassAction());
 
         $this->dtgChofSucu->RowActionParameterHtml = '<?= $_ITEM->NombChof ?>|<?= $_ITEM->NumeCedu ?>|<?= $_ITEM->CodiChof ?>';
         $this->dtgChofSucu->AddRowAction(new QClickEvent(), new QAjaxAction('dtgChofSucuRow_Click'));
+        $this->dtgChofSucu->AddRowAction(new QDoubleClickEvent(), new QAjaxAction('dtgChofSucuRow_DoubleClick'));
 
         $colNombChof = $this->dtgChofSucu->MetaAddColumn('NombChof');
         $colNombChof->Name = 'Nombre';
@@ -187,6 +191,28 @@ class SacarARuta extends FormularioBaseKaizen {
         $colNumeCedu->Name = 'Cedula';
         $this->dtgChofSucu->SetDataBinder('dtgChofSucu_Binder');
 
+    }
+
+    protected function dtgChofSucu_Binder(){
+        $objClauOrde   = QQ::Clause();
+        $objClauOrde[] = QQ::OrderBy(QQN::Chofer()->NombChof);
+        $objClauWher   = QQ::Clause();
+        $objClauWher[] = QQ::Equal(QQN::Chofer()->CodiStat,StatusType::ACTIVO);
+        $objClauWher[] = QQ::Equal(QQN::Chofer()->CodiDisp,SinoType::SI);
+        $objClauWher[] = QQ::Equal(QQN::Chofer()->CodiEsta,$this->objUsuario->CodiEsta);
+        $objClauWher[] = QQ::NotEqual(QQN::Chofer()->NumeCedu,'9999999');
+
+        $arrChofSucu   = Chofer::QueryArray(QQ::AndCondition($objClauWher));
+        $intCantRegi   = count($arrChofSucu);
+        if ($intCantRegi > 10) {
+            $this->dtgChofSucu->TotalItemCount = count($arrChofSucu);
+        }
+
+        // Bind the datasource to the datagrid
+        $this->dtgChofSucu->DataSource = Chofer::QueryArray(
+            QQ::AndCondition($objClauWher),
+            QQ::Clause($this->dtgChofSucu->OrderByClause, $this->dtgChofSucu->LimitClause)
+        );
     }
 
     protected function dtgChofSucuRow_Click($strFormId, $strControlId, $strParameter) {
@@ -202,26 +228,47 @@ class SacarARuta extends FormularioBaseKaizen {
         }
     }
 
-    protected function dtgChofSucu_Binder(){
-        $objClauOrde   = QQ::Clause();
-        $objClauOrde[] = QQ::OrderBy(QQN::Chofer()->NombChof);
-        $objClauWher   = QQ::Clause();
-        $objClauWher[] = QQ::Equal(QQN::Chofer()->CodiStat,StatusType::ACTIVO);
-        $objClauWher[] = QQ::Equal(QQN::Chofer()->CodiDisp,SinoType::SI);
-        $objClauWher[] = QQ::Equal(QQN::Chofer()->CodiEsta,$this->objUsuario->CodiEsta);
-        $objClauWher[] = QQ::NotEqual(QQN::Chofer()->NumeCedu,'9.999.999');
-
-        $arrChofSucu   = Chofer::QueryArray(QQ::AndCondition($objClauWher));
-        $intCantRegi   = count($arrChofSucu);
-        if ($intCantRegi > 10) {
-            $this->dtgChofSucu->TotalItemCount = count($arrChofSucu);
+    protected function dtgChofSucuRow_DoubleClick($strFormId, $strControlId, $strParameter) {
+        $blnUsuaAuto = BuscarParametro("BorrChof", $this->objUsuario->LogiUsua, "Val1", 0);
+        if ($blnUsuaAuto) {
+            $this->mensaje();
+            $arrNombCedu = explode('|',$strParameter);
+            $strNombChof = $arrNombCedu[0];
+            $intChofSele = $arrNombCedu[2];
+            $objChofElim = Chofer::Load($intChofSele);
+            if ($objChofElim) {
+                $objChofElim->CodiStat = StatusType::INACTIVO;
+                $objChofElim->Save();
+                $this->mensaje('El Chofer '.$strNombChof.', ha sido Eliminado','','w','',__iCHEC__);
+                $this->txtNombChof->Text = '';
+                $this->txtCeduChof->Text = '';
+                $this->dtgChofSucu->Refresh();
+            }
         }
-        // Bind the datasource to the datagrid
-        $this->dtgChofSucu->DataSource = Chofer::QueryArray(
-            QQ::AndCondition($objClauWher),
-            QQ::Clause($this->dtgChofSucu->OrderByClause, $this->dtgChofSucu->LimitClause)
-        );
     }
+
+    protected function dtgVehiSucuRow_DoubleClick($strFormId, $strControlId, $strParameter) {
+        $blnUsuaAuto = BuscarParametro("BorrVehi", $this->objUsuario->LogiUsua, "Val1", 0);
+        if ($blnUsuaAuto) {
+            $this->mensaje();
+            $arrTipoPlac = explode('|',$strParameter);
+            $strDescVehi = $arrTipoPlac[0];
+            $strPlacVehi = $arrTipoPlac[1];
+            $intVehiSele = $arrTipoPlac[2];
+            $objVehiElim = Vehiculo::Load($intVehiSele);
+            if ($objVehiElim) {
+                $objVehiElim->CodiStat = StatusType::INACTIVO;
+                $objVehiElim->Save();
+                $this->mensaje('El Vehículo: '.$strDescVehi.' de placa: '.$strPlacVehi.', ha sido Eliminado',
+                    '','w','',__iCHEC__);
+                $this->lstNuevTipo->SelectedIndex = 0;
+                $this->txtDescVehi->Text = '';
+                $this->txtPlacVehi->Text = '';
+                $this->dtgVehiSucu->Refresh();
+            }
+        }
+    }
+
 
     protected function dtgVehiSucu_Create() {
 
@@ -235,11 +282,14 @@ class SacarARuta extends FormularioBaseKaizen {
         $this->dtgVehiSucu->Paginator = new QPaginator($this->dtgVehiSucu);
         $this->dtgVehiSucu->ItemsPerPage = 12; //__FORM_DRAFTS_FORM_LIST_ITEMS_PER_PAGE__;
 
+        $this->dtgVehiSucu->SortColumnIndex = 1;
+
         $this->dtgVehiSucu->AddRowAction(new QMouseOverEvent(), new QCssClassAction('selectedStyle'));
         $this->dtgVehiSucu->AddRowAction(new QMouseOutEvent(), new QCssClassAction());
 
         $this->dtgVehiSucu->RowActionParameterHtml = '<?= $_ITEM->TipoVehiObject->DescTipo ?>|<?= $_ITEM->NumePlac ?>|<?= $_ITEM->CodiVehi ?>';
         $this->dtgVehiSucu->AddRowAction(new QClickEvent(), new QAjaxAction('dtgVehiSucuRow_Click'));
+        $this->dtgVehiSucu->AddRowAction(new QDoubleClickEvent(), new QAjaxAction('dtgVehiSucuRow_DoubleClick'));
 
         $colTipoVehi = $this->dtgVehiSucu->MetaAddColumn(QQN::Vehiculo()->TipoVehiObject->DescTipo);
         $colTipoVehi->Name = 'Tipo';
@@ -290,10 +340,10 @@ class SacarARuta extends FormularioBaseKaizen {
     protected function dlgMensUsua_Create() {
         $this->dlgMensUsua = new QDialogBox($this);
         $this->dlgMensUsua->Width = '500px';
-        $this->dlgMensUsua->Height = '350px';
+        $this->dlgMensUsua->Height = '280px';
         $this->dlgMensUsua->Overflow = QOverflow::Auto;
         $this->dlgMensUsua->Padding = '10px';
-        $this->dlgMensUsua->FontSize = '24px';
+        $this->dlgMensUsua->FontSize = '20px';
         $this->dlgMensUsua->FontNames = QFontFamily::Georgia;
         $this->dlgMensUsua->BackColor = '#eeffdd';
         $this->dlgMensUsua->Display = false;
@@ -412,8 +462,8 @@ class SacarARuta extends FormularioBaseKaizen {
         //------------------------
         $this->mensaje();
         $intNuevTipo = $this->lstNuevTipo->SelectedValue;
-        $strNuevPlac = trim($this->txtNuevPlac->Text);
-        $strNuevDesc = trim($this->txtNuevDesc->Text);
+        $strNuevPlac = trim(limpiarCadena($this->txtNuevPlac->Text));
+        $strNuevDesc = trim(limpiarCadena($this->txtNuevDesc->Text));
         if (is_null($intNuevTipo)) {
             $this->mensaje('El Tipo de Vehiculo, es requerido','','d','',__iHAND__);
             return;
@@ -426,29 +476,45 @@ class SacarARuta extends FormularioBaseKaizen {
             $this->mensaje('La Descripción del Vehiculo es muy corta','','d','',__iHAND__);
             return;
         }
-        //----------------------------------------------
-        // Se crea el nuevo chofer en la base de datos
-        //----------------------------------------------
-        $objNuevVehi           = new Vehiculo();
-        $objNuevVehi->DescVehi = $strNuevDesc;
-        $objNuevVehi->NumePlac = $strNuevPlac;
-        $objNuevVehi->TipoVehi = $intNuevTipo;
-        $objNuevVehi->CodiEsta = $this->objUsuario->CodiEsta;
-        $objNuevVehi->CodiDisp = SinoType::SI;
-        $objNuevVehi->CodiStat = StatusType::ACTIVO;
-        $objNuevVehi->Save();
-        //---------------------------------------------
-        // Se deja rastro de la transaccion realizada
-        //---------------------------------------------
-        $arrLogxCamb['strNombTabl'] = 'Vehiculo';
-        $arrLogxCamb['intRefeRegi'] = $objNuevVehi->CodiVehi;
-        $arrLogxCamb['strNombRegi'] = $objNuevVehi->DescVehi;
-        $arrLogxCamb['strDescCamb'] = 'Creado dinamicamente, desde Sacar a Ruta';
-        LogDeCambios($arrLogxCamb);
-        $this->mensaje('Vehículo creado Exitosamente !','','','',__iCHEC__);
-        $this->lstNuevTipo->SelectedIndex = 0;
-        $this->txtNuevPlac->Text = '';
-        $this->txtNuevDesc->Text = '';
+        //------------------------------------------------
+        // Se verifica la existencia previa del vehiculo
+        //------------------------------------------------
+        $objClauWher   = QQ::Clause();
+        $objClauWher[] = QQ::Equal(QQN::Vehiculo()->NumePlac,$strNuevPlac);
+        $objNuevVehi   = Vehiculo::QuerySingle(QQ::AndCondition($objClauWher));
+        if (!$objNuevVehi) {
+            //----------------------------------------------
+            // Se crea el nuevo chofer en la base de datos
+            //----------------------------------------------
+            $objNuevVehi           = new Vehiculo();
+            $objNuevVehi->DescVehi = $strNuevDesc;
+            $objNuevVehi->NumePlac = $strNuevPlac;
+            $objNuevVehi->TipoVehi = $intNuevTipo;
+            $objNuevVehi->CodiEsta = $this->objUsuario->CodiEsta;
+            $objNuevVehi->CodiDisp = SinoType::SI;
+            $objNuevVehi->CodiStat = StatusType::ACTIVO;
+            $objNuevVehi->Save();
+            //---------------------------------------------
+            // Se deja rastro de la transaccion realizada
+            //---------------------------------------------
+            $arrLogxCamb['strNombTabl'] = 'Vehiculo';
+            $arrLogxCamb['intRefeRegi'] = $objNuevVehi->CodiVehi;
+            $arrLogxCamb['strNombRegi'] = $objNuevVehi->DescVehi;
+            $arrLogxCamb['strDescCamb'] = 'Creado dinamicamente, desde Sacar a Ruta';
+            LogDeCambios($arrLogxCamb);
+            $this->mensaje('Vehículo creado Exitosamente !','','','',__iCHEC__);
+            $this->lstNuevTipo->SelectedIndex = 0;
+            $this->txtNuevPlac->Text = '';
+            $this->txtNuevDesc->Text = '';
+        } else {
+            //----------------------------------------------------------------------------------------
+            // Si el Vehiculo ya existe y esta inactivo o no disponible, se cambian esas condiciones
+            //----------------------------------------------------------------------------------------
+            $objNuevVehi->CodiStat = StatusType::ACTIVO;
+            $objNuevVehi->CodiDisp = SinoType::SI;
+            $objNuevVehi->Save();
+            $this->mensaje('El Vehículo ya Existía !!!','','w','',__iEXCL__);
+        }
         //----------------------------------------------------
         // El vehiculo recién creado se asigna la Manifiesto
         //----------------------------------------------------
@@ -465,8 +531,8 @@ class SacarARuta extends FormularioBaseKaizen {
         // Se validan los datos
         //------------------------
         $this->mensaje();
-        $strNuevChof = trim($this->txtNuevChof->Text);
-        $strNuevCedu = trim($this->txtNuevCedu->Text);
+        $strNuevChof = trim(limpiarCadena($this->txtNuevChof->Text));
+        $strNuevCedu = trim(DejarSoloLosNumeros($this->txtNuevCedu->Text));
         if (strlen($strNuevChof) <= 4) {
             $this->mensaje('El nombre del nuevo Chofer, es muy pequeño','','d','',__iHAND__);
             return;
@@ -476,26 +542,42 @@ class SacarARuta extends FormularioBaseKaizen {
             return;
         }
         //----------------------------------------------
-        // Se crea el nuevo chofer en la base de datos
+        // Se verifica la existencia previa del chofer
         //----------------------------------------------
-        $objNuevChof           = new Chofer();
-        $objNuevChof->NombChof = $strNuevChof;
-        $objNuevChof->ApelChof = $strNuevChof;
-        $objNuevChof->NumeCedu = $strNuevCedu;
-        $objNuevChof->CodiEsta = $this->objUsuario->CodiEsta;
-        $objNuevChof->CodiDisp = SinoType::SI;
-        $objNuevChof->CodiStat = StatusType::ACTIVO;
-        $objNuevChof->TipoMens = MasTipoMensType::FIJO;
-        $objNuevChof->Save();
-        //---------------------------------------------
-        // Se deja rastro de la transaccion realizada
-        //---------------------------------------------
-        $arrLogxCamb['strNombTabl'] = 'Chofer';
-        $arrLogxCamb['intRefeRegi'] = $objNuevChof->CodiChof;
-        $arrLogxCamb['strNombRegi'] = $objNuevChof->NombChof;
-        $arrLogxCamb['strDescCamb'] = 'Creado dinamicamente, desde Sacar a Ruta';
-        LogDeCambios($arrLogxCamb);
-        $this->mensaje('Chofer creado Exitosamente !','','','',__iCHEC__);
+        $objClauWher   = QQ::Clause();
+        $objClauWher[] = QQ::Equal(QQN::Chofer()->NumeCedu,$strNuevCedu);
+        $objCeduExis   = Chofer::QuerySingle(QQ::AndCondition($objClauWher));
+        if (!$objCeduExis) {
+            //----------------------------------------------
+            // Se crea el nuevo chofer en la base de datos
+            //----------------------------------------------
+            $objNuevChof           = new Chofer();
+            $objNuevChof->NombChof = $strNuevChof;
+            $objNuevChof->ApelChof = $strNuevChof;
+            $objNuevChof->NumeCedu = $strNuevCedu;
+            $objNuevChof->CodiEsta = $this->objUsuario->CodiEsta;
+            $objNuevChof->CodiDisp = SinoType::SI;
+            $objNuevChof->CodiStat = StatusType::ACTIVO;
+            $objNuevChof->TipoMens = MasTipoMensType::FIJO;
+            $objNuevChof->Save();
+            //---------------------------------------------
+            // Se deja rastro de la transaccion realizada
+            //---------------------------------------------
+            $arrLogxCamb['strNombTabl'] = 'Chofer';
+            $arrLogxCamb['intRefeRegi'] = $objNuevChof->CodiChof;
+            $arrLogxCamb['strNombRegi'] = $objNuevChof->NombChof;
+            $arrLogxCamb['strDescCamb'] = 'Creado dinamicamente, desde Sacar a Ruta';
+            LogDeCambios($arrLogxCamb);
+            $this->mensaje('Chofer creado Exitosamente !','','','',__iCHEC__);
+        } else {
+            //--------------------------------------------------------------------------------
+            // Si Chofer existe y esta inactivo o no disponible, se cambian esas condiciones
+            //--------------------------------------------------------------------------------
+            $objCeduExis->CodiStat = StatusType::ACTIVO;
+            $objCeduExis->CodiDisp = SinoType::SI;
+            $objCeduExis->Save();
+            $this->mensaje('El Chofer ya Existía !!!','','w','',__iEXCL__);
+        }
         $this->txtNuevChof->Text = '';
         $this->txtNuevCedu->Text = '';
         //---------------------------------------------------
@@ -508,6 +590,7 @@ class SacarARuta extends FormularioBaseKaizen {
         //------------------------------------
         $this->dtgChofSucu->Refresh();
     }
+
 
     protected function btnImprReto_Click($strFormId, $strControlId, $strParameter) {
         //---------------------------------
@@ -639,6 +722,12 @@ class SacarARuta extends FormularioBaseKaizen {
             '<font color="red">Presione el boton "RETORNOS" p/imprimir las Guias</font><br><br>'.
             '(Haga click fuera del recuadro blanco para ocultar este mensaje)<br/><br>'.
             $this->dlgMensUsua->ShowDialogBox();
+    }
+
+    protected function mensajeInicial() {
+        $strTextMens  = 'Los <b>Choferes</b> están ordenados alfebéticamente y los <b>Vehículos</b> por placa. ';
+        $strTextMens .= 'Utilice "<b>Anterior</b>" o "<b>Siguiente</b>", hasta encontrar lo deseado ';
+        $this->mensaje($strTextMens,'','i','',__iINFO__);
     }
 
     protected function inicializarPantalla() {

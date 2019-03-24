@@ -11,20 +11,13 @@ require_once(__APP_INCLUDES__.'/protected.inc.php');
 require_once(__APP_INCLUDES__.'/FormularioBaseKaizen.class.php');
 
 class RegistrarPago extends FormularioBaseKaizen {
-    //-----------------------
-    // Parámetros de Objetos
-    //-----------------------
+    /**
+     * @var $objFactPmnx FacturaPmn
+     */
     protected $objFactPmnx;
-    //----------------------
-    // Parámetros regulares
-    //----------------------
     protected $intNumeFact;
     protected $blnPermEfec;
     protected $intEditPago = null;
-
-    //---------------------------
-    // Parámetros de Información
-    //---------------------------
 
     //---- Factura ----
     protected $lblNumeFact;
@@ -47,9 +40,6 @@ class RegistrarPago extends FormularioBaseKaizen {
     protected $lblMontAcob;
     protected $lblMontRest;
 
-    //---------
-    // Botones
-    //---------
     protected $btnSavePipe;
     protected $btnCancPipe;
     protected $btnDelePipe;
@@ -84,10 +74,6 @@ class RegistrarPago extends FormularioBaseKaizen {
 
         $this->SetupValores();
 
-        //-------------
-        // Información
-        //-------------
-
         //---- Factura ----
         $this->lblNumeFact_Create();
         $this->lblCeduRifx_Create();
@@ -112,8 +98,6 @@ class RegistrarPago extends FormularioBaseKaizen {
     //---------------------
     // Creando objetos ...
     //---------------------
-
-    //---- Factura ----
 
     protected function lblNumeFact_Create() {
         $this->lblNumeFact = new QLabel($this);
@@ -599,6 +583,44 @@ class RegistrarPago extends FormularioBaseKaizen {
     protected function MostrarMontoCobrado() {
         $this->lblMontCobr->Text = $this->objFactPmnx->MontoCobrado;
         $decMontRest = $this->objFactPmnx->MontoTotal - $this->objFactPmnx->MontoCobrado;
+        $objGuiaFact = $this->objFactPmnx->GetItemFacturaPmnAsFacturaArray()[0]->Guia;
+        if (($decMontRest == 0) && ($objGuiaFact->TipoGuia == TipoGuiaType::CODCOBROENDESTINO)) {
+            $strNombProc = 'Grabando POD Guia: '.$objGuiaFact->NumeGuia.' desde el Exp Nac';
+            $objProcEjec = CrearProceso($strNombProc);
+            $mixErroOrig = error_reporting();
+            error_reporting(0);
+            //------------------------------------------------------------------------------
+            // Cuando la pre-factura se cobra en su totalidad, la guía se da por entregada
+            //------------------------------------------------------------------------------
+            if (!$objGuiaFact->tieneCheckpoint('OK')) {
+                try {
+                    $objCkptOkey = SdeCheckpoint::Load('OK');
+                    $calFechEntr = new QDateTime(QDateTime::Now);
+                    $arrDatoPodx['objGuiaPodx'] = $objGuiaFact;
+                    $arrDatoPodx['objChecPodx'] = $objCkptOkey;
+                    $arrDatoPodx['calFechPodx'] = $calFechEntr;
+                    $arrDatoPodx['txtHoraPodx'] = date('H:i');
+                    $arrDatoPodx['txtUsuaPodx'] = $this->objUsuario->CodiUsua;
+                    $arrDatoPodx['txtEntrAqui'] = $this->objFactPmnx->RazonSocial;
+                    $arrDatoPodx['calFechEntr'] = $calFechEntr;
+                    $arrDatoPodx['txtFechEntr'] = date('d/m/Y');
+                    $arrDatoPodx['txtHoraEntr'] = date('H:i');
+                    $arrResuPodx = GrabarPODEnLaGuia($arrDatoPodx);
+                    if (!$arrResuPodx['blnTodoOkey']) {
+                        throw new Exception($arrResuPodx['strMensUsua']);
+                    }
+                } catch (Exception $e) {
+                    $strMensErro = $e->getMessage();
+                    $this->mensaje($strMensErro,'m','d','',__iHAND__);
+                    $arrParaErro['ProcIdxx'] = $objProcEjec->Id;
+                    $arrParaErro['NumeRefe'] = $objGuiaFact->NumeGuia;
+                    $arrParaErro['MensErro'] = $strMensErro;
+                    $arrParaErro['ComeErro'] = 'Fallo el POD automatico en cobro de la pre-factura';
+                    GrabarError($arrParaErro);
+                }
+            }
+            error_reporting($mixErroOrig);
+        }
         $this->lblMontRest->Text = (string) $decMontRest;
     }
 }

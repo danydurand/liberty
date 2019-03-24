@@ -37,6 +37,8 @@ class MasterClienteListForm extends MasterClienteListFormBase {
 	protected $strCadeSqlx;
 	protected $strSqlxComp;
 
+	protected $btnElimMasi;
+
 	// Override Form Event Handlers as Needed
 	protected function Form_Run() {
 		parent::Form_Run();
@@ -74,6 +76,7 @@ class MasterClienteListForm extends MasterClienteListFormBase {
 		$this->btnBuscRegi_Create();
 
 		$this->btnDesaClie_Create();
+		$this->btnElimMasi_Create();
 
         // Instantiate the Meta DataGrid
 		$this->dtgMasterClientes = new MasterClienteDataGrid($this);
@@ -86,7 +89,7 @@ class MasterClienteListForm extends MasterClienteListFormBase {
 
 		// Add Pagination (if desired)
 		$this->dtgMasterClientes->Paginator = new QPaginator($this->dtgMasterClientes);
-		$this->dtgMasterClientes->ItemsPerPage = __FORM_DRAFTS_FORM_LIST_ITEMS_PER_PAGE__;
+		$this->dtgMasterClientes->ItemsPerPage = 30; //__FORM_DRAFTS_FORM_LIST_ITEMS_PER_PAGE__;
 
 		// Higlight the datagrid rows when mousing over them
 		$this->dtgMasterClientes->AddRowAction(new QMouseOverEvent(), new QCssClassAction('selectedStyle'));
@@ -253,6 +256,15 @@ class MasterClienteListForm extends MasterClienteListFormBase {
 		$this->btnDesaClie->AddAction(new QClickEvent(), new QAjaxAction('btnDesaClie_Click'));
 	}
 
+	protected function btnElimMasi_Create() {
+		$this->btnElimMasi = new QButtonW($this);
+		$this->btnElimMasi->Text = TextoIcono('trash','Eliminar','F','lg');
+		//$this->btnElimMasi->CssClass = 'btn btn-danger btn-sm';
+		$this->btnElimMasi->HtmlEntities = false;
+		$this->btnElimMasi->ToolTip = 'Eliminación Masiva de Clientes';
+		$this->btnElimMasi->AddAction(new QClickEvent(), new QAjaxAction('btnElimMasi_Click'));
+	}
+
     protected function btnExpoExce_Create() {
         $this->btnExpoExce = new QButton($this);
         $this->btnExpoExce->Text = '<i class="fa fa-download fa-lg"></i> XLS';
@@ -293,7 +305,7 @@ class MasterClienteListForm extends MasterClienteListFormBase {
 			unset($_SESSION['CritConsClie']);
 		} else {
 			if (!$this->blnHayxCond) {
-				$this->objClauWher[] = QQ::All();
+				$this->objClauWher[] = QQ::IsNull(QQN::MasterCliente()->DeletedAt);
 			}
 		}
 		$this->dtgMasterClientes->TotalItemCount = MasterCliente::QueryCount(QQ::AndCondition($this->objClauWher));
@@ -382,6 +394,12 @@ class MasterClienteListForm extends MasterClienteListFormBase {
 	protected function btnDesaClie_Click(){
 		QApplication::Redirect(__SIST__.'/desactivar_cliente.php');
 	}
+
+	protected function btnElimMasi_Click(){
+		QApplication::Redirect(__SIST__.'/eliminar_clientes.php');
+	}
+
+
 }
 
 // Go ahead and run this form object to generate the page and event handlers, implicitly using

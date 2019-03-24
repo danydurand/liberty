@@ -176,9 +176,9 @@ class RecepcionCarga extends FormularioBaseKaizen {
                             }
                         } catch (Exception $e) {
                             $arrParaErro['ProcIdxx'] = $this->objProcEjec->Id;
-                            $arrParaErro['NumeRefe'] = 'Guia: '.$strNumeGuia;
+                            $arrParaErro['NumeRefe'] = $strNumeGuia;
                             $arrParaErro['MensErro'] = $e->getMessage();
-                            $arrParaErro['ComeErro'] = 'Fallo la Recepcion de la Guia';
+                            $arrParaErro['ComeErro'] = 'Fallo la recepcion de la guia';
                             GrabarError($arrParaErro);
                             $intCantErro ++;
                             $blnTodoOkey = false;

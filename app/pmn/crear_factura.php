@@ -118,13 +118,16 @@ class CrearFactura extends FormularioBaseKaizen {
             $this->objFactPmnx = FacturaPmn::Load($this->intNumeFact);
             $this->objCliePmnx = ClientePmn::Load($this->objFactPmnx->CedulaRif);
             $this->blnEditMode = true;
+            $this->objGuia     = $this->objFactPmnx->GetItemFacturaPmnAsFacturaArray()[0]->Guia;
         }
     }
 
     protected function Form_Create() {
-        parent::Form_Create();
 
         $this->SetupFactura();
+
+        parent::Form_Create();
+
 
         $this->lblTituForm->Text = 'Crear una Factura';
 
@@ -189,6 +192,19 @@ class CrearFactura extends FormularioBaseKaizen {
 
         $this->controlDeStatus();
         $this->controlDeBotones();
+
+
+        $strTextMens = '';
+        if (($this->lblMontRest->Text != 0) && ($this->objFactPmnx->ImpresaId == SinoType::NO)) {
+            $strTextMens = 'Esta pantalla permite <b>Confirmar/Cambiar los Datos Fiscales</b> ';
+            $strTextMens .= 'que serán impresos en la factura.  Presione <b>Guardar</b> únicamente ';
+            $strTextMens .= 'si va a facturar la guia';
+        }
+        if (($this->lblMontRest->Text == 0) && ($this->objFactPmnx->ImpresaId == SinoType::NO)) {
+            $strTextMens  = 'Pre-Factura cobrada; utilice el <b>IFis</b> para emitir la Factura y luego ';
+            $strTextMens .= 'presione el boton <b>C.D.F.</b> para obtener los datos de la impresora fiscal';
+        }
+        $this->mensaje($strTextMens,'','i','',__iEXCL__);
     }
 
     //---------------------
@@ -675,7 +691,7 @@ class CrearFactura extends FormularioBaseKaizen {
 
     protected function btnImprFact_Create() {
         $this->btnImprFact = new QButtonP($this);
-        $this->btnImprFact->Text = TextoIcono('print','C.D.I.','F','lg');
+        $this->btnImprFact->Text = TextoIcono('print','C.D.F.','F','lg');
         $this->btnImprFact->AddAction(new QClickEvent(), new QAjaxAction('btnImprFact_Click'));
     }
 
@@ -761,6 +777,8 @@ class CrearFactura extends FormularioBaseKaizen {
     }
 
     protected function btnSave_Click() {
+        t('========================');
+        t('En el Save de la Factura');
         $strCeduRifx = DejarNumerosVJGuion($this->txtCeduRifx->Text);
         $strRazoSoci = limpiarCadena($this->txtRazoSoci->Text);
         $strDireFisc = limpiarCadena($this->txtDireFisc->Text);
@@ -768,7 +786,8 @@ class CrearFactura extends FormularioBaseKaizen {
         $blnHuboErro = false;
         $strMensErro = '';
 
-        $strNombProc = 'Creando Factura Expreso Nacional';
+        t('Creando proceso de errores');
+        $strNombProc = 'Creando Factura Exp Nac. Guia Nro: '.$this->objGuia->NumeGuia;
         $objProcEjec = CrearProceso($strNombProc);
         $mixErroOrig = error_reporting();
         error_reporting(0);
@@ -792,6 +811,7 @@ class CrearFactura extends FormularioBaseKaizen {
         // La razon social de la factura, puede ser diferente al remitente y al destinatario de la guia,
         // por ese motivo, se revisa la existencia en la base de datos y en caso de no existir, se crea
         //------------------------------------------------------------------------------------------------
+        t('Verificando el Cliente');
         $objCliePmnx = ClientePmn::Load($this->txtCeduRifx->Text);
         try {
             if (!$objCliePmnx) {
@@ -821,11 +841,15 @@ class CrearFactura extends FormularioBaseKaizen {
         if (!$this->blnEditMode) {
             $this->objGuia->FacturaId = $this->objFactPmnx->Id;
             $this->objGuia->Save();
+            /*
+            t('La guia es: '.TipoGuiaType::ToStringCorto($this->objGuia->TipoGuia));
             if (TipoGuiaType::ToStringCorto($this->objGuia->TipoGuia) == 'COD') {
+                t('La guia: '.$this->objGuia->NumeGuia.' es COD, asi que voy a grabar el POD');
                 //-----------------------------------------
                 // La guia facturada, se da por entregada
                 //-----------------------------------------
                 try {
+                    t('Entrando al try');
                     $objCkptOkey = SdeCheckpoint::Load('OK');
                     $calFechEntr = new QDateTime(QDateTime::Now);
                     $arrDatoPodx['objGuiaPodx'] = $this->objGuia;
@@ -838,6 +862,7 @@ class CrearFactura extends FormularioBaseKaizen {
                     $arrDatoPodx['txtFechEntr'] = date('d/m/Y');
                     $arrDatoPodx['txtHoraEntr'] = date('H:i');
                     $arrResuPodx = GrabarPODEnLaGuia($arrDatoPodx);
+                    t('POD grabado');
                     if (!$arrResuPodx['blnTodoOkey']) {
                         throw new Exception($arrResuPodx['strMensUsua']);
                     }
@@ -849,9 +874,11 @@ class CrearFactura extends FormularioBaseKaizen {
                     $arrParaErro['MensErro'] = $e->getMessage();
                     $arrParaErro['ComeErro'] = 'Falló el POD automático en la Facturación';
                     GrabarError($arrParaErro);
+                    t('Hubo algun error');
                     $blnHuboErro = true;
                 }
             }
+            */
         }
         //----------------------------------------------------------------
         // Se activan los botones que permiten operar con la Pre-Factura
@@ -864,7 +891,9 @@ class CrearFactura extends FormularioBaseKaizen {
         $this->blnEditMode = true;
         error_reporting($mixErroOrig);
         if (!$blnHuboErro) {
-            $this->mensaje('Transacción Exitosa !','','','',__iCHEC__);
+            $strTextMens = 'Los datos fiscales han sido guardados, proceda al cobro de la pre-factura !';
+            //$this->mensaje('Transacción Exitosa !','','','',__iCHEC__);
+            $this->mensaje($strTextMens,'','','',__iCHEC__);
         } else {
             $this->mensaje($strMensErro,'','w','',__iEXCL__);
         }
@@ -875,8 +904,11 @@ class CrearFactura extends FormularioBaseKaizen {
         //--------------------------------------------------------------------------
         // Si el registro no esta "Impreso", se trata realmente de una pre-factura
         //--------------------------------------------------------------------------
+        t('Factura Impresa: '.$this->objFactPmnx->ImpresaId);
         if ($this->objFactPmnx->ImpresaId == SinoType::NO) {
+            t('Voy al Cancel_Click');
             $this->btnCancel_Click();
+            t('Regresé del Cancel_Click');
         } else {
             //--------------------------------------------------------------------------
             // Si el registro esta "Impreso", se debe emitir una Nota de Credito
@@ -887,11 +919,13 @@ class CrearFactura extends FormularioBaseKaizen {
 
     protected function btnCancel_Click() {
         if ($this->objFactPmnx->ImpresaId == SinoType::NO) {
+            t('Voy a Borrar la Factura');
             $this->objFactPmnx->BorrarFactura();
+            t('Regrese de Borrar la Factura');
         }
 
         $objUltiAcce = PilaAcceso::Pop('D');
-        QApplication::Redirect(__SIST__."/".$objUltiAcce->__toString());
+        QApplication::Redirect(__SIST__."/consulta_guia.php/".$this->objGuia->NumeGuia);
     }
 
     protected function btnCobrFact_Click($strFormId, $strControlId, $strParameter) {
@@ -905,8 +939,12 @@ class CrearFactura extends FormularioBaseKaizen {
         $this->objFactPmnx       = FacturaPmn::Load($this->lblNumeFact->Text);
         $this->lblDocuFisc->Text = $this->objFactPmnx->Numero;
         $this->lblFactImpr->Text = SinoType::ToString($this->objFactPmnx->ImpresaId);
-        $this->controlDeStatus();
-        $this->dtgItemFact->Refresh();
+        if ($this->lblFactImpr->Text == SinoType::SI) {
+            $this->controlDeStatus();
+            $this->dtgItemFact->Refresh();
+        } else {
+            QApplication::Redirect(__SIST__.'/simular_impresion.php/F/'.$this->objFactPmnx->Id);
+        }
     }
 
     protected function dtgItemFact_Bind() {

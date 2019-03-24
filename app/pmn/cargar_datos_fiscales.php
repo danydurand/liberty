@@ -69,9 +69,10 @@ class CargarDatosFiscales extends FormularioBaseKaizen {
 	protected function txtFechImpr_Create() {
 		$this->txtFechImpr = new QTextBox($this);
 		$this->txtFechImpr->Name = 'Fecha Impresion';
+		$this->txtFechImpr->ToolTip = 'Coloque en que se imprimió la Factura en formato YYMMDD';
 		$this->txtFechImpr->Width = 60;
 		$this->txtFechImpr->Required = true;
-		$this->txtFechImpr->HtmlAfter = ' (YYMMDD) Ej: 150730';
+		$this->txtFechImpr->HtmlAfter = ' (YYMMDD) Ej: 190218';
 	}
 	
 	protected function txtHoraImpr_Create() {
