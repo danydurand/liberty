@@ -33,7 +33,7 @@ class DarPermisos extends FormularioBaseKaizen {
 
         $arrUsuaAuto = array();
         $arrUsuaAuto[] = "ddurand";
-        $arrUsuaAuto[] = "jmartini";
+        $arrUsuaAuto[] = "yroth";
         $arrUsuaAuto[] = "jrivero";
         $arrUsuaAuto[] = "jlaya";
 

@@ -132,6 +132,11 @@ class MasterClienteListForm extends MasterClienteListFormBase {
 
         $this->btnExpoExce_Create();
 		$this->btnExpoExce->Visible = true;
+
+        $blnUsuaAuto = BuscarParametro("ElimClie", $this->objUsuario->LogiUsua, "Val1", 0);
+        if (!$blnUsuaAuto) {
+            $this->btnElimMasi->Visible = false;
+        }
     }
 
 	//----------------------------
@@ -286,7 +291,7 @@ class MasterClienteListForm extends MasterClienteListFormBase {
         $this->strCadeSqlx .= '    on master_cliente.tarifa_id = fac_tarifa.id ';
         $this->strCadeSqlx .= '       inner join estadistica_de_clientes e ';
         $this->strCadeSqlx .= '    on master_cliente.codi_clie = e.cliente_id ';
-        $this->strCadeSqlx .= ' where 1 = 1 ';
+        $this->strCadeSqlx .= ' where deleted_at is null ';
         if (strlen($this->strSqlxComp) > 0) {
             $this->strCadeSqlx .= $this->strSqlxComp;
         }

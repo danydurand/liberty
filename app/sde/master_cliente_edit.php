@@ -301,6 +301,11 @@ class MasterClienteEditForm extends FormularioBaseKaizen {
         $strTextMens = 'Evite el uso de caracteres especiales (Ej: \\~°#^*+) en <b>los nombres, las direcciones y los teléfonos</b>';
         $this->mensaje($strTextMens,'n','i','',__iINFO__);
 
+        $blnUsuaAuto = BuscarParametro("ElimClie", $this->objUsuario->LogiUsua, "Val1", 0);
+        if (!$blnUsuaAuto) {
+            $this->btnDelete->Visible = false;
+        }
+
     }
 
 
