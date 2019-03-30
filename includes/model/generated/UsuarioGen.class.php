@@ -65,6 +65,8 @@
 	 * @property-read GuiaCkpt[] $_GuiaCkptAsCodiUsuaArray the value for the private _objGuiaCkptAsCodiUsuaArray (Read-Only) if set due to an ExpandAsArray on the guia_ckpt.codi_usua reverse relationship
 	 * @property-read HistoriaCliente $_HistoriaClienteAsCodiUsua the value for the private _objHistoriaClienteAsCodiUsua (Read-Only) if set due to an expansion on the historia_cliente.codi_usua reverse relationship
 	 * @property-read HistoriaCliente[] $_HistoriaClienteAsCodiUsuaArray the value for the private _objHistoriaClienteAsCodiUsuaArray (Read-Only) if set due to an ExpandAsArray on the historia_cliente.codi_usua reverse relationship
+	 * @property-read MotivoEliminacion $_MotivoEliminacionAsUser the value for the private _objMotivoEliminacionAsUser (Read-Only) if set due to an expansion on the motivo_eliminacion.user_id reverse relationship
+	 * @property-read MotivoEliminacion[] $_MotivoEliminacionAsUserArray the value for the private _objMotivoEliminacionAsUserArray (Read-Only) if set due to an ExpandAsArray on the motivo_eliminacion.user_id reverse relationship
 	 * @property-read NotaCredito $_NotaCreditoAsCreadaPor the value for the private _objNotaCreditoAsCreadaPor (Read-Only) if set due to an expansion on the nota_credito.creada_por reverse relationship
 	 * @property-read NotaCredito[] $_NotaCreditoAsCreadaPorArray the value for the private _objNotaCreditoAsCreadaPorArray (Read-Only) if set due to an ExpandAsArray on the nota_credito.creada_por reverse relationship
 	 * @property-read PagoFacturaPmn $_PagoFacturaPmnAsCreadoPor the value for the private _objPagoFacturaPmnAsCreadoPor (Read-Only) if set due to an expansion on the pago_factura_pmn.creado_por reverse relationship
@@ -456,6 +458,22 @@
 		 * @var HistoriaCliente[] _objHistoriaClienteAsCodiUsuaArray;
 		 */
 		private $_objHistoriaClienteAsCodiUsuaArray = null;
+
+		/**
+		 * Private member variable that stores a reference to a single MotivoEliminacionAsUser object
+		 * (of type MotivoEliminacion), if this Usuario object was restored with
+		 * an expansion on the motivo_eliminacion association table.
+		 * @var MotivoEliminacion _objMotivoEliminacionAsUser;
+		 */
+		private $_objMotivoEliminacionAsUser;
+
+		/**
+		 * Private member variable that stores a reference to an array of MotivoEliminacionAsUser objects
+		 * (of type MotivoEliminacion[]), if this Usuario object was restored with
+		 * an ExpandAsArray on the motivo_eliminacion association table.
+		 * @var MotivoEliminacion[] _objMotivoEliminacionAsUserArray;
+		 */
+		private $_objMotivoEliminacionAsUserArray = null;
 
 		/**
 		 * Private member variable that stores a reference to a single NotaCreditoAsCreadaPor object
@@ -1430,6 +1448,21 @@
 					$objToReturn->_objHistoriaClienteAsCodiUsuaArray[] = HistoriaCliente::InstantiateDbRow($objDbRow, $strAliasPrefix . 'historiaclienteascodiusua__', $objExpansionNode, null, $strColumnAliasArray);
 				} elseif (is_null($objToReturn->_objHistoriaClienteAsCodiUsua)) {
 					$objToReturn->_objHistoriaClienteAsCodiUsua = HistoriaCliente::InstantiateDbRow($objDbRow, $strAliasPrefix . 'historiaclienteascodiusua__', $objExpansionNode, null, $strColumnAliasArray);
+				}
+			}
+
+			// Check for MotivoEliminacionAsUser Virtual Binding
+			$strAlias = $strAliasPrefix . 'motivoeliminacionasuser__id';
+			$strAliasName = !empty($strColumnAliasArray[$strAlias]) ? $strColumnAliasArray[$strAlias] : $strAlias;
+			$objExpansionNode = (empty($objExpansionAliasArray['motivoeliminacionasuser']) ? null : $objExpansionAliasArray['motivoeliminacionasuser']);
+			$blnExpanded = ($objExpansionNode && $objExpansionNode->ExpandAsArray);
+			if ($blnExpanded && null === $objToReturn->_objMotivoEliminacionAsUserArray)
+				$objToReturn->_objMotivoEliminacionAsUserArray = array();
+			if (!is_null($objDbRow->GetColumn($strAliasName))) {
+				if ($blnExpanded) {
+					$objToReturn->_objMotivoEliminacionAsUserArray[] = MotivoEliminacion::InstantiateDbRow($objDbRow, $strAliasPrefix . 'motivoeliminacionasuser__', $objExpansionNode, null, $strColumnAliasArray);
+				} elseif (is_null($objToReturn->_objMotivoEliminacionAsUser)) {
+					$objToReturn->_objMotivoEliminacionAsUser = MotivoEliminacion::InstantiateDbRow($objDbRow, $strAliasPrefix . 'motivoeliminacionasuser__', $objExpansionNode, null, $strColumnAliasArray);
 				}
 			}
 
@@ -2482,6 +2515,22 @@
 					 */
 					return $this->_objHistoriaClienteAsCodiUsuaArray;
 
+				case '_MotivoEliminacionAsUser':
+					/**
+					 * Gets the value for the private _objMotivoEliminacionAsUser (Read-Only)
+					 * if set due to an expansion on the motivo_eliminacion.user_id reverse relationship
+					 * @return MotivoEliminacion
+					 */
+					return $this->_objMotivoEliminacionAsUser;
+
+				case '_MotivoEliminacionAsUserArray':
+					/**
+					 * Gets the value for the private _objMotivoEliminacionAsUserArray (Read-Only)
+					 * if set due to an ExpandAsArray on the motivo_eliminacion.user_id reverse relationship
+					 * @return MotivoEliminacion[]
+					 */
+					return $this->_objMotivoEliminacionAsUserArray;
+
 				case '_NotaCreditoAsCreadaPor':
 					/**
 					 * Gets the value for the private _objNotaCreditoAsCreadaPor (Read-Only)
@@ -3007,6 +3056,9 @@
 			}
 			if ($this->CountHistoriaClientesAsCodiUsua()) {
 				$arrTablRela[] = 'historia_cliente';
+			}
+			if ($this->CountMotivoEliminacionsAsUser()) {
+				$arrTablRela[] = 'motivo_eliminacion';
 			}
 			if ($this->CountNotaCreditosAsCreadaPor()) {
 				$arrTablRela[] = 'nota_credito';
@@ -5128,6 +5180,155 @@
 		}
 
 
+		// Related Objects' Methods for MotivoEliminacionAsUser
+		//-------------------------------------------------------------------
+
+		/**
+		 * Gets all associated MotivoEliminacionsAsUser as an array of MotivoEliminacion objects
+		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
+		 * @return MotivoEliminacion[]
+		*/
+		public function GetMotivoEliminacionAsUserArray($objOptionalClauses = null) {
+			if ((is_null($this->intCodiUsua)))
+				return array();
+
+			try {
+				return MotivoEliminacion::LoadArrayByUserId($this->intCodiUsua, $objOptionalClauses);
+			} catch (QCallerException $objExc) {
+				$objExc->IncrementOffset();
+				throw $objExc;
+			}
+		}
+
+		/**
+		 * Counts all associated MotivoEliminacionsAsUser
+		 * @return int
+		*/
+		public function CountMotivoEliminacionsAsUser() {
+			if ((is_null($this->intCodiUsua)))
+				return 0;
+
+			return MotivoEliminacion::CountByUserId($this->intCodiUsua);
+		}
+
+		/**
+		 * Associates a MotivoEliminacionAsUser
+		 * @param MotivoEliminacion $objMotivoEliminacion
+		 * @return void
+		*/
+		public function AssociateMotivoEliminacionAsUser(MotivoEliminacion $objMotivoEliminacion) {
+			if ((is_null($this->intCodiUsua)))
+				throw new QUndefinedPrimaryKeyException('Unable to call AssociateMotivoEliminacionAsUser on this unsaved Usuario.');
+			if ((is_null($objMotivoEliminacion->Id)))
+				throw new QUndefinedPrimaryKeyException('Unable to call AssociateMotivoEliminacionAsUser on this Usuario with an unsaved MotivoEliminacion.');
+
+			// Get the Database Object for this Class
+			$objDatabase = Usuario::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				UPDATE
+					`motivo_eliminacion`
+				SET
+					`user_id` = ' . $objDatabase->SqlVariable($this->intCodiUsua) . '
+				WHERE
+					`id` = ' . $objDatabase->SqlVariable($objMotivoEliminacion->Id) . '
+			');
+		}
+
+		/**
+		 * Unassociates a MotivoEliminacionAsUser
+		 * @param MotivoEliminacion $objMotivoEliminacion
+		 * @return void
+		*/
+		public function UnassociateMotivoEliminacionAsUser(MotivoEliminacion $objMotivoEliminacion) {
+			if ((is_null($this->intCodiUsua)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateMotivoEliminacionAsUser on this unsaved Usuario.');
+			if ((is_null($objMotivoEliminacion->Id)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateMotivoEliminacionAsUser on this Usuario with an unsaved MotivoEliminacion.');
+
+			// Get the Database Object for this Class
+			$objDatabase = Usuario::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				UPDATE
+					`motivo_eliminacion`
+				SET
+					`user_id` = null
+				WHERE
+					`id` = ' . $objDatabase->SqlVariable($objMotivoEliminacion->Id) . ' AND
+					`user_id` = ' . $objDatabase->SqlVariable($this->intCodiUsua) . '
+			');
+		}
+
+		/**
+		 * Unassociates all MotivoEliminacionsAsUser
+		 * @return void
+		*/
+		public function UnassociateAllMotivoEliminacionsAsUser() {
+			if ((is_null($this->intCodiUsua)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateMotivoEliminacionAsUser on this unsaved Usuario.');
+
+			// Get the Database Object for this Class
+			$objDatabase = Usuario::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				UPDATE
+					`motivo_eliminacion`
+				SET
+					`user_id` = null
+				WHERE
+					`user_id` = ' . $objDatabase->SqlVariable($this->intCodiUsua) . '
+			');
+		}
+
+		/**
+		 * Deletes an associated MotivoEliminacionAsUser
+		 * @param MotivoEliminacion $objMotivoEliminacion
+		 * @return void
+		*/
+		public function DeleteAssociatedMotivoEliminacionAsUser(MotivoEliminacion $objMotivoEliminacion) {
+			if ((is_null($this->intCodiUsua)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateMotivoEliminacionAsUser on this unsaved Usuario.');
+			if ((is_null($objMotivoEliminacion->Id)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateMotivoEliminacionAsUser on this Usuario with an unsaved MotivoEliminacion.');
+
+			// Get the Database Object for this Class
+			$objDatabase = Usuario::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				DELETE FROM
+					`motivo_eliminacion`
+				WHERE
+					`id` = ' . $objDatabase->SqlVariable($objMotivoEliminacion->Id) . ' AND
+					`user_id` = ' . $objDatabase->SqlVariable($this->intCodiUsua) . '
+			');
+		}
+
+		/**
+		 * Deletes all associated MotivoEliminacionsAsUser
+		 * @return void
+		*/
+		public function DeleteAllMotivoEliminacionsAsUser() {
+			if ((is_null($this->intCodiUsua)))
+				throw new QUndefinedPrimaryKeyException('Unable to call UnassociateMotivoEliminacionAsUser on this unsaved Usuario.');
+
+			// Get the Database Object for this Class
+			$objDatabase = Usuario::GetDatabase();
+
+			// Perform the SQL Query
+			$objDatabase->NonQuery('
+				DELETE FROM
+					`motivo_eliminacion`
+				WHERE
+					`user_id` = ' . $objDatabase->SqlVariable($this->intCodiUsua) . '
+			');
+		}
+
+
 		// Related Objects' Methods for NotaCreditoAsCreadaPor
 		//-------------------------------------------------------------------
 
@@ -5999,6 +6200,7 @@
      * @property-read QQReverseReferenceNodeFacturaPmn $FacturaPmnAsCreadaPor
      * @property-read QQReverseReferenceNodeGuiaCkpt $GuiaCkptAsCodiUsua
      * @property-read QQReverseReferenceNodeHistoriaCliente $HistoriaClienteAsCodiUsua
+     * @property-read QQReverseReferenceNodeMotivoEliminacion $MotivoEliminacionAsUser
      * @property-read QQReverseReferenceNodeNotaCredito $NotaCreditoAsCreadaPor
      * @property-read QQReverseReferenceNodePagoFacturaPmn $PagoFacturaPmnAsCreadoPor
      * @property-read QQReverseReferenceNodeRegistroTrabajo $RegistroTrabajo
@@ -6084,6 +6286,8 @@
 					return new QQReverseReferenceNodeGuiaCkpt($this, 'guiackptascodiusua', 'reverse_reference', 'codi_usua', 'GuiaCkptAsCodiUsua');
 				case 'HistoriaClienteAsCodiUsua':
 					return new QQReverseReferenceNodeHistoriaCliente($this, 'historiaclienteascodiusua', 'reverse_reference', 'codi_usua', 'HistoriaClienteAsCodiUsua');
+				case 'MotivoEliminacionAsUser':
+					return new QQReverseReferenceNodeMotivoEliminacion($this, 'motivoeliminacionasuser', 'reverse_reference', 'user_id', 'MotivoEliminacionAsUser');
 				case 'NotaCreditoAsCreadaPor':
 					return new QQReverseReferenceNodeNotaCredito($this, 'notacreditoascreadapor', 'reverse_reference', 'creada_por', 'NotaCreditoAsCreadaPor');
 				case 'PagoFacturaPmnAsCreadoPor':
@@ -6145,6 +6349,7 @@
      * @property-read QQReverseReferenceNodeFacturaPmn $FacturaPmnAsCreadaPor
      * @property-read QQReverseReferenceNodeGuiaCkpt $GuiaCkptAsCodiUsua
      * @property-read QQReverseReferenceNodeHistoriaCliente $HistoriaClienteAsCodiUsua
+     * @property-read QQReverseReferenceNodeMotivoEliminacion $MotivoEliminacionAsUser
      * @property-read QQReverseReferenceNodeNotaCredito $NotaCreditoAsCreadaPor
      * @property-read QQReverseReferenceNodePagoFacturaPmn $PagoFacturaPmnAsCreadoPor
      * @property-read QQReverseReferenceNodeRegistroTrabajo $RegistroTrabajo
@@ -6230,6 +6435,8 @@
 					return new QQReverseReferenceNodeGuiaCkpt($this, 'guiackptascodiusua', 'reverse_reference', 'codi_usua', 'GuiaCkptAsCodiUsua');
 				case 'HistoriaClienteAsCodiUsua':
 					return new QQReverseReferenceNodeHistoriaCliente($this, 'historiaclienteascodiusua', 'reverse_reference', 'codi_usua', 'HistoriaClienteAsCodiUsua');
+				case 'MotivoEliminacionAsUser':
+					return new QQReverseReferenceNodeMotivoEliminacion($this, 'motivoeliminacionasuser', 'reverse_reference', 'user_id', 'MotivoEliminacionAsUser');
 				case 'NotaCreditoAsCreadaPor':
 					return new QQReverseReferenceNodeNotaCredito($this, 'notacreditoascreadapor', 'reverse_reference', 'creada_por', 'NotaCreditoAsCreadaPor');
 				case 'PagoFacturaPmnAsCreadoPor':

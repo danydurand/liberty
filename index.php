@@ -401,6 +401,7 @@ class Index extends QForm {
 
             $_SESSION['ValoMin1'] = serialize($arrValoMini);
             $_SESSION['ValoMax1'] = serialize($arrValoMaxi);
+
             $_SESSION['PorcSeg1'] = serialize($arrValoPorc);
 
             $_SESSION['RecoMini'] = serialize($decRecoMini);

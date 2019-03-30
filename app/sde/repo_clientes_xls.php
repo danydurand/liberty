@@ -13,6 +13,7 @@ $arrEnca2XLS = array(
     'Codigo',
     'Razon Social',
     'Sucursal',
+    'Vendedor',
     'Direccion Fiscal',
     'Nro de RIF',
     'Persona Contacto',
@@ -50,6 +51,7 @@ while ($mixRegistro = $objResulSet->FetchArray()) {
     $strCodiClie  = $mixRegistro['codigo_interno'];
     $strRazoSoci  = str_replace(';',',',QuitarCaracteresEspeciales2(utf8_decode($mixRegistro['nomb_clie'])));
     $strCodiSucu  = $mixRegistro['codi_esta'];
+    $strNombVend  = str_replace(';',',',QuitarCaracteresEspeciales2(utf8_decode($mixRegistro['vendedor'])));
     $strDireFisc  = str_replace(';',',',QuitarCaracteresEspeciales2(utf8_decode($mixRegistro['dire_fisc'])));
     $strNumeDrif  = $mixRegistro['nume_drif'];
     $strPersCont  = str_replace(';',',',QuitarCaracteresEspeciales2(utf8_decode($mixRegistro['pers_cona'])));
@@ -71,6 +73,7 @@ while ($mixRegistro = $objResulSet->FetchArray()) {
         $strCodiClie,
         $strRazoSoci,
         $strCodiSucu,
+        $strNombVend,
         $strDireFisc,
         $strNumeDrif,
         $strPersCont,

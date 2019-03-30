@@ -535,6 +535,12 @@
 			return new QQNodeModo('modo', null, null);
 		}
 		/**
+		 * @return QQNodeMotivoEliminacion
+		 */
+		static public function MotivoEliminacion() {
+			return new QQNodeMotivoEliminacion('motivo_eliminacion', null, null);
+		}
+		/**
 		 * @return QQNodeMotivoIncidencia
 		 */
 		static public function MotivoIncidencia() {

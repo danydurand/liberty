@@ -284,18 +284,21 @@ class MasterClienteListForm extends MasterClienteListFormBase {
 	//-----------------------------------
 
     public function btnExpoExce_Click($strFormId, $strControlId, $strParameter) {
-        $this->strCadeSqlx  = 'select master_cliente.*, fac_tarifa.descripcion, e.*, ';
+        $this->strCadeSqlx  = 'select master_cliente.*, fac_tarifa.descripcion, e.*, v.nombre as vendedor,';
         $this->strCadeSqlx .= '       round(datediff(e.fecha_ultima_guia,e.fecha_primera_guia)/365,2) as anios, ';
         $this->strCadeSqlx .= '       round(datediff(e.fecha_ultima_guia,e.fecha_primera_guia)/30,2) as meses ';
         $this->strCadeSqlx .= '  from master_cliente inner join fac_tarifa ';
         $this->strCadeSqlx .= '    on master_cliente.tarifa_id = fac_tarifa.id ';
         $this->strCadeSqlx .= '       inner join estadistica_de_clientes e ';
         $this->strCadeSqlx .= '    on master_cliente.codi_clie = e.cliente_id ';
+        $this->strCadeSqlx .= '       inner join fac_vendedor v ';
+        $this->strCadeSqlx .= '    on master_cliente.vendedor_id = v.id ';
         $this->strCadeSqlx .= ' where deleted_at is null ';
         if (strlen($this->strSqlxComp) > 0) {
             $this->strCadeSqlx .= $this->strSqlxComp;
         }
         $_SESSION['CritSqlx'] = serialize($this->strCadeSqlx);
+        //echo $this->strCadeSqlx;
         QApplication::Redirect('repo_clientes_xls.php');
     }
 

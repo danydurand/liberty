@@ -622,6 +622,13 @@
 		QApplicationBase::$ClassFile['modometacontrol'] = __META_CONTROLS__ . '/ModoMetaControl.class.php';
 		QApplicationBase::$ClassFile['mododatagrid'] = __META_CONTROLS__ . '/ModoDataGrid.class.php';
 
+	// ClassPaths for the MotivoEliminacion class
+		QApplicationBase::$ClassFile['motivoeliminacion'] = __MODEL__ . '/MotivoEliminacion.class.php';
+		QApplicationBase::$ClassFile['qqnodemotivoeliminacion'] = __MODEL__ . '/MotivoEliminacion.class.php';
+		QApplicationBase::$ClassFile['qqreversereferencenodemotivoeliminacion'] = __MODEL__ . '/MotivoEliminacion.class.php';
+		QApplicationBase::$ClassFile['motivoeliminacionmetacontrol'] = __META_CONTROLS__ . '/MotivoEliminacionMetaControl.class.php';
+		QApplicationBase::$ClassFile['motivoeliminaciondatagrid'] = __META_CONTROLS__ . '/MotivoEliminacionDataGrid.class.php';
+
 	// ClassPaths for the MotivoIncidencia class
 		QApplicationBase::$ClassFile['motivoincidencia'] = __MODEL__ . '/MotivoIncidencia.class.php';
 		QApplicationBase::$ClassFile['qqnodemotivoincidencia'] = __MODEL__ . '/MotivoIncidencia.class.php';
