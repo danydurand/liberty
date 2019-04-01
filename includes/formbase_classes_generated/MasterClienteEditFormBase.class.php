@@ -111,6 +111,7 @@ abstract class MasterClienteEditFormBase extends QForm {
 	protected $chkGuiaRetorno;
 	protected $txtProcesoApi;
 	protected $calDeletedAt;
+	protected $lstMotivoEliminacion;
 
 	// Other ListBoxes (if applicable) via Unique ReverseReferences and ManyToMany References
 	protected $lstEstadisticaDeClientes;
@@ -238,6 +239,7 @@ abstract class MasterClienteEditFormBase extends QForm {
 		$this->chkGuiaRetorno = $this->mctMasterCliente->chkGuiaRetorno_Create();
 		$this->txtProcesoApi = $this->mctMasterCliente->txtProcesoApi_Create();
 		$this->calDeletedAt = $this->mctMasterCliente->calDeletedAt_Create();
+		$this->lstMotivoEliminacion = $this->mctMasterCliente->lstMotivoEliminacion_Create();
 			$this->lstEstadisticaDeClientes = $this->mctMasterCliente->lstEstadisticaDeClientes_Create();
 			$this->lstFechaUltimaGuiaAsCliente = $this->mctMasterCliente->lstFechaUltimaGuiaAsCliente_Create();
 

@@ -28,8 +28,11 @@ require(__APP_INCLUDES__ . '/header.inc.php');
             <div class="row">
                 <div class="col-md-4" style="margin-top: 1em;"></div>
                 <div class="col-md-4" style="margin-top: 1em;">
-                    <span class="etiqueta">Clientes a Eliminar</span><br>
+                    <span class="etiqueta">Cliente(s) a Eliminar</span><br>
                     <?php $this->txtCodiClie->RenderWithError(); ?>
+                    <br>
+                    <span class="etiqueta">Motivo de Eliminación</span><br>
+                    <?php $this->lstMotiElim->RenderWithError(); ?>
                 </div>
                 <div class="col-md-4" style="margin-top: 1em;"></div>
             </div>

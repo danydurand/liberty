@@ -1734,6 +1734,9 @@ class MasterClienteEditForm extends FormularioBaseKaizen {
         //----------------------------------------
         // Se verifica la integridad referencial
         //----------------------------------------
+        $strLinkElim = __SIST__.'/eliminar_clientes.php/'.$this->txtCodiInte->Text;
+        QApplication::Redirect($strLinkElim);
+
         $blnTodoOkey = true;
         $this->objMasterCliente->DeletedAt = new QDateTime(QDateTime::Now());
         $this->objMasterCliente->Save();

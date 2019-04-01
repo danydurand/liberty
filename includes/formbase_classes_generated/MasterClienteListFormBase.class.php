@@ -136,6 +136,7 @@
 			$this->dtgMasterClientes->MetaAddColumn('GuiaRetorno');
 			$this->dtgMasterClientes->MetaAddColumn('ProcesoApi');
 			$this->dtgMasterClientes->MetaAddColumn('DeletedAt');
+			$this->dtgMasterClientes->MetaAddColumn(QQN::MasterCliente()->MotivoEliminacion);
 			$this->dtgMasterClientes->MetaAddColumn(QQN::MasterCliente()->EstadisticaDeClientes);
 			$this->dtgMasterClientes->MetaAddColumn(QQN::MasterCliente()->FechaUltimaGuiaAsCliente);
 

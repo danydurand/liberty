@@ -75,12 +75,14 @@
 	 * @property boolean $GuiaRetorno the value for blnGuiaRetorno 
 	 * @property integer $ProcesoApi the value for intProcesoApi (Unique)
 	 * @property QDateTime $DeletedAt the value for dttDeletedAt 
+	 * @property integer $MotivoEliminacionId the value for intMotivoEliminacionId 
 	 * @property MasterCliente $CodiDepeObject the value for the MasterCliente object referenced by intCodiDepe (Not Null)
 	 * @property Estacion $CodiEstaObject the value for the Estacion object referenced by strCodiEsta (Not Null)
 	 * @property FacVendedor $Vendedor the value for the FacVendedor object referenced by intVendedorId (Not Null)
 	 * @property FacTarifa $Tarifa the value for the FacTarifa object referenced by intTarifaId (Not Null)
 	 * @property SdeOperacion $RutaRecolectaObject the value for the SdeOperacion object referenced by intRutaRecolecta 
 	 * @property SdeOperacion $RutaEntregaObject the value for the SdeOperacion object referenced by intRutaEntrega 
+	 * @property MotivoEliminacion $MotivoEliminacion the value for the MotivoEliminacion object referenced by intMotivoEliminacionId 
 	 * @property EstadisticaDeClientes $EstadisticaDeClientes the value for the EstadisticaDeClientes object that uniquely references this MasterCliente
 	 * @property FechaUltimaGuia $FechaUltimaGuiaAsCliente the value for the FechaUltimaGuia object that uniquely references this MasterCliente
 	 * @property-read ConsumoDia $_ConsumoDiaAsCliente the value for the private _objConsumoDiaAsCliente (Read-Only) if set due to an expansion on the consumo_dia.cliente_id reverse relationship
@@ -622,6 +624,14 @@
 
 
 		/**
+		 * Protected member variable that maps to the database column master_cliente.motivo_eliminacion_id
+		 * @var integer intMotivoEliminacionId
+		 */
+		protected $intMotivoEliminacionId;
+		const MotivoEliminacionIdDefault = null;
+
+
+		/**
 		 * Private member variable that stores a reference to a single ConsumoDiaAsCliente object
 		 * (of type ConsumoDia), if this MasterCliente object was restored with
 		 * an expansion on the consumo_dia association table.
@@ -896,6 +906,16 @@
 		protected $objRutaEntregaObject;
 
 		/**
+		 * Protected member variable that contains the object pointed by the reference
+		 * in the database column master_cliente.motivo_eliminacion_id.
+		 *
+		 * NOTE: Always use the MotivoEliminacion property getter to correctly retrieve this MotivoEliminacion object.
+		 * (Because this class implements late binding, this variable reference MAY be null.)
+		 * @var MotivoEliminacion objMotivoEliminacion
+		 */
+		protected $objMotivoEliminacion;
+
+		/**
 		 * Protected member variable that contains the object which points to
 		 * this object by the reference in the unique database column estadistica_de_clientes.cliente_id.
 		 *
@@ -998,6 +1018,7 @@
 			$this->blnGuiaRetorno = MasterCliente::GuiaRetornoDefault;
 			$this->intProcesoApi = MasterCliente::ProcesoApiDefault;
 			$this->dttDeletedAt = (MasterCliente::DeletedAtDefault === null)?null:new QDateTime(MasterCliente::DeletedAtDefault);
+			$this->intMotivoEliminacionId = MasterCliente::MotivoEliminacionIdDefault;
 		}
 
 
@@ -1399,6 +1420,7 @@
 			    $objBuilder->AddSelectItem($strTableName, 'guia_retorno', $strAliasPrefix . 'guia_retorno');
 			    $objBuilder->AddSelectItem($strTableName, 'proceso_api', $strAliasPrefix . 'proceso_api');
 			    $objBuilder->AddSelectItem($strTableName, 'deleted_at', $strAliasPrefix . 'deleted_at');
+			    $objBuilder->AddSelectItem($strTableName, 'motivo_eliminacion_id', $strAliasPrefix . 'motivo_eliminacion_id');
             }
 		}
 
@@ -1704,6 +1726,9 @@
 			$strAlias = $strAliasPrefix . 'deleted_at';
 			$strAliasName = !empty($strColumnAliasArray[$strAlias]) ? $strColumnAliasArray[$strAlias] : $strAlias;
 			$objToReturn->dttDeletedAt = $objDbRow->GetColumn($strAliasName, 'DateTime');
+			$strAlias = $strAliasPrefix . 'motivo_eliminacion_id';
+			$strAliasName = !empty($strColumnAliasArray[$strAlias]) ? $strColumnAliasArray[$strAlias] : $strAlias;
+			$objToReturn->intMotivoEliminacionId = $objDbRow->GetColumn($strAliasName, 'Integer');
 
 			if (isset($objPreviousItemArray) && is_array($objPreviousItemArray)) {
 				foreach ($objPreviousItemArray as $objPreviousItem) {
@@ -1775,6 +1800,13 @@
 			if (!is_null($objDbRow->GetColumn($strAliasName))) {
 				$objExpansionNode = (empty($objExpansionAliasArray['ruta_entrega']) ? null : $objExpansionAliasArray['ruta_entrega']);
 				$objToReturn->objRutaEntregaObject = SdeOperacion::InstantiateDbRow($objDbRow, $strAliasPrefix . 'ruta_entrega__', $objExpansionNode, null, $strColumnAliasArray);
+			}
+			// Check for MotivoEliminacion Early Binding
+			$strAlias = $strAliasPrefix . 'motivo_eliminacion_id__id';
+			$strAliasName = !empty($strColumnAliasArray[$strAlias]) ? $strColumnAliasArray[$strAlias] : $strAlias;
+			if (!is_null($objDbRow->GetColumn($strAliasName))) {
+				$objExpansionNode = (empty($objExpansionAliasArray['motivo_eliminacion_id']) ? null : $objExpansionAliasArray['motivo_eliminacion_id']);
+				$objToReturn->objMotivoEliminacion = MotivoEliminacion::InstantiateDbRow($objDbRow, $strAliasPrefix . 'motivo_eliminacion_id__', $objExpansionNode, null, $strColumnAliasArray);
 			}
 
 			// Check for EstadisticaDeClientes Unique ReverseReference Binding
@@ -2562,6 +2594,38 @@
 			);
 		}
 
+		/**
+		 * Load an array of MasterCliente objects,
+		 * by MotivoEliminacionId Index(es)
+		 * @param integer $intMotivoEliminacionId
+		 * @param QQClause[] $objOptionalClauses additional optional QQClause objects for this query
+		 * @return MasterCliente[]
+		*/
+		public static function LoadArrayByMotivoEliminacionId($intMotivoEliminacionId, $objOptionalClauses = null) {
+			// Call MasterCliente::QueryArray to perform the LoadArrayByMotivoEliminacionId query
+			try {
+				return MasterCliente::QueryArray(
+					QQ::Equal(QQN::MasterCliente()->MotivoEliminacionId, $intMotivoEliminacionId),
+					$objOptionalClauses);
+			} catch (QCallerException $objExc) {
+				$objExc->IncrementOffset();
+				throw $objExc;
+			}
+		}
+
+		/**
+		 * Count MasterClientes
+		 * by MotivoEliminacionId Index(es)
+		 * @param integer $intMotivoEliminacionId
+		 * @return int
+		*/
+		public static function CountByMotivoEliminacionId($intMotivoEliminacionId) {
+			// Call MasterCliente::QueryCount to perform the CountByMotivoEliminacionId query
+			return MasterCliente::QueryCount(
+				QQ::Equal(QQN::MasterCliente()->MotivoEliminacionId, $intMotivoEliminacionId)
+			);
+		}
+
 
 
 		////////////////////////////////////////////////////
@@ -2651,7 +2715,8 @@
 							`token_api`,
 							`guia_retorno`,
 							`proceso_api`,
-							`deleted_at`
+							`deleted_at`,
+							`motivo_eliminacion_id`
 						) VALUES (
 							' . $objDatabase->SqlVariable($this->intCodiDepe) . ',
 							' . $objDatabase->SqlVariable($this->strNombClie) . ',
@@ -2711,7 +2776,8 @@
 							' . $objDatabase->SqlVariable($this->strTokenApi) . ',
 							' . $objDatabase->SqlVariable($this->blnGuiaRetorno) . ',
 							' . $objDatabase->SqlVariable($this->intProcesoApi) . ',
-							' . $objDatabase->SqlVariable($this->dttDeletedAt) . '
+							' . $objDatabase->SqlVariable($this->dttDeletedAt) . ',
+							' . $objDatabase->SqlVariable($this->intMotivoEliminacionId) . '
 						)
 					');
 
@@ -2785,7 +2851,8 @@
 							`token_api` = ' . $objDatabase->SqlVariable($this->strTokenApi) . ',
 							`guia_retorno` = ' . $objDatabase->SqlVariable($this->blnGuiaRetorno) . ',
 							`proceso_api` = ' . $objDatabase->SqlVariable($this->intProcesoApi) . ',
-							`deleted_at` = ' . $objDatabase->SqlVariable($this->dttDeletedAt) . '
+							`deleted_at` = ' . $objDatabase->SqlVariable($this->dttDeletedAt) . ',
+							`motivo_eliminacion_id` = ' . $objDatabase->SqlVariable($this->intMotivoEliminacionId) . '
 						WHERE
 							`codi_clie` = ' . $objDatabase->SqlVariable($this->intCodiClie) . '
 					');
@@ -3007,6 +3074,7 @@
 			$this->blnGuiaRetorno = $objReloaded->blnGuiaRetorno;
 			$this->intProcesoApi = $objReloaded->intProcesoApi;
 			$this->dttDeletedAt = $objReloaded->dttDeletedAt;
+			$this->MotivoEliminacionId = $objReloaded->MotivoEliminacionId;
 		}
 
 
@@ -3447,6 +3515,13 @@
 					 */
 					return $this->dttDeletedAt;
 
+				case 'MotivoEliminacionId':
+					/**
+					 * Gets the value for intMotivoEliminacionId 
+					 * @return integer
+					 */
+					return $this->intMotivoEliminacionId;
+
 
 				///////////////////
 				// Member Objects
@@ -3530,6 +3605,20 @@
 						if ((!$this->objRutaEntregaObject) && (!is_null($this->intRutaEntrega)))
 							$this->objRutaEntregaObject = SdeOperacion::Load($this->intRutaEntrega);
 						return $this->objRutaEntregaObject;
+					} catch (QCallerException $objExc) {
+						$objExc->IncrementOffset();
+						throw $objExc;
+					}
+
+				case 'MotivoEliminacion':
+					/**
+					 * Gets the value for the MotivoEliminacion object referenced by intMotivoEliminacionId 
+					 * @return MotivoEliminacion
+					 */
+					try {
+						if ((!$this->objMotivoEliminacion) && (!is_null($this->intMotivoEliminacionId)))
+							$this->objMotivoEliminacion = MotivoEliminacion::Load($this->intMotivoEliminacionId);
+						return $this->objMotivoEliminacion;
 					} catch (QCallerException $objExc) {
 						$objExc->IncrementOffset();
 						throw $objExc;
@@ -4569,6 +4658,20 @@
 						throw $objExc;
 					}
 
+				case 'MotivoEliminacionId':
+					/**
+					 * Sets the value for intMotivoEliminacionId 
+					 * @param integer $mixValue
+					 * @return integer
+					 */
+					try {
+						$this->objMotivoEliminacion = null;
+						return ($this->intMotivoEliminacionId = QType::Cast($mixValue, QType::Integer));
+					} catch (QCallerException $objExc) {
+						$objExc->IncrementOffset();
+						throw $objExc;
+					}
+
 
 				///////////////////
 				// Member Objects
@@ -4759,6 +4862,38 @@
 						// Update Local Member Variables
 						$this->objRutaEntregaObject = $mixValue;
 						$this->intRutaEntrega = $mixValue->CodiOper;
+
+						// Return $mixValue
+						return $mixValue;
+					}
+					break;
+
+				case 'MotivoEliminacion':
+					/**
+					 * Sets the value for the MotivoEliminacion object referenced by intMotivoEliminacionId 
+					 * @param MotivoEliminacion $mixValue
+					 * @return MotivoEliminacion
+					 */
+					if (is_null($mixValue)) {
+						$this->intMotivoEliminacionId = null;
+						$this->objMotivoEliminacion = null;
+						return null;
+					} else {
+						// Make sure $mixValue actually is a MotivoEliminacion object
+						try {
+							$mixValue = QType::Cast($mixValue, 'MotivoEliminacion');
+						} catch (QInvalidCastException $objExc) {
+							$objExc->IncrementOffset();
+							throw $objExc;
+						}
+
+						// Make sure $mixValue is a SAVED MotivoEliminacion object
+						if (is_null($mixValue->Id))
+							throw new QCallerException('Unable to set an unsaved MotivoEliminacion for this MasterCliente');
+
+						// Update Local Member Variables
+						$this->objMotivoEliminacion = $mixValue;
+						$this->intMotivoEliminacionId = $mixValue->Id;
 
 						// Return $mixValue
 						return $mixValue;
@@ -6811,6 +6946,7 @@
 			$strToReturn .= '<element name="GuiaRetorno" type="xsd:boolean"/>';
 			$strToReturn .= '<element name="ProcesoApi" type="xsd:int"/>';
 			$strToReturn .= '<element name="DeletedAt" type="xsd:dateTime"/>';
+			$strToReturn .= '<element name="MotivoEliminacion" type="xsd1:MotivoEliminacion"/>';
 			$strToReturn .= '<element name="__blnRestored" type="xsd:boolean"/>';
 			$strToReturn .= '</sequence></complexType>';
 			return $strToReturn;
@@ -6825,6 +6961,7 @@
 				FacTarifa::AlterSoapComplexTypeArray($strComplexTypeArray);
 				SdeOperacion::AlterSoapComplexTypeArray($strComplexTypeArray);
 				SdeOperacion::AlterSoapComplexTypeArray($strComplexTypeArray);
+				MotivoEliminacion::AlterSoapComplexTypeArray($strComplexTypeArray);
 			}
 		}
 
@@ -6965,6 +7102,9 @@
 				$objToReturn->intProcesoApi = $objSoapObject->ProcesoApi;
 			if (property_exists($objSoapObject, 'DeletedAt'))
 				$objToReturn->dttDeletedAt = new QDateTime($objSoapObject->DeletedAt);
+			if ((property_exists($objSoapObject, 'MotivoEliminacion')) &&
+				($objSoapObject->MotivoEliminacion))
+				$objToReturn->MotivoEliminacion = MotivoEliminacion::GetObjectFromSoapObject($objSoapObject->MotivoEliminacion);
 			if (property_exists($objSoapObject, '__blnRestored'))
 				$objToReturn->__blnRestored = $objSoapObject->__blnRestored;
 			return $objToReturn;
@@ -7011,6 +7151,10 @@
 				$objObject->dttDescuentoCaducaEl = $objObject->dttDescuentoCaducaEl->qFormat(QDateTime::FormatSoap);
 			if ($objObject->dttDeletedAt)
 				$objObject->dttDeletedAt = $objObject->dttDeletedAt->qFormat(QDateTime::FormatSoap);
+			if ($objObject->objMotivoEliminacion)
+				$objObject->objMotivoEliminacion = MotivoEliminacion::GetSoapObjectFromObject($objObject->objMotivoEliminacion, false);
+			else if (!$blnBindRelatedObjects)
+				$objObject->intMotivoEliminacionId = null;
 			return $objObject;
 		}
 
@@ -7085,6 +7229,7 @@
 			$iArray['GuiaRetorno'] = $this->blnGuiaRetorno;
 			$iArray['ProcesoApi'] = $this->intProcesoApi;
 			$iArray['DeletedAt'] = $this->dttDeletedAt;
+			$iArray['MotivoEliminacionId'] = $this->intMotivoEliminacionId;
 			return new ArrayIterator($iArray);
 		}
 
@@ -7188,6 +7333,8 @@
      * @property-read QQNode $GuiaRetorno
      * @property-read QQNode $ProcesoApi
      * @property-read QQNode $DeletedAt
+     * @property-read QQNode $MotivoEliminacionId
+     * @property-read QQNodeMotivoEliminacion $MotivoEliminacion
      *
      *
      * @property-read QQReverseReferenceNodeConsumoDia $ConsumoDiaAsCliente
@@ -7345,6 +7492,10 @@
 					return new QQNode('proceso_api', 'ProcesoApi', 'Integer', $this);
 				case 'DeletedAt':
 					return new QQNode('deleted_at', 'DeletedAt', 'DateTime', $this);
+				case 'MotivoEliminacionId':
+					return new QQNode('motivo_eliminacion_id', 'MotivoEliminacionId', 'Integer', $this);
+				case 'MotivoEliminacion':
+					return new QQNodeMotivoEliminacion('motivo_eliminacion_id', 'MotivoEliminacion', 'Integer', $this);
 				case 'ConsumoDiaAsCliente':
 					return new QQReverseReferenceNodeConsumoDia($this, 'consumodiaascliente', 'reverse_reference', 'cliente_id', 'ConsumoDiaAsCliente');
 				case 'ConsumoMesAsCliente':
@@ -7454,6 +7605,8 @@
      * @property-read QQNode $GuiaRetorno
      * @property-read QQNode $ProcesoApi
      * @property-read QQNode $DeletedAt
+     * @property-read QQNode $MotivoEliminacionId
+     * @property-read QQNodeMotivoEliminacion $MotivoEliminacion
      *
      *
      * @property-read QQReverseReferenceNodeConsumoDia $ConsumoDiaAsCliente
@@ -7611,6 +7764,10 @@
 					return new QQNode('proceso_api', 'ProcesoApi', 'integer', $this);
 				case 'DeletedAt':
 					return new QQNode('deleted_at', 'DeletedAt', 'QDateTime', $this);
+				case 'MotivoEliminacionId':
+					return new QQNode('motivo_eliminacion_id', 'MotivoEliminacionId', 'integer', $this);
+				case 'MotivoEliminacion':
+					return new QQNodeMotivoEliminacion('motivo_eliminacion_id', 'MotivoEliminacion', 'integer', $this);
 				case 'ConsumoDiaAsCliente':
 					return new QQReverseReferenceNodeConsumoDia($this, 'consumodiaascliente', 'reverse_reference', 'cliente_id', 'ConsumoDiaAsCliente');
 				case 'ConsumoMesAsCliente':
