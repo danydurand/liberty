@@ -106,6 +106,10 @@ class MasterClienteEditForm extends FormularioBaseKaizen {
     protected $arrDataGraf;
     protected $intRankClie;
 
+    protected $btnRecuClie;
+    protected $calFechElim;
+    protected $txtMotiElim;
+
     protected function ClienteSetup() {
         $intCodiClie = QApplication::PathInfo(0);
         if ($intCodiClie) {
@@ -218,6 +222,11 @@ class MasterClienteEditForm extends FormularioBaseKaizen {
 
         $this->btnSave->Text = TextoIcono('cogs','Guardar','F','fa-lg');
         $this->btnDelete_Create();
+
+        $this->btnRecuClie_Create();
+        $this->calFechElim_Create();
+        $this->txtMotiElim_Create();
+
         $this->btnCargMasi_Create();
 
         $objClauWher   = QQ::Clause();
@@ -305,6 +314,8 @@ class MasterClienteEditForm extends FormularioBaseKaizen {
         if (!$blnUsuaAuto) {
             $this->btnDelete->Visible = false;
         }
+
+        $this->btnSave->Visible = !$this->btnRecuClie->Visible;
 
     }
 
@@ -1197,7 +1208,33 @@ class MasterClienteEditForm extends FormularioBaseKaizen {
         $strMensConf = 'Está seguro que desea BORRAR este Cliente ?';
         $this->btnDelete->AddAction(new QClickEvent(), new QConfirmAction($strMensConf));
         $this->btnDelete->AddAction(new QClickEvent(), new QAjaxAction('btnDelete_Click'));
-        $this->btnDelete->Visible = $this->blnEditMode;
+        $this->btnDelete->Visible = $this->blnEditMode && is_null($this->objMasterCliente->DeletedAt);
+    }
+
+    protected function btnRecuClie_Create() {
+        $this->btnRecuClie = new QButtonI($this);
+        $this->btnRecuClie->Text = TextoIcono('recycle','Recuperar','F','fa-lg');
+        $strMensConf = 'Está seguro que desea RECUPERAR este Cliente ?';
+        $this->btnRecuClie->AddAction(new QClickEvent(), new QConfirmAction($strMensConf));
+        $this->btnRecuClie->AddAction(new QClickEvent(), new QAjaxAction('btnRecuClie_Click'));
+        $this->btnRecuClie->Visible = $this->objMasterCliente->DeletedAt ? true : false;
+    }
+
+    protected function calFechElim_Create() {
+        $this->calFechElim = new QCalendar($this);
+        $this->calFechElim->DateTime = $this->objMasterCliente->DeletedAt ? new QDateTime($this->objMasterCliente->DeletedAt) : null;
+        $this->calFechElim->Name = 'Eliminado El';
+        $this->calFechElim->Enabled = false;
+        $this->calFechElim->ForeColor = 'blue';
+    }
+
+    protected function txtMotiElim_Create(){
+        $this->txtMotiElim = new QTextBox($this);
+        $this->txtMotiElim->Name = 'Motivo Elim.';
+        $this->txtMotiElim->Width = 250;
+        $this->txtMotiElim->Enabled = false;
+        $this->txtMotiElim->ForeColor = 'blue';
+        $this->txtMotiElim->Text = $this->objMasterCliente->MotivoEliminacionId ? $this->objMasterCliente->MotivoEliminacion->Description : '';
     }
 
     protected function btnNuevClie_Create() {
@@ -1704,7 +1741,7 @@ class MasterClienteEditForm extends FormularioBaseKaizen {
                     //-----------------------------------------
                     // En caso de que el objeto haya cambiado
                     //-----------------------------------------
-                    $arrLogxCamb['strNombTabl'] = 'Cliente';
+                    $arrLogxCamb['strNombTabl'] = 'MasterCliente';
                     $arrLogxCamb['intRefeRegi'] = $this->objMasterCliente->CodiClie;
                     $arrLogxCamb['strNombRegi'] = '('.$this->objMasterCliente->CodigoInterno .') - '. $this->objMasterCliente->NombClie;
                     $arrLogxCamb['strDescCamb'] = implode(',',$objResuComp->DifferentFields);
@@ -1716,7 +1753,7 @@ class MasterClienteEditForm extends FormularioBaseKaizen {
                     $this->mensaje('Transacción Exitosa','','','',__iCHEC__);
                 }
             } else {
-                $arrLogxCamb['strNombTabl'] = 'Cliente';
+                $arrLogxCamb['strNombTabl'] = 'MasterCliente';
                 $arrLogxCamb['intRefeRegi'] = $this->objMasterCliente->CodiClie;
                 $arrLogxCamb['strNombRegi'] = '('.$this->objMasterCliente->CodigoInterno .') - '. $this->objMasterCliente->NombClie;
                 $arrLogxCamb['strDescCamb'] = "Creado";
@@ -1730,6 +1767,30 @@ class MasterClienteEditForm extends FormularioBaseKaizen {
         }
     }
 
+    protected function btnRecuClie_Click() {
+        $this->objMasterCliente->DeletedAt = null;
+        $this->objMasterCliente->MotivoEliminacionId = null;
+        $this->objMasterCliente->Save();
+
+        $arrLogxCamb['strNombTabl'] = 'MasterCliente';
+        $arrLogxCamb['intRefeRegi'] = $this->objMasterCliente->CodiClie;
+        $arrLogxCamb['strNombRegi'] = '('.$this->objMasterCliente->CodigoInterno .') - '. $this->objMasterCliente->NombClie;
+        $arrLogxCamb['strDescCamb'] = "Recuperado";
+        $arrLogxCamb['blnCambDeli'] = true;
+        LogDeCambios($arrLogxCamb);
+
+        $this->btnDelete->Visible = true;
+        $this->btnRecuClie->Visible = false;
+        $this->btnSave->Visible = true;
+        $this->btnNuevClie->Visible = true;
+
+        $this->calFechElim->DateTime = null;
+        $this->txtMotiElim->Text = null;
+
+        $strTextMens = 'Transaccion Exitosa. El Cliente '.trim($this->objMasterCliente->CodigoInterno).' ha sido Recuperado.';
+        $this->mensaje($strTextMens,'','','',__iCHEC__);
+    }
+
     protected function btnDelete_Click() {
         //----------------------------------------
         // Se verifica la integridad referencial
@@ -1737,19 +1798,12 @@ class MasterClienteEditForm extends FormularioBaseKaizen {
         $strLinkElim = __SIST__.'/eliminar_clientes.php/'.$this->txtCodiInte->Text;
         QApplication::Redirect($strLinkElim);
 
+
+        /*
         $blnTodoOkey = true;
         $this->objMasterCliente->DeletedAt = new QDateTime(QDateTime::Now());
         $this->objMasterCliente->Save();
 
-        /*
-        $arrTablRela = $this->objMasterCliente->TablasRelacionadas();
-        if (count($arrTablRela)) {
-            $strTablRela = implode(',',$arrTablRela);
-            $strTextMens = sprintf('Existen registros relacionados en <strong>%s</strong>',$strTablRela);
-            $this->mensaje($strTextMens,'','w','',__iEXCL__);
-            $blnTodoOkey = false;
-        }
-        */
 
         if ($blnTodoOkey) {
 
@@ -1770,6 +1824,7 @@ class MasterClienteEditForm extends FormularioBaseKaizen {
             $this->btnNuevClie->Visible = true;
             $this->ocultarCampos();
         }
+        */
     }
 
     protected function btnCargMasi_Click() {

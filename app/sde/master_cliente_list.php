@@ -36,6 +36,8 @@ class MasterClienteListForm extends MasterClienteListFormBase {
 	protected $btnDesaClie;
 	protected $strCadeSqlx;
 	protected $strSqlxComp;
+	protected $chkClieElim;
+	protected $lstMotiElim;
 
 	protected $btnElimMasi;
 
@@ -69,6 +71,9 @@ class MasterClienteListForm extends MasterClienteListFormBase {
 		$this->lstCodiTari_Create();
 		$this->lstCodiStat_Create();
 		$this->lstTipoClie_Create();
+
+		$this->chkClieElim_Create();
+		$this->lstMotiElim_Create();
 
         //--------------------
 		// Botones del filtro
@@ -241,7 +246,28 @@ class MasterClienteListForm extends MasterClienteListFormBase {
 		}
 	}
 
+    protected function chkClieElim_Create() {
+        $this->chkClieElim = new QCheckBox($this);
+        $this->chkClieElim->Name = 'Eliminado ?';
+        $this->chkClieElim->Checked = false;
+        $this->chkClieElim->Visible = false;
+    }
+
+    protected function lstMotiElim_Create() {
+		$this->lstMotiElim = new QListBox($this);
+		$this->lstMotiElim->Name = QApplication::Translate('Motivo Elim.');
+		$this->lstMotiElim->Visible = false;
+		$this->lstMotiElim->Width = 250;
+		$arrMotiElim = MotivoEliminacion::LoadAll();
+		$intCantRegi = count($arrMotiElim);
+		$this->lstMotiElim->AddItem('- Seleccione Uno - ('.$intCantRegi.')', null);
+        foreach ($arrMotiElim as $objMotiEli) {
+            $this->lstMotiElim->AddItem($objMotiEli->__toString(), $objMotiEli->Id);
+		}
+	}
+
 	// Botónes del Formulario de Búsqueda //
+
 	protected function btnBuscRegi_Create() {
 		$this->btnBuscRegi = new QButton($this);
 		$this->btnBuscRegi->Text = TextoIcono('cogs','Buscar','F','lg');
@@ -329,11 +355,13 @@ class MasterClienteListForm extends MasterClienteListFormBase {
 		$this->txtNombClie->Visible = !$this->txtNombClie->Visible;
 		$this->lstSucuClie->Visible = !$this->lstSucuClie->Visible;
 		$this->txtNumeRifx->Visible = !$this->txtNumeRifx->Visible;
+		$this->chkClieElim->Visible = !$this->chkClieElim->Visible;
 
 		$this->lstCodiVend->Visible = !$this->lstCodiVend->Visible;
 		$this->lstCodiTari->Visible = !$this->lstCodiTari->Visible;
 		$this->lstCodiStat->Visible = !$this->lstCodiStat->Visible;
 		$this->lstTipoClie->Visible = !$this->lstTipoClie->Visible;
+		$this->lstMotiElim->Visible = !$this->lstMotiElim->Visible;
 
 		$this->btnBuscRegi->Visible = !$this->btnBuscRegi->Visible;
 	}
@@ -385,6 +413,16 @@ class MasterClienteListForm extends MasterClienteListFormBase {
 			$this->blnHayxCond = true;
             $this->strSqlxComp .= " and tipo_cliente = ".$this->lstTipoClie->SelectedValue;
 		}
+		if ($this->chkClieElim->Checked) {
+			$this->objClauWher[] = QQ::IsNotNull(QQN::MasterCliente()->DeletedAt);
+			$this->blnHayxCond = true;
+            $this->strSqlxComp .= " and deleted_at is not null ";
+		}
+        if (!is_null($this->lstMotiElim->SelectedValue)) {
+            $this->objClauWher[] = QQ::Equal(QQN::MasterCliente()->MotivoEliminacionId,$this->lstMotiElim->SelectedValue);
+            $this->blnHayxCond = true;
+            $this->strSqlxComp .= " and motivo_eliminacion_id = ".$this->lstMotiElim->SelectedValue;
+        }
 		if ($this->blnHayxCond) {
 			$intCantRegi = MasterCliente::QueryCount(QQ::AndCondition($this->objClauWher));
 

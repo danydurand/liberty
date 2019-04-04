@@ -116,8 +116,8 @@ require(__YAMAGUCHI__APP_INCLUDES__ . '/header.inc.php');
                             <?php $this->txtNombDest->Render(); ?>
                         </div>
                         <div class="col-md-6">
-                            <div class="titulo-c">Teléfono Destinatario</div>
-                            <?php $this->txtTeleDest->Render(); ?>
+                            <div class="titulo-c">Receptoria Destino</div>
+                            <?php $this->lstReceDest->Render(); ?>
                         </div>
                     </div>
                     <div class="row">
@@ -126,9 +126,8 @@ require(__YAMAGUCHI__APP_INCLUDES__ . '/header.inc.php');
                             <?php $this->txtDireDest->Render(); ?>
                         </div>
                         <div class="col-md-6">
-                            <div class="titulo-c">Cédula/RIF del Destinatario</div>
-                            <?php $this->lstCeduDest->Render(); ?>
-                            <?php $this->txtCeduDest->Render(); ?>
+                            <div class="titulo-c">Teléfono Destinatario</div>
+                            <?php $this->txtTeleDest->Render(); ?>
                         </div>
                     </div>
                     <div class="row">
@@ -137,12 +136,19 @@ require(__YAMAGUCHI__APP_INCLUDES__ . '/header.inc.php');
                             <?php $this->chkDestFrec->Render(); ?>
                         </div>
                         <div class="col-md-6">
-                            <div class="titulo-c">Modalidad de Pago</div>
-                            <?php $this->lstModaPago->Render(); ?>
+                            <div class="titulo-c">Cédula/RIF del Destinatario</div>
+                            <?php $this->lstCeduDest->Render(); ?>
+                            <?php $this->txtCeduDest->Render(); ?>
                         </div>
+                    </div>
+                    <div class="row">
                         <div class="col-md-6">
                             <div class="titulo-c">Fecha de la Recolecta</div>
                             <?php $this->calFechReco->Render(); ?>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="titulo-c">Modalidad de Pago</div>
+                            <?php $this->lstModaPago->Render(); ?>
                         </div>
                     </div>
                 </div>

@@ -86,15 +86,16 @@ class EliminarClientes extends FormularioBaseKaizen {
                     if (is_null($objMastClie->DeletedAt)) {
                         $objMastClie->DeletedAt = new QDateTime(QDateTime::Now());
                         $objMastClie->MotivoEliminacionId = $this->lstMotiElim->SelectedValue;
+                        $objMastClie->CodiStat = StatusType::INACTIVO;
                         $objMastClie->Save();
                         $intCantRegi++;
                         //--------------------------------------
                         // Se deja constancia en el Historico
                         //--------------------------------------
-                        $arrLogxCamb['strNombTabl'] = 'Cliente';
-                        $arrLogxCamb['intRefeRegi'] = $objMastClie->CodigoInterno;
-                        $arrLogxCamb['strNombRegi'] = $objMastClie->NombClie;
-                        $arrLogxCamb['strDescCamb'] = "Desactivado";
+                        $arrLogxCamb['strNombTabl'] = 'MasterCliente';
+                        $arrLogxCamb['intRefeRegi'] = $objMastClie->CodiClie;
+                        $arrLogxCamb['strNombRegi'] = '('.$objMastClie->CodigoInterno.') '.$objMastClie->NombClie;
+                        $arrLogxCamb['strDescCamb'] = 'Eliminado (SoftDelete)';
                         LogDeCambios($arrLogxCamb);
                     } else {
                         $strTextMens = $strCodiClie." (Previamente Eliminado)";

@@ -70,6 +70,7 @@
 			$strCadeSqlx .= ' where codi_stat = 1 ';
 			$strCadeSqlx .= '   and es_un_almacen = 0 ';
 			$strCadeSqlx .= '   and pais_id = 1 ';
+			$strCadeSqlx .= '   and visible_en_registro_id = 1 ';
 			$strCadeSqlx .= ' order by desc_esta';
 			$objDbResult = $objDatabase->Query($strCadeSqlx);
 			return Estacion::InstantiateDbResult($objDbResult);

@@ -63,7 +63,7 @@ foreach ($arrSucuSele as $objSucursal) {
         $strCadeSql3  = "select fecha_pod, count(*) ";
         $strCadeSql3 .= "  from guia g inner join guia_ckpt k";
         $strCadeSql3 .= "    on g.nume_guia = k.nume_guia ";
-        $strCadeSql3 .= " where g.fecha_pod between '$dttFechInic' and '$dttFechFina'";
+        $strCadeSql3 .= " where g.fecha_entrega between '$dttFechInic' and '$dttFechFina'";
         $strCadeSql3 .= "   and k.codi_ckpt = 'OK' ";
         $strCadeSql3 .= "   and g.anulada   = 0";
         $strCadeSql3 .= "   and esta_dest   = '".$objSucursal->CodiEsta."'";
@@ -79,7 +79,7 @@ foreach ($arrSucuSele as $objSucursal) {
         $strCadeSqlx .= "       g.fecha_pod, g.fecha_entrega, g.fech_guia ";
         $strCadeSqlx .= "  from guia g inner join guia_ckpt k";
         $strCadeSqlx .= "    on g.nume_guia = k.nume_guia ";
-        $strCadeSqlx .= " where g.fecha_pod between '$dttFechInic' and '$dttFechFina'";
+        $strCadeSqlx .= " where g.fecha_entrega between '$dttFechInic' and '$dttFechFina'";
         $strCadeSqlx .= "   and k.codi_ckpt = 'OK' ";
         $strCadeSqlx .= "   and g.anulada   = 0";
         $strCadeSqlx .= "   and esta_dest   = '".$objSucursal->CodiEsta."'";

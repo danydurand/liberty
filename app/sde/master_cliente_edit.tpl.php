@@ -17,6 +17,7 @@ require(__APP_INCLUDES__ . '/header.inc.php');
 			<?php $this->btnNuevClie->Render(); ?>
 			<?php $this->btnSave->Render(); ?>
 			<?php $this->btnDelete->Render(); ?>
+			<?php $this->btnRecuClie->Render(); ?>
 			<?php $this->btnCargMasi->Render(); ?>
 			<?php $this->btnMasxAcci->Render(); ?>
 		</div>
@@ -132,6 +133,8 @@ require(__APP_INCLUDES__ . '/header.inc.php');
 										<?php $this->txtCaduGuia->RenderWithName(); ?>
 										<?php $this->lstMostExte->RenderWithName(); ?>
 										<?php $this->chkCargMasi->RenderWithName(); ?>
+										<?php $this->calFechElim->RenderWithName(); ?>
+										<?php $this->txtMotiElim->RenderWithName(); ?>
 									</div>
 								</div>
 							</div>

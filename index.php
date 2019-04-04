@@ -101,8 +101,10 @@ class Index extends QForm {
     }
 
     protected function btnAcceSist_Click() {
-        $objUsuario = Usuario::LoadByLogiUsua($this->txtLogiUsua->Text);
+        $strSituUsua = '';
+        $objUsuario  = Usuario::LoadByLogiUsua($this->txtLogiUsua->Text);
         if ($objUsuario) {
+            $_SESSION['User'] = serialize($objUsuario);
             if (!is_null($objUsuario->DeleteAt)) {
                 //------------------------
                 // Log de Transacciones
@@ -113,8 +115,24 @@ class Index extends QForm {
                 $arrLogxCamb['strDescCamb'] = 'Usuario eliminado intentó acceder al Sistema';
                 LogDeCambios($arrLogxCamb);
                 $this->EnviarNotificacion($objUsuario);
-                $objUsuario = null;
+                $objUsuario  = null;
+                $strSituUsua = 'Eliminado';
             }
+            if ($objUsuario->CodiStat == StatusType::INACTIVO) {
+                //------------------------
+                // Log de Transacciones
+                //------------------------
+                $arrLogxCamb['strNombTabl'] = 'Acceso';
+                $arrLogxCamb['intRefeRegi'] = $objUsuario->CodiUsua;
+                $arrLogxCamb['strNombRegi'] = $objUsuario->LogiUsua;
+                $arrLogxCamb['strDescCamb'] = 'Usuario inactivo intentó acceder al Sistema';
+                LogDeCambios($arrLogxCamb);
+                $this->EnviarNotificacion($objUsuario);
+                $objUsuario  = null;
+                $strSituUsua = 'Inactivado';
+            }
+        } else {
+            $strSituUsua = 'Desconocido';
         }
         if ($objUsuario) {
             $_SESSION['User'] = serialize($objUsuario);
@@ -128,8 +146,8 @@ class Index extends QForm {
                 $_SESSION['Sistema']       = $this->lstCodiSist->SelectedValue;
                 $_SESSION['NombSist']      = $this->lstCodiSist->SelectedName;
                 $_SESSION['NombDire']      = 'yokohama';
-                //define ('__SIST__', '/newliberty/app/'.$_SESSION['Sistema']);
-                define ('__SIST__', '/app/'.$_SESSION['Sistema']);
+                define ('__SIST__', '/newliberty/app/'.$_SESSION['Sistema']);
+                //define ('__SIST__', '/app/'.$_SESSION['Sistema']);
 
                 $objUsuario->FechAcce = new QDateTime(QDateTime::Now);
                 $objUsuario->CantInte = 0;
@@ -183,7 +201,7 @@ class Index extends QForm {
                 $objUsuario->Save();
             }
         } else {
-            $this->txtLogiUsua->Warning = ' Usuario Desconocido';
+            $this->txtLogiUsua->Warning = ' Usuario '.$strSituUsua;
             $this->txtLogiUsua->Width   = 100;
         }
     }

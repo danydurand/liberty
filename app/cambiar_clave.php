@@ -110,7 +110,7 @@ class CambiarClave extends FormularioBaseKaizen {
             $objMessage->HtmlBody = $strBody;
 
             // Add random/custom email headers
-            $objMessage->SetHeader('x-application', 'Sistema Yokohama');
+            $objMessage->SetHeader('x-application', 'SisCO');
 
             // Send the Message (Commented out for obvious reasons)
             QEmailServer::Send($objMessage);

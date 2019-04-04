@@ -34,12 +34,14 @@ require(__APP_INCLUDES__ . '/header.inc.php');
                     <?php $this->txtNombClie->RenderWithName(); ?>
                     <?php $this->lstSucuClie->RenderWithName(); ?>
                     <?php $this->txtNumeRifx->RenderWithName(); ?>
+                    <?php $this->chkClieElim->RenderWithName(); ?>
                 </div>
                 <div class="col-md-4">
                     <?php $this->lstCodiVend->RenderWithName(); ?>
                     <?php $this->lstCodiTari->RenderWithName(); ?>
                     <?php $this->lstCodiStat->RenderWithName(); ?>
                     <?php $this->lstTipoClie->RenderWithName(); ?>
+                    <?php $this->lstMotiElim->RenderWithName(); ?>
                 </div>
                 <div class="col-md-3" style="margin-top: 3em">
                     <?php $this->btnBuscRegi->Render(); ?>

@@ -68,6 +68,7 @@ class CargarGuia extends FormularioBaseKaizen {
     // ---- Destinatario ----
     protected $lstDestFrec;
     protected $lstSucuDest;
+    protected $lstReceDest;
     protected $txtNombDest;
     protected $txtTeleDest;
     protected $txtDireDest;
@@ -85,6 +86,8 @@ class CargarGuia extends FormularioBaseKaizen {
     protected $lblBotoPopu;
     protected $lblPopuModa;
 
+    protected $arrClieAgen;
+    protected $blnClieAgen;
 
     protected function setupGuia($strNumeGuia=null) {
         if (is_null($strNumeGuia)) {
@@ -192,6 +195,23 @@ class CargarGuia extends FormularioBaseKaizen {
         // Se identifica la hora Tope para realizar una Recolecta
         //------------------------------------------------------------
         $this->strHoraTope = BuscarParametro('00009', 'HoraTope', 'Txt1', '14:00');
+        $this->arrClieAgen = array(1685);
+
+        $this->blnClieAgen = false;
+        $arrSucuAgen = array();
+        if (in_array($this->objCliente->CodiClie,$this->arrClieAgen)) {
+            $this->blnClieAgen = true;
+            $arrSucuRece = Estacion::LoadArrayConCantidadDeReceptorias();
+            $intCantSucu = count($arrSucuRece);
+            if ($intCantSucu > 0) {
+                foreach ($arrSucuRece as $objSucuRece) {
+                    if ($objSucuRece->GetVirtualAttribute('cant_rece') > 0) {
+                        $arrSucuAgen[] = $objSucuRece;
+                    }
+                }
+            }
+            $this->arrSucuActi = $arrSucuAgen;
+        }
     }
 
     protected function Form_Create() {
@@ -229,6 +249,7 @@ class CargarGuia extends FormularioBaseKaizen {
         //------------------------------
         $this->lstDestFrec_Create();
         $this->lstSucuDest_Create();
+        $this->lstReceDest_Create();
         $this->txtNombDest_Create();
         $this->txtTeleDest_Create();
         $this->txtDireDest_Create();
@@ -262,6 +283,11 @@ class CargarGuia extends FormularioBaseKaizen {
         $strTextMens = 'Evite el uso de caracteres especiales (Ej: \\~°#^*+) en <b>los nombres, la dirección, el contenido, el teléfono y la persona contacto</b>';
         $this->mensaje($strTextMens,'n','i','',__iINFO__);
 
+        if (in_array($this->objCliente->CodiClie,$this->arrClieAgen)) {
+            //$this->txtDireDest->Text = '';
+            $this->txtDireDest->Enabled = false;
+            $this->txtDireDest->ForeColor = 'blue';
+        }
 
     }
 
@@ -436,6 +462,17 @@ class CargarGuia extends FormularioBaseKaizen {
         $this->lstSucuDest->AddAction(new QChangeEvent(), new QAjaxAction('lstSucuDest_Change'));
     }
 
+    protected function lstReceDest_Create() {
+        $this->lstReceDest = new QListBox($this);
+        $this->lstReceDest->Name = 'Receptoria';
+        $this->lstReceDest->AddItem('- Seleccione Uno - ',null);
+        $this->lstReceDest->AddAction(new QChangeEvent(), new QAjaxAction('lstReceDest_Change'));
+        if (!$this->blnClieAgen) {
+            $this->lstReceDest->Enabled = false;
+            $this->lstReceDest->ForeColor = 'blue';
+        }
+    }
+
     protected function txtNombDest_Create() {
         $this->txtNombDest = new QTextBox($this);
         $this->txtNombDest->Placeholder = 'Nombre/R. Social';
@@ -464,7 +501,7 @@ class CargarGuia extends FormularioBaseKaizen {
         $this->txtDireDest->MaxLength = Guia::DireDestMaxLength;
         $this->txtDireDest->SetCustomAttribute('onblur',"this.value=this.value.toUpperCase()");
         $this->txtDireDest->Width = 240;
-        $this->txtDireDest->Height = 70;
+        $this->txtDireDest->Rows = 5;
         if ($this->blnEditMode) {
             $this->txtDireDest->Text = $this->objGuia->DireDest;
         }
@@ -838,6 +875,11 @@ class CargarGuia extends FormularioBaseKaizen {
         }
     }
 
+    protected function lstReceDest_Change() {
+        $this->txtDireDest->Text = 'AGENCIA LIBERTY EXPRESS '.
+            $this->lstSucuDest->SelectedName.' ('.$this->lstReceDest->SelectedName.')';
+    }
+
     protected function lstSucuDest_Change() {
         //$this->mensaje();
         $blnZonaNocu = false;
@@ -889,8 +931,30 @@ class CargarGuia extends FormularioBaseKaizen {
                 $strMensUsua .= " presione el botón <strong>ZNC</strong> para mayores detalles";
                 $this->mensaje($strMensUsua,'','w','',__iEXCL__);
             }
+            //--------------------------------------------------------
+            // Se cargan las receptorias de la Sucursal seleccionada
+            //--------------------------------------------------------
+            $this->lstReceDest->RemoveAllItems();
+            $arrReceSucu = Counter::LoadArrayBySucursalId($this->lstSucuDest->SelectedValue);
+            $intCantRece = count($arrReceSucu);
+            if ($intCantRece == 1) {
+                $objReceSucu = $arrReceSucu[0];
+                $this->lstReceDest->AddItem($objReceSucu->__toString(),$objReceSucu->Id,true);
+                $this->lstReceDest->Enabled = false;
+                $this->lstReceDest->ForeColor = 'blue';
+            } else {
+                $this->lstReceDest->Enabled = true;
+                $this->lstReceDest->ForeColor = null;
+                $this->lstReceDest->AddItem('- Seleccione Uno - ('.$intCantRece.')');
+                foreach ($arrReceSucu as $objReceSucu) {
+                    $this->lstReceDest->AddItem($objReceSucu->__toString(),$objReceSucu->Id);
+                }
+            }
         }
         $this->lblBotoPopu->Visible = $blnZonaNocu;
+        if ($this->blnClieAgen) {
+            $this->txtDireDest->Text = 'AGENCIA LIBERTY EXPRESS '.$this->lstSucuDest->SelectedName;
+        }
     }
 
     protected function calFechReco_Change() {
