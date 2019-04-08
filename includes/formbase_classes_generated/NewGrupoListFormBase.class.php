@@ -80,6 +80,7 @@
 			$this->dtgNewGrupos->MetaAddColumn('Nombre');
 			$this->dtgNewGrupos->MetaAddColumn('Activo');
 			$this->dtgNewGrupos->MetaAddColumn(QQN::NewGrupo()->Sistema);
+			$this->dtgNewGrupos->MetaAddColumn('DeletedAt');
 
             $this->btnExpoExce_Create();
 

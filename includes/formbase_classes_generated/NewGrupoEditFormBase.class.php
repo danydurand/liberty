@@ -55,6 +55,7 @@ abstract class NewGrupoEditFormBase extends QForm {
 	protected $txtNombre;
 	protected $chkActivo;
 	protected $lstSistema;
+	protected $calDeletedAt;
 
 	// Other ListBoxes (if applicable) via Unique ReverseReferences and ManyToMany References
 
@@ -124,6 +125,7 @@ abstract class NewGrupoEditFormBase extends QForm {
 		$this->txtNombre = $this->mctNewGrupo->txtNombre_Create();
 		$this->chkActivo = $this->mctNewGrupo->chkActivo_Create();
 		$this->lstSistema = $this->mctNewGrupo->lstSistema_Create();
+		$this->calDeletedAt = $this->mctNewGrupo->calDeletedAt_Create();
 
 		$this->btnSave_Create();
 		$this->btnCancel_Create();

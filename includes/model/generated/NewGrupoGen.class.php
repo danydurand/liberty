@@ -19,6 +19,7 @@
 	 * @property string $Nombre Nombre:: (Not Null)
 	 * @property boolean $Activo Activo ?::Indica si el Grupo esta activo o no 
 	 * @property string $SistemaId Sistema::al que pertenece el Grupo (Not Null)
+	 * @property QDateTime $DeletedAt the value for dttDeletedAt 
 	 * @property Sistema $Sistema the value for the Sistema object referenced by strSistemaId (Not Null)
 	 * @property-read Permiso $_PermisoAsGrupo the value for the private _objPermisoAsGrupo (Read-Only) if set due to an expansion on the permiso.grupo_id reverse relationship
 	 * @property-read Permiso[] $_PermisoAsGrupoArray the value for the private _objPermisoAsGrupoArray (Read-Only) if set due to an ExpandAsArray on the permiso.grupo_id reverse relationship
@@ -64,6 +65,14 @@
 		protected $strSistemaId;
 		const SistemaIdMaxLength = 3;
 		const SistemaIdDefault = null;
+
+
+		/**
+		 * Protected member variable that maps to the database column new_grupo.deleted_at
+		 * @var QDateTime dttDeletedAt
+		 */
+		protected $dttDeletedAt;
+		const DeletedAtDefault = null;
 
 
 		/**
@@ -141,6 +150,7 @@
 			$this->strNombre = NewGrupo::NombreDefault;
 			$this->blnActivo = NewGrupo::ActivoDefault;
 			$this->strSistemaId = NewGrupo::SistemaIdDefault;
+			$this->dttDeletedAt = (NewGrupo::DeletedAtDefault === null)?null:new QDateTime(NewGrupo::DeletedAtDefault);
 		}
 
 
@@ -486,6 +496,7 @@
 			    $objBuilder->AddSelectItem($strTableName, 'nombre', $strAliasPrefix . 'nombre');
 			    $objBuilder->AddSelectItem($strTableName, 'activo', $strAliasPrefix . 'activo');
 			    $objBuilder->AddSelectItem($strTableName, 'sistema_id', $strAliasPrefix . 'sistema_id');
+			    $objBuilder->AddSelectItem($strTableName, 'deleted_at', $strAliasPrefix . 'deleted_at');
             }
 		}
 
@@ -623,6 +634,9 @@
 			$strAlias = $strAliasPrefix . 'sistema_id';
 			$strAliasName = !empty($strColumnAliasArray[$strAlias]) ? $strColumnAliasArray[$strAlias] : $strAlias;
 			$objToReturn->strSistemaId = $objDbRow->GetColumn($strAliasName, 'VarChar');
+			$strAlias = $strAliasPrefix . 'deleted_at';
+			$strAliasName = !empty($strColumnAliasArray[$strAlias]) ? $strColumnAliasArray[$strAlias] : $strAlias;
+			$objToReturn->dttDeletedAt = $objDbRow->GetColumn($strAliasName, 'Date');
 
 			if (isset($objPreviousItemArray) && is_array($objPreviousItemArray)) {
 				foreach ($objPreviousItemArray as $objPreviousItem) {
@@ -883,11 +897,13 @@
 						INSERT INTO `new_grupo` (
 							`nombre`,
 							`activo`,
-							`sistema_id`
+							`sistema_id`,
+							`deleted_at`
 						) VALUES (
 							' . $objDatabase->SqlVariable($this->strNombre) . ',
 							' . $objDatabase->SqlVariable($this->blnActivo) . ',
-							' . $objDatabase->SqlVariable($this->strSistemaId) . '
+							' . $objDatabase->SqlVariable($this->strSistemaId) . ',
+							' . $objDatabase->SqlVariable($this->dttDeletedAt) . '
 						)
 					');
 
@@ -905,7 +921,8 @@
 						SET
 							`nombre` = ' . $objDatabase->SqlVariable($this->strNombre) . ',
 							`activo` = ' . $objDatabase->SqlVariable($this->blnActivo) . ',
-							`sistema_id` = ' . $objDatabase->SqlVariable($this->strSistemaId) . '
+							`sistema_id` = ' . $objDatabase->SqlVariable($this->strSistemaId) . ',
+							`deleted_at` = ' . $objDatabase->SqlVariable($this->dttDeletedAt) . '
 						WHERE
 							`id` = ' . $objDatabase->SqlVariable($this->intId) . '
 					');
@@ -1013,6 +1030,7 @@
 			$this->strNombre = $objReloaded->strNombre;
 			$this->blnActivo = $objReloaded->blnActivo;
 			$this->SistemaId = $objReloaded->SistemaId;
+			$this->dttDeletedAt = $objReloaded->dttDeletedAt;
 		}
 
 
@@ -1060,6 +1078,13 @@
 					 * @return string
 					 */
 					return $this->strSistemaId;
+
+				case 'DeletedAt':
+					/**
+					 * Gets the value for dttDeletedAt 
+					 * @return QDateTime
+					 */
+					return $this->dttDeletedAt;
 
 
 				///////////////////
@@ -1179,6 +1204,19 @@
 					try {
 						$this->objSistema = null;
 						return ($this->strSistemaId = QType::Cast($mixValue, QType::String));
+					} catch (QCallerException $objExc) {
+						$objExc->IncrementOffset();
+						throw $objExc;
+					}
+
+				case 'DeletedAt':
+					/**
+					 * Sets the value for dttDeletedAt 
+					 * @param QDateTime $mixValue
+					 * @return QDateTime
+					 */
+					try {
+						return ($this->dttDeletedAt = QType::Cast($mixValue, QType::DateTime));
 					} catch (QCallerException $objExc) {
 						$objExc->IncrementOffset();
 						throw $objExc;
@@ -1606,6 +1644,7 @@
 			$strToReturn .= '<element name="Nombre" type="xsd:string"/>';
 			$strToReturn .= '<element name="Activo" type="xsd:boolean"/>';
 			$strToReturn .= '<element name="Sistema" type="xsd1:Sistema"/>';
+			$strToReturn .= '<element name="DeletedAt" type="xsd:dateTime"/>';
 			$strToReturn .= '<element name="__blnRestored" type="xsd:boolean"/>';
 			$strToReturn .= '</sequence></complexType>';
 			return $strToReturn;
@@ -1638,6 +1677,8 @@
 			if ((property_exists($objSoapObject, 'Sistema')) &&
 				($objSoapObject->Sistema))
 				$objToReturn->Sistema = Sistema::GetObjectFromSoapObject($objSoapObject->Sistema);
+			if (property_exists($objSoapObject, 'DeletedAt'))
+				$objToReturn->dttDeletedAt = new QDateTime($objSoapObject->DeletedAt);
 			if (property_exists($objSoapObject, '__blnRestored'))
 				$objToReturn->__blnRestored = $objSoapObject->__blnRestored;
 			return $objToReturn;
@@ -1660,6 +1701,8 @@
 				$objObject->objSistema = Sistema::GetSoapObjectFromObject($objObject->objSistema, false);
 			else if (!$blnBindRelatedObjects)
 				$objObject->strSistemaId = null;
+			if ($objObject->dttDeletedAt)
+				$objObject->dttDeletedAt = $objObject->dttDeletedAt->qFormat(QDateTime::FormatSoap);
 			return $objObject;
 		}
 
@@ -1678,6 +1721,7 @@
 			$iArray['Nombre'] = $this->strNombre;
 			$iArray['Activo'] = $this->blnActivo;
 			$iArray['SistemaId'] = $this->strSistemaId;
+			$iArray['DeletedAt'] = $this->dttDeletedAt;
 			return new ArrayIterator($iArray);
 		}
 
@@ -1720,6 +1764,7 @@
      * @property-read QQNode $Activo
      * @property-read QQNode $SistemaId
      * @property-read QQNodeSistema $Sistema
+     * @property-read QQNode $DeletedAt
      *
      *
      * @property-read QQReverseReferenceNodePermiso $PermisoAsGrupo
@@ -1743,6 +1788,8 @@
 					return new QQNode('sistema_id', 'SistemaId', 'VarChar', $this);
 				case 'Sistema':
 					return new QQNodeSistema('sistema_id', 'Sistema', 'VarChar', $this);
+				case 'DeletedAt':
+					return new QQNode('deleted_at', 'DeletedAt', 'Date', $this);
 				case 'PermisoAsGrupo':
 					return new QQReverseReferenceNodePermiso($this, 'permisoasgrupo', 'reverse_reference', 'grupo_id', 'PermisoAsGrupo');
 				case 'UsuarioAsGrupo':
@@ -1767,6 +1814,7 @@
      * @property-read QQNode $Activo
      * @property-read QQNode $SistemaId
      * @property-read QQNodeSistema $Sistema
+     * @property-read QQNode $DeletedAt
      *
      *
      * @property-read QQReverseReferenceNodePermiso $PermisoAsGrupo
@@ -1790,6 +1838,8 @@
 					return new QQNode('sistema_id', 'SistemaId', 'string', $this);
 				case 'Sistema':
 					return new QQNodeSistema('sistema_id', 'Sistema', 'string', $this);
+				case 'DeletedAt':
+					return new QQNode('deleted_at', 'DeletedAt', 'QDateTime', $this);
 				case 'PermisoAsGrupo':
 					return new QQReverseReferenceNodePermiso($this, 'permisoasgrupo', 'reverse_reference', 'grupo_id', 'PermisoAsGrupo');
 				case 'UsuarioAsGrupo':

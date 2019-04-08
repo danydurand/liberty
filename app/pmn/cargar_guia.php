@@ -226,8 +226,9 @@ class CargarGuia extends FormularioBaseKaizen {
             // Se valida si existe un bug con respecto a la Receptoría Destino de la Guía.
             // Esto solamente en modo de edición y si la guía no ha sido facturada aún.
             //-----------------------------------------------------------------------------
+            /*
             if ($this->blnEditMode && !$this->blnEstaFact) {
-                $strSucuDest = $this->objGuia->EstaOrig;
+                $strSucuDest = $this->objGuia->EstaDest;
                 $strReceDest = $this->objGuia->ReceptoriaDestino;
                 //-----------------------------------------------------------------------------------------------------
                 // Se verifica si la Sucursal Destino de la Guía coincide con la de ubicación del Usuario del Sistema.
@@ -248,6 +249,7 @@ class CargarGuia extends FormularioBaseKaizen {
                     }
                 }
             }
+            */
             //----------------------------------------------
             // Aqui se determina si la guia es Facturable
             //----------------------------------------------
@@ -489,6 +491,7 @@ class CargarGuia extends FormularioBaseKaizen {
         $this->lstReceDest->Name = 'Receptoria';
         $this->lstReceDest->Width = 200;
         if ($this->blnEditMode) {
+            //t('En el create del listbox, la receptoria destino es: '.$this->objGuia->ReceptoriaDestino);
             $this->cargarReceptorias($this->objGuia->EstaDest,$this->objGuia->ReceptoriaDestino);
         }
         $this->lstReceDest->AddAction(new QChangeEvent(), new QAjaxAction('lstReceDest_Change'));
@@ -894,7 +897,9 @@ class CargarGuia extends FormularioBaseKaizen {
         $objClauOrde   = QQ::Clause();
         $objClauOrde[] = QQ::OrderBy(QQN::Counter()->Descripcion);
         $objClauWher   = QQ::Clause();
-        $objClauWher[] = QQ::Equal(QQN::Counter()->StatusId,StatusType::ACTIVO);
+        if (!$this->blnEditMode) {
+            $objClauWher[] = QQ::Equal(QQN::Counter()->StatusId, StatusType::ACTIVO);
+        }
         $objClauWher[] = QQ::Equal(QQN::Counter()->SucursalId,$strCodiSucu);
         if (!$this->blnEditMode) {
             //-----------------------------------------------------------------------------

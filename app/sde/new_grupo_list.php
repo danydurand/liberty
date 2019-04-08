@@ -62,6 +62,7 @@ class NewGrupoListForm extends NewGrupoListFormBase {
 
         $objClauGrup   = QQ::Clause();
         $objClauGrup[] = QQ::Equal(QQN::NewGrupo()->SistemaId,$_SESSION['Sistema']);
+        $objClauGrup[] = QQ::IsNull(QQN::NewGrupo()->DeletedAt);
 
         $this->dtgNewGrupos->AdditionalConditions = QQ::AndCondition($objClauGrup);
 

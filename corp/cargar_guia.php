@@ -195,23 +195,33 @@ class CargarGuia extends FormularioBaseKaizen {
         // Se identifica la hora Tope para realizar una Recolecta
         //------------------------------------------------------------
         $this->strHoraTope = BuscarParametro('00009', 'HoraTope', 'Txt1', '14:00');
-        $this->arrClieAgen = array(1685);
 
-        $this->blnClieAgen = false;
+        //----------------------------------------------------------------
+        // Se cargan en un vector, las Sucursales que tienen Receptorias
+        //----------------------------------------------------------------
+
         $arrSucuAgen = array();
-        if (in_array($this->objCliente->CodiClie,$this->arrClieAgen)) {
-            $this->blnClieAgen = true;
-            $arrSucuRece = Estacion::LoadArrayConCantidadDeReceptorias();
-            $intCantSucu = count($arrSucuRece);
-            if ($intCantSucu > 0) {
-                foreach ($arrSucuRece as $objSucuRece) {
-                    if ($objSucuRece->GetVirtualAttribute('cant_rece') > 0) {
-                        $arrSucuAgen[] = $objSucuRece;
-                    }
+        $arrSucuRece = Estacion::LoadArrayConCantidadDeReceptorias();
+        $intCantSucu = count($arrSucuRece);
+        if ($intCantSucu > 0) {
+            foreach ($arrSucuRece as $objSucuRece) {
+                if ($objSucuRece->GetVirtualAttribute('cant_rece') > 0) {
+                    $arrSucuAgen[] = $objSucuRece;
                 }
             }
-            $this->arrSucuActi = $arrSucuAgen;
         }
+        $this->arrSucuActi = $arrSucuAgen;
+
+        $this->blnClieAgen = false;
+        //if ($this->objCliente->PagoCod) {
+        //    $this->blnClieAgen = true;
+        //}
+
+        //$this->arrClieAgen = array(1685);
+        //$this->blnClieAgen = false;
+        //if (in_array($this->objCliente->CodiClie,$this->arrClieAgen)) {
+        //    $this->blnClieAgen = true;
+        //}
     }
 
     protected function Form_Create() {

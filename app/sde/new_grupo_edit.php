@@ -150,6 +150,24 @@ class NewGrupoEditForm extends NewGrupoEditFormBase {
 				$arrLogxCamb['strDescCamb'] = implode(',',$objResuComp->DifferentFields);
                 $arrLogxCamb['strEnlaEnti'] = __SIST__.'/new_grupo_edit.php/'.$this->mctNewGrupo->NewGrupo->Id;
 				LogDeCambios($arrLogxCamb);
+                //-------------------------------------------------------------------------
+                // Si el Grupo fue inactivado, los Usuarios también deben ser inactivados
+                //-------------------------------------------------------------------------
+                if ($this->mctNewGrupo->NewGrupo->Activo == StatusType::INACTIVO) {
+                    $arrUsuaGrup = $this->mctNewGrupo->NewGrupo->GetUsuarioAsGrupoArray();
+                    foreach ($arrUsuaGrup as $objUsuaGrup) {
+                        $objUsuaGrup->CodiStat = StatusType::INACTIVO;
+                        $objUsuaGrup->Save();
+                        //----------------------------------------------
+                        // Se deja registro en el Log de Transacciones
+                        //----------------------------------------------
+                        $arrLogxCamb['strNombTabl'] = 'Usuario';
+                        $arrLogxCamb['intRefeRegi'] = $objUsuaGrup->CodiUsua;
+                        $arrLogxCamb['strNombRegi'] = $objUsuaGrup->NombUsua;
+                        $arrLogxCamb['strDescCamb'] = "Inactivado por la Inactivacion del Grupo";
+                        LogDeCambios($arrLogxCamb);
+                    }
+                }
                 $this->mensaje('Transacción Exitosa','','','check');
 			}
 		} else {
@@ -161,12 +179,42 @@ class NewGrupoEditForm extends NewGrupoEditFormBase {
 			LogDeCambios($arrLogxCamb);
             $this->mensaje('Transacción Exitosa','','','check');
 		}
+		$this->dtgUsuaGrup->Refresh();
 	}
 
     protected function btnDelete_Click($strFormId, $strControlId, $strParameter) {
-        //----------------------------------------
-        // Se verifica la integridad referencial
-        //----------------------------------------
+        //----------------------------------------------
+        // Se eliminan los Usuarios asociados al Grupo
+        //----------------------------------------------
+        $arrUsuaGrup = $this->mctNewGrupo->NewGrupo->GetUsuarioAsGrupoArray();
+        foreach ($arrUsuaGrup as $objUsuaGrup) {
+            $objUsuaGrup->DeleteAt = new QDateTime(QDateTime::Now());
+            $objUsuaGrup->Save();
+            //----------------------------------------------
+            // Se deja registro en el Log de Transacciones
+            //----------------------------------------------
+            $arrLogxCamb['strNombTabl'] = 'Usuario';
+            $arrLogxCamb['intRefeRegi'] = $objUsuaGrup->CodiUsua;
+            $arrLogxCamb['strNombRegi'] = $objUsuaGrup->NombUsua;
+            $arrLogxCamb['strDescCamb'] = "Eliminado (SoftDelete) por la Eliminacion del Grupo";
+            LogDeCambios($arrLogxCamb);
+        }
+        //------------------------------------
+        // Se elimina el grupo (SoftDelete)
+        //------------------------------------
+	    $this->mctNewGrupo->NewGrupo->DeletedAt = new QDateTime(QDateTime::Now());
+	    $this->mctNewGrupo->NewGrupo->Save();
+        //----------------------------------------------
+        // Se deja registro en el Log de Transacciones
+        //----------------------------------------------
+        $arrLogxCamb['strNombTabl'] = 'NewGrupo';
+        $arrLogxCamb['intRefeRegi'] = $this->mctNewGrupo->NewGrupo->Id;
+        $arrLogxCamb['strNombRegi'] = $this->mctNewGrupo->NewGrupo->Nombre;
+        $arrLogxCamb['strDescCamb'] = "Eliminado (SoftDelete)";
+        LogDeCambios($arrLogxCamb);
+        $this->RedirectToListPage();
+
+        /*
         $blnTodoOkey = true;
         $arrTablRela = $this->mctNewGrupo->TablasRelacionadasNewGrupo();
         if (count($arrTablRela)) {
@@ -186,6 +234,7 @@ class NewGrupoEditForm extends NewGrupoEditFormBase {
             LogDeCambios($arrLogxCamb);
             $this->RedirectToListPage();
         }
+        */
     }
 }
 

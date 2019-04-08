@@ -573,6 +573,15 @@
             );
         }
 
+        public function checkpoint($strCodiCkpt) {
+            return GuiaCkpt::QuerySingle(
+                QQ::AndCondition(
+                    QQ::Equal(QQN::GuiaCkpt()->NumeGuia, $this->strNumeGuia),
+                    QQ::Equal(QQN::GuiaCkpt()->CodiCkpt, $strCodiCkpt)
+                )
+            );
+        }
+
         public function tieneCheckpoint($strCodiCkpt) {
             // This will return a count of Guia objects
             return GuiaCkpt::QueryCount(

@@ -87,11 +87,11 @@ foreach ($arrSucuSele as $objSucursal) {
         //--------------------------------
         // Se inicializan los Contadores
         //--------------------------------
-        $intGuiaEntr = 0;
-        $intDent24hr = 0;
-        $intDent48hr = 0;
-        $intDent72hr = 0;
-        $intMasd72hr = 0;
+        $intGuiaEntr  = 0;
+        $intDent24hr  = 0;
+        $intDent48hr  = 0;
+        $intDent72hr  = 0;
+        $intMasd72hr  = 0;
         $intGuiaEntr2 = 0;
         $intDent24hr2 = 0;
         $intDent48hr2 = 0;
@@ -103,10 +103,26 @@ foreach ($arrSucuSele as $objSucursal) {
         $arrDatoRepo = array();
         $arrDatoRep1 = array();
         while ($mixRegistro = $objDbResult->FetchArray()) {
-            // -------------------------------------------------
-            // Se Determina si las Variables que se Utilizarán
-            // para Obtener la Eficiencia Contienen Datos o no
-            // -------------------------------------------------
+            $objGuia     = Guia::Load($mixRegistro['nume_guia']);
+            $strFechPick = $objGuia->FechaCreacion->__toString('YYYY-MM-DD');
+            if ($objGuia) {
+                /**
+                 * @var $objCkptPick GuiaCkpt
+                 */
+                $objCkptPick = $objGuia->checkpoint('PU');
+                if ($objCkptPick) {
+                    $strFechPick = $objCkptPick->FechCkpt->__toString('YYYY-MM-DD');
+                }
+            }
+            $intDiasHabi  = diasHabilesTranscurridos($mixRegistro['fecha_entrega'],$strFechPick);
+            $intDiasHabi2 = diasHabilesTranscurridos($mixRegistro['fecha_pod'],$mixRegistro['fecha_entrega']);
+            if ($intDiasHabi < 0) {
+                $intDiasHabi = 0;
+            }
+            if ($intDiasHabi2 < 0) {
+                $intDiasHabi2 = 0;
+            }
+            /*
             if (strlen($mixRegistro['fech_ckpt']) > 0) {
                 $intDiasHabi = diasHabilesTranscurridos($mixRegistro['fecha_pod'],$mixRegistro['fech_ckpt']);
                 $blnHabiPick = true;
@@ -128,6 +144,7 @@ foreach ($arrSucuSele as $objSucursal) {
                 $mixRegistr1  = $objDbResult->FetchArray();
                 $intDiasHabi2 = diasHabilesTranscurridos($mixRegistro['fecha_pod'],$mixRegistr1['fech_ckpt']);
             }
+            */
             //----------------------------------------------------
             // Se Validan y Ajustan los Contadores Según el Caso
             //----------------------------------------------------
@@ -164,11 +181,11 @@ foreach ($arrSucuSele as $objSucursal) {
             //----------------------------------
             // Vector de Datos para el Reporte
             //----------------------------------
-            if ($blnHabiPick) {
+            //if ($blnHabiPick) {
                 $strHabiPick = '';
-            } else {
-                $strHabiPick = '*';
-            }
+            //} else {
+            //    $strHabiPick = '*';
+            //}
             $objMensPago = BuscarParametro('MensUsua','FormPago',"TODO",0);
             if ($objMensPago == 0) {
                 $strMensUnox = '';
@@ -178,18 +195,19 @@ foreach ($arrSucuSele as $objSucursal) {
                 $mixRegistro['esta_orig']."-".$mixRegistro['esta_dest'],
                 substr($mixRegistro['nomb_remi'],0,20),
                 substr($mixRegistro['nomb_dest'],0,20),
-                $mixRegistro['fech_ckpt'],
+                //$mixRegistro['fech_ckpt'],
+                $strFechPick,
+                $mixRegistro['fecha_entrega'],
                 $mixRegistro['fecha_pod'],
                 $intDiasHabi,
                 $intDiasHabi2
             );
             ++$intGuiaEntr;
         }
-        $arrDatoRepo = ordenar_array($arrDatoRepo,'6',SORT_DESC);
-        //------------------------------------------------------------
-        // Si Algún contador quedó en cero, este pasa a ser uno,
-        // ya que la librería no sdmite ceros en el gráfico de torta
-        //------------------------------------------------------------
+        $arrDatoRepo = ordenar_array($arrDatoRepo,'7',SORT_DESC);
+        //--------------------------------------------------------------------------------------------------------------
+        // Si algún contador quedó en cero, este pasa a ser uno, ya que la librería no sdmite 0 en el gráfico de torta
+        //--------------------------------------------------------------------------------------------------------------
         if ($intDent24hr == 0) {
             $intDent24hr = 1;
         }
@@ -218,14 +236,14 @@ foreach ($arrSucuSele as $objSucursal) {
         // Datos que van al Reporte (Tabla Resumida)
         //--------------------------------------------
         $arrDatoRep1[] = array('SUCURSAL',$objSucursal->CodiEsta);
-        $arrDatoRep1[] = array('EFICIENCIA 1','PU Vs POD');
+        $arrDatoRep1[] = array('EFICIENCIA 1','PickUp Vs F.Entrega');
         $arrDatoRep1[] = array('EN 24 HRS O MENOS',$intDent24hr);
         $arrDatoRep1[] = array('EN 48 HRS',$intDent48hr);
         $arrDatoRep1[] = array('EN 72 HRS',$intDent72hr);
         $arrDatoRep1[] = array('EN 4 DIAS O MAS',$intMasd72hr);
         $arrDatoRep1[] = array('TOTAL ENTREGAS REALIZADAS',$intGuiaEntr);
         $arrDatoRep1[] = array('','');
-        $arrDatoRep1[] = array('EFICIENCIA 2','Fecha Entrega Vs POD');
+        $arrDatoRep1[] = array('EFICIENCIA 2','F.Entrega Vs POD');
         $arrDatoRep1[] = array('EN 24 HRS O MENOS',$intDent24hr2);
         $arrDatoRep1[] = array('EN 48 HRS',$intDent48hr2);
         $arrDatoRep1[] = array('EN 72 HRS',$intDent72hr2);
@@ -257,14 +275,14 @@ foreach ($arrSucuSele as $objSucursal) {
         //---------------------------------------------
         // Se Arman los Vectores de la Lista de Guías
         //---------------------------------------------
-        $arrEncaColu = array('Guia','Ori-Des','Remitente','Destinatario','F.Pick-Up','Fecha POD','Dias', 'Dias Entr');
-        $arrJustColu = array('C','C','L','L','C','C','C', ' C');
-        $arrAnchColu = array(25,18,48,48,20,20,10,15);
+        $arrEncaColu = array('Guia','Ori-Des','Remitente','Destinatario','F.Pick-Up','F.Entrega','Fecha POD','Dias Entr', 'Dias POD');
+        $arrJustColu = array('C','C','L','L','C','C','C','C', ' C');
+        $arrAnchColu = array(25,18,48,48,20,20,20,18,18);
         //-----------------------
         // Se Inicia el Reporte
         //-----------------------
         $pdf=new mygraf('L','mm','Letter');
-        $pdf->setVariables($arrEncaColu,$arrJustColu,$arrAnchColu,38,$strLogoComp);
+        $pdf->setVariables($arrEncaColu,$arrJustColu,$arrAnchColu,15,$strLogoComp);
         $pdf->setEmpresa($strNombEmpr,$strDireEmpr,$strTituRepo);
         $pdf->SetTitle('Eficiencia en Entrega por Sucursal');
         $pdf->AliasNbPages();
@@ -321,7 +339,6 @@ foreach ($arrSucuSele as $objSucursal) {
             // Se Envía el Reporte por E-mail
             //---------------------------------
             $to = array($objSucursal->DireMail);
-            //$to = array('iranjo23@gmail.com');
             $attach = $strNombArch;
             $mimemail = new MIMEMAIL('plain/text');
             $mimemail->senderName = 'LibertyExpress';
