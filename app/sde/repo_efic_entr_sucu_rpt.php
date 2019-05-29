@@ -9,6 +9,9 @@ require_once(__APP_INCLUDES__.'/protected.inc.php');
 require_once(__APP_INCLUDES__.'/mimemail.inc.php');
 require_once(__APP_INCLUDES__.'/mygrafclasspdf.php');
 require_once(__APP_INCLUDES__.'/colores.php');
+
+t('==============================================');
+t('Entrando al reporte de Eficiencia por Sucursal');
 //-----------------------------------------------------
 // Se identifican los logos y el nombre de la Empresa
 //-----------------------------------------------------
@@ -92,6 +95,7 @@ foreach ($arrSucuSele as $objSucursal) {
         $intDent48hr  = 0;
         $intDent72hr  = 0;
         $intMasd72hr  = 0;
+
         $intGuiaEntr2 = 0;
         $intDent24hr2 = 0;
         $intDent48hr2 = 0;
@@ -115,36 +119,13 @@ foreach ($arrSucuSele as $objSucursal) {
                 }
             }
             $intDiasHabi  = diasHabilesTranscurridos($mixRegistro['fecha_entrega'],$strFechPick);
-            $intDiasHabi2 = diasHabilesTranscurridos($mixRegistro['fecha_pod'],$mixRegistro['fecha_entrega']);
             if ($intDiasHabi < 0) {
                 $intDiasHabi = 0;
             }
+            $intDiasHabi2 = diasHabilesTranscurridos($mixRegistro['fecha_pod'],$mixRegistro['fecha_entrega']);
             if ($intDiasHabi2 < 0) {
                 $intDiasHabi2 = 0;
             }
-            /*
-            if (strlen($mixRegistro['fech_ckpt']) > 0) {
-                $intDiasHabi = diasHabilesTranscurridos($mixRegistro['fecha_pod'],$mixRegistro['fech_ckpt']);
-                $blnHabiPick = true;
-            } else {
-                $intDiasHabi = diasHabilesTranscurridos($mixRegistro['fecha_pod'],$mixRegistro['fech_guia']);
-                $blnHabiPick = false;
-            }
-            if (strlen($mixRegistro['fecha_entrega']) > 0) {
-                $intDiasHabi2 = diasHabilesTranscurridos($mixRegistro['fecha_pod'],$mixRegistro['fecha_entrega']);
-            } else {
-                $strCadeSql2  = "select fech_ckpt";
-                $strCadeSql2 .= "  from guia_ckpt";
-                $strCadeSql2 .= " where nume_guia = '".$mixRegistro['nume_guia']."'";
-                $strCadeSql2 .= "   and codi_ckpt = 'OK'";
-                $strCadeSql2 .= " order by fech_ckpt desc,";
-                $strCadeSql2 .= "          hora_ckpt desc";
-                $strCadeSql2 .= " limit 1";
-                $objDbResulx  = $objDatabase->Query($strCadeSql2);
-                $mixRegistr1  = $objDbResult->FetchArray();
-                $intDiasHabi2 = diasHabilesTranscurridos($mixRegistro['fecha_pod'],$mixRegistr1['fech_ckpt']);
-            }
-            */
             //----------------------------------------------------
             // Se Validan y Ajustan los Contadores Según el Caso
             //----------------------------------------------------
@@ -181,17 +162,12 @@ foreach ($arrSucuSele as $objSucursal) {
             //----------------------------------
             // Vector de Datos para el Reporte
             //----------------------------------
-            //if ($blnHabiPick) {
-                $strHabiPick = '';
-            //} else {
-            //    $strHabiPick = '*';
-            //}
             $objMensPago = BuscarParametro('MensUsua','FormPago',"TODO",0);
             if ($objMensPago == 0) {
                 $strMensUnox = '';
             }
             $arrDatoRepo[] = array(
-                $mixRegistro['nume_guia'].$strHabiPick,
+                $mixRegistro['nume_guia'],
                 $mixRegistro['esta_orig']."-".$mixRegistro['esta_dest'],
                 substr($mixRegistro['nomb_remi'],0,20),
                 substr($mixRegistro['nomb_dest'],0,20),
@@ -205,33 +181,6 @@ foreach ($arrSucuSele as $objSucursal) {
             ++$intGuiaEntr;
         }
         $arrDatoRepo = ordenar_array($arrDatoRepo,'7',SORT_DESC);
-        //--------------------------------------------------------------------------------------------------------------
-        // Si algún contador quedó en cero, este pasa a ser uno, ya que la librería no sdmite 0 en el gráfico de torta
-        //--------------------------------------------------------------------------------------------------------------
-        if ($intDent24hr == 0) {
-            $intDent24hr = 1;
-        }
-        if ($intDent48hr == 0) {
-            $intDent48hr = 1;
-        }
-        if ($intDent72hr == 0) {
-            $intDent72hr = 1;
-        }
-        if ($intMasd72hr == 0) {
-            $intMasd72hr = 1;
-        }
-        if ($intDent24hr2 == 0) {
-            $intDent24hr2 = 1;
-        }
-        if ($intDent48hr2 == 0) {
-            $intDent48hr2 = 1;
-        }
-        if ($intDent72hr2 == 0) {
-            $intDent72hr2 = 1;
-        }
-        if ($intMasd72hr2 == 0) {
-            $intMasd72hr2 = 1;
-        }
         //--------------------------------------------
         // Datos que van al Reporte (Tabla Resumida)
         //--------------------------------------------
@@ -247,25 +196,54 @@ foreach ($arrSucuSele as $objSucursal) {
         $arrDatoRep1[] = array('EN 24 HRS O MENOS',$intDent24hr2);
         $arrDatoRep1[] = array('EN 48 HRS',$intDent48hr2);
         $arrDatoRep1[] = array('EN 72 HRS',$intDent72hr2);
-        $arrDatoRep1[] = array('EN 4 DIAS O MAS',$intMasd72hr);
+        $arrDatoRep1[] = array('EN 4 DIAS O MAS',$intMasd72hr2);
         $arrDatoRep1[] = array('TOTAL ENTREGAS REALIZADAS',$intGuiaEntr);
-        //----------------------------------------------
-        // Datos que van al Reporte (Gráfico de Torta)
-        //----------------------------------------------
-        $arrDatoTort['24hrs'] = $intDent24hr;
-        $arrDatoTort['48hrs'] = $intDent48hr;
-        $arrDatoTort['72hrs'] = $intDent72hr;
-        $arrDatoTort['4d+']   = $intMasd72hr;
-        $arrDatoTor1['24hrs_ENT'] = $intDent24hr2;
-        $arrDatoTor1['48hrs_ENT'] = $intDent48hr2;
-        $arrDatoTor1['72hrs_ENT'] = $intDent72hr2;
-        $arrDatoTor1['4d+_ENT']   = $intMasd72hr2;
+
         if ($strModoEjec == 'CRON') {
             GrabarMedicion($objSucursal->CodiEsta,"OK_24HRS",$intDent24hr);
             GrabarMedicion($objSucursal->CodiEsta,"OK_48HRS",$intDent48hr);
             GrabarMedicion($objSucursal->CodiEsta,"OK_72HRS",$intDent72hr);
             GrabarMedicion($objSucursal->CodiEsta,"OK_4D+",$intMasd72hr);
         }
+        //--------------------------------------------------------------------------------------------------------------
+        // Si algún contador quedó en cero, este pasa a ser uno, ya que la librería no sdmite 0 en el gráfico de torta
+        //--------------------------------------------------------------------------------------------------------------
+        if ($intDent24hr == 0) {
+            $intDent24hr = 1;
+        }
+        if ($intDent48hr == 0) {
+            $intDent48hr = 1;
+        }
+        if ($intDent72hr == 0) {
+            $intDent72hr = 1;
+        }
+        if ($intMasd72hr == 0) {
+            $intMasd72hr = 1;
+        }
+
+        if ($intDent24hr2 == 0) {
+            $intDent24hr2 = 1;
+        }
+        if ($intDent48hr2 == 0) {
+            $intDent48hr2 = 1;
+        }
+        if ($intDent72hr2 == 0) {
+            $intDent72hr2 = 1;
+        }
+        if ($intMasd72hr2 == 0) {
+            $intMasd72hr2 = 1;
+        }
+        //----------------------------------------------
+        // Datos que van al Reporte (Gráfico de Torta)
+        //----------------------------------------------
+        $arrDatoTort['24hrs']     = $intDent24hr;
+        $arrDatoTort['48hrs']     = $intDent48hr;
+        $arrDatoTort['72hrs']     = $intDent72hr;
+        $arrDatoTort['4d+']       = $intMasd72hr;
+        $arrDatoTor1['24hrs_ENT'] = $intDent24hr2;
+        $arrDatoTor1['48hrs_ENT'] = $intDent48hr2;
+        $arrDatoTor1['72hrs_ENT'] = $intDent72hr2;
+        $arrDatoTor1['4d+_ENT']   = $intMasd72hr2;
         //---------------------------------------------
         // Vector de Colores para el Gráfico de Torta
         //---------------------------------------------

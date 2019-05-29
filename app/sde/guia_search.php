@@ -28,8 +28,8 @@ class GuiaSearchForm extends FormularioBaseKaizen {
     protected $txtNombRemi;
     protected $txtNombDest;
     protected $lstCodiVend;
-    protected $calInicPodx;
-    protected $calFinaPodx;
+    protected $calEntrInic;
+    protected $calEntrFina;
     protected $rdbTienPodx;
     protected $chkPesoVolu;
     protected $txtUsuaCrea;
@@ -76,8 +76,8 @@ class GuiaSearchForm extends FormularioBaseKaizen {
         $this->lstCodiVend_Create();
         $this->rdbTienPodx_Create();
         $this->chkPesoVolu_Create();
-        $this->calInicPodx_Create();
-        $this->calFinaPodx_Create();
+        $this->calEntrInic_Create();
+        $this->calEntrFina_Create();
         $this->lstTariIdxx_Create();
         $this->calFechTrx1_Create();
         $this->calFechTrx2_Create();
@@ -151,26 +151,26 @@ class GuiaSearchForm extends FormularioBaseKaizen {
 
     protected function calFechInic_Create() {
         $this->calFechInic = new QCalendar($this);
-        $this->calFechInic->Name = 'Fecha Guía Inicial';
+        $this->calFechInic->Name = 'F. Creación Guía Inicial';
         $this->calFechInic->Width = 100;
     }
 
     protected function calFechFina_Create() {
         $this->calFechFina = new QCalendar($this);
-        $this->calFechFina->Name = 'Fecha Guía Final';
+        $this->calFechFina->Name = 'F. Creación Guía Final';
         $this->calFechFina->Width = 100;
     }
 
-    protected function calInicPodx_Create() {
-        $this->calInicPodx = new QCalendar($this);
-        $this->calInicPodx->Name = QApplication::Translate('Fecha Entrega Inicial');
-        $this->calInicPodx->Width = 100;
+    protected function calEntrInic_Create() {
+        $this->calEntrInic = new QCalendar($this);
+        $this->calEntrInic->Name = QApplication::Translate('F. Entrega Inicial');
+        $this->calEntrInic->Width = 100;
     }
 
-    protected function calFinaPodx_Create() {
-        $this->calFinaPodx = new QCalendar($this);
-        $this->calFinaPodx->Name = QApplication::Translate('Fecha Entrega Final');
-        $this->calFinaPodx->Width = 100;
+    protected function calEntrFina_Create() {
+        $this->calEntrFina = new QCalendar($this);
+        $this->calEntrFina->Name = QApplication::Translate('F. Entrega Final');
+        $this->calEntrFina->Width = 100;
     }
 
     protected function lstTariIdxx_Create() {
@@ -482,7 +482,7 @@ class GuiaSearchForm extends FormularioBaseKaizen {
                    g.guia_externa,
                    g.cliente_id,
                    m.codigo_interno,
-                   date_format(g.fech_guia, '%d/%m/%Y') fech_guia,
+                   date_format(g.fech_guia, '%Y-%m-%d') fech_guia,
                    g.esta_orig,
                    g.receptoria_origen,
                    g.esta_dest,
@@ -495,11 +495,12 @@ class GuiaSearchForm extends FormularioBaseKaizen {
                    g.cant_piez,
                    g.valor_declarado,
                    g.entregado_a,
-                   date_format(g.fecha_entrega, '%d/%m/%Y') fecha_entrega,
+                   date_format(g.fecha_entrega, '%Y-%m-%d') fecha_entrega,
                    g.hora_entrega,
+                   date_format(g.fecha_pod, '%Y-%m-%d') fecha_pod,
                    g.codi_ckpt,
                    g.esta_ckpt,
-                   date_format(g.fech_ckpt, '%d/%m/%Y') fech_ckpt,
+                   date_format(g.fech_ckpt, '%Y-%m-%d') fech_ckpt,
                    g.hora_ckpt,
                    u.logi_usua usua_ckpt,
                    (select codi_ruta
@@ -567,6 +568,21 @@ class GuiaSearchForm extends FormularioBaseKaizen {
                 $objClausula[] = QQ::Equal(QQN::Guia()->NumeGuia,DejarSoloLosNumeros($this->txtNumeGuia->Text));
                 $strCadeSqlx  .= " and g.nume_guia = '".$this->txtNumeGuia->Text."'";
             }
+            if (strlen($this->txtGuiaExte->Text)) {
+                $objClausula[] = QQ::Like(QQN::Guia()->GuiaExterna,"%".$this->txtGuiaExte->Text."%");
+                $strCadeSqlx  .= " and g.guia_externa = '".$this->txtGuiaExte->Text."'";
+            }
+            if (strlen($this->txtNumeMast->Text) > 0) {
+                $objGuiaMast = SdeContenedor::Load($this->txtNumeMast->Text);
+                if ($objGuiaMast) {
+                    $arrNumeGuia = $this->obtenerGuiasDeLaMaster($this->txtNumeMast->Text);
+                    if (count($arrNumeGuia) > 0) {
+                        $objClausula[] = QQ::In(QQN::Guia()->NumeGuia,$arrNumeGuia);
+                        $strCadeGuia = implode("','",$arrNumeGuia);
+                        $strCadeSqlx .= " and g.nume_guia in ('$strCadeGuia')";
+                    }
+                }
+            }
             if (!is_null($this->lstCodiClie->SelectedValue) && (!$this->chkInclSubc->Checked)) {
                 $objClausula[] = QQ::Equal(QQN::Guia()->CodiClie,$this->lstCodiClie->SelectedValue);
                 $strCadeSqlx  .= " and g.codi_clie = ".$this->lstCodiClie->SelectedValue;
@@ -593,10 +609,6 @@ class GuiaSearchForm extends FormularioBaseKaizen {
                         $strCadeSqlx .= " and g.nume_guia in ('$strCadeGuia')";
                     }
                 }
-            }
-            if (strlen($this->txtGuiaExte->Text)) {
-                $objClausula[] = QQ::Like(QQN::Guia()->GuiaExterna,"%".$this->txtGuiaExte->Text."%");
-                $strCadeSqlx  .= " and g.guia_externa = '".$this->txtGuiaExte->Text."'";
             }
             if (!is_null($this->calFechInic->DateTime)) {
                 $objClausula[] = QQ::GreaterOrEqual(QQN::Guia()->FechGuia,$this->calFechInic->DateTime);
@@ -638,6 +650,10 @@ class GuiaSearchForm extends FormularioBaseKaizen {
                 $objClausula[] = QQ::Equal(QQN::Guia()->TipoGuia, $this->lstTipoPago->SelectedValue);
                 $strCadeSqlx  .= " and g.tipo_guia = ".$this->lstTipoPago->SelectedValue;
             }
+            if (strlen($this->txtUbicFisi->Text)) {
+                $objClausula[] = QQ::Like(QQN::Guia()->Ubicacion,"%".trim($this->txtUbicFisi->Text)."%");
+                $strCadeSqlx  .= " and g.ubicacion like '%".$this->txtUbicFisi->Text."%'";
+            }
             if (!is_null($this->lstCodiOrig->SelectedValue)) {
                 $objClausula[]= QQ::Equal(QQN::Guia()->EstaOrig,$this->lstCodiOrig->SelectedValue);
                 $strCadeSqlx  .= " and g.esta_orig = '".$this->lstCodiOrig->SelectedValue."'";
@@ -674,6 +690,19 @@ class GuiaSearchForm extends FormularioBaseKaizen {
                 $objClausula[] = QQ::Equal(QQN::Guia()->CodiClieObject->VendedorId,$this->lstCodiVend->SelectedValue);
                 $strCadeSqlx  .= " and m.vendedor_id = ".$this->lstCodiVend->SelectedValue;
             }
+            if ($this->chkPesoVolu->Checked) {
+                $intPesoVolu = (int)$this->chkPesoVolu->Checked;
+                $objClausula[] = QQ::Equal(QQN::Guia()->CantAyudantes,$intPesoVolu);
+                $strCadeSqlx  .= " and g.cant_ayudantes = $intPesoVolu";
+            }
+            if (!is_null($this->calEntrInic->DateTime)) {
+                $objClausula[] = QQ::GreaterOrEqual(QQN::Guia()->FechaEntrega,$this->calEntrInic->DateTime);
+                $strCadeSqlx  .= " and g.fecha_entrega >= '".$this->calEntrInic->DateTime->__toString("YYYY-MM-DD")."'";
+            }
+            if (!is_null($this->calEntrFina->DateTime)) {
+                $objClausula[] = QQ::LessOrEqual(QQN::Guia()->FechaEntrega,$this->calEntrFina->DateTime);
+                $strCadeSqlx  .= " and g.fecha_entrega <= '".$this->calEntrFina->DateTime->__toString("YYYY-MM-DD")."'";
+            }
             if (!is_null($this->rdbTienPodx->SelectedValue)) {
                 if ($this->rdbTienPodx->SelectedValue == 'SI') {
                     $objClausula[] = QQ::Equal(QQN::Guia()->CodiCkpt,'OK');
@@ -691,19 +720,6 @@ class GuiaSearchForm extends FormularioBaseKaizen {
                     $objClausula[] = QQ::NotEqual(QQN::Guia()->CodiCkpt,'OK');
                     $strCadeSqlx  .= " and g.codi_ckpt != 'OK'";
                 }
-            }
-            if ($this->chkPesoVolu->Checked) {
-                $intPesoVolu = (int)$this->chkPesoVolu->Checked;
-                $objClausula[] = QQ::Equal(QQN::Guia()->CantAyudantes,$intPesoVolu);
-                $strCadeSqlx  .= " and g.cant_ayudantes = $intPesoVolu";
-            }
-            if (!is_null($this->calInicPodx->DateTime)) {
-                $objClausula[] = QQ::GreaterOrEqual(QQN::Guia()->FechaEntrega,$this->calInicPodx->DateTime);
-                $strCadeSqlx  .= " and g.fecha_entrega >= '".$this->calInicPodx->DateTime->__toString("YYYY-MM-DD")."'";
-            }
-            if (!is_null($this->calFinaPodx->DateTime)) {
-                $objClausula[] = QQ::LessOrEqual(QQN::Guia()->FechaEntrega,$this->calFinaPodx->DateTime);
-                $strCadeSqlx  .= " and g.fecha_entrega <= '".$this->calFinaPodx->DateTime->__toString("YYYY-MM-DD")."'";
             }
             if ((!is_null($this->calFechTrx1->DateTime)) && (!is_null($this->calFechTrx2->DateTime))) {
                 $dttFechInic   = $this->calFechTrx1->DateTime->__toString("YYYY-MM-DD");
@@ -723,10 +739,6 @@ class GuiaSearchForm extends FormularioBaseKaizen {
             if (strlen($this->txtUsuaCrea->Text)) {
                 $objClausula[] = QQ::Like(QQN::Guia()->UsuarioCreacion,trim($objUsuaCrea->CodiUsua).'%');
                 $strCadeSqlx  .= " and g.usuario_creacion like '".$objUsuaCrea->CodiUsua."%'";
-            }
-            if (strlen($this->txtUbicFisi->Text)) {
-                $objClausula[] = QQ::Like(QQN::Guia()->Ubicacion,"%".trim($this->txtUbicFisi->Text)."%");
-                $strCadeSqlx  .= " and g.ubicacion like '%".$this->txtUbicFisi->Text."%'";
             }
             if (!is_null($this->lstCodiCkpt->SelectedValue)) {
                 $objClausula[] = QQ::Equal(QQN::Guia()->CodiCkpt,$this->lstCodiCkpt->SelectedValue);

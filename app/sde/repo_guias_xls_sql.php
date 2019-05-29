@@ -8,12 +8,7 @@
 require_once('qcubed.inc.php');
 require_once(__APP_INCLUDES__.'/protected.inc.php');
 require_once(__APP_INCLUDES__.'/FormularioBaseKaizen.class.php');
-// echo "1<br>";
-//------------------------------------------------------------------
-// La variable de Sesion llamada 'CritImpr' contiene los valores
-// que definen el conjunto de registros que debe salir en el
-// Reporte
-//------------------------------------------------------------------
+
 $strSepaColu = ';';
 if (isset($_SESSION['SepaColu'])) {
     $strSepaColu = $_SESSION['SepaColu'];
@@ -21,13 +16,11 @@ if (isset($_SESSION['SepaColu'])) {
 $objCondWher = unserialize($_SESSION['CondWher']);
 $strCadeSqlx = unserialize($_SESSION['CritSqlx']);
 $objUser = unserialize($_SESSION['User']);
-// echo "2<br>";
 //----------------------------------------------------------------------
 // Se determina el nombre del archivo que sera generado
 //----------------------------------------------------------------------
 $strNombArch = __TEMP__.'/guias_'.$objUser->LogiUsua.'.csv';
 $mixManeArch = fopen($strNombArch,'w');
-// echo "3<br>";
 //----------------
 // Encabezados
 //----------------
@@ -51,6 +44,7 @@ $arrEnca2XLS = array(
     'Entregado A',
     'F. Entrega',
     'H. Entrega',
+    'Fecha POD',
     'Ult.Ckpt',
     'Suc.Ult.Ckpt',
     'F.Ult.Ckpt',
@@ -90,7 +84,6 @@ $arrEnca2XLS = array(
     'D. Sin Entrega',
     'D. Sin Actualizar'
     );
-// echo "4<br>";
 //----------------------------------------------------------------------
 // El vector de encabezados, se lleva al archivo plano
 //----------------------------------------------------------------------
@@ -106,13 +99,11 @@ if ($intCantRegi > $intCantChun) {
 } else {
     $intCantCicl = 1;
 }
-// echo "5<br>";
 $intCantRepe = 0;
 $objClauLimi = QQ::Clause();
 while ($intCantRepe <= $intCantCicl) {
     $objClauLimi = QQ::LimitInfo($intCantChun,$intCantRepe*$intCantChun);
     $arrDatoRepo = Guia::QueryArray(QQ::AndCondition($objCondWher),QQ::Clause($objClauLimi));
-    // echo "6<br>";
     //--------------------------------------------------------------
     // Recorro la lista de registros, armando el vector de datos
     //--------------------------------------------------------------
@@ -141,8 +132,9 @@ while ($intCantRepe <= $intCantCicl) {
         $strCantPiez = nf0($objTabla->CantPiez);
         $strValoDecl = nf($objTabla->ValorDeclarado);
         $strEntrAxxx = QuitarCaracteresEspeciales2(utf8_decode(quitaCaracter($strSepaColu,$objTabla->EntregadoA)));
-        $strFechEntr = $objTabla->FechaEntrega ? $objTabla->FechaEntrega->__toString("YYYY-MM-DD") : '';
+        $strEntrDigi = strlen($objTabla->FechaEntrega) > 0 ? $objTabla->FechaEntrega->__toString("YYYY-MM-DD") : '';
         $strHoraEntr = $objTabla->HoraEntrega;
+        $strFechPodx = $objTabla->FechaPod ? $objTabla->FechaPod->__toString("YYYY-MM-DD") : '';
         $strCodiCkpt = $objTabla->CodiCkpt;
         $strEstaCkpt = $objTabla->EstaCkpt;
         $strFechCkpt = $objTabla->FechCkpt ? $objTabla->FechCkpt->__toString("YYYY-MM-DD") : '';
@@ -192,7 +184,7 @@ while ($intCantRepe <= $intCantCicl) {
             $strMontCanc = nf($objCobrCodx->MontoCancelado);
             $strReciPago = QuitarCaracteresEspeciales2(utf8_decode(quitaCaracter($strSepaColu,$objCobrCodx->RecibioElPago)));
             if ($objCobrCodx->FechaPago) {
-                $strFechPago = $objCobrCodx->FechaPago->__toString("DD/MM/YYYY");
+                $strFechPago = $objCobrCodx->FechaPago->__toString("YYYY-MM-DD");
             } else {
                 $strFechPago = "N/A";
             }
@@ -212,11 +204,11 @@ while ($intCantRepe <= $intCantCicl) {
         $strDescCont = QuitarCaracteresEspeciales2(utf8_decode(quitaCaracter($strSepaColu,$objTabla->DescCont)));
         // Estadistica de la guia
         if ($objEstaGuia) {
-            $strFechPick = $objEstaGuia->FechaPickup ? $objEstaGuia->FechaPickup->__toString("DD/MM/YYYY") : null;
-            $strFechTras = $objEstaGuia->FechaTraslado ? $objEstaGuia->FechaTraslado->__toString("DD/MM/YYYY") : null;
-            $strFechArri = $objEstaGuia->FechaArribo ? $objEstaGuia->FechaArribo->__toString("DD/MM/YYYY") : null;
-            $strFechRuta = $objEstaGuia->FechaRuta ? $objEstaGuia->FechaRuta->__toString("DD/MM/YYYY") : null;
-            $strFechEntr = $objEstaGuia->FechaEntrega ? $objEstaGuia->FechaEntrega->__toString("DD/MM/YYYY") : null;
+            $strFechPick = $objEstaGuia->FechaPickup ? $objEstaGuia->FechaPickup->__toString("YYYY-MM-DD") : null;
+            $strFechTras = $objEstaGuia->FechaTraslado ? $objEstaGuia->FechaTraslado->__toString("YYYY-MM-DD") : null;
+            $strFechArri = $objEstaGuia->FechaArribo ? $objEstaGuia->FechaArribo->__toString("YYYY-MM-DD") : null;
+            $strFechRuta = $objEstaGuia->FechaRuta ? $objEstaGuia->FechaRuta->__toString("YYYY-MM-DD") : null;
+            $strFechEntr = $objEstaGuia->FechaEntrega ? $objEstaGuia->FechaEntrega->__toString("YYYY-MM-DD") : null;
             $intDiasPick = $objEstaGuia->DiasPickup;
             $intDiasTras = $objEstaGuia->DiasTraslado;
             $intDiasArri = $objEstaGuia->DiasArribo;
@@ -260,8 +252,9 @@ while ($intCantRepe <= $intCantCicl) {
             $strCantPiez,
             $strValoDecl,
             $strEntrAxxx,
-            $strFechEntr,
+            $strEntrDigi,
             $strHoraEntr,
+            $strFechPodx,
             $strCodiCkpt,
             $strEstaCkpt,
             $strFechCkpt,

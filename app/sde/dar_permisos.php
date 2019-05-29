@@ -34,8 +34,8 @@ class DarPermisos extends FormularioBaseKaizen {
         $arrUsuaAuto = array();
         $arrUsuaAuto[] = "ddurand";
         $arrUsuaAuto[] = "yroth";
-        $arrUsuaAuto[] = "jrivero";
-        $arrUsuaAuto[] = "jlaya";
+        $arrUsuaAuto[] = "oerojas";
+        $arrUsuaAuto[] = "juansilv";
 
         $this->blnDarxQuit = true;
         if (!in_array($this->objUsuario->LogiUsua,$arrUsuaAuto)) {

@@ -49,7 +49,8 @@
                                     <?php //$this->txtCkptConfirmacion->RenderWithName(); ?>
                                     <?php //$this->txtCkptAlmacen->RenderWithName(); ?>
                                     <?php //$this->txtPaisId->RenderWithName(); ?>
-                                    <?php $this->txtStatusId->RenderWithName(); ?>
+                                    <?php //$this->txtStatusId->RenderWithName(); ?>
+                                    <?php $this->lstStatCoun->RenderWithName(); ?>
                                     <?php $this->txtDireccion->RenderWithName(); ?>
                                 </div>
                                 <div class="col-md-6">

@@ -1070,10 +1070,9 @@ function calcularTarifaParcialNew($arrParaTari) {
     if ($decSgroClie > 0) {
         $dblPorcSgro = $decSgroClie;
     } else {
-        //------------------------------------------------------------------------------------
-        // Se le asigna el nuevo valor de porcentaje de Seguro según los protocolos actuales
-        // de Liberty
-        //------------------------------------------------------------------------------------
+        //-----------------------------------------------------------------
+        // Se asigna porcentaje de Seguro según los protocolos actuales
+        //-----------------------------------------------------------------
         $dblPorcSgro = asignarPorcSeguro($dblValoDecl,$intCodiTari,$intChecAseg);
     }
 

@@ -100,6 +100,21 @@
             error_reporting($mixErroOrig);
         }
 
+
+        /**
+         * Count Usuarios
+         * by GrupoId Index(es)
+         * @param integer $intGrupoId
+         * @return int
+         */
+        public static function CountByGrupoId($intGrupoId) {
+            // Call Usuario::QueryCount to perform the CountByGrupoId query
+            $objClauWher   = QQ::Clause();
+            $objClauWher[] = QQ::Equal(QQN::Usuario()->GrupoId, $intGrupoId);
+            $objClauWher[] = QQ::IsNull(QQN::Usuario()->DeleteAt);
+            return Usuario::QueryCount(QQ::AndCondition($objClauWher));
+        }
+
         // Override or Create New Load/Count methods
 		// (For obvious reasons, these methods are commented out...
 		// but feel free to use these as a starting point)

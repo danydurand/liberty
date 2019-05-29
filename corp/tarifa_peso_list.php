@@ -154,7 +154,8 @@ class TarifaPesoListForm extends TarifaPesoListFormBase {
 
 		//$clauses[] = $this->dtgTarifaPesos->LimitClause;
 
-		$arrTariUrba = TarifaPeso::QueryArray(QQ::AndCondition($objClauWher),QQ::LimitInfo(30));
+		//$arrTariUrba = TarifaPeso::QueryArray(QQ::AndCondition($objClauWher),QQ::LimitInfo(30));
+		$arrTariUrba = TarifaPeso::QueryArray(QQ::AndCondition($objClauWher));
 
 		$this->dtgTarifaPesos->DataSource = $arrTariUrba;
 	}

@@ -31,15 +31,20 @@ class MasterCliente extends MasterClienteGen {
         return sprintf('%s - %s', $this->strCodigoInterno, $this->strNombClie);
     }
 
-    public function _ranking() {
+    public function _ranking($strTipoRank=null) {
+        $strNombVist = 'v_ranking';
+        if (!is_null($strTipoRank)) {
+            $strNombVist .= '_'.trim($strTipoRank);
+        }
         $strCadeSqlx  = "select rnk ";
-        $strCadeSqlx .= "  from v_ranking ";
+        $strCadeSqlx .= "  from $strNombVist ";
         $strCadeSqlx .= " where id = ".$this->intCodiClie;
         $objDataBase  = $this::GetDatabase();
         $objDbResult  = $objDataBase->Query($strCadeSqlx);
         $mixRegistro  = $objDbResult->FetchArray();
         return !is_null($mixRegistro['rnk']) ? '(Top: '.$mixRegistro['rnk'].')' : null;
     }
+
 
     /**
      * Esta rutina devuelve algunos codigos de Clientes que no deben ser considerados

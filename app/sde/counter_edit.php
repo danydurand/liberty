@@ -24,6 +24,7 @@ class CounterEditForm extends CounterEditFormBase {
     protected $intCantCaja;
     protected $btnNuevCaja;
     protected $dtgCajaRece;
+    protected $lstStatCoun;
 
 	// Override Form Event Handlers as Needed
 	protected function Form_Run() {
@@ -72,6 +73,7 @@ class CounterEditForm extends CounterEditFormBase {
 		$this->txtStatusId = $this->mctCounter->txtStatusId_Create();
 		$this->txtStatusId->Name = 'Estatus';
 		$this->txtStatusId->Width = 30;
+		$this->lstStatCoun_Create();
 		$this->txtDireccion = $this->mctCounter->txtDireccion_Create();
 		$this->lstElegirServicioObject = $this->mctCounter->lstElegirServicioObject_Create();
 		$this->lstEsRutaObject = $this->mctCounter->lstEsRutaObject_Create();
@@ -101,6 +103,14 @@ class CounterEditForm extends CounterEditFormBase {
 	//----------------------------
 	// Aqui se crean los objetos 
 	//----------------------------
+
+    protected function lstStatCoun_Create(){
+        $this->lstStatCoun = new QListBox($this);
+        $this->lstStatCoun->Name = 'Estatus';
+        $this->lstStatCoun->AddItem('- Seleccione Uno -', null);
+        foreach (StatusType::$NameArray as $intId => $strValue)
+            $this->lstStatCoun->AddItem(new QListItem($strValue, $intId, $this->mctCounter->Counter->StatusId == $intId));
+    }
 
     protected function dtgCajaRece_Create() {
         // Instantiate the Meta DataGrid
@@ -239,6 +249,7 @@ class CounterEditForm extends CounterEditFormBase {
 		// Se clona el objeto para verificar cambios 
 		//--------------------------------------------
 		$objRegiViej = clone $this->mctCounter->Counter;
+		$this->txtStatusId->Text = $this->lstStatCoun->SelectedValue;
 		$this->mctCounter->SaveCounter();
 		if ($this->mctCounter->EditMode) {
 			//---------------------------------------------------------------------

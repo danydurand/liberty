@@ -63,7 +63,11 @@ class UsuarioEditForm extends UsuarioEditFormBase {
         $this->lstCodiGrupObject->Required = true;
         $this->lstCodiGrupObject->AddAction(new QChangeEvent(), new QAjaxAction('lstCodiGrupObject_Change'));
 
-        $this->lstGrupo = $this->mctUsuario->lstGrupo_Create();
+        $objClauWher   = QQ::Clause();
+        $objClauWher[] = QQ::Equal(QQN::NewGrupo()->Activo,StatusType::ACTIVO);
+        $objClauWher[] = QQ::Equal(QQN::NewGrupo()->SistemaId,$_SESSION['Sistema']);
+        $objClauWher[] = QQ::IsNull(QQN::NewGrupo()->DeletedAt);
+        $this->lstGrupo = $this->mctUsuario->lstGrupo_Create(null, QQ::AndCondition($objClauWher));
 
         $this->txtNombUsua = $this->mctUsuario->txtNombUsua_Create();
         $this->txtApelUsua = $this->mctUsuario->txtApelUsua_Create();
@@ -411,6 +415,7 @@ class UsuarioEditForm extends UsuarioEditFormBase {
         // Se clona el objeto para verificar cambios
         //--------------------------------------------
         $objRegiViej = clone $this->mctUsuario->Usuario;
+        $this->lstCodiGrupObject->SelectedValue = $this->lstGrupo->SelectedValue;
         $this->mctUsuario->SaveUsuario();
         if ($this->mctUsuario->EditMode) {
             //------------------------------------------------------------------

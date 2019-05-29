@@ -41,6 +41,7 @@ $arrEnca2XLS = array(
     'EntregadoA',
     'F.Entrega',
     'H. Entrega',
+    'Fecha POD',
     'Ult.Ckpt',
     'Suc.Ult.Ckpt',
     'F.Ult.Ckpt',
@@ -102,6 +103,7 @@ while ($mixRegistro = $objResulSet->FetchArray()) {
     $strEntrAxxx = $mixRegistro['entregado_a'];
     $strFechEntr = $mixRegistro['fecha_entrega'];
     $strHoraEntr = $mixRegistro['hora_entrega'];
+    $strFechPodx = $mixRegistro['fecha_pod'] ? $mixRegistro['fecha_pod'] : '';
     $strCodiCkpt = $mixRegistro['codi_ckpt'];
     $strEstaCkpt = $mixRegistro['esta_ckpt'];
     $strFechCkpt = $mixRegistro['fech_ckpt'];

@@ -57,7 +57,8 @@ require(__APP_INCLUDES__ . '/header.inc.php');
             </div>
             <div class="row">
                 <div class="col-md-3 col-lg-3" style="margin-top: 1em;">
-                    <?php $this->lstCodiGrupObject->RenderWithName(); ?>
+                    <?php //$this->lstCodiGrupObject->RenderWithName(); ?>
+                    <?php $this->lstGrupo->RenderWithName(); ?>
                     <?php $this->txtNombUsua->RenderWithName(); ?>
                     <?php $this->txtApelUsua->RenderWithName(); ?>
                     <?php $this->txtLogiUsua->RenderWithName(); ?>

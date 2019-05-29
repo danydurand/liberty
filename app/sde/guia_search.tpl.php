@@ -42,8 +42,8 @@ require(__APP_INCLUDES__ . '/header.inc.php');
                     <?php $this->lstCodiRece->RenderWithName(); ?>
                     <?php $this->lstCodiVend->RenderWithName(); ?>
                     <?php $this->chkPesoVolu->RenderWithName(); ?>
-                    <?php $this->calInicPodx->RenderWithName(); ?>
-                    <?php $this->calFinaPodx->RenderWithName(); ?>
+                    <?php $this->calEntrInic->RenderWithName(); ?>
+                    <?php $this->calEntrFina->RenderWithName(); ?>
                 </div>
                 <div class="col-xs-12 col-md-4">
                     <?php $this->rdbTienPodx->RenderWithName(); ?>

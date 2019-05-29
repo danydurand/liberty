@@ -102,6 +102,16 @@ require(__YAMAGUCHI__APP_INCLUDES__ . '/header.inc.php');
                 <div class="col-md-12 col-lg-6" style="margin-top: 1em; margin-bottom: 1em;">
                     <div class="row">
                         <div class="col-md-6">
+                            <div class="titulo-c">Modalidad de Pago</div>
+                            <?php $this->lstModaPago->Render(); ?>
+                        </div>
+                        <div class="col-md-6" style="text-align: center">
+                            <div class="titulo-c">Fecha de la Recolecta</div>
+                            <?php $this->calFechReco->Render(); ?>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
                             <div class="titulo-c">Destinatario Frecuente</div>
                             <?php $this->lstDestFrec->Render(); ?>
                         </div>
@@ -139,16 +149,6 @@ require(__YAMAGUCHI__APP_INCLUDES__ . '/header.inc.php');
                             <div class="titulo-c">Cédula/RIF del Destinatario</div>
                             <?php $this->lstCeduDest->Render(); ?>
                             <?php $this->txtCeduDest->Render(); ?>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="titulo-c">Fecha de la Recolecta</div>
-                            <?php $this->calFechReco->Render(); ?>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="titulo-c">Modalidad de Pago</div>
-                            <?php $this->lstModaPago->Render(); ?>
                         </div>
                     </div>
                 </div>

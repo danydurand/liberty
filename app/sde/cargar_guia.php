@@ -1068,7 +1068,7 @@ class CargarGuia extends FormularioBaseKaizen {
         $this->objGuia->MontoIva           = str2num($this->txtMontIvax->Text);
         $this->objGuia->Asegurado          = str2num($this->chkEnviSegu->Checked);
         $this->objGuia->PorcentajeSeguro   = str2num($this->decPorcSegu);
-        $this->objGuia->MontoSeguro        = -str2num($this->txtMontSegu->Text);
+        $this->objGuia->MontoSeguro        = str2num($this->txtMontSegu->Text);
         $this->objGuia->MontoBase          = str2num($this->txtMontBase->Text);
         $this->objGuia->MontoFranqueo      = str2num($this->txtMontFran->Text);
         $this->objGuia->MontoTotal         = str2num($this->txtMontTota->Text);
@@ -1913,6 +1913,7 @@ class CargarGuia extends FormularioBaseKaizen {
         $arrResuSegu['ErroMini'] = $blnErroMini;
         $arrResuSegu['ValoMaxi'] = $blnValoMaxi;
         $arrResuSegu['MensUsua'] = $strMensUsua;
+
         return $arrResuSegu;
     }
 

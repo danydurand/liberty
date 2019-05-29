@@ -195,33 +195,23 @@ class CargarGuia extends FormularioBaseKaizen {
         // Se identifica la hora Tope para realizar una Recolecta
         //------------------------------------------------------------
         $this->strHoraTope = BuscarParametro('00009', 'HoraTope', 'Txt1', '14:00');
-
-        //----------------------------------------------------------------
-        // Se cargan en un vector, las Sucursales que tienen Receptorias
-        //----------------------------------------------------------------
-
-        $arrSucuAgen = array();
-        $arrSucuRece = Estacion::LoadArrayConCantidadDeReceptorias();
-        $intCantSucu = count($arrSucuRece);
-        if ($intCantSucu > 0) {
-            foreach ($arrSucuRece as $objSucuRece) {
-                if ($objSucuRece->GetVirtualAttribute('cant_rece') > 0) {
-                    $arrSucuAgen[] = $objSucuRece;
-                }
-            }
-        }
-        $this->arrSucuActi = $arrSucuAgen;
+        $this->arrClieAgen = array(1141,2891,6209);
 
         $this->blnClieAgen = false;
-        //if ($this->objCliente->PagoCod) {
-        //    $this->blnClieAgen = true;
-        //}
-
-        //$this->arrClieAgen = array(1685);
-        //$this->blnClieAgen = false;
-        //if (in_array($this->objCliente->CodiClie,$this->arrClieAgen)) {
-        //    $this->blnClieAgen = true;
-        //}
+        $arrSucuAgen = array();
+        if (in_array($this->objCliente->CodiClie,$this->arrClieAgen)) {
+            $this->blnClieAgen = true;
+            $arrSucuRece = Estacion::LoadArrayConCantidadDeReceptorias();
+            $intCantSucu = count($arrSucuRece);
+            if ($intCantSucu > 0) {
+                foreach ($arrSucuRece as $objSucuRece) {
+                    if ($objSucuRece->GetVirtualAttribute('cant_rece') > 0) {
+                        $arrSucuAgen[] = $objSucuRece;
+                    }
+                }
+            }
+            $this->arrSucuActi = $arrSucuAgen;
+        }
     }
 
     protected function Form_Create() {
@@ -550,7 +540,8 @@ class CargarGuia extends FormularioBaseKaizen {
 
     protected function lstModaPago_Create() {
         $this->lstModaPago = new QListBox($this);
-        $this->cargarModalidadPago();
+        //$this->cargarModalidadPago();
+        $this->cargarModalidadesDePago();
         $this->lstModaPago->AddAction(new QChangeEvent(),new QAjaxAction('lstModaPago_Change'));
     }
 
@@ -625,10 +616,21 @@ class CargarGuia extends FormularioBaseKaizen {
     }
 
     protected function lstModaPago_Change() {
-        $this->lblCeduDest->Text = 'Cédula/RIF del Destinatario (opcional)';
         if (!is_null($this->lstModaPago->SelectedValue)) {
             if ($this->lstModaPago->SelectedValue == TipoGuiaType::CODCOBROENDESTINO) {
-                $this->lblCeduDest->Text = 'Cédula/RIF del Destinatario';
+                $this->lstSucuDest_Change();
+                $this->lstDestFrec->SelectedIndex = 0;
+                $this->lstDestFrec->Enabled = false;
+                $this->lstDestFrec->ForeColor = 'blue';
+                $this->txtDireDest->Enabled = false;
+                $this->txtDireDest->ForeColor = 'blue';
+                $this->chkDestFrec->Enabled = false;
+            } else {
+                $this->lstDestFrec->Enabled = true;
+                $this->lstDestFrec->ForeColor = null;
+                $this->txtDireDest->Enabled = true;
+                $this->txtDireDest->ForeColor = null;
+                $this->chkDestFrec->Enabled = true;
             }
         }
     }
@@ -1272,6 +1274,26 @@ class CargarGuia extends FormularioBaseKaizen {
         }
     }
 
+    protected function cargarModalidadesDePago() {
+        $this->lstModaPago->RemoveAllItems();
+        $arrModaPago = TipoGuiaType::$NameArray;
+        foreach ($arrModaPago as $intId => $strValue) {
+            if ($this->objCliente->PagoCrd && ($strValue == 'CRD-CREDITO')) {
+                $objListItem = new QListItem($strValue, $intId, $this->objGuia->TipoGuia == $intId);
+                $this->lstModaPago->AddItem($objListItem);
+            }
+            if ($this->objCliente->PagoPpd && ($strValue == 'PPD-PREPAGADA')) {
+                $objListItem = new QListItem($strValue, $intId, $this->objGuia->TipoGuia == $intId);
+                $this->lstModaPago->AddItem($objListItem);
+            }
+            if ($this->objCliente->PagoCod && ($strValue == 'COD-COBRO EN DESTINO')) {
+                $objListItem = new QListItem($strValue, $intId, $this->objGuia->TipoGuia == $intId);
+                $this->lstModaPago->AddItem($objListItem);
+            }
+        }
+    }
+
+    /*
     protected function cargarModalidadPago() {
         $this->lstModaPago->RemoveAllItems();
         //-------------------------------------------------------------------------------------------------------------
@@ -1353,6 +1375,7 @@ class CargarGuia extends FormularioBaseKaizen {
             }
         }
     }
+    */
 
     protected function UpdateGuiaFields() {
         if (strlen($this->txtValoDecl->Text) == 0) {

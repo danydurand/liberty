@@ -123,6 +123,18 @@ class MasterClienteListForm extends MasterClienteListFormBase {
 		$colSucuClie->Name = 'Suc';
 		$colSucuClie->Width = 100;
 
+        $colRankGuia = new QDataGridColumn('RANK G.','<?= $_FORM->dtgRankGuia_Render($_ITEM); ?>');
+        $colRankGuia->Width = 75;
+        $this->dtgMasterClientes->AddColumn($colRankGuia);
+
+        $colRankKilo = new QDataGridColumn('RANK K.','<?= $_FORM->dtgRankKilo_Render($_ITEM); ?>');
+        $colRankKilo->Width = 75;
+        $this->dtgMasterClientes->AddColumn($colRankKilo);
+
+        $colRankFact = new QDataGridColumn('RANK K.','<?= $_FORM->dtgRankFact_Render($_ITEM); ?>');
+        $colRankFact->Width = 75;
+        $this->dtgMasterClientes->AddColumn($colRankFact);
+
 		$colPersCona = $this->dtgMasterClientes->MetaAddColumn('PersCona');
 		$colPersCona->Name = 'Contacto';
 		$colPersCona->Width = 200;
@@ -147,6 +159,30 @@ class MasterClienteListForm extends MasterClienteListFormBase {
 	//----------------------------
 	// Aquí se Crean los Objetos
 	//----------------------------
+
+    public function dtgRankGuia_Render(MasterCliente $objCliente) {
+        if ($objCliente) {
+            return $objCliente->_ranking();
+        } else {
+            return null;
+        }
+    }
+
+    public function dtgRankKilo_Render(MasterCliente $objCliente) {
+        if ($objCliente) {
+            return $objCliente->_ranking('kilos');
+        } else {
+            return null;
+        }
+    }
+
+    public function dtgRankFact_Render(MasterCliente $objCliente) {
+        if ($objCliente) {
+            return $objCliente->_ranking('facturado');
+        } else {
+            return null;
+        }
+    }
 
 	protected function txtCodiInte_Create() {
 		$this->txtCodiInte = new QTextBox($this);
