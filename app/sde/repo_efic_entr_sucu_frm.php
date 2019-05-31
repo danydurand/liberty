@@ -86,6 +86,7 @@ class RepoEficSucuFrm extends FormularioBaseKaizen {
         foreach (Estacion::LoadArrayByCodiStat(1) as $objEstacion) {
             $this->lstCodiEsta->AddItem($objEstacion->DescEsta,$objEstacion->CodiEsta);
         }
+        $this->lstCodiEsta->Required = true;
     }
 
     protected function btnExpoPdfx_Create() {

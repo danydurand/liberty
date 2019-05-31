@@ -5,9 +5,16 @@
 // Fecha Elab.   : 08/05/2017
 //------------------------------------------------
 require_once('qcubed.inc.php');
-//--------------------------------------
-// Criterios de seleccion de registros
-//--------------------------------------
+
+$objUser = unserialize($_SESSION['User']);
+$strSepaColu = ';';
+$strNombArch = __TEMP__.'/ees_'.$objUser->LogiUsua.'.csv';
+$mixManeArch = fopen($strNombArch,'w');
+
+$arrEncaDato = array('Guia','Ori-Des','Remitente','Destinatario','F.Pick-Up','F.Entrega','Fecha POD','Dias Entr', 'Dias POD');
+$strCadeAudi = implode($strSepaColu,$arrEncaDato);
+fputs($mixManeArch,$strCadeAudi.$strSepaColu."\n");
+
 $dttFechDhoy = FechaDeHoy();
 $dttFechInic = unserialize($_SESSION['FechInic']);
 $dttFechFina = unserialize($_SESSION['FechFina']);
@@ -29,72 +36,65 @@ foreach ($arrSucuSele as $objSucursal) {
         //-----------------------------------------------------------------------------------------------------
         // Se arma el query para obtener la información del reporte, guía, estación, fecha entrega, fecha pod
         //-----------------------------------------------------------------------------------------------------
-        $strCadeSqlx  = "select g.nume_guia, g.esta_orig, g.esta_dest, g.nomb_remi, g.nomb_dest, ";
-        $strCadeSqlx .= "       k.fech_ckpt, g.fecha_pod, g.fecha_entrega, g.fech_guia ";
+        $strCadeSqlx  = "select g.nume_guia, g.esta_orig, g.esta_dest, g.nomb_remi, g.nomb_dest, k.fech_ckpt, ";
+        $strCadeSqlx .= "       g.fecha_pod, g.fecha_entrega, g.fech_guia ";
         $strCadeSqlx .= "  from guia g inner join guia_ckpt k";
         $strCadeSqlx .= "    on g.nume_guia = k.nume_guia ";
-        $strCadeSqlx .= " where g.fecha_pod between '$dttFechInic' and '$dttFechFina'";
+        $strCadeSqlx .= " where g.fecha_entrega between '$dttFechInic' and '$dttFechFina'";
         $strCadeSqlx .= "   and k.codi_ckpt = 'OK' ";
-        $strCadeSqlx .= "   and g.anulada   = 0 ";
+        $strCadeSqlx .= "   and g.anulada   = 0";
         $strCadeSqlx .= "   and esta_dest   = '".$objSucursal->CodiEsta."'";
         $objDbResult  = $objDatabase->Query($strCadeSqlx);
         while ($mixRegistro = $objDbResult->FetchArray()) {
-            // ----------------------------------------------------------------------------------------------------
-            // Se determina si las variables que se utilizarán para obtener la efeciciencia contienen datos o no
-            // ----------------------------------------------------------------------------------------------------
-            if (strlen($mixRegistro['fech_ckpt']) > 0) {
-                $intDiasHabi = diasHabilesTranscurridos($mixRegistro['fecha_pod'],$mixRegistro['fech_ckpt']);
-                $blnHabiPick = true;
-            } else {
-                $intDiasHabi = diasHabilesTranscurridos($mixRegistro['fecha_pod'],$mixRegistro['fech_guia']);
-                $blnHabiPick = false;
+            $objGuia     = Guia::Load($mixRegistro['nume_guia']);
+            $strFechPick = $objGuia->FechaCreacion->__toString('YYYY-MM-DD');
+            if ($objGuia) {
+                /**
+                 * @var $objCkptPick GuiaCkpt
+                 */
+                $objCkptPick = $objGuia->checkpoint('PU');
+                if ($objCkptPick) {
+                    $strFechPick = $objCkptPick->FechCkpt->__toString('YYYY-MM-DD');
+                }
             }
-            if (strlen($mixRegistro['fecha_entrega']) > 0) {
-                $intDiasHabi2 = diasHabilesTranscurridos($mixRegistro['fecha_pod'],$mixRegistro['fecha_entrega']);
-            } else {
-                $strCadeSql2  = "select fech_ckpt ";
-                $strCadeSql2 .= "  from guia_ckpt ";
-                $strCadeSql2 .= " where nume_guia = '".$mixRegistro['nume_guia']."' ";
-                $strCadeSql2 .= "   and codi_ckpt = 'OK' ";
-                $strCadeSql2 .= " order by fech_ckpt desc, ";
-                $strCadeSql2 .= "          hora_ckpt desc ";
-                $strCadeSql2 .= " limit 1";
-                $objDbResulx  = $objDatabase->Query($strCadeSql2);
-                $mixRegistr1  = $objDbResult->FetchArray();
-                $intDiasHabi2 = diasHabilesTranscurridos($mixRegistro['fecha_pod'],$mixRegistr1['fech_ckpt']);
+            $intDiasHabi  = diasHabilesTranscurridos($mixRegistro['fecha_entrega'],$strFechPick);
+            if ($intDiasHabi < 0) {
+                $intDiasHabi = 0;
             }
-            //----------------------------------
-            // Vector de datos para el reporte
-            //----------------------------------
-            if ($blnHabiPick) {
-                $strHabiPick = '';
-            } else {
-                $strHabiPick = '*';
-            }
-            $objMensPago = BuscarParametro('MensUsua','FormPago',"TODO",0);
-            if ($objMensPago == 0) {
-                $strMensUnox = '';
+            $intDiasHabi2 = diasHabilesTranscurridos($mixRegistro['fecha_pod'],$mixRegistro['fecha_entrega']);
+            if ($intDiasHabi2 < 0) {
+                $intDiasHabi2 = 0;
             }
             $arrDatoRepo[] = array(
-                $mixRegistro['nume_guia'].$strHabiPick,
+                $mixRegistro['nume_guia'],
                 $mixRegistro['esta_orig']."-".$mixRegistro['esta_dest'],
                 substr($mixRegistro['nomb_remi'],0,20),
                 substr($mixRegistro['nomb_dest'],0,20),
-                $mixRegistro['fech_ckpt'],
+                $strFechPick,
+                $mixRegistro['fecha_entrega'],
                 $mixRegistro['fecha_pod'],
                 $intDiasHabi,
                 $intDiasHabi2
             );
-        }
-        $arrDatoRepo = ordenar_array($arrDatoRepo,'6',SORT_DESC);
-        $arrEncaDato = array('Guia','Ori-Des','Remitente','Destinatario','F.Pick-Up','Fecha POD','Dias', 'Dias Entr');
-        $objValoRepo = new stdClass();
-        $objValoRepo->arrEncaDato = $arrEncaDato;
-        $objValoRepo->arrDatoExpo = $arrDatoRepo;
-        $objValoRepo->strTituRepo = 'efic_en_entr_por_sucu_'.$objSucursal->CodiEsta;
-        $objValoRepo->blnConxBord = true;
 
-        $objExpoDato = new ExportarDatos($objValoRepo);
-        $objExpoDato->Exportar();
+        }
+        //t('El vector de datos tiene: '.count($arrDatoRepo).' elementos');
+        $arrDatoRepo = ordenar_array($arrDatoRepo,'7',SORT_DESC);
+
+        foreach ($arrDatoRepo as $arrLineArch) {
+            $strCadeAudi = implode($strSepaColu,$arrLineArch);
+            fputs($mixManeArch,$strCadeAudi.$strSepaColu."\n");
+        }
+
+        QApplication::Redirect(__UTIL__.'/descargar_archivo.php?f='.$strNombArch);
+
+        //$objValoRepo = new stdClass();
+        //$objValoRepo->arrEncaDato = $arrEncaDato;
+        //$objValoRepo->arrDatoExpo = $arrDatoRepo;
+        //$objValoRepo->strTituRepo = 'efic_en_entr_por_sucu_'.$objSucursal->CodiEsta;
+        //$objValoRepo->blnConxBord = true;
+        //
+        //$objExpoDato = new ExportarDatos($objValoRepo);
+        //$objExpoDato->Exportar();
     }
 }

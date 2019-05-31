@@ -16,7 +16,6 @@ t('Entrando al reporte de Eficiencia por Sucursal');
 // Se identifican los logos y el nombre de la Empresa
 //-----------------------------------------------------
 $strLogoComp = '/var/www/html/newliberty/assets/images/LogoEmpresa.jpg';
-//$objParametro = Parametro::Load('88888','logos');
 $objParametro = Parametro::Load('88888','datfisc');
 $strNombEmpr = $objParametro->ParaTxt1;
 $strDireEmpr = $objParametro->ParaTxt5;
@@ -171,7 +170,6 @@ foreach ($arrSucuSele as $objSucursal) {
                 $mixRegistro['esta_orig']."-".$mixRegistro['esta_dest'],
                 substr($mixRegistro['nomb_remi'],0,20),
                 substr($mixRegistro['nomb_dest'],0,20),
-                //$mixRegistro['fech_ckpt'],
                 $strFechPick,
                 $mixRegistro['fecha_entrega'],
                 $mixRegistro['fecha_pod'],
