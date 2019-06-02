@@ -317,6 +317,15 @@ class Permisos extends FormularioBaseKaizen {
     protected function btnSave_Click($strFormId, $strControlId, $strParameter) {
         $objDatabase = QApplication::$Database[1];
         $intGrupSele = $this->lstCodiGrup->SelectedValue;
+
+        $objGrupSele = NewGrupo::Load($intGrupSele);
+        $intCantPerm = $objGrupSele->CountPermisosAsGrupo();
+        $arrPermAnte = $objGrupSele->GetPermisoAsGrupoArray();
+        $strTextCamb = 'El Grupo tenia <b>('.$intCantPerm.')</b> permisos: ';
+        foreach ($arrPermAnte as $objPermAnte) {
+            $strTextCamb .= $objPermAnte->Opcion->Nombre.', ';
+        }
+        $strTextCamb = substr($strTextCamb,0,strlen(trim($strTextCamb))-1);
         //-----------------------------------------------------
         // Antes que nada, se eliminan los permisos del Grupo
         //-----------------------------------------------------
@@ -326,17 +335,28 @@ class Permisos extends FormularioBaseKaizen {
         $strCadeSqlx .= "   and opcion_id in (select id";
         $strCadeSqlx .= "                       from new_opcion ";
         $strCadeSqlx .= "                      where sistema_id = '".$_SESSION['Sistema']."')";
-        $objDbResult = $objDatabase->NonQuery($strCadeSqlx);
+        $objDatabase->NonQuery($strCadeSqlx);
         //--------------------------------------------------------------
         // Ahora se graban en la base de datos los permisos otorgados
         //--------------------------------------------------------------
-        $arrOpciSele = $this->lstOpciSist->SelectedValues;
+        $strNuevOpci = '';
+        $arrOpciSele = array_unique($this->lstOpciSist->SelectedValues,SORT_NUMERIC);
         foreach ($arrOpciSele as $intOpciSele) {
             $strCadeSqlx  = "insert ";
             $strCadeSqlx .= "  into permiso ";
             $strCadeSqlx .= "values (default,$intGrupSele,$intOpciSele)";
             $objDbResult  = $objDatabase->NonQuery($strCadeSqlx);
+            $objOpciSele  = NewOpcion::Load($intOpciSele);
+            $strNuevOpci .= $objOpciSele->Nombre.', ';
         }
+        $strNuevOpci  = substr($strNuevOpci,0,strlen(trim($strNuevOpci))-1);
+        $intCantPerm  = $objGrupSele->CountPermisosAsGrupo();
+        $strTextCamb .= '. <br>Ahora tiene <b>('.$intCantPerm.')</b> permisos: '.$strNuevOpci;
+        $arrLogxCamb['strNombTabl'] = 'Permiso';
+        $arrLogxCamb['intRefeRegi'] = $intGrupSele;
+        $arrLogxCamb['strNombRegi'] = $this->lstCodiGrup->SelectedName;
+        $arrLogxCamb['strDescCamb'] = $strTextCamb;
+        LogDeCambios($arrLogxCamb);
         $this->mensaje('Transaccion Exitosa !','m','s','',__iCHEC__);
     }
 

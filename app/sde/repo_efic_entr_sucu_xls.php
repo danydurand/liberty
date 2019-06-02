@@ -11,7 +11,7 @@ $strSepaColu = ';';
 $strNombArch = __TEMP__.'/ees_'.$objUser->LogiUsua.'.csv';
 $mixManeArch = fopen($strNombArch,'w');
 
-$arrEncaDato = array('Guia','Ori-Des','Remitente','Destinatario','F.Pick-Up','F.Entrega','Fecha POD','Dias Entr', 'Dias POD');
+$arrEncaDato = array('Guia','Ori-Des','Remitente','Destinatario','F.Pick-Up','F. Arribo','F.Entrega','Fecha POD','Dias Entr', 'Dias POD', 'Dias Arr.');
 $strCadeAudi = implode($strSepaColu,$arrEncaDato);
 fputs($mixManeArch,$strCadeAudi.$strSepaColu."\n");
 
@@ -48,6 +48,7 @@ foreach ($arrSucuSele as $objSucursal) {
         while ($mixRegistro = $objDbResult->FetchArray()) {
             $objGuia     = Guia::Load($mixRegistro['nume_guia']);
             $strFechPick = $objGuia->FechaCreacion->__toString('YYYY-MM-DD');
+            $strFechArri = 'N/D';
             if ($objGuia) {
                 /**
                  * @var $objCkptPick GuiaCkpt
@@ -55,6 +56,10 @@ foreach ($arrSucuSele as $objSucursal) {
                 $objCkptPick = $objGuia->checkpoint('PU');
                 if ($objCkptPick) {
                     $strFechPick = $objCkptPick->FechCkpt->__toString('YYYY-MM-DD');
+                }
+                $objEstaGuia = $objGuia->GetEstadisticaDeGuias();
+                if (strlen($objEstaGuia->FechaArribo) > 0) {
+                    $strFechArri = $objEstaGuia->FechaArribo->__toString('YYYY-MM-DD');
                 }
             }
             $intDiasHabi  = diasHabilesTranscurridos($mixRegistro['fecha_entrega'],$strFechPick);
@@ -65,21 +70,27 @@ foreach ($arrSucuSele as $objSucursal) {
             if ($intDiasHabi2 < 0) {
                 $intDiasHabi2 = 0;
             }
+            $intDiasEfi3 = 'N/D';
+            if ($strFechArri != 'N/D') {
+                $intDiasEfi3 = diasHabilesTranscurridos($mixRegistro['fecha_pod'],$strFechArri);
+            }
             $arrDatoRepo[] = array(
                 $mixRegistro['nume_guia'],
                 $mixRegistro['esta_orig']."-".$mixRegistro['esta_dest'],
                 substr($mixRegistro['nomb_remi'],0,20),
                 substr($mixRegistro['nomb_dest'],0,20),
                 $strFechPick,
+                $strFechArri,
                 $mixRegistro['fecha_entrega'],
                 $mixRegistro['fecha_pod'],
                 $intDiasHabi,
-                $intDiasHabi2
+                $intDiasHabi2,
+                $intDiasEfi3
             );
 
         }
         //t('El vector de datos tiene: '.count($arrDatoRepo).' elementos');
-        $arrDatoRepo = ordenar_array($arrDatoRepo,'7',SORT_DESC);
+        $arrDatoRepo = ordenar_array($arrDatoRepo,'8',SORT_DESC);
 
         foreach ($arrDatoRepo as $arrLineArch) {
             $strCadeAudi = implode($strSepaColu,$arrLineArch);

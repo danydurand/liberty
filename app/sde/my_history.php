@@ -110,7 +110,8 @@ class MiHistorico extends FormularioBaseKaizen {
 
         $this->dtgLogs->MetaAddColumn('Ip');
 
-        $this->dtgLogs->MetaAddColumn('Descripcion');
+        $colDescCamb = $this->dtgLogs->MetaAddColumn('Descripcion');
+        $colDescCamb->HtmlEntities = false;
 
 		/*
         $this->colEnlaEnti = new QDataGridColumn('Link','<?= $_FORM->dtgLogs_Enlace_Render($_ITEM); ?>');
