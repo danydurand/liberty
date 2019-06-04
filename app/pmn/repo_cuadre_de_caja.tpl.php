@@ -9,6 +9,7 @@ require(__APP_INCLUDES__ . '/header.inc.php');
     <div class="hidden-xs hidden-sm col-md-5 col-lg-5" style="text-align: center; margin-top: -0.25em;">
         <?php $this->btnCancel->Render(); ?>
         <?php $this->btnSave->Render(); ?>
+        <?php $this->btnFaltDato->Render(); ?>
     </div>
 </div>
 <div class="form-controls">

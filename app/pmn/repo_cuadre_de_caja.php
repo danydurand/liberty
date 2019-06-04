@@ -22,6 +22,8 @@ class RepoCuadreDeCaja extends FormularioBaseKaizen {
     protected $rdbCualRepo;
     protected $calFechRepo;
     protected $chkMostQuer;
+    protected $btnFaltDato;
+
 
     protected function SetupValores() {
         $this->objUsuario  = unserialize($_SESSION['User']);
@@ -56,6 +58,15 @@ class RepoCuadreDeCaja extends FormularioBaseKaizen {
         $this->chkMostQuer_Create();
 
         $this->rdbCuadRepo_Change();
+        $this->btnFaltDato_Create();
+
+        $this->verificarDatosFaltantes();
+
+        //------------------------------------------------------------------------------------------
+        // El boton que permite emitir el reporte estara visible, unicamente si todas las factura
+        // emitidas, tienen datos fiscales
+        //------------------------------------------------------------------------------------------
+        $this->btnSave->Visible = !$this->btnFaltDato->Visible;
     }
 
     //------------------------------
@@ -79,6 +90,7 @@ class RepoCuadreDeCaja extends FormularioBaseKaizen {
         $this->calFechRepo->Width = 100;
         $this->calFechRepo->Enabled = false;
         $this->calFechRepo->ForeColor = 'blue';
+        $this->calFechRepo->AddAction(new QChangeEvent(), new QAjaxAction('verificarDatosFaltantes'));
     }
 
     protected function chkMostQuer_Create() {
@@ -90,9 +102,30 @@ class RepoCuadreDeCaja extends FormularioBaseKaizen {
         }
     }
 
+    protected function btnFaltDato_Create(){
+        $this->btnFaltDato = new QButtonD($this);
+        $this->btnFaltDato->AddAction(new QClickEvent(), new QServerAction('btnFaltDato_Click'));
+    }
+
     //-------------------------------------
     // Acciones relativas a los objetos
     //-------------------------------------
+
+    protected function verificarDatosFaltantes() {
+        $strCadeSqlx  = 'select count(*) as cant_falt ';
+        $strCadeSqlx .= '  from v_sin_datos_fiscales ';
+        $strCadeSqlx .= ' where creada_por = '.$this->objUsuario->CodiUsua;
+        $strCadeSqlx .= '   and creada_el = "'.$this->calFechRepo->DateTime->__toString("YYYY-MM-DD").'"';
+        //t('SQL: '.$strCadeSqlx);
+        $objDataBase  = FacturaPmn::GetDatabase();
+        $objDbResult  = $objDataBase->Query($strCadeSqlx);
+        $mixRegistro  = $objDbResult->FetchArray();
+        $intCantFalt  = $mixRegistro['cant_falt'];
+        //t('Cantidad de Datos Faltantes: '.$intCantFalt);
+        $this->btnFaltDato->Text = 'Faltan Datos Fiscales ('.$intCantFalt.')';
+        $this->btnFaltDato->Visible = $intCantFalt;
+        $this->btnSave->Visible = !$this->btnFaltDato->Visible;
+    }
 
     protected function rdbCuadRepo_Change() {
         if ($this->rdbCualRepo->SelectedValue == 'H') {
@@ -106,6 +139,10 @@ class RepoCuadreDeCaja extends FormularioBaseKaizen {
         }
     }
 
+    protected function btnFaltDato_Click(){
+        $_SESSION['fech_falt'] = $this->calFechRepo->DateTime->__toString('YYYY-MM-DD');
+        QApplication::Redirect(__SIST__.'/prefacturas_sin_df.php');
+    }
 
     protected function btnSave_Click($strFormId, $strControlId, $strParameter) {
         $this->mensaje();
