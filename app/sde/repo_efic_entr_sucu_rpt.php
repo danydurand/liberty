@@ -126,8 +126,10 @@ foreach ($arrSucuSele as $objSucursal) {
                     $strFechPick = $objCkptPick->FechCkpt->__toString('YYYY-MM-DD');
                 }
                 $objEstaGuia = $objGuia->GetEstadisticaDeGuias();
-                if (strlen($objEstaGuia->FechaArribo) > 0) {
-                    $strFechArri = $objEstaGuia->FechaArribo->__toString('YYYY-MM-DD');
+                if ($objEstaGuia) {
+                    if (strlen($objEstaGuia->FechaArribo) > 0) {
+                        $strFechArri = $objEstaGuia->FechaArribo->__toString('YYYY-MM-DD');
+                    }
                 }
             }
             $intDiasHabi  = diasHabilesTranscurridos($mixRegistro['fecha_entrega'],$strFechPick);

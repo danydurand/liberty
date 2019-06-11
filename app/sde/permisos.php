@@ -321,11 +321,18 @@ class Permisos extends FormularioBaseKaizen {
         $objGrupSele = NewGrupo::Load($intGrupSele);
         $intCantPerm = $objGrupSele->CountPermisosAsGrupo();
         $arrPermAnte = $objGrupSele->GetPermisoAsGrupoArray();
-        $strTextCamb = 'El Grupo tenia <b>('.$intCantPerm.')</b> permisos: ';
+        $strTextCamb = 'El Grupo tenia <b>('.$intCantPerm.')</b> permisos ';
+        /*
+        t('El Grupo tenia ('.$intCantPerm.') permisos');
+        t('El vector tiene ('.count($arrPermAnte).' elementos');
         foreach ($arrPermAnte as $objPermAnte) {
-            $strTextCamb .= $objPermAnte->Opcion->Nombre.', ';
+            if (isset($objPermAnte->Opcion->Nombre)) {
+                t('Permiso: '.$objPermAnte->Id.' Opcion: '.$objPermAnte->OpcionId);
+                $strTextCamb .= $objPermAnte->Opcion->Nombre.', ';
+            }
         }
         $strTextCamb = substr($strTextCamb,0,strlen(trim($strTextCamb))-1);
+        */
         //-----------------------------------------------------
         // Antes que nada, se eliminan los permisos del Grupo
         //-----------------------------------------------------

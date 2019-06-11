@@ -31,6 +31,17 @@ class MasterCliente extends MasterClienteGen {
         return sprintf('%s - %s', $this->strCodigoInterno, $this->strNombClie);
     }
 
+    public function _ranking() {
+        $strCadeSqlx  = "select rnk ";
+        $strCadeSqlx .= "  from v_ranking ";
+        $strCadeSqlx .= " where id = ".$this->intCodiClie;
+        $objDataBase  = $this::GetDatabase();
+        $objDbResult  = $objDataBase->Query($strCadeSqlx);
+        $mixRegistro  = $objDbResult->FetchArray();
+        return !is_null($mixRegistro['rnk']) ? '(Top: '.$mixRegistro['rnk'].')' : null;
+    }
+
+    /*
     public function _ranking($strTipoRank=null) {
         $strNombVist = 'v_ranking';
         if (!is_null($strTipoRank)) {
@@ -44,6 +55,7 @@ class MasterCliente extends MasterClienteGen {
         $mixRegistro  = $objDbResult->FetchArray();
         return !is_null($mixRegistro['rnk']) ? '(Top: '.$mixRegistro['rnk'].')' : null;
     }
+    */
 
 
     /**
@@ -55,6 +67,23 @@ class MasterCliente extends MasterClienteGen {
     public static function CodigosInternosParaExcluir() {
         $arrCodiExcl = ['IMP01'];
         return "'".implode("','",$arrCodiExcl)."'";
+    }
+
+    public function controlarSubCuentas($blnStatCuen) {
+        $arrSubcClie = $this->subCuentas();
+        foreach ($arrSubcClie as $intSubcIdxx) {
+            $objSubcClie = MasterCliente::Load($intSubcIdxx);
+            if ($objSubcClie) {
+                $objSubcClie->CodiStat = $blnStatCuen;
+                $objSubcClie->Save();
+                $arrLogxCamb['strNombTabl'] = 'MasterCliente';
+                $arrLogxCamb['intRefeRegi'] = $objSubcClie->CodiClie;
+                $arrLogxCamb['strNombRegi'] = '('.$objSubcClie->CodigoInterno .') - '. $objSubcClie->NombClie;
+                $arrLogxCamb['strDescCamb'] = 'Se cambió el status de la cuenta a: '.StatusType::ToString($blnStatCuen);
+                $arrLogxCamb['blnCambDeli'] = true;
+                LogDeCambios($arrLogxCamb);
+            }
+        }
     }
 
     public function tieneSubCuentas() {
@@ -79,13 +108,29 @@ class MasterCliente extends MasterClienteGen {
     }
 
     public function tieneMsjYamaguchiAlerta() {
-        $blnTienMens = false;
+        //$blnTienMens = false;
+
+        $objClauWher   = QQ::Clause();
+        $objClauWher[] = QQ::Equal(QQN::MensajeYamaguchi()->Tipo,'danger');
+        $objClauWher[] = QQ::Equal(QQN::MensajeYamaguchi()->Codigos,$this->CodigoInterno);
+        return MensajeYamaguchi::QueryCount(QQ::AndCondition($objClauWher));
+
+        /*
         $objMensYama = MensajeYamaguchi::LoadMsjAlertByCodigoInterno($this->CodigoInterno);
         if ($objMensYama) {
             $blnTienMens = true;
         }
         return $blnTienMens;
+        */
     }
+
+    public function LoadMsjAlertByCodigoInterno() {
+        $objClauWher   = QQ::Clause();
+        $objClauWher[] = QQ::Equal(QQN::MensajeYamaguchi()->Tipo,'danger');
+        $objClauWher[] = QQ::Equal(QQN::MensajeYamaguchi()->Codigos,$this->CodigoInterno);
+        return MensajeYamaguchi::QuerySingle(QQ::AndCondition($objClauWher));
+    }
+
 
     public function getUltimaSubCuentaAsociada() {
         //-------------------------------------------------------------------------------------------

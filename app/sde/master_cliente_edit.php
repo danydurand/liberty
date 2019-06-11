@@ -1561,19 +1561,23 @@ class MasterClienteEditForm extends FormularioBaseKaizen {
             //-----------------------------------------------------------------------------------
             // Si tiene un Mensaje de Alerta Yamaguchi asignado, se procede a eliminar el mismo.
             //-----------------------------------------------------------------------------------
-            $objMensYama = MensajeYamaguchi::LoadMsjAlertByCodigoInterno($objMastClie->CodigoInterno);
-            $objMensYama->Delete();
+            //$objMensYama = MensajeYamaguchi::LoadMsjAlertByCodigoInterno($objMastClie->CodigoInterno);
+            $objMensYama = $objMastClie->LoadMsjAlertByCodigoInterno();
+            if ($objMensYama) {
+                $objMensYama->Delete();
+            }
             //--------------------------------------
             // Se registra la transacción en el Log
             //--------------------------------------
             $arrLogxCamb['strNombTabl'] = 'MensajeCORP';
             $arrLogxCamb['intRefeRegi'] = $objMensYama->Id;
             $arrLogxCamb['strNombRegi'] = $objMensYama->Tipo.' | '.$objMensYama->Texto;
-            $arrLogxCamb['strDescCamb'] = "Borrado";
-            $arrLogxCamb['strEnlaEnti'] = __SIST__.'/master_cliente_edit.php/'.$objMastClie->CodiClie;
+            $arrLogxCamb['strDescCamb'] = "Borrado mensaje al Cliente: ".$objMastClie->CodigoInterno;
             LogDeCambios($arrLogxCamb);
         }
     }
+
+
 
     protected function MensajeDeAlertaYamaguchi(MasterCliente $objMastClie) {
         if (!$objMastClie->tieneMsjYamaguchiAlerta()) {
@@ -1598,8 +1602,7 @@ class MasterClienteEditForm extends FormularioBaseKaizen {
             $arrLogxCamb['strNombTabl'] = 'MensajeCORP';
             $arrLogxCamb['intRefeRegi'] = $objMensYama->Id;
             $arrLogxCamb['strNombRegi'] = $objMensYama->Tipo.' | '.$objMensYama->Texto;
-            $arrLogxCamb['strDescCamb'] = "Creado";
-            $arrLogxCamb['strEnlaEnti'] = __SIST__.'/master_cliente_edit.php/'.$objMastClie->CodiClie;
+            $arrLogxCamb['strDescCamb'] = "Creado el mensaje al Cliente: ".$objMastClie->CodigoInterno;
             LogDeCambios($arrLogxCamb);
         }
     }
@@ -1726,11 +1729,28 @@ class MasterClienteEditForm extends FormularioBaseKaizen {
             //------------------------------------
             $this->ActualizarCampos($intCodiDepe);
             $this->objMasterCliente->Save();
-            //--------------------------------------------------------------------
-            // Se valida si el cliente se encuentra inactivo o activo para luego
-            // proceder a hacer gestión del MensajeCORP que le corresponda.
-            //--------------------------------------------------------------------
             $this->GestionMensajeDeAlertaYamaguchi($this->objMasterCliente);
+            //------------------------------------------------------------------------------------
+            // Si se trata de una "cuenta padre" las sub-cuentas deben quedar con el mismo status
+            //------------------------------------------------------------------------------------
+            if ($this->objMasterCliente->tieneSubCuentas()) {
+                //$this->objMasterCliente->controlarSubCuentas($this->objMasterCliente->CodiStat);
+                $arrSubcClie = $this->objMasterCliente->subCuentas();
+                foreach ($arrSubcClie as $intSubcIdxx) {
+                    $objSubcClie = MasterCliente::Load($intSubcIdxx);
+                    if ($objSubcClie) {
+                        $objSubcClie->CodiStat = $this->objMasterCliente->CodiStat;
+                        $objSubcClie->Save();
+                        $arrLogxCamb['strNombTabl'] = 'MasterCliente';
+                        $arrLogxCamb['intRefeRegi'] = $objSubcClie->CodiClie;
+                        $arrLogxCamb['strNombRegi'] = '('.$objSubcClie->CodigoInterno .') - '. $objSubcClie->NombClie;
+                        $arrLogxCamb['strDescCamb'] = 'Se cambió el status a: '.StatusType::ToString($this->objMasterCliente->CodiStat);
+                        $arrLogxCamb['blnCambDeli'] = true;
+                        LogDeCambios($arrLogxCamb);
+                        $this->GestionMensajeDeAlertaYamaguchi($objSubcClie);
+                    }
+                }
+            }
             if ($this->blnEditMode) {
                 //---------------------------------------------------------------------------------------
                 // Si estamos en Modo Edición, se verificará la existencia de algun cambio en los datos.
