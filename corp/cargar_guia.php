@@ -283,11 +283,13 @@ class CargarGuia extends FormularioBaseKaizen {
         $strTextMens = 'Evite el uso de caracteres especiales (Ej: \\~°#^*+) en <b>los nombres, la dirección, el contenido, el teléfono y la persona contacto</b>';
         $this->mensaje($strTextMens,'n','i','',__iINFO__);
 
+        /*
         if (in_array($this->objCliente->CodiClie,$this->arrClieAgen)) {
             //$this->txtDireDest->Text = '';
             $this->txtDireDest->Enabled = false;
             $this->txtDireDest->ForeColor = 'blue';
         }
+        */
 
     }
 

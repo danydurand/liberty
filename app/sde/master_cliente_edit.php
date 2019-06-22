@@ -1127,6 +1127,7 @@ class MasterClienteEditForm extends FormularioBaseKaizen {
         $this->txtUsuaApix->Name = 'Usuario API';
         $this->txtUsuaApix->Width = 100;
         $this->txtUsuaApix->Text = '';
+        $this->txtUsuaApix->MaxLength = 8;
         $this->txtUsuaApix->Visible = false;
         if ($this->blnEditMode){
             $this->txtUsuaApix->Text = $this->objMasterCliente->UsuarioApi;
@@ -1655,7 +1656,7 @@ class MasterClienteEditForm extends FormularioBaseKaizen {
         return true;
     }
 
-    protected function btnSave_Click() {
+    protected function  btnSave_Click() {
         $blnTodoOkey = true;
         $this->mensaje();
         //--------------------------------------------------------------------------------------------
@@ -1679,13 +1680,20 @@ class MasterClienteEditForm extends FormularioBaseKaizen {
             // La credenciales de acceso a la API, deben contener valores
             //-------------------------------------------------------------
             if ((strlen($this->txtUsuaApix->Text) == 0 || strlen($this->txtPassApix->Text) == 0)) {
-                $this->mensaje('En la sección <strong>Configuracion: API</strong>, las credenciales (Usauriode acceso a la API, no deben estar vacías','m','d','',__iHAND__);
+                $this->mensaje('En la sección <strong>Configuracion: API</strong>, las credenciales (Usuario de acceso a la API, no deben estar vacías','m','d','',__iHAND__);
                 $blnTodoOkey = false;
             }
-        } else {
-            $this->txtUsuaApix->Text = '';
-            $this->txtPassApix->Text = '';
-            $this->txtGuiaXdia->Text = '';
+            //----------------------------------------------
+            // El login de Usuario(API) no debe repetirse
+            //----------------------------------------------
+            $objClauWher   = QQ::Clause();
+            $objClauWher[] = QQ::Equal(QQN::MasterCliente()->UsuarioApi,$this->txtUsuaApix->Text);
+            $objClauWher[] = QQ::NotEqual(QQN::MasterCliente()->CodiClie,$this->objMasterCliente->CodiClie);
+            $blnExisOtro   = MasterCliente::QueryCount(QQ::AndCondition($objClauWher));
+            if ($blnExisOtro) {
+                $this->mensaje('En la sección <strong>Configuracion: API</strong>, Ya existe otro Cliente con el mismo Usuario API','m','d','',__iHAND__);
+                $blnTodoOkey = false;
+            }
         }
         if (!$this->blnEditMode && $blnTodoOkey) {
             if (strlen($this->txtCodiInte->Text)) {
@@ -1734,7 +1742,6 @@ class MasterClienteEditForm extends FormularioBaseKaizen {
             // Si se trata de una "cuenta padre" las sub-cuentas deben quedar con el mismo status
             //------------------------------------------------------------------------------------
             if ($this->objMasterCliente->tieneSubCuentas()) {
-                //$this->objMasterCliente->controlarSubCuentas($this->objMasterCliente->CodiStat);
                 $arrSubcClie = $this->objMasterCliente->subCuentas();
                 foreach ($arrSubcClie as $intSubcIdxx) {
                     $objSubcClie = MasterCliente::Load($intSubcIdxx);

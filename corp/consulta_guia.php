@@ -22,9 +22,7 @@ class ConsultaGuia extends FormularioBaseKaizen {
     // Parámetros regulares
     //----------------------
     protected $blnSubxClie;
-    //---------------------------
-    // Parámetros de información
-    //---------------------------
+
     // ---- Remitente ----
     protected $lblNumeGuia;
     protected $lblFechGuia;
@@ -41,9 +39,7 @@ class ConsultaGuia extends FormularioBaseKaizen {
     protected $lblFletDire;
     protected $lblPersEntr;
     protected $lblFechEntr;
-    //        *   *   *   *
-    // Lado Derecho del Formulario
-    //        *   *   *   *
+
     // ---- Envío ----
     protected $lblPesoGuia;
     protected $lblCantPiez;
@@ -60,6 +56,7 @@ class ConsultaGuia extends FormularioBaseKaizen {
     protected $lblMontIvax;
     protected $lblMontTota;
     protected $lblGuiaReto;
+
     //    *   *   *   *
     // Resto del Formulario
     //    *   *   *   *
@@ -584,6 +581,7 @@ class ConsultaGuia extends FormularioBaseKaizen {
     //------------------------------
     // Otras funciones del programa
     //------------------------------
+
     protected function verificarNavegacion() {
         $this->btnRegiAnte->Enabled = !($this->intPosiRegi == 0);
         $this->btnPrimRegi->Enabled = !($this->intPosiRegi == 0);
@@ -592,8 +590,8 @@ class ConsultaGuia extends FormularioBaseKaizen {
     }
 
     protected function determinarPosicion() {
-        if (isset($_SESSION['DataGuia'])) {
-            $this->arrDataTabl = unserialize($_SESSION['DataGuia']);
+        if (isset($_SESSION['DataTabl'])) {
+            $this->arrDataTabl = unserialize($_SESSION['DataTabl']);
             $this->intCantRegi = count($this->arrDataTabl);
             //-------------------------------------------------------------------------------
             // Se determina la posicion del registro actual, dentro del vector de registros

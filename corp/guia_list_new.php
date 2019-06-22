@@ -361,6 +361,7 @@ class GuiaListNew extends FormularioBaseKaizen {
             QQ::Clause($this->dtgGuiaClie->OrderByClause, $this->dtgGuiaClie->LimitClause)
         );
         $this->dtgGuiaClie->DataSource = $arrGuiaNaci;
+        $_SESSION['DataTabl'] = serialize($arrGuiaNaci);
 
         //-------------------------------------------------------------------
         // Este vector de nros de guias, se utiliza en la impresion en lote
