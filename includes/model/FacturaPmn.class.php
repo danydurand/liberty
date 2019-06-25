@@ -53,35 +53,27 @@
 		}
 
 		public function BorrarFactura() {
-		    t('Borrando la Factura');
 			//----------------------------------------------------
 			// Se rompe la relacion entre las guias y la Factura
 			//----------------------------------------------------
 			$arrItemFact = $this->GetItemFacturaPmnAsFacturaArray();
-			t('El array de items tiene: '.count($arrItemFact).' elementos');
 			foreach ($arrItemFact as $objItemFact) {
-			    t('Procesando: '.$objItemFact->Guia->NumeGuia);
 				$objItemFact->Guia->FacturaId = null;
 				$objItemFact->Guia->Save();
-				t('La asociacion Factura-Guia se ha roto');
 				$objItemFact->Guia->EliminarPOD();
-				t('El POD ha sido eliminado');
 				//------------------------------------
 				// Se elimina el item de la Factura
 				//------------------------------------
 				$objItemFact->Delete();
-				t('El item de la factura ha sido eliminado');
 			}
 			//------------------------------------------------
 			// Se eliminan los pagos asociados a la Factura
 			//------------------------------------------------
 			$this->DeleteAllPagoFacturaPmnsAsFactura();
-			t('Los pagos han sido borrados');
 			//----------------------------------
 			// Se elimina la Factura como tal
 			//----------------------------------
 			$this->Delete();
-			t('La Factura ha sido borrada');
 		}
 
 		public function AnularFactura($arrParaAnul) {

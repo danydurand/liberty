@@ -201,10 +201,12 @@ class RegistrarPago extends FormularioBaseKaizen {
         $colMontPago->HtmlEntities = false;
         $this->dtgPagoFact->AddColumn($colMontPago);
 
-        $colEditColu = new QDataGridColumn('Editar', '<?= $_FORM->EditColumn_Render($_ITEM) ?>');
-        $colEditColu->Width = 120;
-        $colEditColu->HtmlEntities = false;
-        $this->dtgPagoFact->AddColumn($colEditColu);
+        if ($this->objFactPmnx->ImpresaId == SinoType::NO) {
+            $colEditColu = new QDataGridColumn('Editar', '<?= $_FORM->EditColumn_Render($_ITEM) ?>');
+            $colEditColu->Width = 120;
+            $colEditColu->HtmlEntities = false;
+            $this->dtgPagoFact->AddColumn($colEditColu);
+        }
 
         // Let's pre-default the sorting by id (column index #0) and use AJAX
         $this->dtgPagoFact->SortColumnIndex = 0;
@@ -286,6 +288,14 @@ class RegistrarPago extends FormularioBaseKaizen {
         $this->btnNew->AddAction(new QClickEvent(), new QAjaxAction('btnNew_Click'));
         $this->btnNew->CausesValidation = false;
         $this->btnNew->ToolTip = QApplication::Translate('Nuevo Pago');
+
+        //----------------------------------------------------------------------------------------------------
+        // Si la factura ya fue impresa, no se permite la edicion del pago, no registra nuevos pagos tampoco
+        //----------------------------------------------------------------------------------------------------
+        if ($this->objFactPmnx->ImpresaId == SinoType::SI) {
+            $this->btnNew->Visible = false;
+            $this->mensaje('Factura Impresa.  No se admiten cambios en el Cobro','','d','',__iHAND__);
+        }
     }
 
     //-----------------------------------

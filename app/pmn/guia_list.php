@@ -113,6 +113,9 @@ class GuiaListForm extends GuiaListFormBase {
         $this->dtgGuias->Paginator = new QPaginator($this->dtgGuias);
         $this->dtgGuias->ItemsPerPage = 20;
 
+        $this->dtgGuias->SortColumnIndex = 1;
+        $this->dtgGuias->SortDirection = 0;
+
         // Higlight the datagrid rows when mousing over them
         $this->dtgGuias->AddRowAction(new QMouseOverEvent(), new QCssClassAction('selectedStyle'));
         $this->dtgGuias->AddRowAction(new QMouseOutEvent(), new QCssClassAction());

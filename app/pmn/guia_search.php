@@ -10,7 +10,7 @@ class GuiaSearchForm extends FormularioBaseKaizen {
     // Lado Izquierdo del Formulario //
     protected $txtNumeGuia;
     protected $txtGuiaExte;
-    protected $txtNumeMast;
+    protected $txtNumeCedu;
     protected $txtCodiInte;
     protected $txtNombBusc;
     protected $lstCodiClie;
@@ -52,7 +52,7 @@ class GuiaSearchForm extends FormularioBaseKaizen {
         
         $this->txtNumeGuia_Create();
         $this->txtGuiaExte_Create();
-        $this->txtNumeMast_Create();
+        $this->txtNumeCedu_Create();
         $this->txtCodiInte_Create();
         $this->txtNombBusc_Create();
         $this->lstCodiClie_Create();
@@ -106,10 +106,10 @@ class GuiaSearchForm extends FormularioBaseKaizen {
         $this->txtGuiaExte->Width = 181;
     }
 
-    protected function txtNumeMast_Create() {
-        $this->txtNumeMast = new QTextBox($this);
-        $this->txtNumeMast->Name = QApplication::Translate('Nro de Manifiesto');
-        $this->txtNumeMast->Width = 181;
+    protected function txtNumeCedu_Create() {
+        $this->txtNumeCedu = new QTextBox($this);
+        $this->txtNumeCedu->Name = QApplication::Translate('Nro de Cédula');
+        $this->txtNumeCedu->Width = 100;
     }
 
     protected function txtCodiInte_Create() {
@@ -372,6 +372,7 @@ class GuiaSearchForm extends FormularioBaseKaizen {
         }
     }
 
+    /*
     protected function obtenerGuiasDeLaMaster($strNumeMast) {
         $strCadeSqlx  = "select nume_guia ";
         $strCadeSqlx .= "  from sde_contenedor_guia_assn ";
@@ -384,6 +385,7 @@ class GuiaSearchForm extends FormularioBaseKaizen {
         }
         return $arrGuiaMast;
     }
+    */
 
     protected function lstCodiDest_Change() {
         // if ($this->lstCodiDest->SelectedValue == 'CCS') {
@@ -554,16 +556,12 @@ class GuiaSearchForm extends FormularioBaseKaizen {
                 $objClausula[] = QQ::Equal(QQN::Guia()->CodiClie,$this->lstCodiClie->SelectedValue);
                 $strCadeSqlx  .= " and g.codi_clie = ".$this->lstCodiClie->SelectedValue;
             }
-            if (strlen($this->txtNumeMast->Text) > 0) {
-                $objGuiaMast = SdeContenedor::Load($this->txtNumeMast->Text);
-                if ($objGuiaMast) {
-                    $arrNumeGuia = $this->obtenerGuiasDeLaMaster($this->txtNumeMast->Text);
-                    if (count($arrNumeGuia) > 0) {
-                        $objClausula[] = QQ::In(QQN::Guia()->NumeGuia,$arrNumeGuia);
-                        $strCadeGuia = implode("','",$arrNumeGuia);
-                        $strCadeSqlx .= " and g.nume_guia in ('$strCadeGuia')";
-                    }
-                }
+            if (strlen($this->txtNumeCedu->Text) > 0) {
+                $objClausula[] = QQ::OrCondition(
+                    QQ::Equal(QQN::Guia()->CedulaRif,$this->txtNumeCedu->Text),
+                    QQ::Equal(QQN::Guia()->CedulaDestinatario,$this->txtNumeCedu->Text)
+                );
+                $strCadeSqlx  .= " (or g.cedula_rif = '".$this->txtNumeCedu->Text."' or r.cedula_destinario = '".$this->txtNumeCedu->Text."')";
             }
             if (strlen($this->txtGuiaExte->Text)) {
                 $objClausula[] = QQ::Like(QQN::Guia()->GuiaExterna,"%".$this->txtGuiaExte->Text."%");

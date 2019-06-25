@@ -20,6 +20,7 @@ require(__APP_INCLUDES__ . '/header.inc.php');
             <?php $this->btnCancel->Render(); ?>
             <?php $this->btnSave->Render(); ?>
             <?php $this->btnEditGuia->Render(); ?>
+            <?php $this->btnDescAmpl->Render(); ?>
             <?php $this->btnMasxAcci->Render(); ?>
         </div>
         <div class="hidden-xs hidden-sm hidden-md col-lg-4 pull-right" style="text-align: right; padding-right: 3px; margin-top: -0.25em">
@@ -129,9 +130,6 @@ require(__APP_INCLUDES__ . '/header.inc.php');
             </div>
             <div class="row">
                 <div class="col-md-6" style="margin-top: 0.5em; ">
-                    <div class="row" style="padding: 0.1em">
-                        <div class="titulo">CKPT / Status</div>
-                    </div>
                     <div class="row">
                         <!--Información de CKPT/Status-->
                         <div class="table-responsive">
@@ -140,13 +138,30 @@ require(__APP_INCLUDES__ . '/header.inc.php');
                     </div>
                 </div>
                 <div class="col-md-6" style="margin-top: 0.5em; ">
-                    <div class="row" style="padding: 0.1em">
-                        <div class="titulo">Histórico</div>
-                    </div>
                     <div class="row">
                         <!--Información de Registro de Trabajo (Histórico)-->
                         <div class="table-responsive">
                             <?php $this->dtgRegiTrab->Render() ?>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!------------------------------------>
+            <!-- Informacion del POD de la Guia -->
+            <!------------------------------------>
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="row">
+                        <div class="col-md-offset-1 col-md-11">
+                            <div class="titulo-c"><?php $this->lblDescAmpl->Render(); ?></div>
+                        </div>
+                        <div class="col-md-offset-1 col-md-11">
+                            <?php $this->txtDescAmpl->Render(); ?>
+                        </div>
+                    </div>
+                    <div class="row" style="margin-top: 0.3em">
+                        <div class="col-md-offset-4 col-md-6">
+                            <?php $this->btnSaveDesc->Render(); ?>
                         </div>
                     </div>
                 </div>

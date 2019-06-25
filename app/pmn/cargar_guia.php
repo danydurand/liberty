@@ -682,6 +682,9 @@ class CargarGuia extends FormularioBaseKaizen {
         $this->btnCalcTari = new QButtonP($this);
         $this->btnCalcTari->Text = TextoIcono('eye fa-lg','Cotizar');
         $this->btnCalcTari->AddAction(new QClickEvent(), new QServerAction('btnCalcTari_Click'));
+        if ($this->blnEditMode) {
+            $this->btnCalcTari->Visible = false;
+        }
     }
 
     protected function btnMasxAcci_Create() {
@@ -717,7 +720,7 @@ class CargarGuia extends FormularioBaseKaizen {
 
     protected function recrearBotonPopup() {
         $strTextModa =
-            "<button type=\"button\" class=\"btn btn-warning btn-sm\" data-toggle=\"modal\" data-target=\"#myModal\">
+            "<button type=\"button\" class=\"btn btn-info btn-sm\" data-toggle=\"modal\" data-target=\"#myModal\">
                  <i class=\"fa fa-".__iINFO__." fa-lg\"></i> ZNC - ". $this->strCodiEsta ."
             </button>";
         return $strTextModa;
@@ -750,10 +753,6 @@ class CargarGuia extends FormularioBaseKaizen {
         $this->btnErroProc->AddAction(new QClickEvent(), new QServerAction('btnErroProc_Click'));
         $this->btnErroProc->Visible = false;
     }
-
-    //-----------------------------------
-    // Acciones relativas a los objetos
-    //-----------------------------------
 
     //--------------------------------------------------------------------------------------------------------------
     // Función que busca y muestra los datos de un cliente remitente existente a través de su cédula. En caso de no

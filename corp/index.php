@@ -162,9 +162,6 @@ class Index extends QForm {
     }
 
     protected function SetupValoresDeSesion($objUsuaConn) {
-        //t('====================================================');
-        //t('Entrando a SetupValoresDeSesion en el index del CORP');
-
         $strEmaiSopo = BuscarParametro('CntaSopo','EmaiSopo','Txt1','soportelufeman@gmail.com');
         $_SESSION['EmaiSopo'] = serialize($strEmaiSopo);
         //---------------------------------------------------------------------------------------------------------

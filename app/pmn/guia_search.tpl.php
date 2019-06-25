@@ -24,7 +24,7 @@ require(__APP_INCLUDES__ . '/header.inc.php');
                 <div class="col-xs-12 col-md-4">
                     <?php $this->txtNumeGuia->RenderWithName(); ?>
                     <?php $this->txtGuiaExte->RenderWithName(); ?>
-                    <?php $this->txtNumeMast->RenderWithName(); ?>
+                    <?php $this->txtNumeCedu->RenderWithName(); ?>
                     <?php $this->txtCodiInte->RenderWithName(); ?>
                     <?php $this->txtNombBusc->RenderWithName(); ?>
                     <?php $this->lstCodiClie->RenderWithName(); ?>

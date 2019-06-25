@@ -918,10 +918,13 @@ class CrearFactura extends FormularioBaseKaizen {
    }
 
     protected function btnCancel_Click() {
-        if ($this->objFactPmnx->ImpresaId == SinoType::NO) {
-            t('Voy a Borrar la Factura');
-            $this->objFactPmnx->BorrarFactura();
-            t('Regrese de Borrar la Factura');
+        if (($this->objFactPmnx->ImpresaId == SinoType::NO) && ($this->lblMontRest->Text == 0)) {
+            $strTextMens = 'Cobro registrado, sin datos fiscales asociados, por favor presion el botón <b>C.D.F</b>, para completar los datos';
+            $this->mensaje($strTextMens,'','d','',__iHAND__);
+            return;
+            //t('Voy a Borrar la Factura');
+            //$this->objFactPmnx->BorrarFactura();
+            //t('Regrese de Borrar la Factura');
         }
 
         $objUltiAcce = PilaAcceso::Pop('D');

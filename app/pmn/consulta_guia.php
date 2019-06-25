@@ -12,9 +12,7 @@ require_once(__APP_INCLUDES__.'/validar_ubicacion.inc.php');
 require_once(__APP_INCLUDES__.'/FormularioBaseKaizen.class.php');
 
 class ConsultaGuia extends FormularioBaseKaizen {
-    //-----------------------
-    // Parámetros de objetos
-    //-----------------------
+
     protected $objGuia;
     protected $objCliePmnx;
     protected $objFactPmnx;
@@ -24,9 +22,7 @@ class ConsultaGuia extends FormularioBaseKaizen {
     protected $dtgGuiaCkpt;
     protected $dtgRegiTrab;
 
-    //-----------------------------------------
-    // Parámetros de información del Remitente
-    //-----------------------------------------
+    // Información del Remitente
     protected $lblNumeGuia;
     protected $lblFechGuia;
     protected $lblNumeCedu;
@@ -35,9 +31,7 @@ class ConsultaGuia extends FormularioBaseKaizen {
     protected $lblTeleMovi;
     protected $lblDireClie;
 
-    //--------------------------------------------
-    // Parámetros de información del Destinatario
-    //--------------------------------------------
+    // Información del Destinatario
     protected $lblSucuDest;
     protected $lblReceDomi;
     protected $lblReceDest;
@@ -46,9 +40,7 @@ class ConsultaGuia extends FormularioBaseKaizen {
     protected $lblTeleDest;
     protected $lblDireDest;
 
-    //-------------------------------------
-    // Parámetros de información del Envio
-    //-------------------------------------
+    // Informacion del Envio
     protected $lblCantPiez;
     protected $lblPesoGuia;
     protected $lblDescCont;
@@ -56,32 +48,21 @@ class ConsultaGuia extends FormularioBaseKaizen {
     protected $lblModaPago;
     protected $lblUbicFisi;
 
-    //--------------------------------------------------
-    // Parámetros de información de costos del Servicio
-    //--------------------------------------------------
     protected $lblMontBase;
     protected $lblMontIvax;
     protected $lblMontFran;
     protected $lblMontSegu;
     protected $lblMontTota;
 
-    //-----------------------------------------
-    // Parámetros de información de la factura
-    //-----------------------------------------
     protected $lblTickFisc;
     protected $lblCeduRifx;
     protected $lblRazoSoci;
 
-    //-----------------------------------
-    // Parámetros de información del POD
-    //-----------------------------------
+    // Informacion del POD
     protected $lblPersEntr;
     protected $lblUsuaPodx;
     protected $lblFechEntr;
 
-    //----------------------
-    // Parámetros regulares
-    //----------------------
     protected $blnGuiaFact;
     protected $blnEstaFact;
     protected $blnConsCupo;
@@ -89,32 +70,29 @@ class ConsultaGuia extends FormularioBaseKaizen {
     protected $strSucuOrig;
     protected $strReceOrig;
 
-    //------------------------
-    // Parámetros de posición
-    //------------------------
     protected $arrDataTabl;
     protected $intCantRegi;
     protected $intPosiRegi;
 
-    //---------------------
-    // Botones de posición
-    //---------------------
-    //----- Medianos -----
+    // Botones de navegacion
     protected $btnPrimRegi;
     protected $btnRegiAnte;
     protected $btnProxRegi;
     protected $btnUltiRegi;
-    //----- Pequeños -----
+
     protected $btnPrimSmal;
     protected $btnAnteSmal;
     protected $btnProxSmal;
     protected $btnUltiSmal;
 
-    //--------------------
     // Botones corrientes
-    //--------------------
     protected $btnEditGuia;
     protected $btnMasxAcci;
+    protected $btnDescAmpl;
+
+    protected $lblDescAmpl;
+    protected $txtDescAmpl;
+    protected $btnSaveDesc;
 
     protected function SetupValores() {
         //------------------------------------------
@@ -163,8 +141,8 @@ class ConsultaGuia extends FormularioBaseKaizen {
         // Se verifica si la guia es Facturable
         //--------------------------------------
         $this->blnGuiaFact = false;
-	t('=======================================================');
-	t('Evaluando si la Guia Nro: '.$this->objGuia->NumeGuia.' es Facturable');
+        t('=======================================================');
+        t('Evaluando si la Guia Nro: '.$this->objGuia->NumeGuia.' es Facturable');
         if ($this->objGuia->TipoGuia == TipoGuiaType::CODCOBROENDESTINO) {
 	    t('La Mod. de Pago es COD');
             //--------------------------------------------------------------------
@@ -315,18 +293,20 @@ class ConsultaGuia extends FormularioBaseKaizen {
 
         $this->btnEditGuia_Create();
         $this->btnMasxAcci_Create();
+        $this->btnDescAmpl_Create();
 
-        //---------------------
-        // Botones de posición
-        //---------------------
+        $this->lblDescAmpl_Create();
+        $this->txtDescAmpl_Create();
+        $this->btnSaveDesc_Create();
+        //------------------------
+        // Botones de Navegacion
+        //------------------------
 
-        //---- Medianos ----
         $this->btnProxRegi_Create();
         $this->btnRegiAnte_Create();
         $this->btnPrimRegi_Create();
         $this->btnUltiRegi_Create();
 
-        //---- Pequeños ----
         $this->btnPrimSmal_Create();
         $this->btnAnteSmal_Create();
         $this->btnProxSmal_Create();
@@ -648,6 +628,7 @@ class ConsultaGuia extends FormularioBaseKaizen {
     }
 
     //-------- Información de Registro de Trabajo (Histórico) --------
+
     protected function dtgRegiTrab_Create() {
         $this->dtgRegiTrab = new QDataGrid($this);
         $this->dtgRegiTrab->CellPadding = 0;
@@ -687,13 +668,46 @@ class ConsultaGuia extends FormularioBaseKaizen {
         $this->dtgRegiTrab->SetDataBinder('dtgRegiTrab_Bind');
     }
 
-    //-------- Botones medianos --------
 
     protected function btnEditGuia_Create() {
         $this->btnEditGuia = new QButtonI($this);
         $this->btnEditGuia->Text = TextoIcono('pencil-square-o','Editar');
         $this->btnEditGuia->AddAction(new QClickEvent(), new QAjaxAction('btnEditGuia_Click'));
         $this->btnEditGuia->Visible = !$this->objMastClie;
+    }
+
+    protected function btnDescAmpl_Create() {
+        $this->btnDescAmpl = new QButtonD($this);
+        $this->btnDescAmpl->Text = TextoIcono('clone','Desc.Ampl.');
+        $this->btnDescAmpl->AddAction(new QClickEvent(), new QAjaxAction('btnDescAmpl_Click'));
+        $this->btnDescAmpl->Visible = !$this->objMastClie;
+    }
+
+    protected function lblDescAmpl_Create() {
+        $this->lblDescAmpl = new QLabel($this);
+        $this->lblDescAmpl->Text = 'Descripcion Ampliada <b>(No utilice caractres especiales)</b>';
+        $this->lblDescAmpl->HtmlEntities = false;
+        $this->lblDescAmpl->Visible = false;
+    }
+
+    protected function btnSaveDesc_Create() {
+        $this->btnSaveDesc = new QButtonS($this);
+        $this->btnSaveDesc->Text = TextoIcono('floppy-o','Guardar Descripcion Ampliada');
+        $this->btnSaveDesc->AddAction(new QClickEvent(), new QAjaxAction('btnSaveDesc_Click'));
+        $this->btnSaveDesc->CausesValidation = true;
+        $this->btnSaveDesc->Visible = false;
+    }
+
+    protected function txtDescAmpl_Create(){
+        $this->txtDescAmpl = new QTextBox($this);
+        $this->txtDescAmpl->Name = 'Descripción de Contenido Ampliada';
+        $this->txtDescAmpl->Text = $this->objGuia->DescCont;
+        $this->txtDescAmpl->SetCustomAttribute('onblur',"this.value=this.value.toUpperCase()");
+        $this->txtDescAmpl->TextMode = QTextMode::MultiLine;
+        $this->txtDescAmpl->Required = true;
+        $this->txtDescAmpl->Rows = 8;
+        $this->txtDescAmpl->Columns = 100;
+        $this->txtDescAmpl->Visible = false;
     }
 
     protected function btnMasxAcci_Create() {
@@ -726,7 +740,6 @@ class ConsultaGuia extends FormularioBaseKaizen {
         $this->btnMasxAcci->Text = CrearDropDownButton($strTextBoto, $arrOpciDrop);
     }
 
-    //-------- Botones de posición medianos --------
 
     protected function btnProxRegi_Create() {
         $this->btnProxRegi = new QButton($this);
@@ -796,6 +809,25 @@ class ConsultaGuia extends FormularioBaseKaizen {
     //-----------------------------------
     // Funciones asociadas a los objetos
     //-----------------------------------
+
+    protected function btnSaveDesc_Click() {
+        $this->txtDescAmpl->Text = limpiarCadena($this->txtDescAmpl->Text);
+        $this->objGuia->DescCont = $this->txtDescAmpl->Text;
+        $this->objGuia->Save();
+        $this->lblDescCont->ToolTip = $this->objGuia->DescCont;
+        //----------------------------------------------
+        // Se deja registro de la transacción realizada
+        //----------------------------------------------
+        $arrLogxCamb['strNombTabl'] = 'Guia';
+        $arrLogxCamb['intRefeRegi'] = $this->objGuia->NumeGuia;
+        $arrLogxCamb['strNombRegi'] = $this->objGuia->NombRemi;
+        $arrLogxCamb['strDescCamb'] = 'Descripcion Ampliada: '.$this->objGuia->DescCont;
+        LogDeCambios($arrLogxCamb);
+
+        $this->mensaje('Transaccion Exitosa !!!','','','',__iCHEC__);
+        $this->btnDescAmpl_Click();
+    }
+
     protected function dtgGuiaCkpt_Bind() {
         $objClauOrde   = QQ::Clause();
         $objClauOrde[] = QQ::OrderBy(QQN::GuiaCkpt()->FechCkpt,false,QQN::GuiaCkpt()->HoraCkpt,false);
@@ -846,6 +878,14 @@ class ConsultaGuia extends FormularioBaseKaizen {
             $this->objGuia->Save();
             $this->mensaje('Transaccion Exitosa','','s','check');
         }
+    }
+
+    protected function btnDescAmpl_Click(){
+        $this->dtgGuiaCkpt->Visible = !$this->dtgGuiaCkpt->Visible;
+        $this->dtgRegiTrab->Visible = !$this->dtgRegiTrab->Visible;
+        $this->lblDescAmpl->Visible = !$this->lblDescAmpl->Visible;
+        $this->txtDescAmpl->Visible = !$this->txtDescAmpl->Visible;
+        $this->btnSaveDesc->Visible = !$this->btnSaveDesc->Visible;
     }
 
     //------------------------------

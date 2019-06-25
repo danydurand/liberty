@@ -111,6 +111,9 @@ class RepoCuadreDeCaja extends FormularioBaseKaizen {
     // Acciones relativas a los objetos
     //-------------------------------------
 
+    /**
+     *
+     */
     protected function verificarDatosFaltantes() {
         $strCadeSqlx  = 'select count(*) as cant_falt ';
         $strCadeSqlx .= '  from v_sin_datos_fiscales ';
@@ -190,7 +193,6 @@ class RepoCuadreDeCaja extends FormularioBaseKaizen {
             echo $strCadeSqlx;
             exit(0);
         }
-
         $blnApliReco = false;
         $decFactReco = 1;
         $intTariRefe = 65;
@@ -203,7 +205,6 @@ class RepoCuadreDeCaja extends FormularioBaseKaizen {
             $decFactReco = (float)$objConfReco->ParaVal2;
             $intTariRefe = (int)$objConfReco->ParaVal3;
         }
-
         $objDatabase = FacturaPmn::GetDatabase();
         $objDbResult = $objDatabase->Query($strCadeSqlx);
         $arrFormPago = array();
@@ -255,6 +256,10 @@ class RepoCuadreDeCaja extends FormularioBaseKaizen {
             $decTotaFact += $decMontTota;
             $decTotaPago += $decMontPago;
         }
+        if (count($arrDatoRepo) == 0) {
+            $this->mensaje('No existen datos para la fecha indicada !!!','','d','',__iHAND__);
+            return;
+        }
         // Linea de totales
         $arrDatoRepo[] = array('','','','','','TOTALES',nf($decTotaFact),'','','',nf($decTotaPago));
         $arrDatoRepo[] = array('','','','','','','','','','','');
@@ -265,7 +270,7 @@ class RepoCuadreDeCaja extends FormularioBaseKaizen {
             }
         }
 
-        $_SESSION['Dato'] = serialize($arrDatoRepo);
+        //$_SESSION['Dato'] = serialize($arrDatoRepo);
 
         $strTituRepo = 'Cuadre de Caja ('.$this->objUsuario->LogiUsua.'-'.$this->strSucuOrig.'-'.$this->strReceOrig.')';
         $pdf = new PDF('L','mm','Letter');
